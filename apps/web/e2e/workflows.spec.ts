@@ -1,0 +1,363 @@
+import { test, expect, type Page } from "@playwright/test";
+import { mkdir, writeFile } from "node:fs/promises";
+const artifacts = "artifacts";
+async function create(page: Page) {
+  await page.goto("/");
+  await page
+    .getByRole("link", { name: "Create a resume", exact: true })
+    .click();
+  await expect(
+    page.getByRole("article", { name: "Resume canvas" }),
+  ).toBeVisible();
+}
+async function saved(page: Page) {
+  await expect(page.getByRole("status")).toHaveText("Saved");
+}
+async function projectActions(page: Page, name: string) {
+  await page
+    .getByRole("button", { name: `Actions for ${name}`, exact: true })
+    .click();
+}
+
+test("SSR public pages and nested routes return meaningful server HTML; hydration is clean", async ({
+  page,
+  request,
+}) => {
+  const cases = [
+    ["/", "Your resume"],
+    ["/templates", "A good place to begin"],
+    ["/projects", "Your next chapter"],
+    ["/editor/missing", "Opening your resume"],
+  ];
+  for (const [route, text] of cases) {
+    const response = await request.get(route);
+    expect(response.status()).toBe(200);
+    expect(await response.text()).toContain(text);
+  }
+  const errors: string[] = [];
+  page.on("pageerror", (e) => errors.push(e.message));
+  page.on("console", (msg) => {
+    if (msg.type() === "error") errors.push(msg.text());
+  });
+  await page.goto("/");
+  await page.getByRole("link", { name: "Templates", exact: true }).click();
+  await expect(
+    page.getByRole("heading", { name: "A good place to begin." }),
+  ).toBeVisible();
+  await page.goto("/editor/missing");
+  await expect(
+    page.getByRole("heading", { name: "This resume isn’t on this device." }),
+  ).toBeVisible();
+  expect(errors).toEqual([]);
+});
+
+test("human editor → save/reload → agent preview/undo → project lifecycle → JSON import", async ({
+  page,
+}) => {
+  const errors: string[] = [];
+  page.on("pageerror", (e) => errors.push(e.message));
+  await create(page);
+  await page
+    .getByRole("button", { name: "Edit heading: Alex Morgan", exact: true })
+    .dblclick();
+  await page
+    .getByRole("textbox", { name: "Edit text on canvas" })
+    .fill("Sam Taylor");
+  await page
+    .getByRole("textbox", { name: "Edit text on canvas" })
+    .press("Control+Enter");
+  await expect(
+    page.getByRole("heading", { name: "Sam Taylor", exact: true }),
+  ).toBeVisible();
+  await saved(page);
+  await page.reload();
+  await expect(
+    page.getByRole("heading", { name: "Sam Taylor", exact: true }),
+  ).toBeVisible();
+  await page.getByRole("button", { name: "Teammate", exact: true }).click();
+  await page.getByRole("button", { name: "Load a working example" }).click();
+  await page.getByRole("button", { name: "Validate & preview" }).click();
+  await expect(
+    page.getByText("1 validated command", { exact: true }),
+  ).toBeVisible();
+  await page
+    .getByRole("button", { name: "Apply changes", exact: true })
+    .click();
+  await expect(
+    page.getByRole("article", { name: "Resume canvas" }),
+  ).toContainText("I design thoughtful digital products");
+  await page.getByRole("button", { name: "Undo", exact: true }).click();
+  await expect(
+    page.getByRole("article", { name: "Resume canvas" }),
+  ).toContainText("I turn complex problems");
+  await page.getByRole("button", { name: "Redo", exact: true }).click();
+  await expect(
+    page.getByRole("article", { name: "Resume canvas" }),
+  ).toContainText("I design thoughtful digital products");
+  await page.getByRole("button", { name: "Close agent panel" }).click();
+  await page.getByRole("button", { name: "Add section", exact: true }).click();
+  await page
+    .getByRole("textbox", { name: "Section title", exact: true })
+    .fill("Projects");
+  await page
+    .getByRole("textbox", { name: "Content", exact: true })
+    .fill("Built something meaningful.");
+  await expect(
+    page.getByRole("article", { name: "Resume canvas" }),
+  ).toContainText("Built something meaningful.");
+  await page
+    .getByRole("button", { name: "Move section up", exact: true })
+    .click();
+  await page
+    .getByRole("button", { name: "Delete selected section", exact: true })
+    .click();
+  await expect(
+    page.getByRole("article", { name: "Resume canvas" }),
+  ).not.toContainText("Built something meaningful.");
+  await page.getByRole("button", { name: "Undo", exact: true }).click();
+  await expect(
+    page.getByRole("article", { name: "Resume canvas" }),
+  ).toContainText("Built something meaningful.");
+  await page.getByRole("button", { name: "Export", exact: true }).click();
+  const downloadPromise = page.waitForEvent("download");
+  await page.getByRole("menuitem", { name: "JSON document" }).click();
+  const download = await downloadPromise;
+  const jsonPath = await download.path();
+  expect(jsonPath).toBeTruthy();
+  await saved(page);
+  await page.getByRole("button", { name: "Back to projects" }).click();
+  await expect(
+    page.getByRole("heading", { name: "Your next chapter." }),
+  ).toBeVisible();
+  await projectActions(page, "Alex Morgan — Resume");
+  await page.getByRole("menuitem", { name: "Rename", exact: true }).click();
+  await page
+    .getByRole("textbox", { name: "Resume name" })
+    .fill("Design application");
+  await page.getByRole("button", { name: "Save name", exact: true }).click();
+  await expect(
+    page.getByRole("link", { name: "Open Design application", exact: true }),
+  ).toBeVisible();
+  await projectActions(page, "Design application");
+  await page.getByRole("menuitem", { name: "Duplicate", exact: true }).click();
+  await expect(
+    page.getByRole("link", {
+      name: "Open Design application (copy)",
+      exact: true,
+    }),
+  ).toBeVisible();
+  await page.reload();
+  await expect(
+    page.getByRole("link", {
+      name: "Open Design application (copy)",
+      exact: true,
+    }),
+  ).toBeVisible();
+  await projectActions(page, "Design application (copy)");
+  await page.getByRole("menuitem", { name: "Delete", exact: true }).click();
+  await page.getByRole("button", { name: "Keep resume", exact: true }).click();
+  await expect(
+    page.getByRole("link", {
+      name: "Open Design application (copy)",
+      exact: true,
+    }),
+  ).toBeVisible();
+  await projectActions(page, "Design application (copy)");
+  await page.getByRole("menuitem", { name: "Delete", exact: true }).click();
+  await page
+    .getByRole("button", { name: "Delete resume", exact: true })
+    .click();
+  await expect(
+    page.getByRole("link", {
+      name: "Open Design application (copy)",
+      exact: true,
+    }),
+  ).toHaveCount(0);
+  await page.locator("input[type=file]").setInputFiles(jsonPath!);
+  await expect(
+    page.getByRole("heading", { name: "Sam Taylor", exact: true }),
+  ).toBeVisible();
+  await page.reload();
+  await expect(
+    page.getByRole("heading", { name: "Sam Taylor", exact: true }),
+  ).toBeVisible();
+  expect(errors).toEqual([]);
+});
+
+test("visual desktop/mobile screenshots, rendered DOM/CSS and real canvas", async ({
+  page,
+}) => {
+  await mkdir(`${artifacts}/visual`, { recursive: true });
+  await mkdir(`${artifacts}/rendered`, { recursive: true });
+  const errors: string[] = [];
+  page.on("pageerror", (e) => errors.push(e.message));
+  await page.goto("/");
+  await page.evaluate(() => document.fonts.ready);
+  await page.screenshot({
+    path: `${artifacts}/visual/landing-desktop.png`,
+    fullPage: true,
+  });
+  expect(
+    await page
+      .locator("img")
+      .evaluateAll((images) =>
+        images.every(
+          (img) =>
+            img instanceof HTMLImageElement &&
+            img.complete &&
+            img.naturalWidth > 0,
+        ),
+      ),
+  ).toBe(true);
+  expect(
+    await page.evaluate(
+      () => document.documentElement.scrollWidth <= window.innerWidth,
+    ),
+  ).toBe(true);
+  await writeFile(`${artifacts}/rendered/landing.html`, await page.content());
+  await create(page);
+  await saved(page);
+  await page.evaluate(() => document.fonts.ready);
+  await page.screenshot({
+    path: `${artifacts}/visual/editor-desktop.png`,
+    fullPage: true,
+  });
+  await writeFile(`${artifacts}/rendered/editor.html`, await page.content());
+  const computed = await page.locator(".resume").evaluate((element) => ({
+    width: getComputedStyle(element).width,
+    minHeight: getComputedStyle(element).minHeight,
+    color: getComputedStyle(element).color,
+    font: getComputedStyle(element).fontFamily,
+    text: element.textContent,
+  }));
+  expect(computed.width).toBe("794px");
+  expect(computed.minHeight).toBe("1123px");
+  await writeFile(
+    `${artifacts}/rendered/canvas-computed.json`,
+    JSON.stringify(computed, null, 2),
+  );
+  await page.getByRole("button", { name: "Back to projects" }).click();
+  await expect(page.getByRole("link", { name: /Open Alex/ })).toBeVisible();
+  await page.screenshot({
+    path: `${artifacts}/visual/projects-desktop.png`,
+    fullPage: true,
+  });
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/");
+  await page.evaluate(() => document.fonts.ready);
+  await page.screenshot({
+    path: `${artifacts}/visual/landing-mobile.png`,
+    fullPage: true,
+  });
+  expect(
+    await page.evaluate(
+      () => document.documentElement.scrollWidth <= innerWidth,
+    ),
+  ).toBe(true);
+  await page.goto("/projects");
+  await expect(page.getByRole("link", { name: /Open Alex/ })).toBeVisible();
+  await page.screenshot({
+    path: `${artifacts}/visual/projects-mobile.png`,
+    fullPage: true,
+  });
+  expect(
+    await page.evaluate(
+      () => document.documentElement.scrollWidth <= innerWidth,
+    ),
+  ).toBe(true);
+  await page.goto("/templates");
+  await page.screenshot({
+    path: `${artifacts}/visual/templates-mobile.png`,
+    fullPage: true,
+  });
+  expect(errors).toEqual([]);
+});
+
+test("block CRUD, style updates and keyboard history share engine semantics", async ({
+  page,
+}) => {
+  await create(page);
+  await page.getByRole("button", { name: "Profile 1", exact: true }).click();
+  await page
+    .getByRole("button", { name: "Add text block", exact: true })
+    .click();
+  await page
+    .getByRole("textbox", { name: "Content", exact: true })
+    .fill("A new achievement.");
+  await expect(page.locator(".resume")).toContainText("A new achievement.");
+  await page
+    .getByRole("button", { name: "Move block up", exact: true })
+    .click();
+  const blocks = page
+    .locator(".resume-section")
+    .filter({
+      has: page.getByRole("heading", { name: "Profile", exact: true }),
+    })
+    .locator("[data-block-id]");
+  await expect(blocks.first()).toHaveText("A new achievement.");
+  await page
+    .getByRole("button", { name: "Move block down", exact: true })
+    .click();
+  await expect(blocks.last()).toHaveText("A new achievement.");
+  await page.getByRole("button", { name: "Delete block", exact: true }).click();
+  await expect(page.locator(".resume")).not.toContainText("A new achievement.");
+  await page.getByRole("button", { name: "Undo", exact: true }).click();
+  await expect(page.locator(".resume")).toContainText("A new achievement.");
+  await page
+    .getByRole("button", { name: "Document settings", exact: true })
+    .click();
+  await page.getByRole("combobox", { name: "Typography", exact: true }).click();
+  await page.getByRole("option", { name: "Classic serif" }).click();
+  await expect(page.locator(".resume")).toHaveCSS("font-family", /Georgia/);
+  await page.getByRole("button", { name: "Toggle properties" }).focus();
+  await page.keyboard.press("Control+z");
+  await expect(page.locator(".resume")).toHaveCSS("font-family", /Arial/);
+  await page.keyboard.press("Control+Shift+z");
+  await expect(page.locator(".resume")).toHaveCSS("font-family", /Georgia/);
+  await page.getByLabel("Accent color").fill("#334e68");
+  await page.getByLabel("Accent color").press("Tab");
+  await expect(page.locator(".resume")).toHaveCSS("--resume-accent", "#334e68");
+  await saved(page);
+  await page.reload();
+  await expect(page.locator(".resume")).toHaveCSS("font-family", /Georgia/);
+  await expect(page.locator(".resume")).toHaveCSS("--resume-accent", "#334e68");
+  await page.getByRole("button", { name: "Toggle properties" }).click();
+  await page
+    .locator('[aria-label="Resume canvas"]')
+    .click({ position: { x: 400, y: 740 } });
+  await page.keyboard.press("Control+z");
+  // History is deliberately session-local: reopening keeps content, not stale sessions.
+  await expect(page.locator(".resume")).toHaveCSS("font-family", /Georgia/);
+});
+
+test("invalid imports and command proposals leave persisted documents intact", async ({
+  page,
+}) => {
+  await page.goto("/projects");
+  await expect(page.getByText("A fresh page, just for you.")).toBeVisible();
+  await page
+    .locator("input[type=file]")
+    .setInputFiles({
+      name: "invalid.json",
+      mimeType: "application/json",
+      buffer: Buffer.from('{"schemaVersion":999}'),
+    });
+  await expect(
+    page.getByText("Unsupported document version.", { exact: false }),
+  ).toBeVisible();
+  await expect(page.getByRole("link", { name: /Open Alex/ })).toHaveCount(0);
+  await page.getByRole("button", { name: "New resume", exact: true }).click();
+  await expect(page.locator(".resume")).toBeVisible();
+  await page.getByRole("button", { name: "Teammate", exact: true }).click();
+  await page
+    .getByRole("textbox", { name: "Command proposal" })
+    .fill('{"version":1}');
+  await page.getByRole("button", { name: "Validate & preview" }).click();
+  await expect(
+    page.getByText("Proposal rejected", { exact: true }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("button", { name: "Apply changes", exact: true }),
+  ).toHaveCount(0);
+  await expect(page.locator(".resume")).toContainText("Alex Morgan");
+});

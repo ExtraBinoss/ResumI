@@ -2,40 +2,41 @@
 
 ## Goal
 
-Build accessible responsive SSR landing and template pages with real resume content and working create CTA. This delivers the human/agent vertical slice.
+Explain the product and get a person into a real saved resume quickly.
 
 ## Scope
 
-Included: Build accessible responsive SSR landing and template pages with real resume content and working create CTA.
-
-Deferred: cloud synchronization, provider inference, remote MCP/WebMCP, arbitrary freeform graphics, automatic pagination and production deployment.
+Included: the implementation checklist below. Deferred: production deployment, account/cloud synchronization, provider inference, remote MCP/WebMCP, freeform graphics and automatic pagination.
 
 ## Prerequisites and files
 
-Dependencies: 00, 02, 03. See [architecture](../docs/architecture.md) for ownership.
+Dependencies: 00, 02, 03. Relevant files: `apps/web/app/routes/home.tsx, templates.tsx, src/styles/Landing.module.css`. See [architecture](../docs/architecture.md).
 
 ## Implementation checklist
 
-- [ ] Implement the scoped behavior.
-- [ ] Verify acceptance and failure cases.
-- [ ] Record evidence and limitations.
+- [x] Server-render the exact brand tagline and metadata with semantic public page structure.
+- [x] Connect create CTAs to actual persistent project creation and editor navigation.
+- [x] Show real rendered CV content and two working template choices.
+- [x] Use small vetted provider marks with truthful CLI compatibility wording.
+- [x] Create responsive white/black/blue design with visible focus and reduced-motion behavior.
+- [x] Capture and open desktop/mobile landing and template screenshots; assert no horizontal page overflow.
 
 ## Acceptance criteria
 
-Tagline is in server HTML; CTA creates a persistent project; responsive layout has no overflow.
+Server HTML contains the hero, catalog and document preview. CTA creates a project. All logo requests load; 390px layouts pass overflow assertions and were visually inspected.
 
-## Verification
+## Testing and verification
 
-`bun run test:ssr; bun run visual:check`. Record actual outcomes below after running.
+Commands: `bun run test:ssr; bun run visual:check`. Actual evidence: [verification record](../docs/verification.md), [screenshots](../artifacts/visual/), [rendered HTML/CSS](../artifacts/rendered/) and [timings](../artifacts/performance/interactions.json).
 
 ## UX, performance and accessibility
 
-Keep external browser systems out of SSR and engine; use named labels, keyboard focus, granular subscriptions and clear errors. Review relevant pages at desktop and mobile widths.
+Named controls, keyboard focus, genuine error/empty states and reduced motion were reviewed on relevant routes. Editor subscriptions and real interaction timings are tested. Browser storage loads after deterministic SSR hydration. No private resume data appears in QA artifacts.
 
 ## Risks and decisions
 
-See [decisions](../docs/decisions/). Never imply live browser access for external CLI agents.
+Provider inference/native integrations are not included; provenance is recorded in docs/brand-assets.md. See [ADR 001](../docs/decisions/001-foundation.md) and [current boundaries](../README.md#current-boundaries).
 
 ## Status
 
-Not started. Evidence pending.
+Done — implemented and verified locally on 2026-10-16. No blocked items in the scoped vertical slice.

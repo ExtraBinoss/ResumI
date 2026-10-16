@@ -2,40 +2,42 @@
 
 ## Goal
 
-Build canvas selection, direct text editing, contextual inspector, section/block CRUD, styles, zoom and undo/redo. This delivers the human/agent vertical slice.
+Deliver a direct document editing workspace with responsive, reviewable changes.
 
 ## Scope
 
-Included: Build canvas selection, direct text editing, contextual inspector, section/block CRUD, styles, zoom and undo/redo.
-
-Deferred: cloud synchronization, provider inference, remote MCP/WebMCP, arbitrary freeform graphics, automatic pagination and production deployment.
+Included: the implementation checklist below. Deferred: production deployment, account/cloud synchronization, provider inference, remote MCP/WebMCP, freeform graphics and automatic pagination.
 
 ## Prerequisites and files
 
-Dependencies: 01, 02, 03. See [architecture](../docs/architecture.md) for ownership.
+Dependencies: 01, 02, 03. Relevant files: `apps/web/src/features, src/state/editor.ts, src/styles`. See [architecture](../docs/architecture.md).
 
 ## Implementation checklist
 
-- [ ] Implement the scoped behavior.
-- [ ] Verify acceptance and failure cases.
-- [ ] Record evidence and limitations.
+- [x] Build compact toolbar, outline, A4 canvas and contextual inspector.
+- [x] Enable section/block selection, direct textarea editing and meaningful empty/recovery states.
+- [x] Implement section/block add/update/delete/reorder, name and style editing through commands.
+- [x] Expose zoom, native print, portable HTML/JSON exports and keyboard undo/redo.
+- [x] Use stable granular Jotai atoms; test unrelated block/section subscribers remain quiet.
+- [x] Fit mobile canvas and open one contextual panel at a time.
+- [x] Measure real opening/input round trips; exercise autosave/reload and fail-safe navigation.
 
 ## Acceptance criteria
 
-All visible controls work; edits autosave and survive reload; missing projects recover gracefully.
+Critical interaction journeys pass, including keyboard history, styles after reload and block CRUD. Desktop/mobile editor screenshots opened. Timing samples are retained, not described as field benchmarks.
 
-## Verification
+## Testing and verification
 
-`bun run test:e2e; bun run visual:check`. Record actual outcomes below after running.
+Commands: `bun run test:e2e; bun test apps/web/test/state`. Actual evidence: [verification record](../docs/verification.md), [screenshots](../artifacts/visual/), [rendered HTML/CSS](../artifacts/rendered/) and [timings](../artifacts/performance/interactions.json).
 
 ## UX, performance and accessibility
 
-Keep external browser systems out of SSR and engine; use named labels, keyboard focus, granular subscriptions and clear errors. Review relevant pages at desktop and mobile widths.
+Named controls, keyboard focus, genuine error/empty states and reduced motion were reviewed on relevant routes. Editor subscriptions and real interaction timings are tested. Browser storage loads after deterministic SSR hydration. No private resume data appears in QA artifacts.
 
 ## Risks and decisions
 
-See [decisions](../docs/decisions/). Never imply live browser access for external CLI agents.
+Touch editing, full screen-reader review, freeform graphics and independent pagination remain future work. See [ADR 001](../docs/decisions/001-foundation.md) and [current boundaries](../README.md#current-boundaries).
 
 ## Status
 
-Not started. Evidence pending.
+Done — implemented and verified locally on 2026-10-16. No blocked items in the scoped vertical slice.

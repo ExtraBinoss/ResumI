@@ -1,0 +1,6 @@
+{
+  "limit": 600,
+  "warn": 500,
+  "extensions": [".ts", ".tsx", ".js", ".jsx", ".css", ".mjs"],
+  "exclude": ["apps/web/worker-configuration.d.ts"]
+}

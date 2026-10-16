@@ -2,40 +2,42 @@
 
 ## Goal
 
-Implement typed IndexedDB CRUD, migrations, independent duplication and optimistic revision checks. This delivers the human/agent vertical slice.
+Make local project CRUD persistent, portable and resistant to stale overwrites.
 
 ## Scope
 
-Included: Implement typed IndexedDB CRUD, migrations, independent duplication and optimistic revision checks.
-
-Deferred: cloud synchronization, provider inference, remote MCP/WebMCP, arbitrary freeform graphics, automatic pagination and production deployment.
+Included: the implementation checklist below. Deferred: production deployment, account/cloud synchronization, provider inference, remote MCP/WebMCP, freeform graphics and automatic pagination.
 
 ## Prerequisites and files
 
-Dependencies: 01, 02. See [architecture](../docs/architecture.md) for ownership.
+Dependencies: 01, 02. Relevant files: `apps/web/src/lib/projects.ts, test/lib/projects.test.ts, e2e/resilience.spec.ts`. See [architecture](../docs/architecture.md).
 
 ## Implementation checklist
 
-- [ ] Implement the scoped behavior.
-- [ ] Verify acceptance and failure cases.
-- [ ] Record evidence and limitations.
+- [x] Implement typed IndexedDB project create/read/save/rename/delete/duplicate.
+- [x] Add v1 creation and v2 migration for recency index and revision defaults.
+- [x] Allocate independent IDs on duplicates and imports; validate imported documents.
+- [x] Coalesce writes and serialize overlapping autosave/navigation flushes.
+- [x] Use transactional expected-revision checks for stale tabs and deleted projects.
+- [x] Expose useful saving/error/export/retry states; confirm project deletion.
+- [x] Test complete CRUD after reload, real-browser schema upgrade, denied storage, offline edits and two-tab conflicts.
 
 ## Acceptance criteria
 
-Create, reopen, rename, duplicate, import, delete and reload work; stale saves fail.
+CRUD/reopen, migration, independent copies and stale writes pass in unit and browser tests. Failed tab save retains exportable in-memory changes; offline edit survives online reload.
 
-## Verification
+## Testing and verification
 
-`bun test apps/web/test; bun run test:e2e`. Record actual outcomes below after running.
+Commands: `bun test apps/web/test; bun run test:e2e`. Actual evidence: [verification record](../docs/verification.md), [screenshots](../artifacts/visual/), [rendered HTML/CSS](../artifacts/rendered/) and [timings](../artifacts/performance/interactions.json).
 
 ## UX, performance and accessibility
 
-Keep external browser systems out of SSR and engine; use named labels, keyboard focus, granular subscriptions and clear errors. Review relevant pages at desktop and mobile widths.
+Named controls, keyboard focus, genuine error/empty states and reduced motion were reviewed on relevant routes. Editor subscriptions and real interaction timings are tested. Browser storage loads after deterministic SSR hydration. No private resume data appears in QA artifacts.
 
 ## Risks and decisions
 
-See [decisions](../docs/decisions/). Never imply live browser access for external CLI agents.
+IndexedDB is device/browser/origin local. No service worker, cloud sync or durable storage guarantee; backup is explicit. See [ADR 001](../docs/decisions/001-foundation.md) and [current boundaries](../README.md#current-boundaries).
 
 ## Status
 
-Not started. Evidence pending.
+Done — implemented and verified locally on 2026-10-16. No blocked items in the scoped vertical slice.

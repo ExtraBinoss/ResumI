@@ -1,0 +1,11 @@
+node_modules
+**/build
+**/.react-router
+**/.wrangler
+**/worker-configuration.d.ts
+bun.lock
+artifacts
+coverage
+playwright-report
+test-results
+docs/handoff.md

@@ -1,0 +1,9 @@
+{
+  "name": "@resumi/cv",
+  "private": true,
+  "type": "module",
+  "exports": "./src/index.ts",
+  "dependencies": {
+    "@resumi/engine": "workspace:*"
+  }
+}

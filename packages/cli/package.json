@@ -1,0 +1,10 @@
+{
+  "name": "@resumi/cli",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@resumi/engine": "workspace:*",
+    "@resumi/cv": "workspace:*",
+    "@resumi/adapters": "workspace:*"
+  }
+}

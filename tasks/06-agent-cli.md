@@ -2,40 +2,41 @@
 
 ## Goal
 
-Expose engine through validated CLI and reviewed JSON command panel; document export/edit/import handoff. This delivers the human/agent vertical slice.
+Make the same engine useful to file-based CLI agents and human review.
 
 ## Scope
 
-Included: Expose engine through validated CLI and reviewed JSON command panel; document export/edit/import handoff.
-
-Deferred: cloud synchronization, provider inference, remote MCP/WebMCP, arbitrary freeform graphics, automatic pagination and production deployment.
+Included: the implementation checklist below. Deferred: production deployment, account/cloud synchronization, provider inference, remote MCP/WebMCP, freeform graphics and automatic pagination.
 
 ## Prerequisites and files
 
-Dependencies: 01, 02. See [architecture](../docs/architecture.md) for ownership.
+Dependencies: 01, 02. Relevant files: `packages/cli, packages/adapters, src/features/AgentPanel.tsx`. See [architecture](../docs/architecture.md).
 
 ## Implementation checklist
 
-- [ ] Implement the scoped behavior.
-- [ ] Verify acceptance and failure cases.
-- [ ] Record evidence and limitations.
+- [x] Implement complete help, validated arguments, JSON document output/stderr and explicit exit codes.
+- [x] Implement document create/inspect/validate/apply/render/schema commands without UI dependencies.
+- [x] Define a versioned transport-free batch JSON Schema and proposal preview adapter.
+- [x] Implement a working deterministic example and explicit preview/apply/discard review.
+- [x] Apply proposals as one attributable undo step using the same engine as human edits.
+- [x] Document export → CLI inspect/edit/render → validated import and distinct future MCP/WebMCP boundaries.
 
 ## Acceptance criteria
 
-Create, inspect, validate, apply and render run without browser or credentials; invalid batches are atomic.
+CLI handler tests cover successes and argument, validation and file errors. Real CLI sample/schema/HTML artifacts were generated; browser proposal preview, reject, apply and undo pass.
 
-## Verification
+## Testing and verification
 
-`bun test packages/cli/test packages/adapters/test`. Record actual outcomes below after running.
+Commands: `bun test packages/cli/test packages/adapters/test; bun run resumi --help`. Actual evidence: [verification record](../docs/verification.md), [screenshots](../artifacts/visual/), [rendered HTML/CSS](../artifacts/rendered/) and [timings](../artifacts/performance/interactions.json).
 
 ## UX, performance and accessibility
 
-Keep external browser systems out of SSR and engine; use named labels, keyboard focus, granular subscriptions and clear errors. Review relevant pages at desktop and mobile widths.
+Named controls, keyboard focus, genuine error/empty states and reduced motion were reviewed on relevant routes. Editor subscriptions and real interaction timings are tested. Browser storage loads after deterministic SSR hydration. No private resume data appears in QA artifacts.
 
 ## Risks and decisions
 
-See [decisions](../docs/decisions/). Never imply live browser access for external CLI agents.
+No model connection, remote MCP, WebMCP, live browser database bridge or provider credentials are implemented. See [ADR 001](../docs/decisions/001-foundation.md) and [current boundaries](../README.md#current-boundaries).
 
 ## Status
 
-Not started. Evidence pending.
+Done — implemented and verified locally on 2026-10-16. No blocked items in the scoped vertical slice.

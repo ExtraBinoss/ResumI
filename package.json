@@ -1,0 +1,62 @@
+{
+  "name": "resumi",
+  "private": true,
+  "type": "module",
+  "version": "0.1.0",
+  "packageManager": "bun@1.4.2",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "cd apps/web && vite --host 127.0.0.1",
+    "build": "cd apps/web && react-router build",
+    "preview": "cd apps/web && vite preview --host 127.0.0.1 --port 4187 --strictPort",
+    "typecheck": "cd apps/web && react-router typegen && cd ../.. && tsc --noEmit",
+    "lint": "eslint .",
+    "check:files": "bun scripts/check-file-length.ts",
+    "test": "bun test packages apps/web/test scripts/test",
+    "test:engine": "bun scripts/engine-coverage.ts",
+    "test:e2e": "playwright test",
+    "visual:check": "playwright test --grep visual",
+    "test:ssr": "playwright test --grep SSR",
+    "check": "bun run typecheck && bun run lint && bun run check:files && bun run test && bun run test:engine && bun run build && bun run test:e2e",
+    "resumi": "bun packages/cli/src/main.ts",
+    "cf:types": "cd apps/web && wrangler types",
+    "format": "prettier --write ."
+  },
+  "dependencies": {
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "react-router": "8.4.0",
+    "@mantine/core": "9.7.2",
+    "@mantine/hooks": "9.7.2",
+    "jotai": "^2.15.0",
+    "lucide-react": "^0.577.0",
+    "zod": "^4.3.6",
+    "idb": "^8.0.3",
+    "@fontsource-variable/inter": "^5.2.8"
+  },
+  "devDependencies": {
+    "@react-router/dev": "8.4.0",
+    "@cloudflare/vite-plugin": "1.64.0",
+    "wrangler": "^4.151.0",
+    "vite": "8.3.4",
+    "typescript": "~5.9.3",
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
+    "@types/bun": "^1.4.2",
+    "@types/node": "^24.0.0",
+    "eslint": "^9.39.0",
+    "@eslint/js": "^9.39.0",
+    "typescript-eslint": "^8.56.0",
+    "eslint-plugin-react-hooks": "^7.0.1",
+    "globals": "^17.0.0",
+    "vite-plugin-babel": "^1.3.2",
+    "@babel/preset-typescript": "^7.28.0",
+    "babel-plugin-react-compiler": "^1.0.0",
+    "@playwright/test": "^1.58.2",
+    "fake-indexeddb": "^6.2.4",
+    "prettier": "^3.8.0"
+  }
+}

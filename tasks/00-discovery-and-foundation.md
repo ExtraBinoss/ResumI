@@ -2,40 +2,40 @@
 
 ## Goal
 
-Audit the read-only V1, select compatible stable dependencies, and establish Bun workspaces, actual SSR, Compiler and tooling. This delivers the human/agent vertical slice.
+Build the verified foundation for a real Cloudflare-compatible SSR application.
 
 ## Scope
 
-Included: Audit the read-only V1, select compatible stable dependencies, and establish Bun workspaces, actual SSR, Compiler and tooling.
-
-Deferred: cloud synchronization, provider inference, remote MCP/WebMCP, arbitrary freeform graphics, automatic pagination and production deployment.
+Included: the implementation checklist below. Deferred: production deployment, account/cloud synchronization, provider inference, remote MCP/WebMCP, freeform graphics and automatic pagination.
 
 ## Prerequisites and files
 
-Dependencies: None. See [architecture](../docs/architecture.md) for ownership.
+Dependencies: None. Relevant files: `apps/web/app, apps/web/workers, package.json, AGENTS.md`. See [architecture](../docs/architecture.md).
 
 ## Implementation checklist
 
-- [ ] Implement the scoped behavior.
-- [ ] Verify acceptance and failure cases.
-- [ ] Record evidence and limitations.
+- [x] Audit V1 schema, commands, history, storage and renderer without changing the checkout.
+- [x] Create the numbered execution plan before application implementation.
+- [x] Install compatible Bun workspaces, React 19, React Router SSR, Vite and Cloudflare integration.
+- [x] Configure Mantine SSR, Jotai, Lucide, CSS Modules and React Compiler.
+- [x] Create strict TypeScript, Hooks lint, build and local Worker tooling.
 
 ## Acceptance criteria
 
-Stack installs; nested routes server render; V1 remains untouched.
+Production build emits client and SSR Worker; server HTTP responses contain actual route content. V1 has exactly its pre-existing PDF/untracked file changes.
 
-## Verification
+## Testing and verification
 
-`bun run typecheck; bun run build; bun run test:ssr`. Record actual outcomes below after running.
+Commands: `bun run typecheck; bun run build; bun run test:ssr`. Actual evidence: [verification record](../docs/verification.md), [screenshots](../artifacts/visual/), [rendered HTML/CSS](../artifacts/rendered/) and [timings](../artifacts/performance/interactions.json).
 
 ## UX, performance and accessibility
 
-Keep external browser systems out of SSR and engine; use named labels, keyboard focus, granular subscriptions and clear errors. Review relevant pages at desktop and mobile widths.
+Named controls, keyboard focus, genuine error/empty states and reduced motion were reviewed on relevant routes. Editor subscriptions and real interaction timings are tested. Browser storage loads after deterministic SSR hydration. No private resume data appears in QA artifacts.
 
 ## Risks and decisions
 
-See [decisions](../docs/decisions/). Never imply live browser access for external CLI agents.
+Registry peer ranges and official integration docs checked; see ADR 001. See [ADR 001](../docs/decisions/001-foundation.md) and [current boundaries](../README.md#current-boundaries).
 
 ## Status
 
-Not started. Evidence pending.
+Done — implemented and verified locally on 2026-10-16. No blocked items in the scoped vertical slice.
