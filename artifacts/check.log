@@ -1,4 +1,4 @@
-$ bun run typecheck && bun run lint && bun run check:files && bun run test && bun run test:engine && bun run build && bun run test:e2e
+$ bun run typecheck && bun run lint && bun run check:files && bun run test && bun run test:engine && bun run test:dev && bun run build && bun run test:e2e
 $ cd apps/web && react-router typegen && cd ../.. && tsc --noEmit
 $ eslint .
 $ bun scripts/check-file-length.ts
@@ -8,74 +8,74 @@ $ bun test packages apps/web/test scripts/test
 bun test v1.4.2 (744846f84)
 
 scripts/test/check-file-length.test.ts:
-(pass) physical line counting respects terminal newlines and CRLF [0.12ms]
-(pass) generic recursive scanner includes future packages, custom extensions, exclusions and exact thresholds [7.73ms]
+(pass) physical line counting respects terminal newlines and CRLF [0.15ms]
+(pass) generic recursive scanner includes future packages, custom extensions, exclusions and exact thresholds [5.83ms]
 
 packages/cv/test/renderer.test.ts:
-(pass) actual portable renderer shares blocks and styles, escapes untrusted content [11.62ms]
+(pass) actual portable renderer shares blocks and styles, escapes untrusted content [15.45ms]
 
 packages/cli/test/handler.test.ts:
-(pass) CLI create → inspect → validate → atomic apply → real render [4.98ms]
-(pass) CLI errors are actionable JSON stderr with explicit exit codes [1.71ms]
+(pass) CLI create → inspect → validate → atomic apply → real render [6.85ms]
+(pass) CLI errors are actionable JSON stderr with explicit exit codes [2.13ms]
 
 packages/adapters/test/index.test.ts:
-(pass) protocol-independent preview is validated and does not mutate current session [2.62ms]
+(pass) protocol-independent preview is validated and does not mutate current session [3.06ms]
 
 apps/web/test/lib/projects.test.ts:
-(pass) IndexedDB complete project CRUD, reload, duplicate independence, validation and stale writes [40.69ms]
-(pass) version 1 → 2 storage upgrade preserves records and initializes revisions [4.73ms]
-(pass) storage failure feedback distinguishes quota and conflicts [0.14ms]
+(pass) IndexedDB complete project CRUD, reload, duplicate independence, validation and stale writes [67.90ms]
+(pass) version 1 → 2 storage upgrade preserves records and initializes revisions [15.44ms]
+(pass) storage failure feedback distinguishes quota and conflicts [0.18ms]
 
 apps/web/test/state/editor.test.ts:
-(pass) one-field commands notify only changed block subscribers, with one canonical session [4.87ms]
-(pass) overlapping autosave/navigation flushes serialize writes and drain the latest edit [1.91ms]
+(pass) one-field commands notify only changed block subscribers, with one canonical session [5.52ms]
+(pass) overlapping autosave/navigation flushes serialize writes and drain the latest edit [3.16ms]
 
 packages/engine/test/document/schema.test.ts:
-(pass) document schema and invariants > creates independent valid documents [0.09ms]
-(pass) document schema and invariants > rejects external malformed values [1.11ms]
-(pass) document schema and invariants > rejects missing, duplicate, mismatched and unordered sections [0.51ms]
-(pass) document schema and invariants > rejects orphan, repeated, mismatched, missing blocks and cross entity duplicate IDs [0.31ms]
+(pass) document schema and invariants > creates independent valid documents [0.22ms]
+(pass) document schema and invariants > rejects external malformed values [2.30ms]
+(pass) document schema and invariants > rejects missing, duplicate, mismatched and unordered sections [0.97ms]
+(pass) document schema and invariants > rejects orphan, repeated, mismatched, missing blocks and cross entity duplicate IDs [0.79ms]
 
 packages/engine/test/commands/apply.test.ts:
-(pass) atomic document operations > complete section and block CRUD and structural sharing [1.83ms]
-(pass) atomic document operations > inserts and reorders without dropping IDs [4.29ms]
-(pass) atomic document operations > agent and human commands have equivalent document semantics [0.92ms]
-(pass) atomic document operations > failures leave original untouched; errors have stable codes [4.54ms]
+(pass) atomic document operations > complete section and block CRUD and structural sharing [7.66ms]
+(pass) atomic document operations > inserts and reorders without dropping IDs [7.11ms]
+(pass) atomic document operations > agent and human commands have equivalent document semantics [1.49ms]
+(pass) atomic document operations > failures leave original untouched; errors have stable codes [5.39ms]
 
 packages/engine/test/history/history.test.ts:
-(pass) batch history is one attributed step, with undo/redo and branch invalidation [0.46ms]
-(pass) history is bounded [3.19ms]
+(pass) batch history is one attributed step, with undo/redo and branch invalidation [0.51ms]
+(pass) history is bounded [2.89ms]
 
 packages/engine/test/serialization/serialization.test.ts:
-(pass) round trip and v0 migration [4.17ms]
-(pass) duplication allocates independent stable identifiers and validates ID collisions [2.35ms]
+(pass) round trip and v0 migration [1.68ms]
+(pass) duplication allocates independent stable identifiers and validates ID collisions [0.67ms]
 
  23 pass
  0 fail
  198 expect() calls
-Ran 23 tests across 10 files. [210.00ms]
+Ran 23 tests across 10 files. [307.00ms]
 $ bun scripts/engine-coverage.ts
 bun test v1.4.2 (744846f84)
 
 packages/engine/test/document/schema.test.ts:
-(pass) document schema and invariants > creates independent valid documents [5.58ms]
-(pass) document schema and invariants > rejects external malformed values [4.66ms]
-(pass) document schema and invariants > rejects missing, duplicate, mismatched and unordered sections [1.66ms]
-(pass) document schema and invariants > rejects orphan, repeated, mismatched, missing blocks and cross entity duplicate IDs [1.05ms]
+(pass) document schema and invariants > creates independent valid documents [4.96ms]
+(pass) document schema and invariants > rejects external malformed values [3.49ms]
+(pass) document schema and invariants > rejects missing, duplicate, mismatched and unordered sections [2.84ms]
+(pass) document schema and invariants > rejects orphan, repeated, mismatched, missing blocks and cross entity duplicate IDs [4.19ms]
 
 packages/engine/test/commands/apply.test.ts:
-(pass) atomic document operations > complete section and block CRUD and structural sharing [7.30ms]
-(pass) atomic document operations > inserts and reorders without dropping IDs [2.17ms]
-(pass) atomic document operations > agent and human commands have equivalent document semantics [1.02ms]
-(pass) atomic document operations > failures leave original untouched; errors have stable codes [5.87ms]
+(pass) atomic document operations > complete section and block CRUD and structural sharing [22.72ms]
+(pass) atomic document operations > inserts and reorders without dropping IDs [1.69ms]
+(pass) atomic document operations > agent and human commands have equivalent document semantics [0.75ms]
+(pass) atomic document operations > failures leave original untouched; errors have stable codes [3.88ms]
 
 packages/engine/test/history/history.test.ts:
-(pass) batch history is one attributed step, with undo/redo and branch invalidation [1.02ms]
-(pass) history is bounded [5.18ms]
+(pass) batch history is one attributed step, with undo/redo and branch invalidation [0.58ms]
+(pass) history is bounded [2.81ms]
 
 packages/engine/test/serialization/serialization.test.ts:
-(pass) round trip and v0 migration [3.43ms]
-(pass) duplication allocates independent stable identifiers and validates ID collisions [3.06ms]
+(pass) round trip and v0 migration [15.84ms]
+(pass) duplication allocates independent stable identifiers and validates ID collisions [4.79ms]
 ----------------------------------------------------|---------|---------|-------------------
 File                                                | % Funcs | % Lines | Uncovered Line #s
 ----------------------------------------------------|---------|---------|-------------------
@@ -92,14 +92,23 @@ All files                                           |  100.00 |  100.00 |
  12 pass
  0 fail
  102 expect() calls
-Ran 12 tests across 4 files. [131.00ms]
+Ran 12 tests across 4 files. [167.00ms]
 Engine: 100.00% lines; 100.00% functions. Threshold: 85% each.
+$ bun scripts/dev-smoke.ts
+
+Running 2 tests using 1 worker
+
+(node:2024092) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 apps/web/e2e/workflows.spec.ts:22:1 › SSR public pages and nested routes return meaningful server HTML; hydration is clean (5.9s)
+  ✓  2 apps/web/e2e/workflows.spec.ts:54:1 › human editor → save/reload → agent preview/undo → project lifecycle → JSON import (14.6s)
+
+  2 passed (22.4s)
+Cold-cache development check: passed. See artifacts/dev-smoke.log.
 $ cd apps/web && react-router build
 Using Vite Environment API
 vite v8.3.4 building client environment for production...
 transforming...
-
-A PostCSS plugin did not pass the `from` option to `postcss.parse`. This may cause imported assets to be incorrectly transformed. If you've recently added a PostCSS plugin that raised this warning, please contact the package author to fix the issue.
 ✓ 2795 modules transformed.
 rendering chunks...
 computing gzip size...
@@ -111,7 +120,7 @@ build/client/assets/templates-D8RbPXzg.css                    0.98 kB │ gzip: 
 build/client/assets/Brand-EmBTquFN.css                        1.36 kB │ gzip:  0.55 kB
 build/client/assets/projects-iAMgDHSO.css                     3.48 kB │ gzip:  1.13 kB
 build/client/assets/home-DIpG7h6k.css                         6.14 kB │ gzip:  1.71 kB
-build/client/assets/editor-DGlT2S8_.css                      10.91 kB │ gzip:  2.56 kB
+build/client/assets/editor-BTd2C2FI.css                       9.46 kB │ gzip:  2.52 kB
 build/client/assets/root-6awjckwc.css                       249.62 kB │ gzip: 36.51 kB
 build/client/assets/use-isomorphic-effect-CSwSh0sH.js         0.13 kB │ gzip:  0.13 kB
 build/client/assets/arrow-right-CZBIYeqj.js                   0.16 kB │ gzip:  0.16 kB
@@ -128,13 +137,13 @@ build/client/assets/projects-DBoBC6za.js                      8.45 kB │ gzip: 
 build/client/assets/root-CARqkKSE.js                         15.07 kB │ gzip:  4.49 kB
 build/client/assets/MantineThemeProvider-p2orrRB8.js         24.37 kB │ gzip:  9.02 kB
 build/client/assets/Button-DUBCio5J.js                       27.89 kB │ gzip:  8.45 kB
-build/client/assets/editor-DprUofHv.js                      110.85 kB │ gzip: 36.59 kB
+build/client/assets/editor-CXrFxJKq.js                      110.75 kB │ gzip: 36.57 kB
 build/client/assets/projects-fNjj-OJe.js                    114.44 kB │ gzip: 34.26 kB
 build/client/assets/jsx-runtime-Ds2dw2sL.js                 120.76 kB │ gzip: 39.67 kB
 build/client/assets/files-eBqKuJs5.js                       140.53 kB │ gzip: 44.29 kB
 build/client/assets/entry.client-Cibscs5l.js                210.93 kB │ gzip: 66.28 kB
 
-✓ built in 7.64s
+✓ built in 7.44s
 vite v8.3.4 building ssr environment for production...
 transforming...
 ✓ 2788 modules transformed.
@@ -143,35 +152,33 @@ computing gzip size...
 build/server/.vite/manifest.json                                1.35 kB │ gzip:   0.39 kB
 build/server/wrangler.json                                      1.39 kB │ gzip:   0.69 kB
 build/server/assets/inter-latin-wght-normal-Dx4kXJAl.woff2     48.25 kB
-build/server/assets/server-build-c64ZUj5z.css                 272.76 kB │ gzip:  41.22 kB
+build/server/assets/server-build-D-QajwoY.css                 271.31 kB │ gzip:  41.20 kB
 build/server/assets/rolldown-runtime-Bk_YeHJf.js                1.45 kB │ gzip:   0.67 kB
 build/server/index.js                                          40.09 kB │ gzip:   9.38 kB │ map:    76.62 kB
 build/server/assets/fog-of-war-DrqdgL37.js                    126.19 kB │ gzip:  30.61 kB │ map:   330.78 kB
-build/server/assets/server-build-BJ8lpmAW.js                1,546.59 kB │ gzip: 320.88 kB │ map: 3,520.40 kB
+build/server/assets/server-build-CPi572cb.js                1,546.49 kB │ gzip: 320.84 kB │ map: 3,520.29 kB
 
-✓ built in 4.22s
+✓ built in 4.86s
 $ playwright test
 [WebServer] $ cd apps/web && vite preview --host 127.0.0.1 --port 4187 --strictPort
-[WebServer] (node:2019616) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (node:2024384) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
 [WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
-[WebServer] Default inspector port 9229 not available, using 9230 instead
-[WebServer]
 
 Running 12 tests using 1 worker
 
-(node:2019698) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(node:2024465) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
 (Use `node --trace-warnings ...` to show where the warning was created)
-  ✓   1 apps/web/e2e/render.spec.ts:3:1 › portable CLI HTML renders the same synthetic CV independently of the application (444ms)
-  ✓   2 apps/web/e2e/resilience.spec.ts:5:1 › browser IndexedDB v1 migration survives reopen and offline editing (1.9s)
-  ✓   3 apps/web/e2e/resilience.spec.ts:79:1 › storage denial yields actionable error without creating a project (626ms)
-  ✓   4 apps/web/e2e/resilience.spec.ts:103:1 › measured editor opening and text-input latency on a synthetic document (1.4s)
-  ✓   5 apps/web/e2e/resilience.spec.ts:144:1 › mobile editor keeps the canvas visible and opens one contextual panel at a time (948ms)
-  ✓   6 apps/web/e2e/resilience.spec.ts:180:1 › two browser tabs cannot overwrite a newer save and can still export the unsaved edit (2.5s)
-  ✓   7 apps/web/e2e/resilience.spec.ts:218:1 › a proposal preview becomes stale after a human canvas edit and requires fresh review (1.3s)
+  ✓   1 apps/web/e2e/render.spec.ts:3:1 › portable CLI HTML renders the same synthetic CV independently of the application (548ms)
+  ✓   2 apps/web/e2e/resilience.spec.ts:5:1 › browser IndexedDB v1 migration survives reopen and offline editing (2.1s)
+  ✓   3 apps/web/e2e/resilience.spec.ts:79:1 › storage denial yields actionable error without creating a project (990ms)
+  ✓   4 apps/web/e2e/resilience.spec.ts:103:1 › measured editor opening and text-input latency on a synthetic document (1.7s)
+  ✓   5 apps/web/e2e/resilience.spec.ts:144:1 › mobile editor keeps the canvas visible and opens one contextual panel at a time (1.2s)
+  ✓   6 apps/web/e2e/resilience.spec.ts:180:1 › two browser tabs cannot overwrite a newer save and can still export the unsaved edit (2.8s)
+  ✓   7 apps/web/e2e/resilience.spec.ts:218:1 › a proposal preview becomes stale after a human canvas edit and requires fresh review (1.5s)
   ✓   8 apps/web/e2e/workflows.spec.ts:22:1 › SSR public pages and nested routes return meaningful server HTML; hydration is clean (1.1s)
-  ✓   9 apps/web/e2e/workflows.spec.ts:54:1 › human editor → save/reload → agent preview/undo → project lifecycle → JSON import (5.9s)
-  ✓  10 apps/web/e2e/workflows.spec.ts:187:1 › visual desktop/mobile screenshots, rendered DOM/CSS and real canvas (2.9s)
-  ✓  11 apps/web/e2e/workflows.spec.ts:276:1 › block CRUD, style updates and keyboard history share engine semantics (2.7s)
-  ✓  12 apps/web/e2e/workflows.spec.ts:333:1 › invalid imports and command proposals leave persisted documents intact (1.5s)
+  ✓   9 apps/web/e2e/workflows.spec.ts:54:1 › human editor → save/reload → agent preview/undo → project lifecycle → JSON import (6.2s)
+  ✓  10 apps/web/e2e/workflows.spec.ts:187:1 › visual desktop/mobile screenshots, rendered DOM/CSS and real canvas (3.1s)
+  ✓  11 apps/web/e2e/workflows.spec.ts:276:1 › block CRUD, style updates and keyboard history share engine semantics (2.8s)
+  ✓  12 apps/web/e2e/workflows.spec.ts:333:1 › invalid imports and command proposals leave persisted documents intact (1.4s)
 
-  12 passed (29.5s)
+  12 passed (31.4s)

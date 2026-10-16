@@ -6,6 +6,7 @@ import { previewProposal } from "@resumi/adapters";
 import { sessionAtom, commandAtom } from "../state/editor";
 import { ResumeDiff } from "./ResumeDiff";
 import styles from "../styles/Agent.module.css";
+import shell from "../styles/Editor.module.css";
 export function AgentPanel({ close }: { close: () => void }) {
   const store = useStore(),
     session = useAtomValue(sessionAtom),
@@ -46,7 +47,7 @@ export function AgentPanel({ close }: { close: () => void }) {
   }
   return (
     <aside className={styles.agent} aria-label="Agent command review">
-      <div className={styles.panelHeading}>
+      <div className={shell.panelHeading}>
         <h2>
           <Terminal size={15} aria-hidden /> Your teammate
         </h2>
@@ -65,7 +66,7 @@ export function AgentPanel({ close }: { close: () => void }) {
           <br />
           Another pair of hands.
         </h3>
-        <p className={styles.help}>
+        <p className={shell.help}>
           Export JSON, let your CLI agent propose commands, then review them
           here. Your browser data stays private.
         </p>

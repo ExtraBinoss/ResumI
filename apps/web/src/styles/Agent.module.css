@@ -1,9 +1,3 @@
-.panelHeading {
-  composes: panelHeading from "./Editor.module.css";
-}
-.help {
-  composes: help from "./Editor.module.css";
-}
 .agent {
   width: 330px;
   background: white;

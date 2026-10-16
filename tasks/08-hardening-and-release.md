@@ -39,6 +39,8 @@ Named controls, keyboard focus, genuine error/empty states and reduced motion we
 
 A source file above 500 lines is a warning; 600+ is a failure. Release deferrals are intentional, not silently marked as shipped. See [ADR 001](../docs/decisions/001-foundation.md) and [current boundaries](../README.md#current-boundaries).
 
+Additional regression verification: `bun run test:dev` starts from a fresh isolated cache and exercises first-request SSR, hydration and the complete editing journey. See [ADR 002](../docs/decisions/002-cold-development.md).
+
 ## Status
 
 Done — implementation and local verification complete. Feature commit pushed; [PR #1](https://github.com/ExtraBinoss/ResumI/pull/1) opened. Remote CI is tracked separately from local results.

@@ -20,10 +20,11 @@
     "test:e2e": "playwright test",
     "visual:check": "playwright test --grep visual",
     "test:ssr": "playwright test --grep SSR",
-    "check": "bun run typecheck && bun run lint && bun run check:files && bun run test && bun run test:engine && bun run build && bun run test:e2e",
+    "check": "bun run typecheck && bun run lint && bun run check:files && bun run test && bun run test:engine && bun run test:dev && bun run build && bun run test:e2e",
     "resumi": "bun packages/cli/src/main.ts",
     "cf:types": "cd apps/web && wrangler types",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "test:dev": "bun scripts/dev-smoke.ts"
   },
   "dependencies": {
     "react": "19.3.1",

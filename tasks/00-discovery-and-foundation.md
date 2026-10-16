@@ -36,6 +36,8 @@ Named controls, keyboard focus, genuine error/empty states and reduced motion we
 
 Registry peer ranges and official integration docs checked; see ADR 001. See [ADR 001](../docs/decisions/001-foundation.md) and [current boundaries](../README.md#current-boundaries).
 
+Additional regression verification: `bun run test:dev` starts from a fresh isolated cache and exercises first-request SSR, hydration and the complete editing journey. See [ADR 002](../docs/decisions/002-cold-development.md).
+
 ## Status
 
 Done — implemented and verified locally on 2026-10-16. No blocked items in the scoped vertical slice.

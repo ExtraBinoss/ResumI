@@ -8,6 +8,7 @@ Synthetic documents only. `check.log` is the actual output of the successful com
 - `rendered/sample.json`: the synthetic document used for the standalone HTML export.
 - `rendered/commands.schema.json`: generated real versioned command schema.
 - `rendered/canvas-computed.json`: browser-computed dimensions, styles and rendered content.
+- `dev-smoke.log`: actual fresh-cache Vite development server output; first-request SSR, browser hydration and editing were checked against it.
 - `performance/interactions.json`: measured local opening and input round trips; includes Playwright overhead and varies by host load.
 
 Screenshots use deterministic filenames. Browser tests overwrite them on each run; they are evidence, not golden-image regression assertions. See [verification record](../docs/verification.md).

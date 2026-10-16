@@ -1,0 +1,28 @@
+10:35:18 PM [vite] (ssr) [optimizer] bundling dependencies...
+
+  VITE v8.3.4  ready in 6493 ms
+
+  ➜  Local:   http://127.0.0.1:5189/
+  ➜  Debug:   http://127.0.0.1:5189/__debug
+
+The Cloudflare Vite plugin detected this dev session is running in an AI agent.
+The Local Explorer API is available at http://127.0.0.1:5189/cdn-cgi/local/explorer/api
+Useful routes:
+  GET http://127.0.0.1:5189/cdn-cgi/local/explorer/api/local/workers - local Workers and bindings
+  POST http://127.0.0.1:5189/cdn-cgi/local/explorer/api/local/scheduled?worker=<name> - invoke a Worker's scheduled handler; cron is required (see the OpenAPI schema for the full request)
+  GET http://127.0.0.1:5189/cdn-cgi/local/explorer/api/storage/kv/namespaces - KV namespaces
+  GET http://127.0.0.1:5189/cdn-cgi/local/explorer/api/d1/database - D1 databases
+  GET http://127.0.0.1:5189/cdn-cgi/local/explorer/api/r2/buckets - R2 buckets
+  GET http://127.0.0.1:5189/cdn-cgi/local/explorer/api/workers/durable_objects/namespaces - Durable Object namespaces
+  GET http://127.0.0.1:5189/cdn-cgi/local/explorer/api/workflows - Workflows
+  POST http://127.0.0.1:5189/cdn-cgi/local/explorer/api/local/observability/query - run a read-only SQL query (SELECT/WITH only) over captured request traces and console logs. Tables: spans, logs (read attributes via json(attributes)). Example:
+    curl -X POST http://127.0.0.1:5189/cdn-cgi/local/explorer/api/local/observability/query -H 'Content-Type: application/json' -d '{"sql":"SELECT service, name, outcome, duration_ms FROM spans WHERE parent_id IS NULL LIMIT 20"}'
+  POST http://127.0.0.1:5189/cdn-cgi/local/explorer/api/local/observability/clear - clear all captured traces and logs
+If the routes above don't cover what you need, fetch the full OpenAPI schema (large - use only as a last resort):
+  GET http://127.0.0.1:5189/cdn-cgi/local/explorer/api - OpenAPI schema
+
+
+10:35:47 PM [vite] (client) [console.error] Failed to fetch manifest patches TypeError: Failed to fetch
+    at fetchAndApplyManifestPatches (http://127.0.0.1:5189/node_modules/.vite-smoke-Ce8ixJ/deps/development-CPAU2smE.js?v=d7ea7e63:8825:19)
+    at fetchPatches (http://127.0.0.1:5189/node_modules/.vite-smoke-Ce8ixJ/deps/development-CPAU2smE.js?v=d7ea7e63:8735:11)
+    at http://127.0.0.1:5189/node_modules/.vite-smoke-Ce8ixJ/deps/development-CPAU2smE.js?v=d7ea7e63:8858:39

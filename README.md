@@ -102,11 +102,12 @@ bun run lint
 bun run check:files
 bun run test
 bun run test:engine                      # enforces >=85% engine lines/functions
+bun run test:dev                         # cold Vite cache, SSR/hydration + editing
 bun run build
 bun run test:ssr
 bun run test:e2e                         # production Worker runtime, critical flows
 bun run visual:check                     # desktop/mobile screenshots + DOM/CSS
-bun run check                           # all required gates, including build and E2E
+bun run check                           # all required gates, including cold dev, build and E2E
 ```
 
 The coverage runner imports every engine source before measuring so untested modules cannot disappear. Bun currently reports lines/functions, not branch coverage. The generic recursive source scanner includes future workspaces, `.ts/.tsx/.js/.jsx/.css/.mjs`, warns at 500 lines and **fails at 600**. Only generated Worker declarations are explicitly excluded in [source-policy.json](source-policy.json); dependencies/build output/artifacts are excluded by the scanner. Exclusion and 599/600 boundary tests are included. Handwritten declaration files are included unless explicitly excluded.
@@ -125,3 +126,5 @@ See [verification results](docs/verification.md), [task index](tasks/README.md) 
 - Production deployment, credentials, DNS and provider connections were deliberately not configured.
 
 Next steps: authenticated collaboration/storage and conflict resolution, richer typography and independent pagination, provider-backed proposals, then separately permissioned MCP/WebMCP adapters. Preserve the shared engine contract throughout.
+
+Development startup is tested with a fresh isolated Vite cache. The Compiler runtime and lazy UI dependencies are pre-bundled in both client/SSR graphs to avoid first-request React/runtime mismatches. `RESUMI_DEV_CHECK_PORT` can override the smoke-test port (5189). See [ADR 002](docs/decisions/002-cold-development.md).

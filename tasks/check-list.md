@@ -20,6 +20,7 @@ Source of progress truth. Checkmarks below describe verified local behavior, not
 - [x] Project create/read/open/save/rename/duplicate/delete, reload and validated import/export.
 - [x] IndexedDB versioning, real-browser migration, offline edits and stale-tab protection.
 - [x] Actual SSR, direct nested routes and clean hydration on production Worker preview.
+- [x] Fresh-cache development SSR/hydration and editor regression checks; explicit Compiler/lazy-dependency pre-bundling.
 - [x] Granular block subscriptions and measured interaction evidence.
 - [x] Desktop/mobile screenshots opened; real rendered HTML/CSS inspected.
 - [x] Engine coverage 100% lines/functions, exceeding enforced 85% thresholds with all sources imported.
