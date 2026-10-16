@@ -1,7 +1,5 @@
 import { batchSchema, execute, parse, type Session } from "@resumi/engine";
-import { z } from "zod";
 
-export const commandContract = z.toJSONSchema(batchSchema);
 export function parseProposal(json: string) {
   if (json.length > 200000) throw new Error("Command proposal exceeds 200 KB.");
   return parse(batchSchema, JSON.parse(json));

@@ -1,57 +1,53 @@
-import { z } from "zod";
-
-export const idSchema = z.string().regex(/^[a-zA-Z0-9][a-zA-Z0-9_-]{0,99}$/);
-export const textSchema = z.string().max(20000);
+import * as z from "zod/mini";
+import { idSchema, textSchema, EngineError, parse } from "../validation";
+import { layerSchema, canvasSchema } from "../canvas/schema";
+import { sourceSchema } from "../source/schema";
+import { assertCanvas } from "../canvas/invariants";
+import { assertDocumentBudget } from "./limits";
+export { idSchema, textSchema, EngineError, parse } from "../validation";
 export const blockSchema = z.strictObject({
   id: idSchema,
-  kind: z.enum(["heading", "text", "subtitle", "meta", "bullet"]),
+  kind: z.enum([
+    "heading",
+    "text",
+    "subtitle",
+    "meta",
+    "bullet",
+    "image",
+    "shape",
+  ]),
   text: textSchema,
+  design: z.optional(layerSchema),
 });
 export const sectionSchema = z.strictObject({
   id: idSchema,
-  title: z.string().max(200),
-  blockIds: z.array(idSchema).max(200),
+  title: z.string().check(z.maxLength(200)),
+  blockIds: z.array(idSchema).check(z.maxLength(200)),
 });
 export const styleSchema = z.strictObject({
-  accent: z.string().regex(/^#[0-9a-fA-F]{6}$/),
+  accent: z.string().check(z.regex(/^#[0-9a-fA-F]{6}$/)),
   font: z.enum(["sans", "serif"]),
-  fontSize: z.number().min(10).max(16),
-  spacing: z.number().min(12).max(40),
+  fontSize: z.number().check(z.minimum(10), z.maximum(16)),
+  spacing: z.number().check(z.minimum(12), z.maximum(40)),
 });
 export const documentSchema = z.strictObject({
   schemaVersion: z.literal(1),
   id: idSchema,
-  name: z.string().trim().min(1).max(120),
-  sectionIds: z.array(idSchema).max(50),
+  name: z.string().check(z.trim(), z.minLength(1), z.maxLength(120)),
+  sectionIds: z.array(idSchema).check(z.maxLength(50)),
   sections: z.record(idSchema, sectionSchema),
   blocks: z.record(idSchema, blockSchema),
   style: styleSchema,
+  canvas: z.optional(canvasSchema),
+  source: z.optional(sourceSchema),
 });
 export type Document = z.infer<typeof documentSchema>;
 export type Block = z.infer<typeof blockSchema>;
 export type Section = z.infer<typeof sectionSchema>;
 
-export class EngineError extends Error {
-  constructor(
-    public code: "INVALID_INPUT" | "NOT_FOUND" | "CONFLICT" | "INVALID_VERSION",
-    message: string,
-  ) {
-    super(message);
-    this.name = "EngineError";
-  }
-}
-export function parse<T>(schema: z.ZodType<T>, input: unknown): T {
-  const result = schema.safeParse(input);
-  if (!result.success)
-    throw new EngineError(
-      "INVALID_INPUT",
-      result.error.issues
-        .map((i) => `${i.path.join(".") || "input"}: ${i.message}`)
-        .join("; "),
-    );
-  return result.data;
-}
 export function assertInvariants(doc: Document): void {
+  assertDocumentBudget(doc);
+  assertCanvas(doc);
   const sectionIds = new Set(doc.sectionIds);
   const used = new Set<string>([doc.id]);
   if (

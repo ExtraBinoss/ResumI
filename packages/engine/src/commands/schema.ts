@@ -1,4 +1,4 @@
-import { z } from "zod";
+import * as z from "zod/mini";
 import {
   blockSchema,
   idSchema,
@@ -6,55 +6,62 @@ import {
   styleSchema,
 } from "../document/schema";
 
+import { sourceCommands } from "../source/schema";
+import { canvasCommands } from "../canvas/commands";
+
 export const commandSchema = z.discriminatedUnion("type", [
+  ...canvasCommands,
+  ...sourceCommands,
   z.strictObject({
     type: z.literal("document.update"),
-    name: z.string().trim().min(1).max(120),
+    name: z.string().check(z.trim(), z.minLength(1), z.maxLength(120)),
   }),
   z.strictObject({
     type: z.literal("style.update"),
-    patch: styleSchema.partial(),
+    patch: z.partial(styleSchema),
   }),
   z.strictObject({
     type: z.literal("section.create"),
-    section: sectionSchema.extend({ blockIds: z.array(idSchema).length(0) }),
-    index: z.number().int().min(0).optional(),
+    section: z.extend(sectionSchema, {
+      blockIds: z.array(idSchema).check(z.length(0)),
+    }),
+    index: z.optional(z.int().check(z.minimum(0))),
   }),
   z.strictObject({
     type: z.literal("section.update"),
     id: idSchema,
-    title: z.string().max(200),
+    title: z.string().check(z.maxLength(200)),
   }),
   z.strictObject({ type: z.literal("section.delete"), id: idSchema }),
   z.strictObject({
     type: z.literal("section.reorder"),
-    ids: z.array(idSchema).max(50),
+    ids: z.array(idSchema).check(z.maxLength(50)),
   }),
   z.strictObject({
     type: z.literal("block.create"),
     sectionId: idSchema,
     block: blockSchema,
-    index: z.number().int().min(0).optional(),
+    index: z.optional(z.int().check(z.minimum(0))),
   }),
   z.strictObject({
     type: z.literal("block.update"),
     id: idSchema,
-    patch: blockSchema.omit({ id: true }).partial(),
+    patch: z.partial(z.omit(blockSchema, { id: true })),
   }),
   z.strictObject({ type: z.literal("block.delete"), id: idSchema }),
   z.strictObject({
     type: z.literal("block.reorder"),
     sectionId: idSchema,
-    ids: z.array(idSchema).max(200),
+    ids: z.array(idSchema).check(z.maxLength(200)),
   }),
 ]);
 export const batchSchema = z.strictObject({
   version: z.literal(1),
   actor: z.strictObject({
     kind: z.enum(["human", "agent"]),
-    name: z.string().trim().min(1).max(100),
+    name: z.string().check(z.trim(), z.minLength(1), z.maxLength(100)),
   }),
-  commands: z.array(commandSchema).min(1).max(100),
+  commands: z.array(commandSchema).check(z.minLength(1), z.maxLength(100)),
 });
 export type Command = z.infer<typeof commandSchema>;
 export type CommandBatch = z.infer<typeof batchSchema>;

@@ -97,3 +97,41 @@ test("overlapping autosave/navigation flushes serialize writes and drain the lat
   expect(controller.store.get(saveStatusAtom)).toBe("saved");
   controller.dispose();
 });
+
+test("editor persistence reconnects after StrictMode cleanup", async () => {
+  const { createEditorController } = await import("../../src/state/editor");
+  const document = createResume("reconnect");
+  const saved: string[] = [];
+  const controller = createEditorController(
+    {
+      id: document.id,
+      document,
+      revision: 0,
+      createdAt: "now",
+      updatedAt: "now",
+    },
+    {
+      async save(doc, revision) {
+        saved.push(doc.name);
+        return {
+          id: doc.id,
+          document: doc,
+          revision: revision + 1,
+          createdAt: "now",
+          updatedAt: "now",
+        };
+      },
+    },
+  );
+  controller.connect();
+  controller.dispose();
+  controller.connect();
+  await Promise.resolve();
+  controller.store.set(commandAtom, {
+    type: "document.update",
+    name: "Saved after reconnect",
+  });
+  await Bun.sleep(220);
+  expect(saved).toEqual(["Saved after reconnect"]);
+  controller.dispose();
+});

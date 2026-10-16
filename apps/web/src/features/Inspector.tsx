@@ -7,7 +7,7 @@ import {
   ActionIcon,
   Button,
   ColorInput,
-} from "@mantine/core";
+} from "../ui";
 import { Plus, Trash2, ChevronUp, ChevronDown, X } from "lucide-react";
 import {
   commandAtom,
@@ -17,7 +17,7 @@ import {
   blockAtom,
 } from "../state/editor";
 import type { Block } from "@resumi/engine";
-import styles from "../styles/Editor.module.css";
+import styles from "../styles/Panels.module.css";
 function BlockFields({ id, sectionId }: { id: string; sectionId: string }) {
   const block = useAtomValue(blockAtom(id)),
     dispatch = useSetAtom(commandAtom),
@@ -192,7 +192,13 @@ function BlockLink({
     </button>
   );
 }
-export function Inspector({ close }: { close: () => void }) {
+export function Inspector({
+  close,
+  showDocument,
+}: {
+  close: () => void;
+  showDocument: () => void;
+}) {
   const selection = useAtomValue(selectionAtom),
     style = useAtomValue(styleAtom),
     dispatch = useSetAtom(commandAtom),
@@ -220,7 +226,10 @@ export function Inspector({ close }: { close: () => void }) {
             size="xs"
             fullWidth
             mt="md"
-            onClick={() => select(null)}
+            onClick={() => {
+              select(null);
+              showDocument();
+            }}
           >
             Document settings
           </Button>
@@ -248,6 +257,9 @@ export function Inspector({ close }: { close: () => void }) {
           />
           <ColorInput
             label="Accent color"
+            eyeDropperButtonProps={{
+              "aria-label": "Pick accent color from screen",
+            }}
             size="xs"
             mt="lg"
             value={style.accent}

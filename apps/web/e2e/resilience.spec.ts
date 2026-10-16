@@ -39,7 +39,9 @@ test("browser IndexedDB v1 migration survives reopen and offline editing", async
   await page
     .getByRole("link", { name: "Open Alex Morgan — Resume", exact: true })
     .click();
-  await expect(page.locator(".resume")).toBeVisible();
+  await expect(
+    page.locator('.resume[aria-label="Resume canvas"]'),
+  ).toBeVisible();
   await context.setOffline(true);
   await page
     .getByRole("button", { name: "Edit heading: Alex Morgan", exact: true })
@@ -50,7 +52,9 @@ test("browser IndexedDB v1 migration survives reopen and offline editing", async
   await page
     .getByRole("textbox", { name: "Edit text on canvas" })
     .press("Control+Enter");
-  await expect(page.getByRole("status")).toHaveText("Saved");
+  await expect(
+    page.getByRole("status", { name: "Save status", exact: true }),
+  ).toHaveText("Saved");
   await context.setOffline(false);
   await page.reload();
   await expect(
@@ -110,18 +114,19 @@ test("measured editor opening and text-input latency on a synthetic document", a
   await page
     .getByRole("link", { name: "Create a resume", exact: true })
     .click();
-  await expect(page.locator(".resume")).toBeVisible();
+  await expect(
+    page.locator('.resume[aria-label="Resume canvas"]'),
+  ).toBeVisible();
   const openMs = performance.now() - opened;
-  await page.getByRole("button", { name: "Profile 1", exact: true }).click();
   await page.getByRole("button", { name: /Edit text: I turn/ }).click();
   const input = page.getByRole("textbox", { name: "Content", exact: true });
   const samples: number[] = [];
   for (let i = 0; i < 10; i++) {
     const started = performance.now();
     await input.fill(`Responsiveness check ${i}`);
-    await expect(page.locator(".resume")).toContainText(
-      `Responsiveness check ${i}`,
-    );
+    await expect(
+      page.locator('.resume[aria-label="Resume canvas"]'),
+    ).toContainText(`Responsiveness check ${i}`);
     samples.push(performance.now() - started);
   }
   const timing = {
@@ -146,7 +151,11 @@ test("mobile editor keeps the canvas visible and opens one contextual panel at a
 }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/editor");
-  await expect(page.locator(".resume")).toBeVisible();
+  await expect(
+    page.locator('.resume[aria-label="Resume canvas"]'),
+  ).toBeVisible();
+  await expect(page.locator("body main.recovery")).toHaveCount(0);
+  await expect(page.locator("#app > main")).toHaveCount(1);
   await expect(
     page.getByRole("complementary", { name: "Document structure" }),
   ).toHaveCount(0);
@@ -154,10 +163,11 @@ test("mobile editor keeps the canvas visible and opens one contextual panel at a
     page.getByRole("complementary", { name: "Properties inspector" }),
   ).toHaveCount(0);
   await page.getByRole("button", { name: "Toggle outline" }).click();
+  await page.getByRole("button", { name: "Outline", exact: true }).click();
   await expect(
     page.getByRole("complementary", { name: "Document structure" }),
   ).toBeVisible();
-  await page.getByRole("button", { name: "Profile 1", exact: true }).click();
+  await page.getByRole("button", { name: "Profile 2", exact: true }).click();
   await page.getByRole("button", { name: "Toggle properties" }).click();
   await expect(
     page.getByRole("complementary", { name: "Document structure" }),
@@ -175,6 +185,15 @@ test("mobile editor keeps the canvas visible and opens one contextual panel at a
       () => document.documentElement.scrollWidth <= innerWidth,
     ),
   ).toBe(true);
+  expect(
+    await page.evaluate(
+      () => document.documentElement.scrollHeight <= innerHeight + 1,
+    ),
+  ).toBe(true);
+  const dock = await page
+    .getByRole("navigation", { name: "Editor tools" })
+    .boundingBox();
+  expect(dock?.height).toBeLessThanOrEqual(90);
 });
 
 test("two browser tabs cannot overwrite a newer save and can still export the unsaved edit", async ({
@@ -182,10 +201,14 @@ test("two browser tabs cannot overwrite a newer save and can still export the un
   context,
 }) => {
   await page.goto("/editor");
-  await expect(page.locator(".resume")).toBeVisible();
+  await expect(
+    page.locator('.resume[aria-label="Resume canvas"]'),
+  ).toBeVisible();
   const other = await context.newPage();
   await other.goto(page.url());
-  await expect(other.locator(".resume")).toBeVisible();
+  await expect(
+    other.locator('.resume[aria-label="Resume canvas"]'),
+  ).toBeVisible();
   async function editName(target: typeof page, name: string) {
     await target
       .getByRole("button", { name: "Edit heading: Alex Morgan", exact: true })
@@ -198,9 +221,13 @@ test("two browser tabs cannot overwrite a newer save and can still export the un
       .press("Control+Enter");
   }
   await editName(page, "Newest saved version");
-  await expect(page.getByRole("status")).toHaveText("Saved");
+  await expect(
+    page.getByRole("status", { name: "Save status", exact: true }),
+  ).toHaveText("Saved");
   await editName(other, "Uncommitted tab version");
-  await expect(other.getByRole("status")).toHaveText("Not saved");
+  await expect(
+    other.getByRole("status", { name: "Save status", exact: true }),
+  ).toHaveText("Not saved");
   await expect(
     other.getByText("This resume changed in another tab.", { exact: false }),
   ).toBeVisible();
@@ -219,7 +246,9 @@ test("a proposal preview becomes stale after a human canvas edit and requires fr
   page,
 }) => {
   await page.goto("/editor");
-  await expect(page.locator(".resume")).toBeVisible();
+  await expect(
+    page.locator('.resume[aria-label="Resume canvas"]'),
+  ).toBeVisible();
   await page.getByRole("button", { name: "Teammate", exact: true }).click();
   await page.getByRole("button", { name: "Load a working example" }).click();
   await page.getByRole("button", { name: "Validate & preview" }).click();
@@ -251,7 +280,98 @@ test("a proposal preview becomes stale after a human canvas edit and requires fr
       exact: true,
     }),
   ).toBeVisible();
-  await expect(page.locator(".resume")).toContainText(
-    "I design thoughtful digital products",
-  );
+  await expect(
+    page.locator('.resume[aria-label="Resume canvas"]'),
+  ).toContainText("I design thoughtful digital products");
+});
+
+test("editor intent preloads code without creating a resume; one click creates exactly one record", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await page
+    .getByRole("link", { name: "Create a resume", exact: true })
+    .hover();
+  await page.waitForTimeout(300);
+  const before = await page.evaluate(async () => {
+    const databases = await indexedDB.databases();
+    return databases.some((db) => db.name === "resumi-projects");
+  });
+  expect(before).toBe(false);
+  await page
+    .getByRole("link", { name: "Create a resume", exact: true })
+    .click();
+  await expect(
+    page.getByRole("article", { name: "Resume canvas" }),
+  ).toBeVisible();
+  await expect(page).toHaveURL(/\/editor\/[^/?]+$/);
+  expect(
+    await page.evaluate(
+      () =>
+        new Promise<number>((resolve, reject) => {
+          const req = indexedDB.open("resumi-projects");
+          req.onsuccess = () => {
+            const db = req.result,
+              tx = db.transaction("projects"),
+              count = tx.objectStore("projects").count();
+            count.onsuccess = () => {
+              resolve(count.result);
+              db.close();
+            };
+            count.onerror = () => reject(count.error);
+          };
+        }),
+    ),
+  ).toBe(1);
+  await expect(
+    page.getByText("Creating your local resume…", { exact: true }),
+  ).toHaveCount(0);
+});
+
+test("dashboard resumes real work and supports search, sorting and list view", async ({
+  page,
+}) => {
+  await page.goto("/editor");
+  await expect(
+    page.getByRole("article", { name: "Resume canvas" }),
+  ).toBeVisible();
+  await page.getByRole("button", { name: "Back to projects" }).click();
+  await expect(
+    page.getByRole("heading", { name: "Your workspace.", exact: true }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("link", { name: "Continue editing", exact: true }),
+  ).toBeVisible();
+  await page
+    .getByRole("button", {
+      name: "Actions for Alex Morgan — Resume",
+      exact: true,
+    })
+    .click();
+  await page.getByRole("menuitem", { name: "Duplicate", exact: true }).click();
+  await expect(
+    page.getByRole("link", {
+      name: "Open Alex Morgan — Resume (copy)",
+      exact: true,
+    }),
+  ).toBeVisible();
+  await page
+    .getByRole("radio", { name: "List view", exact: true })
+    .press("Space");
+  await expect(
+    page.getByRole("radio", { name: "List view", exact: true }),
+  ).toBeChecked();
+  await page
+    .getByRole("combobox", { name: "Sort resumes", exact: true })
+    .click();
+  await page.getByRole("option", { name: "Name A–Z", exact: true }).click();
+  await page.getByRole("textbox", { name: "Search resumes" }).fill("(copy)");
+  await expect(page.getByRole("link", { name: /^Open / })).toHaveCount(1);
+  await page.getByRole("textbox", { name: "Search resumes" }).fill("");
+  await page
+    .getByRole("link", { name: "Continue editing", exact: true })
+    .click();
+  await expect(
+    page.getByRole("article", { name: "Resume canvas" }),
+  ).toBeVisible();
 });

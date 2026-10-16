@@ -14,3 +14,91 @@
 .paper :global(.resume) {
   min-height: 1123px;
 }
+.sourceFrame {
+  width: 794px;
+  height: 1123px;
+  border: 0;
+  transform-origin: top left;
+  transform: scale(calc(100cqw / 794px));
+  background: #fff;
+  pointer-events: none;
+}
+.sourcePlaceholder {
+  width: 100%;
+  min-height: 160px;
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: #fff;
+  color: #39455b;
+  font-size: 14px;
+}
+.sourcePlaceholder span {
+  font-size: 11px;
+  color: #8b95a5;
+}
+.interactiveViewport {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  background: #eef0f4;
+  position: relative;
+  padding-bottom: 18px;
+}
+.interactiveFrame {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 794px;
+  height: 1123px;
+  border: 0;
+  background: white;
+  transform-origin: top left;
+}
+.previewPage {
+  position: relative;
+  margin: 16px auto 0;
+  background: white;
+  box-shadow: 0 4px 18px #15274515;
+}
+.previewControls {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 8px 12px;
+  background: #eef0f4ed;
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid #e0e5ee;
+}
+.previewControls button {
+  font-family: inherit;
+  font-size: 10px;
+  line-height: 1.5;
+  cursor: pointer;
+  border: 1px solid transparent;
+  background: transparent;
+  color: #607089;
+  padding: 4px 7px;
+  border-radius: 5px;
+}
+.previewControls button[aria-pressed="true"] {
+  background: #fff;
+  color: #2c5dcc;
+  border-color: #dbe2ee;
+  box-shadow: 0 1px 3px #21395d0d;
+}
+.previewControls button:hover {
+  background: white;
+}
+.previewControls span {
+  font-size: 10px;
+  color: #66758a;
+  min-width: 29px;
+  text-align: center;
+}

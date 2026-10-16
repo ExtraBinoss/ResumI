@@ -2,17 +2,21 @@
 
 **Your resume just got a new teammate.**
 
-ResumI by Plinka is an engine-first, agent-native document editing platform. People work on a real HTML/CSS resume canvas; agents use the same validated TypeScript commands through a CLI or a reviewed JSON proposal. One engine owns document meaning. The first vertical slice is working, local-first and provider-independent.
+ResumI by Plinka is an engine-first, agent-native document editing platform. People work on a real HTML/CSS resume canvas; agents use the same validated TypeScript commands through a CLI or a reviewed JSON proposal. One engine owns document meaning. The workspace is local-first and provider-independent.
 
 ## What works today
 
-- Server-rendered landing page, two editable resume templates, projects shell and nested editor routes.
-- Persistent local projects: create, list/search/open, rename, duplicate, delete with confirmation, JSON import/export and reload/reopen.
-- A4 HTML canvas: select sections/blocks, double-click or press Enter to edit text directly, use contextual properties, add/delete/reorder sections and blocks, edit typography/color/size/spacing and zoom.
-- Atomic, attributed engine commands with bounded undo/redo. Keyboard: ⌘/Ctrl Z, Shift Z or Ctrl Y; direct text editing: Escape cancels, ⌘/Ctrl Enter commits, blur commits.
-- A real Teammate panel: paste validated JSON commands, inspect a text diff and rendered proposal, apply as one undoable step. A deterministic working example needs no paid credentials.
-- Portable HTML export and browser **Print / Save as PDF**. The canvas, CLI and proposal renderer share the actual escaped HTML/CSS rules.
-- A tested Bun CLI for document creation, inspection, validation, atomic mutation, command schema and HTML export.
+- Real SSR landing and template catalog, with repository-authored React templates and visual / React starters.
+- A local dashboard with actual document previews, continue editing, search, sorting, grid/list, rename, duplication, deletion and JSON import/export.
+- A floating workspace inspired by the original cv-creator: selection, text, image, shapes/icons, Visual / Text / Code and zoom in its bottom dock.
+- Freeform A4 layers: drag, resize, snapping guides, Space to pan, Shift multiselection, flat groups, z-order, visibility, locks, opacity and blend modes.
+- Detailed typography and inline ranges/links; embedded fonts; shapes with gradients and strokes; image cropping; blur, grain, dither, brightness, contrast and saturation.
+- A synchronized Text workspace for the same canonical layer text. Structured resumes saved by the first version still open and remain editable.
+- HTML / React source editing with an isolated preview, source import/export and offline self-contained HTML, including React hooks. [Source contract](docs/code-templates.md).
+- Shared runtime-validated human/agent commands, atomic batches, attributed undo/redo, CLI and Teammate proposal review with actual rendered changes.
+- JSON backups, real HTML export and browser printing for canvas documents; source documents export HTML for printing from the standalone file.
+
+Shortcuts: ⌘/Ctrl Z / Shift Z / Ctrl Y, ⌘/Ctrl G / Shift G to group/ungroup, ⌘/Ctrl D to duplicate, arrows to nudge (Shift = 10px), V / T for tools. Direct text: double-click or Enter; Escape cancels, ⌘/Ctrl Enter or blur commits.
 
 Brand marks for Claude Code, Codex and Grok identify **CLI/file compatibility**. No provider inference, native integration, partnership, MCP or WebMCP connection is claimed. See [asset provenance](docs/brand-assets.md).
 
@@ -31,7 +35,7 @@ No credentials or environment file is required. `/` and `/templates` are public 
 
 ## Architecture
 
-Stack: strict TypeScript, **React 19**, Bun workspaces, **Vite + React Router framework SSR**, Cloudflare Vite plugin, **Mantine**, **Jotai**, **Lucide**, CSS Modules/custom properties and React Compiler. Tailwind and Motion are unnecessary for this interaction set; lightweight CSS focus/hover transitions respect reduced motion.
+Stack: strict TypeScript, **React 19**, Bun workspaces, **Vite + React Router framework SSR**, Cloudflare Vite plugin, **shadcn/ui with Base UI**, **Jotai**, **Lucide** and React Compiler. Official CLI-generated components use Tailwind v4; application layouts use CSS Modules and shared tokens. Controls remain editable in `apps/web/src/components/ui`; lightweight CSS focus/hover transitions respect reduced motion.
 
 ```text
 apps/web/
@@ -46,14 +50,14 @@ apps/web/
   e2e/                     Production-runtime Playwright workflows
 packages/
   engine/src/              Generic schemas, commands, history, serialization
-  cv/src/                  Resume templates and real portable renderer
+  cv/src/                  React templates, source compiler and portable renderer
   adapters/src/            Transport-free command preview and JSON Schema
   cli/src/                 Argument/file adapter around the same engine
   */test/                  Tests mirror the source hierarchy
 scripts/                   Generic line scanner and enforced engine coverage
 artifacts/                 Synthetic screenshots, rendered HTML/CSS, timings
 tasks/                     Numbered execution plan and master checklist
- docs/                     Architecture, command contract, ADRs, verification
+docs/                      Architecture, command contract, ADRs, verification
 ```
 
 The generic engine knows normalized sections, blocks, styles and invariants, not React or employment history. The CV package adds resume defaults and rendering. A per-editor Jotai store holds one canonical engine session; derived block atoms receive only relevant changes. Persistence is an adapter, not another document engine. [Architecture and ownership](docs/architecture.md) · [Engine/CLI contract](docs/engine.md) · [Foundation decision and V1 audit](docs/decisions/001-foundation.md).
@@ -114,17 +118,21 @@ The coverage runner imports every engine source before measuring so untested mod
 
 Playwright starts the built Worker preview automatically. Run `bun run build` first after application changes. Deterministic screenshots are in [artifacts/visual](artifacts/visual/): landing/projects desktop and mobile, editor desktop and templates mobile. They were opened and visually inspected. Rendered page snapshots, actual standalone [resume HTML/CSS](artifacts/rendered/resume.html), [command schema](artifacts/rendered/commands.schema.json) and [computed canvas properties](artifacts/rendered/canvas-computed.json) are retained. Page DOM snapshots reference built assets; the resume HTML is independently portable. [Measured interaction timings](artifacts/performance/interactions.json) include Playwright overhead and are not a field performance benchmark.
 
+Creation profiling on a warmed local Vite server measured a 366ms median click-to-canvas, compared with 611ms before the creation-path changes (three fresh contexts, 250ms pointer intent, no throttling). Cold development compilation is separate. [Before](artifacts/performance/create-before.json) · [Final](artifacts/performance/create-final.json).
+
 See [verification results](docs/verification.md), [task index](tasks/README.md) and the [master completion checklist](tasks/check-list.md). [AGENTS.md](AGENTS.md) enforces engine ownership, React performance rules, genuine external-system effects, stable atoms and visual review. GitHub Actions runs `bun run check` and retains evidence; remote CI results must be read from the PR separately.
 
 ## Current boundaries
 
-- One-column semantic A4 content with two starting templates. No arbitrary position/resize, graphics, rich inline text, custom fonts or automatic multipage pagination. Long content grows and browser printing may introduce page breaks.
+- Freeform layout uses one A4 page and flat groups. Automatic multipage pagination and nested groups are not implemented. Structured documents can grow vertically; freeform elements retain explicitly editable frames.
 - PDF uses the browser print dialog and the real HTML renderer; dedicated/pixel-perfect PDF export and preview sharing are future work.
 - Browser local storage only; no cross-device sync, auth, live CLI bridge, model inference, remote MCP or WebMCP.
 - UI copy is English for this milestone; localization is future work.
 - Browser E2E is Chromium on the available Linux environment; Firefox/WebKit, real-device/mobile editing and broader assistive-technology review remain release follow-ups.
 - Production deployment, credentials, DNS and provider connections were deliberately not configured.
 
-Next steps: authenticated collaboration/storage and conflict resolution, richer typography and independent pagination, provider-backed proposals, then separately permissioned MCP/WebMCP adapters. Preserve the shared engine contract throughout.
+HTML/React source and canvas are preserved representations; arbitrary source is not reverse-engineered into editable layers. React source supports a single file with React imports, rather than arbitrary npm dependencies. See [code templates](docs/code-templates.md) for authoring and rendering details.
 
 Development startup is tested with a fresh isolated Vite cache. The Compiler runtime and lazy UI dependencies are pre-bundled in both client/SSR graphs to avoid first-request React/runtime mismatches. `RESUMI_DEV_CHECK_PORT` can override the smoke-test port (5189). See [ADR 002](docs/decisions/002-cold-development.md).
+
+Production route-module splitting is disabled to keep the initial client fallback consistent with SSR. Direct/reload tests require one viewport-height editor and zero hydration errors; see [ADR 004](docs/decisions/004-document-hydration.md).

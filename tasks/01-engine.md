@@ -6,7 +6,7 @@ Give people and agents one deterministic validated meaning for document edits.
 
 ## Scope
 
-Included: the implementation checklist below. Deferred: production deployment, account/cloud synchronization, provider inference, remote MCP/WebMCP, freeform graphics and automatic pagination.
+Included: the implementation checklist below. Deferred: production deployment, account/cloud synchronization, provider inference, remote MCP/WebMCP and automatic pagination.
 
 ## Prerequisites and files
 
@@ -24,7 +24,7 @@ Dependencies: 00. Relevant files: `packages/engine/src and mirrored test directo
 
 ## Acceptance criteria
 
-12 engine tests pass; 100% measured line/function coverage. Equivalent human/agent commands produce equal documents; failed batches preserve the original.
+44 engine tests pass; 99.59% measured line coverage and 99.38% function coverage. Equivalent human/agent commands produce equal documents; failed batches preserve the original.
 
 ## Testing and verification
 

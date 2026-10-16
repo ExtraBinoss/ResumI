@@ -1,5 +1,5 @@
 import { useAtomValue, useSetAtom, useStore } from "jotai";
-import { Button, ActionIcon, Tooltip } from "@mantine/core";
+import { Button, ActionIcon, Tooltip } from "../ui";
 import {
   Plus,
   GripVertical,
@@ -13,10 +13,9 @@ import {
   sectionIdsAtom,
   selectionAtom,
   commandAtom,
-  sessionAtom,
 } from "../state/editor";
 import type { Command } from "@resumi/engine";
-import styles from "../styles/Editor.module.css";
+import styles from "../styles/Panels.module.css";
 function SectionRow({
   id,
   index,
@@ -92,11 +91,18 @@ function SectionRow({
     </div>
   );
 }
-export function Structure({ close }: { close: () => void }) {
+export function Structure({
+  embedded = false,
+  close,
+  openSettings,
+}: {
+  embedded?: boolean;
+  close: () => void;
+  openSettings: () => void;
+}) {
   const ids = useAtomValue(sectionIdsAtom),
     dispatch = useSetAtom(commandAtom),
-    select = useSetAtom(selectionAtom),
-    store = useStore();
+    select = useSetAtom(selectionAtom);
   function add() {
     const id = crypto.randomUUID(),
       blockId = crypto.randomUUID();
@@ -119,7 +125,10 @@ export function Structure({ close }: { close: () => void }) {
     select({ sectionId: id, blockId });
   }
   return (
-    <aside className={styles.structure} aria-label="Document structure">
+    <aside
+      className={`${styles.structure} ${embedded ? styles.embedded : ""}`}
+      aria-label="Document structure"
+    >
       <div className={styles.panelHeading}>
         <h2>Outline</h2>
         <ActionIcon
@@ -163,7 +172,8 @@ export function Structure({ close }: { close: () => void }) {
           size="compact-xs"
           variant="subtle"
           onClick={() => {
-            if (store.get(sessionAtom)) select(null);
+            select(null);
+            openSettings();
           }}
         >
           Edit

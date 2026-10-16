@@ -17,7 +17,7 @@ export function PublicHeader() {
       <nav aria-label="Main navigation">
         <Link to="/templates">Templates</Link>
         <Link to="/projects">
-          My resumes <span aria-hidden="true">↗</span>
+          Dashboard <span aria-hidden="true">↗</span>
         </Link>
       </nav>
     </header>

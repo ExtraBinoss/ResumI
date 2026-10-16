@@ -1,4 +1,4 @@
-import { deserializeDocument } from "@resumi/engine";
+import { deserializeDocument, MAX_DOCUMENT_FILE_BYTES } from "@resumi/engine";
 
 export function downloadFile(
   name: string,
@@ -16,6 +16,7 @@ export function fileName(name: string, extension: string) {
   return `${name.replace(/[^a-zA-Z0-9_-]/g, "-").slice(0, 80)}.${extension}`;
 }
 export async function readDocumentFile(file: File) {
-  if (file.size > 2_000_000) throw new Error("This file is larger than 2 MB.");
+  if (file.size > MAX_DOCUMENT_FILE_BYTES)
+    throw new Error("This file is larger than 16 MB.");
   return deserializeDocument(await file.text());
 }

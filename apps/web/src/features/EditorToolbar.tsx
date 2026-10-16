@@ -1,14 +1,7 @@
 import { useState } from "react";
 import { useAtomValue, useSetAtom, useStore } from "jotai";
 import { useNavigate } from "react-router";
-import {
-  ActionIcon,
-  Button,
-  Menu,
-  Modal,
-  TextInput,
-  Tooltip,
-} from "@mantine/core";
+import { ActionIcon, Button, Menu, Modal, TextInput, Tooltip } from "../ui";
 import {
   ArrowLeft,
   Undo2,
@@ -19,17 +12,13 @@ import {
   LoaderCircle,
   AlertCircle,
   Terminal,
-  PanelLeft,
-  PanelRight,
-  Minus,
-  Plus,
   FileJson,
   FileCode,
   Printer,
   Pencil,
 } from "lucide-react";
 import { serializeDocument } from "@resumi/engine";
-import { renderHtml } from "@resumi/cv";
+import { renderHtml, renderDocumentHtml } from "@resumi/cv";
 import { downloadFile, fileName } from "../lib/files";
 import {
   nameAtom,
@@ -37,47 +26,48 @@ import {
   saveStatusAtom,
   undoAtom,
   redoAtom,
-  zoomAtom,
   sessionAtom,
   commandAtom,
   type EditorController,
 } from "../state/editor";
+import { sourceAtom } from "../state/design";
 import styles from "../styles/Editor.module.css";
 export function EditorToolbar({
   controller,
-  toggleOutline,
-  toggleInspector,
   toggleAgent,
   agentOpen,
 }: {
   controller: EditorController;
-  toggleOutline: () => void;
-  toggleInspector: () => void;
   toggleAgent: () => void;
   agentOpen: boolean;
 }) {
+  const source = useAtomValue(sourceAtom);
   const name = useAtomValue(nameAtom),
     history = useAtomValue(historyAtom),
-    status = useAtomValue(saveStatusAtom),
-    zoom = useAtomValue(zoomAtom);
+    status = useAtomValue(saveStatusAtom);
   const undo = useSetAtom(undoAtom),
     redo = useSetAtom(redoAtom),
-    setZoom = useSetAtom(zoomAtom),
     dispatch = useSetAtom(commandAtom),
     store = useStore(),
     navigate = useNavigate();
   const [rename, setRename] = useState(false),
     [draft, setDraft] = useState(name);
-  function exportFile(format: "json" | "html") {
+  async function exportFile(format: "json" | "html") {
     const doc = store.get(sessionAtom)!.document;
     downloadFile(
       fileName(doc.name, format),
-      format === "json" ? serializeDocument(doc) : renderHtml(doc),
+      format === "json"
+        ? serializeDocument(doc)
+        : await renderDocumentHtml(doc),
       format === "json" ? "application/json" : "text/html",
     );
   }
   function print() {
     const doc = store.get(sessionAtom)!.document;
+    if (doc.source && doc.source.enabled !== false) {
+      void exportFile("html");
+      return;
+    }
     const popup = window.open("", "_blank");
     if (!popup) {
       exportFile("html");
@@ -126,7 +116,11 @@ export function EditorToolbar({
             {name}
             <Pencil size={11} aria-hidden />
           </button>
-          <span className={styles.saveStatus} role="status">
+          <span
+            className={styles.saveStatus}
+            role="status"
+            aria-label="Save status"
+          >
             {status === "saved" ? (
               <>
                 <Check size={12} />
@@ -192,76 +186,42 @@ export function EditorToolbar({
             <Menu.Dropdown>
               <Menu.Item
                 leftSection={<FileJson size={14} />}
-                onClick={() => exportFile("json")}
+                onClick={() => void exportFile("json")}
               >
                 JSON document
               </Menu.Item>
               <Menu.Item
                 leftSection={<FileCode size={14} />}
-                onClick={() => exportFile("html")}
+                onClick={() => void exportFile("html")}
               >
                 Portable HTML
               </Menu.Item>
+              {source && (
+                <Menu.Item
+                  leftSection={<FileCode size={14} />}
+                  onClick={() =>
+                    downloadFile(
+                      fileName(
+                        name,
+                        source.format === "react" ? "tsx" : "html",
+                      ),
+                      source.code,
+                      "text/plain",
+                    )
+                  }
+                >
+                  Original {source.format === "react" ? "React / TSX" : "HTML"}{" "}
+                  source
+                </Menu.Item>
+              )}
               <Menu.Divider />
               <Menu.Item leftSection={<Printer size={14} />} onClick={print}>
-                Print / Save as PDF
+                {source ? "HTML for printing" : "Print / Save as PDF"}
               </Menu.Item>
             </Menu.Dropdown>
           </Menu>
         </div>
       </header>
-      <div className={styles.subToolbar}>
-        <div>
-          <ActionIcon
-            aria-label="Toggle outline"
-            variant="subtle"
-            color="gray"
-            size="sm"
-            onClick={toggleOutline}
-          >
-            <PanelLeft size={15} />
-          </ActionIcon>
-          <span>Design workspace</span>
-        </div>
-        <div className={styles.zoomControls}>
-          <ActionIcon
-            aria-label="Zoom out"
-            variant="subtle"
-            color="gray"
-            size="sm"
-            disabled={zoom <= 35}
-            onClick={() => setZoom(Math.max(35, zoom - 10))}
-          >
-            <Minus size={12} />
-          </ActionIcon>
-          <button
-            onClick={() => setZoom(75)}
-            aria-label="Reset zoom to 75 percent"
-          >
-            {zoom}%
-          </button>
-          <ActionIcon
-            aria-label="Zoom in"
-            variant="subtle"
-            color="gray"
-            size="sm"
-            disabled={zoom >= 125}
-            onClick={() => setZoom(Math.min(125, zoom + 10))}
-          >
-            <Plus size={12} />
-          </ActionIcon>
-          <span className={styles.toolbarDivider} />
-          <ActionIcon
-            aria-label="Toggle properties"
-            variant="subtle"
-            color="gray"
-            size="sm"
-            onClick={toggleInspector}
-          >
-            <PanelRight size={15} />
-          </ActionIcon>
-        </div>
-      </div>
       <Modal
         opened={rename}
         onClose={() => setRename(false)}

@@ -6,7 +6,7 @@ Look at real rendering and verify user behavior rather than assume the source lo
 
 ## Scope
 
-Included: the implementation checklist below. Deferred: production deployment, account/cloud synchronization, provider inference, remote MCP/WebMCP, freeform graphics and automatic pagination.
+Included: the implementation checklist below. Deferred: production deployment, account/cloud synchronization, provider inference, remote MCP/WebMCP and automatic pagination.
 
 ## Prerequisites and files
 
@@ -23,7 +23,7 @@ Dependencies: 04, 05, 06. Relevant files: `apps/web/e2e, artifacts/visual, artif
 
 ## Acceptance criteria
 
-12 Playwright checks pass on production Worker preview. Screenshots and DOM/CSS artifacts are saved and actually opened. Public layouts show no horizontal overflow.
+22 Playwright checks pass on production Worker preview. Screenshots and DOM/CSS artifacts are saved and actually opened. Public layouts show no horizontal overflow.
 
 ## Testing and verification
 

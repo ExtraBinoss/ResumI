@@ -5,6 +5,7 @@ import {
   type Command,
   type Document,
 } from "@resumi/engine";
+import { makeReactSource } from "./source/starter";
 
 export const templates = [
   {
@@ -13,6 +14,7 @@ export const templates = [
     description: "A clear voice. A considered layout.",
     accent: "#2563eb",
     font: "sans",
+    format: "visual",
   },
   {
     id: "editorial",
@@ -20,6 +22,23 @@ export const templates = [
     description: "Classic typography. Modern ambition.",
     accent: "#27272a",
     font: "serif",
+    format: "visual",
+  },
+  {
+    id: "react-studio",
+    name: "React Studio",
+    description: "A real TSX component. Your code, your layout.",
+    accent: "#2563eb",
+    font: "sans",
+    format: "react",
+  },
+  {
+    id: "react-editorial",
+    name: "React Editorial",
+    description: "Serif typography, CSS and reusable components.",
+    accent: "#27272a",
+    font: "serif",
+    format: "react",
   },
 ] as const;
 export function createResume(id: string, templateId = "studio"): Document {
@@ -111,9 +130,21 @@ export function createResume(id: string, templateId = "studio"): Document {
       }),
     );
   }
-  return applyCommands(createDocument(id, "Alex Morgan — Resume"), {
+  const document = applyCommands(createDocument(id, "Alex Morgan — Resume"), {
     version: 1,
     actor: { kind: "human", name: "Template" },
     commands,
   }).document;
+  return template.format === "react"
+    ? applyCommands(document, {
+        version: 1,
+        actor: { kind: "human", name: "React template" },
+        commands: [
+          {
+            type: "source.set",
+            source: { format: "react", code: makeReactSource(document) },
+          },
+        ],
+      }).document
+    : document;
 }

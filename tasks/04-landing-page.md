@@ -6,7 +6,7 @@ Explain the product and get a person into a real saved resume quickly.
 
 ## Scope
 
-Included: the implementation checklist below. Deferred: production deployment, account/cloud synchronization, provider inference, remote MCP/WebMCP, freeform graphics and automatic pagination.
+Included: the implementation checklist below. Deferred: production deployment, account/cloud synchronization, provider inference, remote MCP/WebMCP and automatic pagination.
 
 ## Prerequisites and files
 

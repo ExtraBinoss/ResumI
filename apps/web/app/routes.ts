@@ -3,6 +3,5 @@ export default [
   index("routes/home.tsx"),
   route("projects", "routes/projects.tsx"),
   route("templates", "routes/templates.tsx"),
-  route("editor", "routes/new.tsx"),
-  route("editor/:documentId", "routes/editor.tsx"),
+  route("editor/:documentId?", "routes/editor.tsx"),
 ] satisfies RouteConfig;

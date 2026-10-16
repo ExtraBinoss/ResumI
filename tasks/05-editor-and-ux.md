@@ -6,7 +6,7 @@ Deliver a direct document editing workspace with responsive, reviewable changes.
 
 ## Scope
 
-Included: the implementation checklist below. Deferred: production deployment, account/cloud synchronization, provider inference, remote MCP/WebMCP, freeform graphics and automatic pagination.
+Included: the implementation checklist below. Deferred: production deployment, account/cloud synchronization, provider inference, remote MCP/WebMCP and automatic pagination.
 
 ## Prerequisites and files
 
@@ -36,7 +36,7 @@ Named controls, keyboard focus, genuine error/empty states and reduced motion we
 
 ## Risks and decisions
 
-Touch editing, full screen-reader review, freeform graphics and independent pagination remain future work. See [ADR 001](../docs/decisions/001-foundation.md) and [current boundaries](../README.md#current-boundaries).
+Full screen-reader review, real-device touch certification and automatic pagination remain future work. Freeform layers, groups and rich properties were subsequently implemented in task 11. See [ADR 001](../docs/decisions/001-foundation.md) and [current boundaries](../README.md#current-boundaries).
 
 ## Status
 

@@ -5,7 +5,7 @@ import {
   validateDocument,
   type Document,
 } from "@resumi/engine";
-import { createResume } from "@resumi/cv";
+import { createResume, enableVisual } from "@resumi/cv";
 
 export interface Project {
   id: string;
@@ -66,7 +66,8 @@ export class ProjectRepository {
       : undefined;
   }
   async create(template = "studio"): Promise<Project> {
-    return this.import(createResume(crypto.randomUUID(), template));
+    const document = createResume(crypto.randomUUID(), template);
+    return this.import(document.source ? document : enableVisual(document));
   }
   async import(document: Document): Promise<Project> {
     const copy = duplicateDocument(

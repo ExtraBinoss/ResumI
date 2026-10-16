@@ -51,7 +51,7 @@ try {
       join(root, "node_modules/.bin/playwright"),
       "test",
       "--grep",
-      "SSR|human editor",
+      "SSR|human editor|HTML and React sources",
     ],
     {
       cwd: root,

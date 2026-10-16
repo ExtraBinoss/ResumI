@@ -5,12 +5,12 @@ import {
   validateDocument,
   EngineError,
 } from "@resumi/engine";
-import { createResume, renderHtml, templates } from "@resumi/cv";
-import { commandContract } from "@resumi/adapters";
+import { createResume, renderDocumentHtml, templates } from "@resumi/cv";
+import { commandContract } from "@resumi/adapters/schema";
 export const HELP = `ResumI — portable resume tools for humans and agents
 Usage: bun run resumi document <command> [arguments]
 
-  create [--out FILE] [--template studio|editorial]
+  create [--out FILE] [--template studio|editorial|react-studio|react-editorial]
   inspect FILE              Read the complete normalized document (JSON)
   validate FILE             Validate document schema and invariants (JSON)
   apply FILE PATCH [--out FILE]   Apply one atomic v1 command batch
@@ -108,7 +108,10 @@ export async function runCli(
     else if (command === "create") {
       const template = flags.get("--template") ?? "studio";
       if (!templates.some((t) => t.id === template))
-        throw new CliError(2, "Template must be studio or editorial.");
+        throw new CliError(
+          2,
+          "Unknown template. Choose studio, editorial, react-studio or react-editorial.",
+        );
       const document = createResume(io.id(), template);
       if (flags.has("--out"))
         await write(io, flags.get("--out")!, serializeDocument(document));
@@ -151,7 +154,11 @@ export async function runCli(
       if (command === "render") {
         if (flags.get("--format") !== "html" || !flags.get("--out"))
           throw new CliError(2, "render requires --format html --out FILE.");
-        await write(io, flags.get("--out")!, renderHtml(document));
+        await write(
+          io,
+          flags.get("--out")!,
+          await renderDocumentHtml(document),
+        );
         output = { format: "html", out: flags.get("--out") };
       }
     }

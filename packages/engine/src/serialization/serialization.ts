@@ -3,6 +3,7 @@ import {
   validateDocument,
   type Document,
 } from "../document/schema";
+import { MAX_DOCUMENT_FILE_BYTES, utf8ByteLength } from "../document/limits";
 
 /** Version 0 was the early ResumI title-based schema, not the unrelated Vue V1. */
 export function migrateDocument(input: unknown): Document {
@@ -27,8 +28,11 @@ export function serializeDocument(document: Document): string {
   return JSON.stringify(validateDocument(document), null, 2);
 }
 export function deserializeDocument(json: string): Document {
-  if (json.length > 2_000_000)
-    throw new EngineError("INVALID_INPUT", "Document exceeds 2 MB.");
+  if (
+    json.length > MAX_DOCUMENT_FILE_BYTES ||
+    utf8ByteLength(json) > MAX_DOCUMENT_FILE_BYTES
+  )
+    throw new EngineError("INVALID_INPUT", "Document file exceeds 16 MB.");
   let input: unknown;
   try {
     input = JSON.parse(json);
@@ -44,11 +48,13 @@ export function duplicateDocument(
 ): Document {
   const sections: Document["sections"] = {},
     blocks: Document["blocks"] = {};
+  const mapping = new Map<string, string>();
   const sectionIds = doc.sectionIds.map((oldId) => {
     const sectionId = nextId();
     const old = doc.sections[oldId];
     const blockIds = old.blockIds.map((blockId) => {
       const newId = nextId();
+      mapping.set(blockId, newId);
       blocks[newId] = { ...doc.blocks[blockId], id: newId };
       return newId;
     });
@@ -59,6 +65,19 @@ export function duplicateDocument(
     ...doc,
     id,
     name: `${doc.name.slice(0, 113)} (copy)`,
+    ...(doc.canvas
+      ? {
+          canvas: {
+            ...doc.canvas,
+            order: doc.canvas.order.map((id) => mapping.get(id)!),
+            groups: doc.canvas.groups.map((group) => ({
+              ...group,
+              id: nextId(),
+              elementIds: group.elementIds.map((id) => mapping.get(id)!),
+            })),
+          },
+        }
+      : {}),
     sectionIds,
     sections,
     blocks,

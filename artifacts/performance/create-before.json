@@ -1,0 +1,524 @@
+{
+  "baseURL": "http://127.0.0.1:5175",
+  "label": "before",
+  "conditions": "Chromium, fresh browser context per run; warmed Vite server; 250ms pointer intent; no CPU/network throttling",
+  "medianClickToCanvasMs": 611.1000000238419,
+  "samples": [
+    {
+      "clickToCanvasMs": 611.1000000238419,
+      "phases": [
+        {
+          "type": "creating",
+          "time": 191.69999998807907
+        },
+        {
+          "type": "opening",
+          "time": 324.30000001192093
+        },
+        {
+          "type": "canvas",
+          "time": 595.6000000238419
+        }
+      ],
+      "resources": [
+        {
+          "name": "/app/routes/new.tsx?import",
+          "duration": 2,
+          "bytes": 15345
+        },
+        {
+          "name": "/src/lib/projects.ts",
+          "duration": 1.9000000357627869,
+          "bytes": 12988
+        },
+        {
+          "name": "/node_modules/.vite/deps/idb.js?v=e3175fef",
+          "duration": 2.699999988079071,
+          "bytes": 30510
+        },
+        {
+          "name": "/@fs/home/albi/Documents/Projects/twitter/cv-ResumI/packages/engine/src/index.ts",
+          "duration": 4.399999976158142,
+          "bytes": 1346
+        },
+        {
+          "name": "/@fs/home/albi/Documents/Projects/twitter/cv-ResumI/packages/cv/src/index.ts",
+          "duration": 4.599999964237213,
+          "bytes": 759
+        },
+        {
+          "name": "/@fs/home/albi/Documents/Projects/twitter/cv-ResumI/packages/engine/src/document/schema.ts",
+          "duration": 5.300000011920929,
+          "bytes": 10650
+        },
+        {
+          "name": "/@fs/home/albi/Documents/Projects/twitter/cv-ResumI/packages/engine/src/commands/schema.ts",
+          "duration": 5.800000011920929,
+          "bytes": 6498
+        },
+        {
+          "name": "/@fs/home/albi/Documents/Projects/twitter/cv-ResumI/packages/engine/src/commands/apply.ts",
+          "duration": 5.299999952316284,
+          "bytes": 15736
+        },
+        {
+          "name": "/@fs/home/albi/Documents/Projects/twitter/cv-ResumI/packages/engine/src/history/history.ts",
+          "duration": 6,
+          "bytes": 4135
+        },
+        {
+          "name": "/@fs/home/albi/Documents/Projects/twitter/cv-ResumI/packages/engine/src/serialization/serialization.ts",
+          "duration": 5.699999988079071,
+          "bytes": 6610
+        },
+        {
+          "name": "/@fs/home/albi/Documents/Projects/twitter/cv-ResumI/packages/cv/src/sample.ts",
+          "duration": 5.300000011920929,
+          "bytes": 9303
+        },
+        {
+          "name": "/@fs/home/albi/Documents/Projects/twitter/cv-ResumI/packages/cv/src/renderer.ts",
+          "duration": 5.599999964237213,
+          "bytes": 9889
+        },
+        {
+          "name": "/node_modules/.vite/deps/zod.js?v=e3175fef",
+          "duration": 40,
+          "bytes": 2358559
+        },
+        {
+          "name": "/__manifest?paths=%2Feditor%2C%2Feditor%2F0847b606-5b00-4418-b5ba-3d0a28b02c30&version=0.7340443389119583",
+          "duration": 33.89999997615814,
+          "bytes": 1095
+        },
+        {
+          "name": "/app/routes/editor.tsx?import",
+          "duration": 1.2000000476837158,
+          "bytes": 6767
+        },
+        {
+          "name": "/src/features/Editor.tsx",
+          "duration": 1.4000000357627869,
+          "bytes": 39912
+        },
+        {
+          "name": "/node_modules/.vite/deps/@mantine_hooks.js?v=e3175fef",
+          "duration": 2.200000047683716,
+          "bytes": 10811
+        },
+        {
+          "name": "/node_modules/.vite/deps/jotai.js?v=e3175fef",
+          "duration": 3.100000023841858,
+          "bytes": 100247
+        },
+        {
+          "name": "/src/state/editor.ts",
+          "duration": 2.800000011920929,
+          "bytes": 11882
+        },
+        {
+          "name": "/src/features/Canvas.tsx",
+          "duration": 3.699999988079071,
+          "bytes": 38759
+        },
+        {
+          "name": "/src/features/Structure.tsx",
+          "duration": 3.699999988079071,
+          "bytes": 44572
+        },
+        {
+          "name": "/src/features/Inspector.tsx",
+          "duration": 4.099999964237213,
+          "bytes": 76421
+        },
+        {
+          "name": "/src/features/AgentPanel.tsx",
+          "duration": 4.800000011920929,
+          "bytes": 27331
+        },
+        {
+          "name": "/src/features/EditorToolbar.tsx",
+          "duration": 6.399999976158142,
+          "bytes": 76248
+        },
+        {
+          "name": "/src/styles/Editor.module.css",
+          "duration": 7.100000023841858,
+          "bytes": 14593
+        },
+        {
+          "name": "/@fs/home/albi/Documents/Projects/twitter/cv-ResumI/packages/adapters/src/index.ts",
+          "duration": 1.899999976158142,
+          "bytes": 2997
+        },
+        {
+          "name": "/src/features/ResumeDiff.tsx",
+          "duration": 2.300000011920929,
+          "bytes": 14324
+        },
+        {
+          "name": "/src/styles/Agent.module.css",
+          "duration": 4.5,
+          "bytes": 3603
+        },
+        {
+          "name": "/src/lib/files.ts",
+          "duration": 4.200000047683716,
+          "bytes": 2741
+        }
+      ]
+    },
+    {
+      "clickToCanvasMs": 702,
+      "phases": [
+        {
+          "type": "creating",
+          "time": 190.10000002384186
+        },
+        {
+          "type": "opening",
+          "time": 319.19999998807907
+        },
+        {
+          "type": "canvas",
+          "time": 676.5
+        }
+      ],
+      "resources": [
+        {
+          "name": "/app/routes/new.tsx?import",
+          "duration": 1.699999988079071,
+          "bytes": 15345
+        },
+        {
+          "name": "/src/lib/projects.ts",
+          "duration": 1.600000023841858,
+          "bytes": 12988
+        },
+        {
+          "name": "/node_modules/.vite/deps/idb.js?v=e3175fef",
+          "duration": 3.699999988079071,
+          "bytes": 30510
+        },
+        {
+          "name": "/@fs/home/albi/Documents/Projects/twitter/cv-ResumI/packages/engine/src/index.ts",
+          "duration": 4.099999964237213,
+          "bytes": 1346
+        },
+        {
+          "name": "/@fs/home/albi/Documents/Projects/twitter/cv-ResumI/packages/cv/src/index.ts",
+          "duration": 4.199999988079071,
+          "bytes": 759
+        },
+        {
+          "name": "/@fs/home/albi/Documents/Projects/twitter/cv-ResumI/packages/engine/src/document/schema.ts",
+          "duration": 2.600000023841858,
+          "bytes": 10650
+        },
+        {
+          "name": "/@fs/home/albi/Documents/Projects/twitter/cv-ResumI/packages/engine/src/commands/apply.ts",
+          "duration": 3.199999988079071,
+          "bytes": 15736
+        },
+        {
+          "name": "/@fs/home/albi/Documents/Projects/twitter/cv-ResumI/packages/engine/src/commands/schema.ts",
+          "duration": 2.899999976158142,
+          "bytes": 6498
+        },
+        {
+          "name": "/@fs/home/albi/Documents/Projects/twitter/cv-ResumI/packages/engine/src/history/history.ts",
+          "duration": 4.299999952316284,
+          "bytes": 4135
+        },
+        {
+          "name": "/@fs/home/albi/Documents/Projects/twitter/cv-ResumI/packages/engine/src/serialization/serialization.ts",
+          "duration": 4.099999964237213,
+          "bytes": 6610
+        },
+        {
+          "name": "/@fs/home/albi/Documents/Projects/twitter/cv-ResumI/packages/cv/src/sample.ts",
+          "duration": 4.700000047683716,
+          "bytes": 9303
+        },
+        {
+          "name": "/@fs/home/albi/Documents/Projects/twitter/cv-ResumI/packages/cv/src/renderer.ts",
+          "duration": 4.699999988079071,
+          "bytes": 9889
+        },
+        {
+          "name": "/node_modules/.vite/deps/zod.js?v=e3175fef",
+          "duration": 35.60000002384186,
+          "bytes": 2358559
+        },
+        {
+          "name": "/__manifest?paths=%2Feditor%2C%2Feditor%2Ff1a1078b-f57b-40a2-9a70-659396ee6ec6&version=0.7340443389119583",
+          "duration": 38.5,
+          "bytes": 1095
+        },
+        {
+          "name": "/app/routes/editor.tsx?import",
+          "duration": 1.600000023841858,
+          "bytes": 6767
+        },
+        {
+          "name": "/src/features/Editor.tsx",
+          "duration": 2.900000035762787,
+          "bytes": 39912
+        },
+        {
+          "name": "/node_modules/.vite/deps/@mantine_hooks.js?v=e3175fef",
+          "duration": 5.800000011920929,
+          "bytes": 10811
+        },
+        {
+          "name": "/src/state/editor.ts",
+          "duration": 8.899999976158142,
+          "bytes": 11882
+        },
+        {
+          "name": "/src/features/Structure.tsx",
+          "duration": 9.899999976158142,
+          "bytes": 44572
+        },
+        {
+          "name": "/node_modules/.vite/deps/jotai.js?v=e3175fef",
+          "duration": 6,
+          "bytes": 100247
+        },
+        {
+          "name": "/src/features/Canvas.tsx",
+          "duration": 9.199999988079071,
+          "bytes": 38759
+        },
+        {
+          "name": "/src/features/Inspector.tsx",
+          "duration": 14.300000011920929,
+          "bytes": 76421
+        },
+        {
+          "name": "/src/features/AgentPanel.tsx",
+          "duration": 17.700000047683716,
+          "bytes": 27331
+        },
+        {
+          "name": "/src/styles/Editor.module.css",
+          "duration": 16.899999976158142,
+          "bytes": 14593
+        },
+        {
+          "name": "/src/features/EditorToolbar.tsx",
+          "duration": 16.19999998807907,
+          "bytes": 76248
+        },
+        {
+          "name": "/src/lib/files.ts",
+          "duration": 2.600000023841858,
+          "bytes": 2741
+        },
+        {
+          "name": "/@fs/home/albi/Documents/Projects/twitter/cv-ResumI/packages/adapters/src/index.ts",
+          "duration": 3,
+          "bytes": 2997
+        },
+        {
+          "name": "/src/features/ResumeDiff.tsx",
+          "duration": 3.699999988079071,
+          "bytes": 14324
+        },
+        {
+          "name": "/src/styles/Agent.module.css",
+          "duration": 3.899999976158142,
+          "bytes": 3603
+        }
+      ]
+    },
+    {
+      "clickToCanvasMs": 587.9000000357628,
+      "phases": [
+        {
+          "type": "navigation",
+          "time": 25
+        },
+        {
+          "type": "creating",
+          "time": 213.5
+        },
+        {
+          "type": "opening",
+          "time": 320.30000001192093
+        },
+        {
+          "type": "canvas",
+          "time": 570.6000000238419
+        }
+      ],
+      "resources": [
+        {
+          "name": "/__manifest?paths=%2F%2C%2Feditor%2C%2Fprojects%2C%2Ftemplates&version=0.7340443389119583",
+          "duration": 38.80000001192093,
+          "bytes": 1654
+        },
+        {
+          "name": "/__manifest?paths=%2F%2C%2Feditor%2C%2Fprojects%2C%2Ftemplates&version=0.7340443389119583",
+          "duration": 36.89999997615814,
+          "bytes": 0
+        },
+        {
+          "name": "/__manifest?paths=%2Feditor&version=0.7340443389119583",
+          "duration": 45.60000002384186,
+          "bytes": 802
+        },
+        {
+          "name": "/@fs/home/albi/Documents/Projects/twitter/cv-ResumI/node_modules/.bun/@fontsource-variable+inter@5.3.0/node_modules/@fontsource-variable/inter/files/inter-latin-wght-normal.woff2",
+          "duration": 2.100000023841858,
+          "bytes": 300
+        },
+        {
+          "name": "/app/routes/new.tsx?import",
+          "duration": 2,
+          "bytes": 15345
+        },
+        {
+          "name": "/src/lib/projects.ts",
+          "duration": 1.5,
+          "bytes": 12988
+        },
+        {
+          "name": "/@fs/home/albi/Documents/Projects/twitter/cv-ResumI/packages/engine/src/index.ts",
+          "duration": 1.699999988079071,
+          "bytes": 1346
+        },
+        {
+          "name": "/node_modules/.vite/deps/idb.js?v=e3175fef",
+          "duration": 1.300000011920929,
+          "bytes": 30510
+        },
+        {
+          "name": "/@fs/home/albi/Documents/Projects/twitter/cv-ResumI/packages/cv/src/index.ts",
+          "duration": 2.800000011920929,
+          "bytes": 759
+        },
+        {
+          "name": "/@fs/home/albi/Documents/Projects/twitter/cv-ResumI/packages/engine/src/document/schema.ts",
+          "duration": 9.5,
+          "bytes": 10650
+        },
+        {
+          "name": "/@fs/home/albi/Documents/Projects/twitter/cv-ResumI/packages/engine/src/commands/schema.ts",
+          "duration": 9.900000035762787,
+          "bytes": 6498
+        },
+        {
+          "name": "/@fs/home/albi/Documents/Projects/twitter/cv-ResumI/packages/engine/src/commands/apply.ts",
+          "duration": 14.199999988079071,
+          "bytes": 15736
+        },
+        {
+          "name": "/@fs/home/albi/Documents/Projects/twitter/cv-ResumI/packages/engine/src/history/history.ts",
+          "duration": 14.600000023841858,
+          "bytes": 4135
+        },
+        {
+          "name": "/@fs/home/albi/Documents/Projects/twitter/cv-ResumI/packages/engine/src/serialization/serialization.ts",
+          "duration": 14.900000035762787,
+          "bytes": 6610
+        },
+        {
+          "name": "/@fs/home/albi/Documents/Projects/twitter/cv-ResumI/packages/cv/src/sample.ts",
+          "duration": 14.200000047683716,
+          "bytes": 9303
+        },
+        {
+          "name": "/@fs/home/albi/Documents/Projects/twitter/cv-ResumI/packages/cv/src/renderer.ts",
+          "duration": 15.699999988079071,
+          "bytes": 9889
+        },
+        {
+          "name": "/node_modules/.vite/deps/zod.js?v=e3175fef",
+          "duration": 61.39999997615814,
+          "bytes": 2358559
+        },
+        {
+          "name": "/__manifest?paths=%2Feditor%2C%2Feditor%2F98dd8b39-2f58-4d10-ade1-b2ef68bc0374&version=0.7340443389119583",
+          "duration": 32.69999998807907,
+          "bytes": 1095
+        },
+        {
+          "name": "/app/routes/editor.tsx?import",
+          "duration": 2,
+          "bytes": 6767
+        },
+        {
+          "name": "/src/features/Editor.tsx",
+          "duration": 4.300000011920929,
+          "bytes": 39912
+        },
+        {
+          "name": "/node_modules/.vite/deps/@mantine_hooks.js?v=e3175fef",
+          "duration": 2.600000023841858,
+          "bytes": 10811
+        },
+        {
+          "name": "/node_modules/.vite/deps/jotai.js?v=e3175fef",
+          "duration": 5.100000023841858,
+          "bytes": 100247
+        },
+        {
+          "name": "/src/features/Canvas.tsx",
+          "duration": 4.899999976158142,
+          "bytes": 38759
+        },
+        {
+          "name": "/src/state/editor.ts",
+          "duration": 4.799999952316284,
+          "bytes": 11882
+        },
+        {
+          "name": "/src/features/Structure.tsx",
+          "duration": 7,
+          "bytes": 44572
+        },
+        {
+          "name": "/src/features/Inspector.tsx",
+          "duration": 7.5,
+          "bytes": 76421
+        },
+        {
+          "name": "/src/styles/Editor.module.css",
+          "duration": 8.800000011920929,
+          "bytes": 14593
+        },
+        {
+          "name": "/src/features/EditorToolbar.tsx",
+          "duration": 8.399999976158142,
+          "bytes": 76248
+        },
+        {
+          "name": "/src/features/AgentPanel.tsx",
+          "duration": 9.199999988079071,
+          "bytes": 27331
+        },
+        {
+          "name": "/src/lib/files.ts",
+          "duration": 1.300000011920929,
+          "bytes": 2741
+        },
+        {
+          "name": "/@fs/home/albi/Documents/Projects/twitter/cv-ResumI/packages/adapters/src/index.ts",
+          "duration": 1.800000011920929,
+          "bytes": 2997
+        },
+        {
+          "name": "/src/styles/Agent.module.css",
+          "duration": 2.300000011920929,
+          "bytes": 3603
+        },
+        {
+          "name": "/src/features/ResumeDiff.tsx",
+          "duration": 2.100000023841858,
+          "bytes": 14324
+        }
+      ]
+    }
+  ]
+}

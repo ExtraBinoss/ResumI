@@ -1,0 +1,30 @@
+{
+  "canvas": {
+    "x": 422.25,
+    "y": 77.875,
+    "width": 595.5,
+    "height": 842.25,
+    "cssWidth": "794px",
+    "transform": "matrix(0.75, 0, 0, 0.75, 0, 0)"
+  },
+  "layerCount": 18,
+  "headingFont": "Interface",
+  "horizontalOverflow": false,
+  "loadedFonts": [
+    {
+      "family": "Inter Variable",
+      "weight": "100 900",
+      "status": "loaded"
+    },
+    {
+      "family": "Interface",
+      "weight": "100 1000",
+      "status": "loaded"
+    },
+    {
+      "family": "Interface",
+      "weight": "100 1000",
+      "status": "loaded"
+    }
+  ]
+}

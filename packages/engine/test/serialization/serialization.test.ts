@@ -6,6 +6,7 @@ import {
   migrateDocument,
   duplicateDocument,
   applyCommands,
+  MAX_DOCUMENT_FILE_BYTES,
 } from "../../src/index";
 test("round trip and v0 migration", () => {
   const doc = createDocument("doc");
@@ -16,7 +17,7 @@ test("round trip and v0 migration", () => {
   );
   for (const input of [null, [], {}, "x", { schemaVersion: 2 }])
     expect(() => migrateDocument(input)).toThrow();
-  for (const input of ["{", "x".repeat(2000001)])
+  for (const input of ["{", "x".repeat(MAX_DOCUMENT_FILE_BYTES + 1)])
     expect(() => deserializeDocument(input)).toThrow();
 });
 test("duplication allocates independent stable identifiers and validates ID collisions", () => {

@@ -1,6 +1,11 @@
+import { designCss, renderVisual, canvasFontCss } from "./design-renderer";
+import { escapeHtml } from "./escape";
+export { escapeHtml } from "./escape";
 import { validateDocument, type Block, type Document } from "@resumi/engine";
 
-export const resumeCss = `
+export const resumeCss =
+  designCss +
+  `
 .resume { box-sizing:border-box; width:794px; min-height:1123px; padding:62px 64px;
   background:white; color:#20252d; font-family:var(--resume-font,Arial,sans-serif);
   font-size:var(--resume-size,12px); line-height:1.65; text-align:left; }
@@ -20,15 +25,6 @@ export const resumeCss = `
 @page {size:A4; margin:0;}
 @media print {html,body {margin:0!important; background:white!important;} .resume{width:210mm;min-height:297mm;box-shadow:none!important;} .resume-section{break-inside:avoid;}}
 `;
-export function escapeHtml(value: string): string {
-  return value.replace(
-    /[&<>"']/g,
-    (char) =>
-      ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[
-        char
-      ]!,
-  );
-}
 export function resumeStyle(doc: Document): Record<string, string> {
   return {
     "--resume-accent": doc.style.accent,
@@ -51,7 +47,7 @@ export function renderResume(doc: Document): string {
   const style = Object.entries(resumeStyle(doc))
     .map(([key, value]) => `${key}:${value}`)
     .join(";");
-  return `<article class="resume" aria-label="Resume" style="${style}">${doc.sectionIds.map((id) => renderSection(doc, id)).join("")}</article>`;
+  return `<article class="resume${doc.canvas ? " freeform" : ""}" aria-label="Resume" style="${style}${doc.canvas ? `;width:${doc.canvas.width}px;height:${doc.canvas.height}px;background:${doc.canvas.background}` : ""}">${doc.canvas ? `<style>${canvasFontCss(doc)}</style>${renderVisual(doc)}` : doc.sectionIds.map((id) => renderSection(doc, id)).join("")}</article>`;
 }
 export function renderHtml(document: Document): string {
   return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${escapeHtml(document.name)}</title><style>${resumeCss}\nbody{margin:0;background:#eceef2}.resume{margin:auto}</style></head><body>${renderResume(document)}</body></html>`;

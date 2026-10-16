@@ -1,0 +1,349 @@
+.layers,
+.inspector {
+  position: absolute;
+  z-index: 8;
+  top: 88px;
+  bottom: 82px;
+  min-height: 0;
+  border: 1px solid #20201a2c;
+  border-radius: 14px;
+  background: #fffffcf2;
+  box-shadow: 0 3px 14px #1414120b;
+  backdrop-filter: blur(24px) saturate(1.2);
+  color: #25251e;
+  font-size: 11px;
+}
+.layers {
+  left: 16px;
+  width: 236px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.inspector {
+  right: 16px;
+  width: 252px;
+  overflow: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #c8c8c0 transparent;
+}
+.panelHeader,
+.tabs {
+  height: 49px;
+  min-height: 49px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 5px;
+  padding: 0 12px 0 16px;
+  border-bottom: 1px solid #20201a18;
+}
+.panelHeader h2 {
+  font-size: 11px;
+  font-weight: 600;
+  margin: 0;
+}
+.panelHeader > div {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+.tabs {
+  padding-inline: 9px;
+  gap: 2px;
+}
+.tabs > button {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 7px 6px;
+  border: 0;
+  background: none;
+  color: #909086;
+  font-size: 10px;
+  font-weight: 550;
+}
+.tabs > button[aria-pressed="true"] {
+  color: #25251e;
+}
+.tabs > :last-child {
+  margin-left: auto;
+}
+.blendRow {
+  padding: 11px 12px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 63px;
+  gap: 6px;
+  border-bottom: 1px solid #20201a10;
+}
+.blendRow input {
+  text-transform: capitalize;
+  font-size: 10px;
+}
+.layerList {
+  flex: 1;
+  overflow: auto;
+  padding: 8px 6px;
+  scrollbar-width: thin;
+}
+.layerRow,
+.groupRow {
+  display: flex;
+  align-items: center;
+  border-radius: 6px;
+  min-height: 35px;
+  padding: 0 4px;
+  gap: 2px;
+  position: relative;
+}
+.layerRow:hover,
+.groupRow:hover {
+  background: #20201a07;
+}
+.active,
+.active:hover {
+  background: #2958e810;
+}
+.layerName {
+  min-width: 0;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  overflow: hidden;
+  border: 0;
+  background: none;
+  text-align: left;
+  color: #55554b;
+  font-size: 10px;
+  padding: 8px 3px;
+}
+.layerName > svg {
+  flex-shrink: 0;
+  color: #929287;
+}
+.layerName > span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.layerName > small {
+  color: #9a9a90;
+  margin-left: auto;
+  font-size: 8px;
+}
+.groupRow > .layerName > svg {
+  color: #79796e;
+}
+.member {
+  padding-left: 23px;
+}
+.layerRow > :global([data-ui="button"]) {
+  opacity: 0.25;
+}
+.layerRow:hover > :global([data-ui="button"]),
+.active > :global([data-ui="button"]) {
+  opacity: 1;
+}
+.layerFooter {
+  display: flex;
+  align-items: center;
+  padding: 8px 10px 2px;
+  border-top: 1px solid #20201a14;
+}
+.layerFooter > span {
+  margin-right: auto;
+  font-size: 9px;
+  color: #8d8d81;
+}
+.help {
+  color: #929286;
+  font-size: 10px;
+  line-height: 1.65;
+  margin: 8px 0 0;
+}
+.layers > .help {
+  padding: 0 13px 13px;
+  font-size: 9px;
+}
+.inspector > section {
+  padding: 18px 14px 21px;
+  border-bottom: 1px solid #20201a16;
+}
+.inspector h3 {
+  margin: 0 0 16px;
+  color: #7d7d70;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 1.3px;
+  text-transform: uppercase;
+}
+.inspector h4 {
+  margin: 12px 0 8px;
+  font-size: 10px;
+  font-weight: 500;
+  color: #77776b;
+}
+.inspector :global([data-ui="label"]) {
+  color: #77776c;
+  font-size: 10px;
+  font-weight: 400;
+  margin-bottom: 5px;
+}
+.inspector :global([data-ui="input"]) {
+  border-color: #20201a24;
+  border-radius: 6px;
+  background: #fff;
+  font-size: 11px;
+}
+.inspector :global([data-ui="input"]:focus) {
+  border-color: #2958e8;
+}
+.doubleGrid,
+.quadGrid,
+.blendFields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 12px;
+}
+.quadGrid {
+  margin: 0;
+}
+.blendFields {
+  grid-template-columns: minmax(0, 1fr) 65px;
+}
+.blendFields input {
+  text-transform: capitalize;
+}
+.sectionHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+.sectionHead h3 {
+  margin: 0;
+}
+.sectionHead h4 {
+  margin: 10px 0;
+}
+.formatToolbar {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  margin: 10px 0;
+}
+.formatToolbar > span {
+  flex: 1;
+}
+.alignRow {
+  display: flex;
+  justify-content: flex-end;
+  gap: 2px;
+  border-top: 1px solid #20201a14;
+  padding-top: 7px;
+  margin-bottom: 10px;
+}
+.effects {
+  display: grid;
+  gap: 10px;
+}
+.effectControl {
+  display: grid;
+  gap: 6px;
+}
+.settingHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.settingHead label {
+  font-size: 10px;
+  color: #7d7d70;
+}
+.settingHead > div {
+  width: 74px;
+}
+.settingHead input {
+  text-align: right;
+  font-size: 10px !important;
+  padding-inline: 7px;
+}
+.gradientStop {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 62px 16px;
+  gap: 4px;
+  margin: 8px 0;
+  align-items: center;
+}
+.pageFacts {
+  display: grid;
+  gap: 12px;
+  margin: 0 0 18px;
+}
+.pageFacts > span {
+  display: flex;
+  justify-content: space-between;
+  color: #8d8d80;
+  font-size: 10px;
+}
+.pageFacts strong {
+  font-weight: 500;
+  color: #4d4d43;
+}
+.fontRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 10px;
+  padding: 6px 0;
+}
+.lockedNotice {
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  text-align: center;
+  color: #8d8d80;
+}
+.lockedNotice strong {
+  color: #4b4b40;
+  font-size: 11px;
+}
+.lockedNotice p {
+  font-size: 10px;
+  line-height: 1.5;
+}
+.orderActions {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+@media (max-width: 1040px) {
+  .layers {
+    width: 214px;
+    left: 12px;
+  }
+  .inspector {
+    width: 230px;
+    right: 12px;
+  }
+}
+@media (max-width: 850px) {
+  .layers,
+  .inspector {
+    top: 76px;
+    bottom: 120px;
+    box-shadow: 0 6px 30px #20201a24;
+  }
+  .layers {
+    width: min(270px, calc(100vw - 24px));
+  }
+  .inspector {
+    width: min(288px, calc(100vw - 24px));
+  }
+  .layerRow > :global([data-ui="button"]) {
+    opacity: 1;
+  }
+}

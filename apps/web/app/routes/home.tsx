@@ -1,6 +1,7 @@
-import { Link, useLoaderData } from "react-router";
-import { createResume, renderResume, resumeCss } from "@resumi/cv";
-import { Button } from "@mantine/core";
+import { Link, useLoaderData, useNavigation } from "react-router";
+import { createResume, resumeCss } from "@resumi/cv";
+import { renderTemplateResume } from "@resumi/cv/templates";
+import { Button } from "../../src/ui";
 import {
   ArrowRight,
   ArrowUpRight,
@@ -13,6 +14,7 @@ import {
 } from "lucide-react";
 import { PublicHeader, PublicFooter } from "../../src/components/Brand";
 import { ResumePreview } from "../../src/components/ResumePreview";
+import { preloadEditor } from "../../src/lib/preload-editor";
 import styles from "../../src/styles/Landing.module.css";
 export const meta = () => [
   { title: "ResumI — Your resume just got a new teammate." },
@@ -24,12 +26,13 @@ export const meta = () => [
 ];
 export function loader() {
   return {
-    html: renderResume(createResume("preview-document")),
+    html: renderTemplateResume(createResume("preview-document")),
     css: resumeCss,
   };
 }
 export default function Home() {
-  const preview = useLoaderData<typeof loader>();
+  const preview = useLoaderData<typeof loader>(),
+    navigation = useNavigation();
   return (
     <>
       <PublicHeader />
@@ -52,6 +55,12 @@ export default function Home() {
               <Button
                 component={Link}
                 to="/editor"
+                onPointerEnter={preloadEditor}
+                onFocus={preloadEditor}
+                loading={
+                  navigation.state !== "idle" &&
+                  navigation.location?.pathname.startsWith("/editor")
+                }
                 size="md"
                 rightSection={<ArrowRight size={17} aria-hidden />}
               >
@@ -68,6 +77,7 @@ export default function Home() {
           </div>
           <div
             className={styles.product}
+            role="img"
             aria-label="Preview of the ResumI editor"
           >
             <div className={styles.previewToolbar}>

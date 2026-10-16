@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { useAtomValue, useSetAtom, useStore } from "jotai";
-import { Alert, Button, Textarea, Code, ActionIcon } from "@mantine/core";
+import { Alert, Button, Textarea, Code, ActionIcon } from "../ui";
 import { Terminal, ArrowRight, X, Check } from "lucide-react";
 import { previewProposal } from "@resumi/adapters";
 import { sessionAtom, commandAtom } from "../state/editor";
 import { ResumeDiff } from "./ResumeDiff";
 import styles from "../styles/Agent.module.css";
-import shell from "../styles/Editor.module.css";
+import shell from "../styles/Panels.module.css";
 export function AgentPanel({ close }: { close: () => void }) {
   const store = useStore(),
     session = useAtomValue(sessionAtom),
@@ -20,7 +20,9 @@ export function AgentPanel({ close }: { close: () => void }) {
   const stale = preview !== null && preview.baseDocument !== session.document;
   function example() {
     const doc = store.get(sessionAtom)!.document;
-    const block = Object.values(doc.blocks).find((b) => b.kind === "text");
+    const block = Object.values(doc.blocks).find(
+      (b) => b.kind === "text" && b.text.length > 80,
+    );
     setJson(
       JSON.stringify(
         {

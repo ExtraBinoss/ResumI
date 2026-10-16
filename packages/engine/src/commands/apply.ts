@@ -1,3 +1,8 @@
+import { applySource } from "../source/apply";
+import { applyCanvas } from "../canvas/apply";
+import { makeLayer } from "../canvas/defaults";
+import { requireUnlocked, removeMembers } from "../canvas/groups";
+import { updateTextPreservingMarks } from "../canvas/marks";
 import {
   EngineError,
   assertInvariants,
@@ -21,7 +26,8 @@ function availableId(doc: Document, id: string) {
   if (
     id === doc.id ||
     Object.hasOwn(doc.sections, id) ||
-    Object.hasOwn(doc.blocks, id)
+    Object.hasOwn(doc.blocks, id) ||
+    doc.canvas?.groups.some((group) => group.id === id)
   )
     throw new EngineError("CONFLICT", `ID already exists: ${id}`);
 }
@@ -44,6 +50,10 @@ function inserted(current: string[], id: string, index = current.length) {
 }
 function apply(doc: Document, command: Command): Document {
   switch (command.type) {
+    case "source.set":
+    case "source.clear":
+    case "source.activate":
+      return applySource(doc, command);
     case "document.update":
       return { ...doc, name: command.name };
     case "style.update":
@@ -68,6 +78,7 @@ function apply(doc: Document, command: Command): Document {
     }
     case "section.delete": {
       const section = requireSection(doc, command.id);
+      requireUnlocked(doc, section.blockIds);
       const sections = { ...doc.sections },
         blocks = { ...doc.blocks };
       delete sections[command.id];
@@ -77,6 +88,17 @@ function apply(doc: Document, command: Command): Document {
       return {
         ...doc,
         sectionIds: doc.sectionIds.filter((id) => id !== command.id),
+        ...(doc.canvas
+          ? {
+              canvas: {
+                ...doc.canvas,
+                order: doc.canvas.order.filter(
+                  (id) => !section.blockIds.includes(id),
+                ),
+                groups: removeMembers(doc.canvas.groups, section.blockIds),
+              },
+            }
+          : {}),
         sections,
         blocks,
       };
@@ -88,7 +110,31 @@ function apply(doc: Document, command: Command): Document {
       availableId(doc, command.block.id);
       return {
         ...doc,
-        blocks: { ...doc.blocks, [command.block.id]: command.block },
+        blocks: {
+          ...doc.blocks,
+          [command.block.id]: doc.canvas
+            ? {
+                ...command.block,
+                design:
+                  command.block.design ??
+                  makeLayer(
+                    command.block.kind === "shape" ||
+                      command.block.kind === "image"
+                      ? command.block.kind
+                      : "text",
+                    { y: Math.min(1000, 64 + doc.canvas.order.length * 30) },
+                  ),
+              }
+            : command.block,
+        },
+        ...(doc.canvas
+          ? {
+              canvas: {
+                ...doc.canvas,
+                order: [...doc.canvas.order, command.block.id],
+              },
+            }
+          : {}),
         sections: {
           ...doc.sections,
           [section.id]: {
@@ -104,13 +150,35 @@ function apply(doc: Document, command: Command): Document {
     }
     case "block.update": {
       const block = requireBlock(doc, command.id);
+      requireUnlocked(doc, [command.id]);
+      const patch = command.patch;
+      const design = patch.design ?? block.design;
+      const updatedDesign =
+        design?.type === "text" && patch.text !== undefined
+          ? {
+              ...design,
+              marks: updateTextPreservingMarks(
+                block.text,
+                patch.text,
+                design.marks,
+              ),
+            }
+          : design;
       return {
         ...doc,
-        blocks: { ...doc.blocks, [block.id]: { ...block, ...command.patch } },
+        blocks: {
+          ...doc.blocks,
+          [block.id]: {
+            ...block,
+            ...patch,
+            ...(updatedDesign ? { design: updatedDesign } : {}),
+          },
+        },
       };
     }
     case "block.delete": {
       requireBlock(doc, command.id);
+      requireUnlocked(doc, [command.id]);
       const blocks = { ...doc.blocks };
       delete blocks[command.id];
       const section = Object.values(doc.sections).find((s) =>
@@ -119,6 +187,15 @@ function apply(doc: Document, command: Command): Document {
       return {
         ...doc,
         blocks,
+        ...(doc.canvas
+          ? {
+              canvas: {
+                ...doc.canvas,
+                order: doc.canvas.order.filter((id) => id !== command.id),
+                groups: removeMembers(doc.canvas.groups, [command.id]),
+              },
+            }
+          : {}),
         sections: {
           ...doc.sections,
           [section.id]: {
@@ -141,6 +218,8 @@ function apply(doc: Document, command: Command): Document {
         },
       };
     }
+    default:
+      return applyCanvas(doc, command);
   }
 }
 /** Validate everything before publishing. Failed batches never modify the input. */

@@ -1,0 +1,404 @@
+.viewport {
+  flex: 1;
+  overflow: auto;
+  overscroll-behavior: contain;
+  min-width: 0;
+  background: #efefec radial-gradient(#20201a20 0.7px, transparent 0.8px) 0
+    0/18px 18px;
+}
+.hint {
+  display: flex;
+  gap: 24px;
+  color: #8d8d85;
+  font-size: 9px;
+  margin: 0 0 20px;
+  flex-shrink: 0;
+}
+.hint:last-child {
+  margin: 22px 0 0;
+}
+.paperBounds {
+  position: relative;
+  flex-shrink: 0;
+}
+.paper {
+  position: relative;
+  transform-origin: top left;
+  box-shadow:
+    0 0 0 1px #14141212,
+    0 3px 7px #14141214,
+    0 30px 60px #1414121f;
+}
+.layer {
+  position: absolute;
+  transform-origin: center;
+  touch-action: none;
+}
+.layer > div[role="button"] {
+  width: 100%;
+  height: 100%;
+  outline: none;
+  cursor: move;
+}
+.layer::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border: 1px solid transparent;
+  pointer-events: none;
+}
+.layer:hover::after {
+  border-color: #2958e877;
+}
+.layer.selected::after {
+  border-color: #2958e8;
+  box-shadow: 0 0 0 1px #fff6;
+}
+.locked > div[role="button"] {
+  cursor: default;
+}
+.resize {
+  position: absolute;
+  right: -4px;
+  bottom: -4px;
+  width: 8px;
+  height: 8px;
+  background: white;
+  border: 1px solid #2958e8;
+  cursor: nwse-resize;
+  z-index: 2;
+  padding: 0;
+  border-radius: 1px;
+  touch-action: none;
+}
+.canvasInput {
+  width: 100%;
+  height: 100%;
+  min-height: 24px;
+  resize: none;
+  padding: 0;
+  border: 0;
+  outline: 1px solid #2958e8;
+  background: #fff;
+  color: #151515;
+}
+.marquee {
+  display: none;
+  position: absolute;
+  z-index: 2000;
+  border: 1px solid #2958e8;
+  background: #2958e815;
+  pointer-events: none;
+}
+.dock {
+  position: absolute;
+  z-index: 15;
+  left: 50%;
+  bottom: 16px;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px;
+  border: 1px solid #20201a2e;
+  border-radius: 14px;
+  background: #fffffcef;
+  backdrop-filter: blur(24px) saturate(1.25);
+  box-shadow:
+    0 4px 12px #1515100c,
+    0 14px 42px #15151012;
+  white-space: nowrap;
+}
+.dock :global([data-ui="button"]) {
+  border-radius: 7px;
+  --ai-size: 32px;
+}
+.rule {
+  width: 1px;
+  height: 22px;
+  background: #20201a24;
+  margin: 0 3px;
+  flex-shrink: 0;
+}
+.toolGroup {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+.modeSwitch {
+  display: flex;
+  padding: 2px;
+  border-radius: 8px;
+  background: #20201a0b;
+}
+.modeSwitch button {
+  height: 28px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 0 8px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: #77776e;
+  cursor: pointer;
+  font-size: 10px;
+}
+.modeSwitch button[aria-pressed="true"] {
+  background: #fff;
+  color: #20201b;
+  box-shadow: 0 1px 3px #00000019;
+}
+.dock .zoom {
+  width: 64px;
+  flex: 0 0 64px;
+}
+.zoom input {
+  height: 30px;
+  border: 1px solid transparent;
+  background: transparent;
+  font-size: 11px;
+  padding: 0 5px;
+  text-align: center;
+  font-weight: 600;
+}
+.zoom input:hover {
+  border-color: #20201a22;
+  background: #fff;
+}
+.picker {
+  padding: 14px;
+  border-color: #20201a24;
+  border-radius: 13px;
+}
+.picker header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11px;
+  margin-bottom: 12px;
+}
+.picker header span {
+  font-size: 10px;
+  color: #8b8b82;
+}
+.picker input {
+  margin-bottom: 10px;
+}
+.shapeGrid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 4px;
+  padding: 3px 4px;
+}
+.shapeGrid button {
+  display: grid;
+  place-items: center;
+  height: 43px;
+  background: #f7f7f3;
+  border: 1px solid transparent;
+  border-radius: 7px;
+  cursor: pointer;
+  color: #35352f;
+}
+.shapeGrid button:hover {
+  color: #2958e8;
+  background: #edf1ff;
+  border-color: #d3ddff;
+}
+.shapeGrid svg {
+  width: 25px;
+  height: 25px;
+}
+.textViewport {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  justify-content: center;
+  padding: 94px 280px 86px;
+  background: #efefec radial-gradient(#20201a1a 0.7px, transparent 0.8px) 0
+    0/18px 18px;
+}
+.copyEditor {
+  width: min(794px, 100%);
+  min-width: 380px;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #20201a20;
+  border-radius: 5px;
+  background: #fff;
+  box-shadow:
+    0 3px 8px #1414120c,
+    0 25px 60px #14141215;
+  overflow: hidden;
+}
+.copyToolbar {
+  position: relative;
+  z-index: 1;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  min-height: 52px;
+  padding: 8px 14px;
+  border-bottom: 1px solid #e5e5df;
+  background: #fffffc;
+}
+.copyToolbar > span {
+  font-size: 10px;
+  color: #77776e;
+  margin-left: auto;
+}
+.copyList {
+  overflow: auto;
+  flex: 1;
+  padding: 28px 28px 54px;
+  scrollbar-gutter: stable;
+}
+.copyBlock {
+  padding: 14px 10px;
+  display: grid;
+  grid-template-columns: 104px minmax(0, 1fr);
+  gap: 18px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+}
+.copyBlock:focus-within {
+  background: #fbfbf8;
+  border-color: #dfdfd9;
+}
+.copyMeta {
+  padding-top: 6px;
+  color: #25251f;
+  font-size: 10px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.copyMeta small {
+  display: block;
+  color: #92928a;
+  font-size: 9px;
+  margin-top: 5px;
+}
+.copyInput {
+  width: 100%;
+  resize: vertical;
+  min-height: 34px;
+  padding: 4px 7px 8px;
+  border: 0;
+  border-radius: 6px;
+  outline: 0;
+  background: transparent;
+}
+.copyInput:focus {
+  background: white;
+  box-shadow: 0 0 0 3px #1f63e015;
+}
+.copyEditor footer {
+  padding: 12px 28px;
+  border-top: 1px solid #ecece7;
+  color: #85857c;
+  font-size: 9px;
+}
+.textEmpty {
+  padding: 50px;
+  text-align: center;
+  color: #8a8a80;
+  font-size: 12px;
+}
+@media (max-width: 1100px) {
+  .textViewport {
+    padding-inline: 250px 260px;
+  }
+  .copyEditor {
+    min-width: 300px;
+  }
+  .copyList {
+    padding: 16px 12px 40px;
+  }
+  .copyBlock {
+    grid-template-columns: 1fr;
+    gap: 5px;
+  }
+}
+@media (max-width: 850px) {
+  .viewport {
+    padding: 90px 20px 130px;
+    align-items: flex-start;
+  }
+  .paperBounds {
+    margin: 0 auto;
+  }
+  .hint {
+    font-size: 8px;
+    gap: 12px;
+    margin-inline: auto;
+  }
+  .textViewport {
+    padding: 82px 14px 120px;
+  }
+  .copyEditor {
+    width: 100%;
+    min-width: 0;
+  }
+  .copyToolbar > span {
+    display: none;
+  }
+  .dock {
+    flex-wrap: wrap;
+    justify-content: center;
+    max-width: calc(100% - 20px);
+    width: max-content;
+    bottom: 12px;
+    gap: 2px;
+  }
+  .dock :global([data-ui="button"]) {
+    --ai-size: 28px;
+  }
+  .toolGroup {
+    gap: 0;
+  }
+  .rule {
+    margin-inline: 1px;
+  }
+  .modeSwitch button {
+    padding-inline: 6px;
+    font-size: 9px;
+  }
+  .dock .zoom {
+    width: 48px;
+    flex-basis: 48px;
+  }
+  .dock > .rule:first-of-type {
+    display: none;
+  }
+}
+
+.stage {
+  min-width: max(100%, 2400px);
+  min-height: max(100%, 2400px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 160px;
+  isolation: isolate;
+}
+.guideX,
+.guideY {
+  display: none;
+  position: absolute;
+  z-index: 1999;
+  pointer-events: none;
+  background: #ee4c91;
+}
+.guideX {
+  top: 0;
+  bottom: 0;
+  width: 1px;
+}
+.guideY {
+  left: 0;
+  right: 0;
+  height: 1px;
+}

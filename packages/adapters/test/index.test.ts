@@ -1,7 +1,8 @@
 import { test, expect } from "bun:test";
 import { createResume } from "@resumi/cv";
 import { createSession } from "@resumi/engine";
-import { parseProposal, previewProposal, commandContract } from "../src/index";
+import { parseProposal, previewProposal } from "../src/index";
+import { commandContract } from "../src/schema";
 test("protocol-independent preview is validated and does not mutate current session", () => {
   const session = createSession(createResume("doc")),
     json = JSON.stringify({

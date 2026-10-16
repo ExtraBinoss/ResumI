@@ -1,62 +1,71 @@
 # Verification record
 
-Local Linux environment, 2026-10-16. Synthetic Alex Morgan / Sam Taylor documents only. The original V1 checkout was read, not modified; its existing PDF edit and untracked agent project were left as found.
+Synthetic Alex Morgan / Sam Taylor documents only. The V1 checkout was read-only: its existing PDF modification and untracked agent project remain exactly as found. No credentials, DNS or production deployment were configured.
 
-## Commands and actual outcomes
+## Final gates
 
-| Gate                  | Evidence / outcome                                                                                                                                                             |
-| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `bun install`         | Locked compatible workspaces; no paid services or credentials needed                                                                                                           |
-| `bun run typecheck`   | Pass, strict TypeScript and generated route types                                                                                                                              |
-| `bun run lint`        | Pass, including Hooks and React Compiler recommended rules                                                                                                                     |
-| `bun run check:files` | Pass, zero files with 600+ lines; Editor CSS has a non-failing 500-line proximity warning                                                                                      |
-| `bun run test`        | 23 tests pass, 0 fail; schemas/commands/history/serialization, renderer, CLI, adapters, IndexedDB, granular subscriptions, serialized overlapping saves and scanner boundaries |
-| `bun run test:engine` | 12 engine tests pass; 100% measured line and function coverage, all engine source modules explicitly imported; enforced minimum 85% each                                       |
-| `bun run test:dev`    | Pass; 2 critical browser flows on a fresh isolated development cache, first-request SSR and absence of the reported hooks/PostCSS regressions                                  |
-| `bun run build`       | Pass; Vite client assets and Cloudflare SSR Worker generated                                                                                                                   |
-| `bun run test:e2e`    | 12 Playwright tests pass on the built application in local workerd preview                                                                                                     |
-| `bun run check`       | Pass; runs all the preceding gates, build and browser checks                                                                                                                   |
-| `git diff --check`    | Pass                                                                                                                                                                           |
+The authoritative combined run is [check.log](../artifacts/check.log). It includes strict types, Hooks/Compiler lint, the <600-line source gate, unit tests, full engine coverage, fresh-cache development, production build and production-runtime browser tests.
 
-Bun reports lines/functions here; branch coverage is not available through this runner and is not claimed. No production deployment, account credential configuration or DNS change was made. Local Worker execution/build establishes runtime compatibility, not proof of an already deployed site.
+| Gate                         | Actual outcome                                                                                                  |
+| ---------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| `bun run typecheck` / `lint` | Pass, strict TS and React Compiler rules                                                                        |
+| `bun run check:files`        | Pass; all handwritten source below 600 lines; Projects CSS has a non-failing proximity warning                  |
+| `bun run test`               | 69 tests, zero failures                                                                                         |
+| `bun run test:engine`        | 44 engine tests; 99.59% lines / 99.38% functions; minimum 85% each, all engine sources included                 |
+| `bun run test:dev`           | Fresh isolated Vite cache, first HTTP SSR response, five browser journeys; no hooks/runtime/PostCSS regressions |
+| `bun run build`              | Real client assets and Cloudflare SSR Worker                                                                    |
+| `bun run test:e2e`           | 22 Chromium journeys against the built local Worker                                                             |
+| `bun run visual:check`       | Three visual/creative journeys pass; [log](../artifacts/visual-check.log); final screenshots opened             |
+| `git diff --check`           | Checked before Git delivery; logs normalized for trailing whitespace only                                       |
 
-## Browser assertions
+Final `bun run check` completed successfully (exit 0), including all 22 production browser journeys. Bun reports lines/functions, not branch coverage. Cloudflare local execution verifies runtime compatibility rather than an already deployed site. GitHub Actions repeats the gate; its remote status is tracked separately on [PR #1](https://github.com/ExtraBinoss/ResumI/pull/1).
 
-- Public route response bodies contain actual SSR content. `/projects` renders a stable shell; direct nested editor navigation recovers a missing document. No browser errors or hydration mismatches in the asserted SSR journey.
-- Landing CTA → persistent project → direct text edit → save → reload → reopen.
-- Agent proposal validation/preview/apply → undo/redo, using the same engine contract. A human edit invalidates an older preview until it is revalidated.
-- Section/block CRUD, section and block reorder, styling after reload and keyboard history.
-- Project rename/duplicate, deletion cancellation and confirmation, portable JSON export and validated import into a distinct project.
-- Real IndexedDB v1 → v2 migration, offline editing after initial load, denied storage feedback and duplicate independence.
-- Two tabs: stale write is refused, unsaved content remains exportable, newer content survives reload.
-- Mobile editing starts with a fitted visible canvas; opening properties closes outline. Public pages have no horizontal overflow at 390 px.
-- Standalone CLI HTML renders all 14 blocks independently, without scripts, using the expected 794 px/A4 CSS and accent.
+## Behavior exercised
 
-The coalesced save drain additionally has a unit test holding a write open while multiple flush requests and another edit arrive. Writes remain serialized, revision numbers advance in order and the latest edit is saved.
+- Actual SSR public response content, nested editor recovery, direct opening and reload at 1440px/390px. Exactly one main region, no leftover loading screen, no hydration errors and viewport-height editor. [Hydration decision](decisions/004-document-hydration.md).
+- Landing → create exactly one project → edit → save → reload → dashboard reopen. Intent prefetch alone does not create an IndexedDB database or document.
+- Dashboard previews, continue editing, search, sorting, grid/list, rename, independent duplication, confirmed/cancelled deletion, JSON import/export.
+- Legacy section/block CRUD, order, styling and keyboard history remain functional. A real IndexedDB v1 database migrates to v2; offline editing survives reopening. Storage denial is actionable; stale-tab writes are refused while unsaved data remains exportable.
+- Freeform layer drag/resize, snapping, marquee and multiselection, grouping/ungrouping, order, visibility, locks, blend/opacity, shapes/gradients/effects, image import and crop, inline text ranges, and Visual/Text editing against the same text/history.
+- Imported real WOFF2 loads as a FontFace on canvas, survives reload and is embedded exactly in portable HTML. A CSS family name alone is insufficient for this assertion.
+- Teammate validates, previews actual geometry/style/source changes, applies through the same commands, and supports undo/redo. A human edit invalidates an older preview.
+- HTML/React drafts, saved activation across Visual/Code switching and reload, source import/export, React hooks, iframe isolation, compiler errors preserving the applied preview, catalog React templates and offline standalone React output.
+- Engine boundary cases include group ownership/order/locks, text-mark splitting, non-duplicated selections and immutable failures, deterministic commands, exact UTF-8 document budgets and export/import limits. CLI compilation never executes user code.
 
-## Visual and rendered evidence
+The Jotai subscription test verifies that editing one block does not notify an unrelated block or parent section. Save-drain tests hold an asynchronous write open while further edits arrive, checking serialized writes and ordered revisions.
 
-Actually opened with image viewing tools and inspected for clipping, spacing, balance, contrast and action visibility:
+## Visual evidence actually inspected
 
-- [Landing desktop](../artifacts/visual/landing-desktop.png) and [mobile](../artifacts/visual/landing-mobile.png).
-- [Projects desktop](../artifacts/visual/projects-desktop.png) and [mobile](../artifacts/visual/projects-mobile.png).
+Screenshots were opened with image tools and checked for spacing, clipping, legible controls and action visibility:
+
+- [Landing desktop](../artifacts/visual/landing-desktop.png), [mobile](../artifacts/visual/landing-mobile.png), [templates mobile](../artifacts/visual/templates-mobile.png).
+- [Dashboard desktop](../artifacts/visual/projects-desktop.png) and [mobile](../artifacts/visual/projects-mobile.png).
 - [Editor desktop](../artifacts/visual/editor-desktop.png) and [mobile](../artifacts/visual/editor-mobile.png).
-- [Templates mobile](../artifacts/visual/templates-mobile.png).
-- [Portable CLI resume](../artifacts/visual/portable-resume.png).
-- [Agent proposal review](../artifacts/visual/agent-review-desktop.png), captured separately in the production preview after loading and validating the deterministic example; [its actual DOM](../artifacts/rendered/agent-review.html) is retained.
+- [Layers/groups](../artifacts/visual/editor-layers-desktop.png), [Text mode](../artifacts/visual/editor-text-desktop.png), [embedded font](../artifacts/visual/editor-font-desktop.png), [Code mode](../artifacts/visual/editor-code-desktop.png), [editable React Studio](../artifacts/visual/editor-react-template-desktop.png).
+- [Teammate review](../artifacts/visual/agent-review-desktop.png), with actual JSON proposal, rendered diff and enabled apply action.
+- [Standalone React](../artifacts/visual/portable-react-resume.png) and [standalone visual](../artifacts/visual/portable-visual-resume.png) exports, opened offline without external requests.
 
-The first development-server inspection exposed optimizer reloads and an invalid font import. A later user report exposed a real cold-start Compiler/runtime failure not covered by the production-only suite. This was reproduced and fixed; a fresh-cache development check is now part of the combined gate. See [ADR 002](decisions/002-cold-development.md). Interaction QA found and fixed inspector restoration after closing the agent panel. Mobile visual review led to one-panel-at-a-time behavior, fitted zoom and a compact teammate button. Final evidence comes from production preview rather than a development overlay.
+[Rendered artifacts](../artifacts/rendered/) retain actual page DOM, computed CSS, command JSON Schema, CLI documents and standalone HTML. [Portable inspection](../artifacts/rendered/portable-inspection.json) confirms 794 × 1123px output, one Profile heading, no runtime errors, and group opacity 0.85 / multiply. [Font evidence](../artifacts/rendered/editor-font-verification.json) confirms one loaded Interface face and the exact embedded 48,256-byte WOFF2. These artifacts contain synthetic content.
 
-[Landing DOM](../artifacts/rendered/landing.html), [editor DOM](../artifacts/rendered/editor.html) and [computed canvas CSS](../artifacts/rendered/canvas-computed.json) were generated and inspected. The CLI actually created [sample.json](../artifacts/rendered/sample.json) and rendered [resume.html](../artifacts/rendered/resume.html), which is a real self-contained HTML/CSS file, not a substitute preview. The [command JSON Schema](../artifacts/rendered/commands.schema.json) is generated by the actual adapter schema.
+Inspection found real issues beyond functional assertions: the split production fallback left a loading screen above the editor; CSS zoom culled initial layer painting; mobile dock sizing wrapped too far; dashboard search was compressed by a full-width select; a non-reactive font stylesheet rendered fallback glyphs despite a valid family name. Each was fixed and rechecked. Production direct/reload and real FontFace regressions now have browser assertions.
 
-Reproduce with `bun run build && bun run test:e2e`; the visual subset is `bun run visual:check`. `BASE_URL=http://127.0.0.1:PORT bun run test:e2e` targets an already-running server. Deterministic artifact filenames are overwritten by each run.
+## Creation profiling
 
-## Responsiveness
+The same script measures three fresh Chromium contexts, 1440 × 1000, a warmed Vite server, 250ms pointer intent and no CPU/network throttle:
 
-[Recorded interaction samples](../artifacts/performance/interactions.json) measure local production-preview project opening and 10 text-input round trips. The latest file is authoritative; values vary by load. These include Playwright transport/assertion overhead, are not frame timings, and do not establish field Core Web Vitals. A separate Jotai subscription test verifies that a one-field edit does not notify an unrelated block or its parent section.
+| Run                                                                    | Median click to canvas | Samples         |
+| ---------------------------------------------------------------------- | ---------------------- | --------------- |
+| [Before](../artifacts/performance/create-before.json)                  | 611ms                  | 588, 611, 702ms |
+| [Final expanded workspace](../artifacts/performance/create-final.json) | 366ms                  | 360, 366, 415ms |
 
-## Release boundaries
+That is about 40% lower in this local comparison, despite the expanded workspace. Compressed Chrome traces are retained beside both JSON files. Run `RESUMI_PROFILE_LABEL=latest bun run profile:create` against an already warmed server; `BASE_URL` selects another server.
 
-All tasks 00–08 are implemented and locally verified, including feature-branch Git delivery and [PR #1](https://github.com/ExtraBinoss/ResumI/pull/1). See [master checklist](../tasks/check-list.md) for the current state. The GitHub Actions workflow repeats the combined check and uploads artifacts. Remote CI status is reported separately on the PR and must not be inferred from local success.
+The changes remove the serial creation route, prefetch code on intent, isolate CLI-only schema generation, use Zod Mini rather than the full browser schema package, and defer the source compiler/runtime and large shape/icon catalogs. Validation remains mandatory.
 
-Browser automation is Chromium only. Broad assistive-technology testing, Firefox/WebKit, authenticated remote persistence, provider inference, freeform layout, automatic pagination, dedicated PDF export and a production deployment remain documented follow-ups.
+These measurements do not include initial Vite compilation, network throttling, field Core Web Vitals or server inference. The intermediate `create-workspace.json` includes a 4.8s development recompilation sample and is retained as diagnostic evidence, not used in the warmed comparison. [Production interaction samples](../artifacts/performance/interactions.json) separately include Playwright transport/assertion overhead for opening and ten edits.
+
+## Reproduction and boundaries
+
+`bun run check` runs every required gate; `bun run visual:check` runs the screenshot subset. `BASE_URL=http://127.0.0.1:PORT bun run test:e2e` targets an existing server. Artifact filenames are deliberately overwritten with the latest run.
+
+Tasks 00–13 describe the initial slice and its user-requested expansion. Browser coverage is Chromium on Linux; real-device and broader assistive-technology testing remain open. Freeform layout is one A4 page with flat groups. Arbitrary HTML/React remains a preserved source representation rather than automatic two-way conversion into layers. React accepts single-file React imports, not arbitrary npm projects. Auth/cloud sync, provider inference, MCP/WebMCP, automatic pagination, dedicated PDF service and production deployment remain outside this delivery.

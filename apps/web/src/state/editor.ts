@@ -7,6 +7,7 @@ import {
   type Command,
   type CommandBatch,
   type Session,
+  type Document,
 } from "@resumi/engine";
 import { projects, storageMessage, type Project } from "../lib/projects";
 
@@ -14,6 +15,8 @@ export const sessionAtom = atom<Session | null>(null);
 export const selectionAtom = atom<{
   sectionId: string;
   blockId?: string;
+  blockIds?: string[];
+  groupId?: string;
 } | null>(null);
 export const saveStatusAtom = atom<"saved" | "saving" | "error">("saved");
 export const saveErrorAtom = atom("");
@@ -54,6 +57,12 @@ export function blockAtom(id: string) {
   }
   return value;
 }
+function prepareSelectors(document: Document) {
+  sectionAtom("");
+  blockAtom("");
+  document.sectionIds.forEach(sectionAtom);
+  Object.keys(document.blocks).forEach(blockAtom);
+}
 export const commandAtom = atom(
   null,
   (get, set, input: Command | CommandBatch) => {
@@ -67,7 +76,9 @@ export const commandAtom = atom(
             actor: { kind: "human", name: "Editor" },
             commands: [input],
           };
-    set(sessionAtom, execute(session, batch));
+    const next = execute(session, batch);
+    prepareSelectors(next.document);
+    set(sessionAtom, next);
   },
 );
 export const undoAtom = atom(null, (get, set) => {
@@ -84,6 +95,7 @@ export function createEditorController(
 ) {
   const store = createStore();
   store.set(sessionAtom, createSession(project.document));
+  prepareSelectors(store.get(sessionAtom)!.document);
   let revision = project.revision,
     saved = store.get(sessionAtom)!.document;
   let timer: ReturnType<typeof setTimeout> | undefined,
@@ -112,18 +124,24 @@ export function createEditorController(
       active = undefined;
     }));
   }
-  const unsubscribe = store.sub(sessionAtom, () => {
-    store.set(saveStatusAtom, "saving");
-    clearTimeout(timer);
-    timer = setTimeout(() => {
-      void flush();
-    }, 180);
-  });
+  let unsubscribe: (() => void) | undefined;
+  function connect() {
+    prepareSelectors(store.get(sessionAtom)!.document);
+    unsubscribe ??= store.sub(sessionAtom, () => {
+      store.set(saveStatusAtom, "saving");
+      clearTimeout(timer);
+      timer = setTimeout(() => {
+        void flush();
+      }, 180);
+    });
+  }
   return {
     store,
+    connect,
     flush,
     dispose() {
-      unsubscribe();
+      unsubscribe?.();
+      unsubscribe = undefined;
       clearTimeout(timer);
       void flush();
       sections.clear();

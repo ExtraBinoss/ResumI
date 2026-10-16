@@ -6,7 +6,7 @@ Make the same engine useful to file-based CLI agents and human review.
 
 ## Scope
 
-Included: the implementation checklist below. Deferred: production deployment, account/cloud synchronization, provider inference, remote MCP/WebMCP, freeform graphics and automatic pagination.
+Included: the implementation checklist below. Deferred: production deployment, account/cloud synchronization, provider inference, remote MCP/WebMCP and automatic pagination.
 
 ## Prerequisites and files
 
