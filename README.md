@@ -52,7 +52,7 @@ packages/
   */test/                  Tests mirror the source hierarchy
 scripts/                   Generic line scanner and enforced engine coverage
 artifacts/                 Synthetic screenshots, rendered HTML/CSS, timings
- tasks/                    Numbered execution plan and master checklist
+tasks/                     Numbered execution plan and master checklist
  docs/                     Architecture, command contract, ADRs, verification
 ```
 

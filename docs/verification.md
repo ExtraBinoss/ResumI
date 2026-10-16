@@ -42,6 +42,7 @@ Actually opened with image viewing tools and inspected for clipping, spacing, ba
 - [Editor desktop](../artifacts/visual/editor-desktop.png) and [mobile](../artifacts/visual/editor-mobile.png).
 - [Templates mobile](../artifacts/visual/templates-mobile.png).
 - [Portable CLI resume](../artifacts/visual/portable-resume.png).
+- [Agent proposal review](../artifacts/visual/agent-review-desktop.png), captured separately in the production preview after loading and validating the deterministic example; [its actual DOM](../artifacts/rendered/agent-review.html) is retained.
 
 The first development-server inspection exposed transient optimizer reloads and an invalid font import; those were corrected before the clean production-runtime run. Interaction QA found and fixed inspector restoration after closing the agent panel. Mobile visual review led to one-panel-at-a-time behavior, fitted zoom and a compact teammate button. Final evidence comes from production preview rather than a development overlay.
 
@@ -55,6 +56,6 @@ Reproduce with `bun run build && bun run test:e2e`; the visual subset is `bun ru
 
 ## Release boundaries
 
-All tasks 00–07 are implemented and locally verified; task 08 additionally tracks final Git/PR delivery. See [master checklist](../tasks/check-list.md) for the current state. The GitHub Actions workflow repeats the combined check and uploads artifacts. Remote CI status is reported separately on the PR and must not be inferred from local success.
+All tasks 00–08 are implemented and locally verified, including feature-branch Git delivery and [PR #1](https://github.com/ExtraBinoss/ResumI/pull/1). See [master checklist](../tasks/check-list.md) for the current state. The GitHub Actions workflow repeats the combined check and uploads artifacts. Remote CI status is reported separately on the PR and must not be inferred from local success.
 
 Browser automation is Chromium only. Broad assistive-technology testing, Firefox/WebKit, authenticated remote persistence, provider inference, freeform layout, automatic pagination, dedicated PDF export and a production deployment remain documented follow-ups.

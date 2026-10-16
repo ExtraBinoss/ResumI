@@ -12,7 +12,7 @@ Source of progress truth. Checkmarks below describe verified local behavior, not
 - [x] [Visual editor](05-editor-and-ux.md): Critical interaction journeys pass, including keyboard history, styles after reload and block CRUD. Desktop/mobile editor screenshots opened. Timing samples are retained, not described as field benchmarks.
 - [x] [Agent command interface](06-agent-cli.md): CLI handler tests cover successes and argument, validation and file errors. Real CLI sample/schema/HTML artifacts were generated; browser proposal preview, reject, apply and undo pass.
 - [x] [Browser and visual QA](07-visual-qa.md): 12 Playwright checks pass on production Worker preview. Screenshots and DOM/CSS artifacts are saved and actually opened. Public layouts show no horizontal overflow.
-- [ ] [Hardening and delivery](08-hardening-and-release.md): Local hardening verified; final commit/PR pending.
+- [x] [Hardening and delivery](08-hardening-and-release.md): Combined local check passes; feature commit pushed and [PR #1](https://github.com/ExtraBinoss/ResumI/pull/1) opened.
 
 ## Hard gates
 
@@ -26,7 +26,7 @@ Source of progress truth. Checkmarks below describe verified local behavior, not
 - [x] Generic scanner enforces <600 lines, with exclusions and threshold tests.
 - [x] Combined local check, strict types, lint, tests, production build and browser checks pass.
 - [x] README, AGENTS, ADRs and numbered tasks document actual implementation and deferrals.
-- [ ] Feature commit and pull request created.
+- [x] Feature commit and [pull request #1](https://github.com/ExtraBinoss/ResumI/pull/1) created.
 
 ## Explicitly outside this milestone
 

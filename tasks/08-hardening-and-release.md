@@ -21,7 +21,7 @@ Dependencies: 00–07. Relevant files: `scripts, .github/workflows/check.yml, RE
 - [x] Add GitHub Actions and retain synthetic verification evidence.
 - [x] Document architecture, engine contract, V1 audit, local limitations and reproduction commands.
 - [x] Update every numbered task and master checklist to verified state.
-- [ ] Commit on feature branch and open a PR; do not deploy production.
+- [x] Commit on feature branch and open a PR; do not deploy production.
 
 ## Acceptance criteria
 
@@ -41,4 +41,4 @@ A source file above 500 lines is a warning; 600+ is a failure. Release deferrals
 
 ## Status
 
-In progress — final commit/PR pending; local implementation and checks verified.
+Done — implementation and local verification complete. Feature commit pushed; [PR #1](https://github.com/ExtraBinoss/ResumI/pull/1) opened. Remote CI is tracked separately from local results.
