@@ -1,0 +1,16 @@
+# ResumI development policy
+
+React renders the application; the framework-free TypeScript engine owns document rules.
+
+- Use Bun, strict TypeScript, React 19, Mantine controls, Jotai, CSS Modules/tokens and named imports from `lucide-react`. Read [architecture](docs/architecture.md), [engine](docs/engine.md), and [task checklist](tasks/check-list.md).
+- Engine code must never import React, Jotai, browser APIs, providers, or runtime-specific code. Every human or agent document mutation goes through runtime-validated engine commands. Do not duplicate rules in UI, CLI or storage.
+- `useEffect` is only for actual external lifecycle synchronization (subscriptions, IndexedDB loading, DOM observers, keyboard listeners), always with cleanup. Do not use effects to derive/filter/sort values, synchronize redundant state, execute user actions, fetch route data, or mirror documents between stores.
+- The Jotai session is canonical in-memory state. Use stable per-section/block atoms and derived atoms, `useAtomValue`/`useSetAtom`, structural sharing and local transient interaction state. Never subscribe the whole canvas to the document. Do not create atoms during render.
+- Keep components pure and cohesive, StrictMode enabled, React Compiler active and Hooks/Compiler lint rules enabled. Avoid reflexive useMemo/useCallback/React.memo; require measured benefit or an identity contract. Never suppress lint to hide an architectural issue.
+- Independently editable blocks render independently. No hidden layout reads or pagination recalculations per keypress. Zoom/drag uses transient transforms; commit meaningful commands. Batch future agent streams. Measure typing/selection/project-opening before optimization.
+- Use framework loaders for server data. No IndexedDB/window access during SSR. Never pretend the server or CLI can read a browser's private database. Hydration must be deterministic. Introduce a query cache only for demonstrated server-state needs.
+- Lucide icons: direct named imports, consistent 16–20px size/stroke, accessible labels on icon-only controls, decorative icons aria-hidden. Brand marks are a vetted documented exception, never invented.
+- Every handwritten source is <600 physical lines. Run `bun run check:files`; split by responsibility. Tests mirror src under test/. Engine coverage must be >=85% lines and functions, including unimported source files.
+- Run `bun run check` before delivery. For visible changes run `bun run visual:check`, open screenshots and inspect DOM/CSS. Use synthetic resumes only. Update numbered tasks with actual evidence, not optimistic checkmarks.
+- Before review: is each effect necessary, is data duplicated, does one edit rerender irrelevant blocks, does any mutation bypass validation, is SSR browser-safe, is the component compiler-compatible, are critical behaviors tested/measured, are icons consistent?
+- Keep the legacy cv-creator repository read-only. Never deploy production, configure credentials, or perform destructive repository operations without explicit user authorization.
