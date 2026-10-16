@@ -18,7 +18,7 @@ The authoritative combined run is [check.log](../artifacts/check.log). It includ
 | `bun run visual:check`       | Three visual/creative journeys pass; [log](../artifacts/visual-check.log); final screenshots opened             |
 | `git diff --check`           | Checked before Git delivery; logs normalized for trailing whitespace only                                       |
 
-Final `bun run check` completed successfully (exit 0), including all 22 production browser journeys. Bun reports lines/functions, not branch coverage. Cloudflare local execution verifies runtime compatibility rather than an already deployed site. GitHub Actions repeats the gate; its remote status is tracked separately on [PR #1](https://github.com/ExtraBinoss/ResumI/pull/1).
+Final `bun run check` completed successfully (exit 0), including all 22 production browser journeys. Feature commit `c987d77` is pushed and PR #1 describes the expanded implementation; the master checklist records completed local/Git delivery. Bun reports lines/functions, not branch coverage. Cloudflare local execution verifies runtime compatibility rather than an already deployed site. GitHub Actions repeats the gate; its remote status is tracked separately on [PR #1](https://github.com/ExtraBinoss/ResumI/pull/1).
 
 ## Behavior exercised
 

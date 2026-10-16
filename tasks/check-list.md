@@ -35,7 +35,7 @@ Tasks 00–13 are implemented and locally verified. The final combined gate pass
 - [x] Fresh-cache development SSR, direct/reload hydration regression and no hooks/PostCSS warning suppression.
 - [x] Code preview uses opaque iframe/CSP; CLI compiles without executing user components.
 - [x] Final `bun run check`: 69 unit tests, 44 engine tests, five cold-dev and 22 production browser journeys, plus production build.
-- [ ] Final follow-up commit pushed; PR description updated; remote CI status checked.
+- [x] Final follow-up commit pushed; PR description updated; remote CI status checked.
 
 ## Explicit boundaries
 
