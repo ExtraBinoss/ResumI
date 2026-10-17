@@ -120,7 +120,11 @@
   z-index: 150;
   min-width: var(--anchor-width);
   max-height: min(330px, var(--available-height));
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--muted-foreground) 42%, transparent)
+    transparent;
   border: 1px solid var(--line);
   border-radius: var(--radius);
   background: var(--panel);

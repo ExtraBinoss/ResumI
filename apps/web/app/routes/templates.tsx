@@ -8,10 +8,14 @@ export const meta = () => [
 ];
 export function loader() {
   return {
-    templates: templates.map((template) => ({
-      ...template,
-      html: renderTemplateResume(createResume("preview-document", template.id)),
-    })),
+    templates: templates
+      .filter((template) => !template.legacy)
+      .map((template) => ({
+        ...template,
+        html: renderTemplateResume(
+          createResume("preview-document", template.id),
+        ),
+      })),
     css: resumeCss,
   };
 }

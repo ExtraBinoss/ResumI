@@ -26,7 +26,7 @@ export function ResumePreview({
       </Suspense>
     );
   return (
-    <div className={styles.viewport} aria-hidden="true">
+    <div className={styles.viewport} aria-hidden="true" inert>
       <style>{css}</style>
       <div
         className={styles.paper}

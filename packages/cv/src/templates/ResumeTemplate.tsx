@@ -1,39 +1,8 @@
-import type { CSSProperties } from "react";
-import type { Block, Document } from "@resumi/engine";
+import type { Document } from "@resumi/engine";
+import Resume from "./CodeResume";
+import { resumeData } from "../source/starter";
 
-/** Trusted, repository-authored templates are ordinary React components. */
-export function ResumeBlock({ block }: { block: Block }) {
-  const Tag = block.kind === "heading" ? "h1" : "p";
-  return (
-    <Tag
-      className={`resume-block resume-${block.kind}`}
-      data-block-id={block.id}
-    >
-      {block.text}
-    </Tag>
-  );
-}
-
-export function ResumeTemplate({
-  document,
-  style,
-}: {
-  document: Document;
-  style: CSSProperties;
-}) {
-  return (
-    <article className="resume" aria-label="Resume" style={style}>
-      {document.sectionIds.map((id) => {
-        const section = document.sections[id];
-        return (
-          <section className="resume-section" data-section-id={id} key={id}>
-            {section.title && <h2 className="resume-title">{section.title}</h2>}
-            {section.blockIds.map((blockId) => (
-              <ResumeBlock key={blockId} block={document.blocks[blockId]} />
-            ))}
-          </section>
-        );
-      })}
-    </article>
-  );
+/** SSR only renders repository-authored components; it never evaluates document source. */
+export function ResumeTemplate({ document }: { document: Document }) {
+  return <Resume data={resumeData(document)} />;
 }

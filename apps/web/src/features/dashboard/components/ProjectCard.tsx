@@ -15,15 +15,17 @@ import type { Project } from "../../../lib/projects";
 import { downloadFile, fileName } from "../../../lib/files";
 import { ResumePreview } from "../../../components/ResumePreview";
 import { preloadEditor } from "../../../lib/preload-editor";
-import styles from "../styles/Dashboard.module.css";
+import styles from "../styles/ProjectCard.module.css";
 export function ProjectCard({
   project,
+  compact,
   onRename,
   onDuplicate,
   onDelete,
   onPreview,
 }: {
   project: Project;
+  compact: boolean;
   onRename: () => void;
   onDuplicate: () => void;
   onDelete: () => void;
@@ -32,10 +34,10 @@ export function ProjectCard({
   const reducedMotion = useReducedMotion();
   return (
     <motion.article
-      className={styles.project}
+      className={`${styles.project} ${compact ? styles.compact : ""}`}
       layout={!reducedMotion ? "position" : false}
       initial={false}
-      whileHover={reducedMotion ? undefined : { y: -3 }}
+      whileHover={reducedMotion ? undefined : { y: -4 }}
       transition={{ duration: 0.22, ease: "easeOut" }}
     >
       <Link
@@ -60,13 +62,15 @@ export function ProjectCard({
           </div>
         </div>
         <div className={styles.projectInfo}>
-          <h3>{project.document.name}</h3>
+          <h3 title={project.document.name}>{project.document.name}</h3>
           <p>
             Edited{" "}
-            {new Date(project.updatedAt).toLocaleDateString("en-GB", {
-              day: "numeric",
-              month: "short",
-            })}
+            <time dateTime={project.updatedAt}>
+              {new Date(project.updatedAt).toLocaleDateString("en-GB", {
+                day: "numeric",
+                month: "short",
+              })}
+            </time>
           </p>
         </div>
       </Link>

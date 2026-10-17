@@ -1,8 +1,10 @@
 # React templates and portable source resumes
 
-Templates in `packages/cv/src/templates` are React components. `ResumeTemplate.tsx` renders structured Studio/Editorial documents on the server; `CodeResume.tsx` is also the editable starter for React Studio/React Editorial. Template data is supplied separately from the component. The SSR renderer is a separate `@resumi/cv/templates` entry, so creating a visual document does not load React's server renderer into the editor.
+Templates in `packages/cv/src/templates` are React components. `CodeResume.tsx` supplies four distinct professional layouts: Studio (two columns), Editorial (serif with a section rail), Classic (single column), and Profile (portrait with a contact/skills sidebar). `ResumeTemplate.tsx` renders the trusted component with validated document data on the server; it never evaluates user source. The SSR renderer is a separate `@resumi/cv/templates` entry, so creating a visual document does not load React's server renderer into the editor.
 
-The catalog offers visual and React templates. A React template creates a validated document with `source: { format: "react", code: "…" }`. Open the project name menu and choose **Edit source** to author HTML/React in a dialog. The dock keeps **Visual / Text**; source is not a third workspace mode.
+The public catalog prioritizes these four React templates. Legacy visual `studio`/`editorial` IDs remain valid for existing CLI/API clients and the fast blank-editor flow. A React template creates a validated document with `source: { format: "react", code: "…" }`. Open the project name menu and choose **Edit source** to author HTML/React in a dialog. The dock keeps **Visual / Text**; source is not a third workspace mode.
+
+Professional sample content is added only to React documents through validated commands. The single-file TSX keeps readable data and layout code at the top; one asset section at the end embeds the licensed Inter font, optional fictional portrait and required licenses. Contact icons use vetted inline Lucide SVG paths. Standalone output therefore needs no remote image, font or icon service. The portrait's [generation prompt and provenance](../packages/cv/assets/README.md) are retained with the asset.
 
 Opening the Source dialog does not modify the resume. **Start with HTML** copies the current rendered layout into a draft; **Start with React** builds a TSX component from its structured text. This uses semantic content, not reverse-engineering of arbitrary positioned layers.
 
@@ -40,11 +42,11 @@ Sucrase compiles TSX without running it. Applied source is displayed only inside
 
 `renderDocumentHtml(document)` validates the document and dispatches to the selected representation. Inactive source is preserved in JSON while HTML export renders the canvas/structured document. Active source React exports contain a bundled React/ReactDOM runtime and compiled component in one HTML file; they work offline without a CDN. The CLI compiles source but never executes user components. A standalone exported React file executes its component when opened in a browser. Printing active source is done from that exported file; the application does not write source into a same-origin popup.
 
-The dialog imports `.html`, `.htm`, `.tsx` and `.jsx` files, and exports original source or portable rendered HTML. JSON preserves the complete document. To author through CLI, use `document apply` with `source.set`, then `document render ... --format html --out ...`. `document create --template react-studio` and `react-editorial` are available alongside visual starters. Reviewed agent batches enter through **Project menu → Import commands**.
+The dialog imports `.html`, `.htm`, `.tsx` and `.jsx` files, and exports original source or portable rendered HTML. JSON preserves the complete document. To author through CLI, use `document apply` with `source.set`, then `document render ... --format html --out ...`. `document create --template react-studio`, `react-editorial`, `react-classic` and `react-profile` are available alongside legacy visual starters. Reviewed agent batches enter through **Project menu → Import commands**.
 
 UI ownership lives in `apps/web/src/features/editor/source`, with its CSS in the adjacent editor `styles` directory. Shared isolated preview components stay in `src/components`; compilation and portable rendering stay in `packages/cv/src/source`. Feature UI never adds document rules to the engine's source contract.
 
-Run `bun scripts/build-source-runtime.ts` after updating React or `CodeResume.tsx`. It regenerates `runtime.generated.json` and `template.generated.json` from source; these are checked-in generated assets. The compiler/runtime are lazy chunks, separate from normal visual project creation.
+Run `bun run templates:assets` after updating the template component, portrait or embedded font; it deterministically regenerates the asset JSON, source snapshot and copied licenses. Run `bun run source:runtime` after updating React to regenerate the offline runtime. Generated assets are checked in. The compiler/runtime are lazy chunks, separate from normal visual project creation.
 
 ## Verification
 

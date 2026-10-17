@@ -51,6 +51,8 @@ The dashboard uses the repository and read-only previews. It reaches the editor 
 
 `/projects` and `/templates` share the `routes/dashboard.tsx` layout, sidebar and repository-list provider. Sibling navigation preserves that shell and animates only incoming content; old data routes are not retained after their loader data expires. The catalog still uses its server loader. The shared list holds repository snapshots for browsing, never a second canonical editor session.
 
+The landing showcases those same trusted templates, with selectable variants and a working Visual/Text demonstration. The library uses bounded, centered document cards, title-aligned preview/actions and a neutral overlay. Classic, Editorial, Studio and Profile are real TSX layouts rather than presentation-only images. Profile includes a synthetic portrait; contact icons and licensed typography travel with portable output. Legacy visual IDs remain available to CLI/API clients. Asset generation and source preservation are documented in [code templates](code-templates.md).
+
 `app/` owns route loaders, SSR, hydration and page transitions. `workers/` owns the Cloudflare request handler. IndexedDB is a browser adapter, never a server or CLI data source.
 
 ## State, rendering and persistence

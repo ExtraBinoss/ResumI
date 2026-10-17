@@ -5,8 +5,8 @@ import {
   useNavigationType,
   useOutlet,
 } from "react-router";
-import { motion } from "motion/react";
-import { Files, LayoutTemplate } from "lucide-react";
+import { motion, useReducedMotion } from "motion/react";
+import { Files, FileText, LayoutTemplate } from "lucide-react";
 import { Brand } from "../../../components/Brand";
 import { SettingsMenu } from "../../../components/SettingsMenu";
 import { preloadEditor } from "../../../lib/preload-editor";
@@ -35,8 +35,13 @@ function DashboardSidebar() {
   const { records } = useDashboardProjects();
   return (
     <aside className={styles.sidebar}>
-      <Brand />
-      <DashboardNavigation />
+      <div className={styles.sidebarBrand}>
+        <Brand />
+      </div>
+      <div className={styles.sidebarSection}>
+        <h2>Library</h2>
+        <DashboardNavigation />
+      </div>
       {!!records?.length && (
         <div className={styles.recentNav}>
           <h2>Recent</h2>
@@ -48,7 +53,8 @@ function DashboardSidebar() {
               onFocus={preloadEditor}
               aria-label={`Recent: ${project.document.name}`}
             >
-              {project.document.name}
+              <FileText size={15} strokeWidth={1.5} aria-hidden />
+              <span>{project.document.name}</span>
             </Link>
           ))}
         </div>
@@ -63,6 +69,7 @@ function DashboardShell() {
   const outlet = useOutlet(),
     { pathname } = useLocation(),
     navigation = useNavigationType();
+  const reducedMotion = useReducedMotion();
   return (
     <div className={styles.dashboard}>
       <DashboardSidebar />
@@ -76,7 +83,9 @@ function DashboardShell() {
         </header>
         <motion.div
           key={pathname}
-          initial={navigation === "POP" ? false : { opacity: 0, y: 6 }}
+          initial={
+            navigation === "POP" || reducedMotion ? false : { opacity: 0, y: 5 }
+          }
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.16, ease: [0.2, 0.8, 0.2, 1] }}
         >

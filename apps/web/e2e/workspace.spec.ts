@@ -7,6 +7,43 @@ async function openWorkspace(page: Page) {
   ).toBeVisible();
 }
 
+test("long blend menus keep the final mode reachable by wheel and undoable", async ({
+  page,
+}) => {
+  await openWorkspace(page);
+  await page
+    .getByRole("button", { name: "Select layer Name", exact: true })
+    .click();
+  const blend = page.getByRole("combobox", {
+    name: "Selection blend mode",
+    exact: true,
+  });
+  await blend.click();
+  const popup = page.locator('[data-slot="select-content"]');
+  const last = page.getByRole("option", { name: "Luminosity", exact: true });
+  await expect(last).not.toBeInViewport();
+  const box = (await popup.boundingBox())!;
+  await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+  await page.mouse.wheel(0, 600);
+  await expect(last).toBeInViewport({ ratio: 1 });
+  await last.click();
+  await expect(blend.locator('[data-slot="select-value"]')).toHaveText(
+    "Luminosity",
+  );
+  const layer = page
+    .getByRole("article", { name: "Resume canvas" })
+    .locator("[data-layer-id]")
+    .filter({
+      has: page.getByRole("heading", { name: "Alex Morgan", exact: true }),
+    });
+  await expect(layer).toHaveCSS("mix-blend-mode", "luminosity");
+  await page.getByRole("button", { name: "Undo", exact: true }).click();
+  await expect(blend.locator('[data-slot="select-value"]')).toHaveText(
+    "Normal",
+  );
+  await expect(layer).toHaveCSS("mix-blend-mode", "normal");
+});
+
 test("permanent panels and native styled text editing preserve content across reload", async ({
   page,
 }) => {

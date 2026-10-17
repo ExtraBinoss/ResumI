@@ -22,7 +22,7 @@ Source of progress truth. Checkmarks describe verified local behavior; remote CI
 - [x] [12 — shadcn with Base UI](12-shadcn-base-ui.md): official CLI, 18 editable components, no Mantine/Radix imports or dependencies.
 - [x] [13 — React/HTML source](13-react-and-html-source.md): React-authored templates, isolated source preview, saved activation, hooks, portable offline exports and shared agent commands.
 
-Tasks 00–13 record earlier verified milestones. Tasks 14–16 supersede their interface and file organization. Current verification is recorded below.
+Tasks 00–13 record earlier verified milestones. Tasks 14–17 supersede their interface and file organization. Current verification is recorded below.
 
 ## Required gates
 
@@ -34,9 +34,9 @@ Tasks 00–13 record earlier verified milestones. Tasks 14–16 supersede their 
 - [x] Actual desktop/mobile screenshot inspection and standalone exports opened offline.
 - [x] Fresh-cache development SSR, direct/reload hydration regression and no hooks/PostCSS warning suppression.
 - [x] Code preview uses opaque iframe/CSP; CLI compiles without executing user components.
-- [x] Current `bun run check`: 93 unit tests, 66 engine tests, five cold-dev and 28 production browser journeys, plus production build.
-- [x] Literal `bun run visual:check`: three journeys pass; screenshots opened and inspected. Final radius follow-up passes a fresh build and six relevant journeys.
-- [x] Current interface revision pushed; PR description updated; actual latest remote CI status inspected on the PR (remote outcome remains tracked there).
+- [x] Current `bun run check`: 96 unit tests, 66 engine tests, five cold-dev and 32 production browser journeys, plus production build.
+- [x] Literal `bun run visual:check`: three journeys pass; final desktop/mobile, light/dark and complete A4 screenshots opened and inspected.
+- [x] Feature branch and PR established; remote verification is tracked separately on the PR and inspected at delivery.
 
 ## Explicit boundaries
 
@@ -52,3 +52,4 @@ Local browser storage and session-local undo limitations are described in the RE
 - [x] [14 — Vue interface and polish](14-vue-interface-and-polish.md): actual reference UI, permanent panels, native editing, image decorations, settings/Motion and dashboard.
 - [x] [15 — Feature organization](15-feature-organization.md): dashboard/editor/canvas ownership, colocated styles and verified imports.
 - [x] [16 — macOS design](16-macos-design.md): shared materials, coherent controls, centered document title and numeric steppers.
+- [x] [17 — Apple product and templates](17-apple-product-and-templates.md): substantial landing/library redesign and distinct professional TSX resumes with offline imagery.

@@ -67,9 +67,10 @@ export function Projects() {
   return (
     <>
       <main className={styles.main}>
-        <div className={styles.heading}>
-          <div>
+        <header className={styles.heading}>
+          <div className={styles.collectionTitle}>
             <h1>Your resumes</h1>
+            {records && <span className={styles.count}>{records.length}</span>}
           </div>
           <div className={styles.actions}>
             <FileButton
@@ -90,6 +91,7 @@ export function Projects() {
                   variant="default"
                   leftSection={<Upload aria-hidden />}
                   disabled={busy || records === null}
+                  className={styles.importButton}
                 >
                   Import
                 </Button>
@@ -110,15 +112,14 @@ export function Projects() {
               New resume
             </Button>
           </div>
-        </div>
+        </header>
         {error && (
           <Alert color="red" title="Could not complete that action" mb="md">
             {error}
           </Alert>
         )}
         <div className={styles.listHeader}>
-          <h2>Resumes {records && <span>{records.length}</span>}</h2>
-          <div className={styles.listTools}>
+          <div className={styles.search}>
             <TextInput
               aria-label="Search resumes"
               placeholder="Search…"
@@ -127,6 +128,8 @@ export function Projects() {
               onChange={(e) => setSearch(e.currentTarget.value)}
               size="xs"
             />
+          </div>
+          <div className={styles.listTools}>
             <Select
               aria-label="Sort resumes"
               value={sort}
@@ -151,7 +154,7 @@ export function Projects() {
                   value: "grid",
                   label: (
                     <span aria-label="Grid view">
-                      <Grid2X2 size={14} />
+                      <Grid2X2 size={16} aria-hidden />
                     </span>
                   ),
                 },
@@ -159,7 +162,7 @@ export function Projects() {
                   value: "list",
                   label: (
                     <span aria-label="List view">
-                      <Rows3 size={14} />
+                      <Rows3 size={16} aria-hidden />
                     </span>
                   ),
                 },
@@ -167,45 +170,50 @@ export function Projects() {
             />
           </div>
         </div>
-        {!records && !error && (
-          <div className={styles.empty}>
-            <Loader size="sm" />
-          </div>
-        )}
-        {filtered?.length === 0 && (
-          <div className={styles.empty}>
-            <FileText size={30} strokeWidth={1.2} aria-hidden />
-            <h2>{search ? "No results" : "No resumes yet"}</h2>
-            {!search && (
-              <Button component={Link} to="/templates" variant="light">
-                Choose a template <ArrowUpRight size={15} aria-hidden />
-              </Button>
-            )}
-          </div>
-        )}
-        <motion.div
-          layout={!reducedMotion}
-          className={`${styles.grid} ${view === "list" ? styles.listView : ""}`}
-          transition={{ duration: 0.24, ease: "easeOut" }}
-        >
-          {filtered?.map((project) => (
-            <ProjectCard
-              key={project.id}
-              project={project}
-              onRename={() => {
-                setRenaming(project);
-                setName(project.document.name);
-              }}
-              onDuplicate={() =>
-                void run(async () => {
-                  await projects.duplicate(project.id);
-                })
-              }
-              onDelete={() => setDeleting(project)}
-              onPreview={() => setPreview(project)}
-            />
-          ))}
-        </motion.div>
+        <section className={styles.collection} aria-label="Resume library">
+          {!records && !error && (
+            <div className={styles.empty}>
+              <Loader size="sm" />
+            </div>
+          )}
+          {filtered?.length === 0 && (
+            <div className={styles.empty}>
+              <span className={styles.emptyPaper}>
+                <FileText size={36} strokeWidth={1.2} aria-hidden />
+              </span>
+              <h2>{search ? "No results" : "No resumes yet"}</h2>
+              {!search && (
+                <Button component={Link} to="/templates" variant="light">
+                  Choose a template <ArrowUpRight size={15} aria-hidden />
+                </Button>
+              )}
+            </div>
+          )}
+          <motion.div
+            layout={!reducedMotion}
+            className={`${styles.grid} ${view === "list" ? styles.listView : ""}`}
+            transition={{ duration: 0.24, ease: "easeOut" }}
+          >
+            {filtered?.map((project) => (
+              <ProjectCard
+                key={project.id}
+                project={project}
+                compact={view === "list"}
+                onRename={() => {
+                  setRenaming(project);
+                  setName(project.document.name);
+                }}
+                onDuplicate={() =>
+                  void run(async () => {
+                    await projects.duplicate(project.id);
+                  })
+                }
+                onDelete={() => setDeleting(project)}
+                onPreview={() => setPreview(project)}
+              />
+            ))}
+          </motion.div>
+        </section>
       </main>
       <ProjectPreview project={preview} onClose={() => setPreview(null)} />
       <Modal

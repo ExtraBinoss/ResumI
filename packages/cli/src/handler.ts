@@ -10,7 +10,7 @@ import { commandContract } from "@resumi/adapters/schema";
 export const HELP = `ResumI — portable resume tools for humans and agents
 Usage: bun run resumi document <command> [arguments]
 
-  create [--out FILE] [--template studio|editorial|react-studio|react-editorial]
+  create [--out FILE] [--template ${templates.map((template) => template.id).join("|")}]
   inspect FILE              Read the complete normalized document (JSON)
   validate FILE             Validate document schema and invariants (JSON)
   apply FILE PATCH [--out FILE]   Apply one atomic v1 command batch
@@ -110,7 +110,7 @@ export async function runCli(
       if (!templates.some((t) => t.id === template))
         throw new CliError(
           2,
-          "Unknown template. Choose studio, editorial, react-studio or react-editorial.",
+          `Unknown template. Choose ${templates.map((template) => template.id).join(", ")}.`,
         );
       const document = createResume(io.id(), template);
       if (flags.has("--out"))
