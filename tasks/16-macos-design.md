@@ -12,7 +12,7 @@ Use Apple's desktop design conventions for a coherent document application: rest
 - [x] Add themed numeric steppers using native min/max/step editing and shadcn buttons; engine commands remain the mutation boundary.
 - [x] Verify actual light/dark desktop/mobile rendering and numeric-step history behavior.
 - [x] Pass the combined gate and literal visual check; update delivery evidence.
-- [ ] Push the revision and update PR.
+- [x] Push the revision and update PR.
 
 ## References and boundaries
 
@@ -20,4 +20,4 @@ Apple's [toolbars](https://developer.apple.com/design/human-interface-guidelines
 
 ## Status
 
-Implementation and local verification complete: 93 unit tests, 66 engine tests, five cold-development journeys, 28 production browser journeys and the literal visual check (three journeys) pass. Actual desktop/mobile light/dark, menu-hover and Source screenshots were opened and inspected. Git delivery is being finalized. No subagents were restarted.
+Complete — 93 unit tests, 66 engine tests, five cold-development journeys, 28 production browser journeys and the literal visual check (three journeys) pass. Actual desktop/mobile light/dark, menu-hover and Source screenshots were opened and inspected. The revision is pushed and [PR #1](https://github.com/ExtraBinoss/ResumI/pull/1) is updated; its live remote CI status is separate from the local results. No subagents were restarted.

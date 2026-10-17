@@ -24,7 +24,7 @@ Tasks 00–13, read-only V1 source, shadcn Base UI, Motion, engine/CV decoration
 - [x] Use themed edge-aligned scrollbars/fades, smooth anchored wheel zoom and themed Visual/Text/dock transitions.
 - [x] Replace the opening screen with a restrained accessible orb; defer the picker and command review from the initial module path.
 - [x] Complete browser, visual, cold-development and engine verification.
-- [ ] Push the integrated revision and update PR.
+- [x] Push the integrated revision and update PR.
 
 ## Acceptance and verification
 
@@ -36,4 +36,4 @@ Motion respects reduced motion. Canvas data still uses the single validated engi
 
 ## Status
 
-Implementation and local verification complete: 93 unit tests, 66 engine tests, five cold-development journeys and 28 production journeys; literal visual check passes. Final radius adjustments pass a fresh build and six relevant journeys. Git delivery pending.
+Complete — implementation and local verification pass: 93 unit tests, 66 engine tests, five cold-development journeys, 28 production journeys and the literal visual check. The integrated revision is pushed and [PR #1](https://github.com/ExtraBinoss/ResumI/pull/1) describes the resulting workspace; live remote CI is tracked there.

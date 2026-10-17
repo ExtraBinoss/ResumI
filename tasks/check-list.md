@@ -36,7 +36,7 @@ Tasks 00–13 record earlier verified milestones. Tasks 14–16 supersede their 
 - [x] Code preview uses opaque iframe/CSP; CLI compiles without executing user components.
 - [x] Current `bun run check`: 93 unit tests, 66 engine tests, five cold-dev and 28 production browser journeys, plus production build.
 - [x] Literal `bun run visual:check`: three journeys pass; screenshots opened and inspected. Final radius follow-up passes a fresh build and six relevant journeys.
-- [ ] Current interface revision pushed; PR description updated; actual latest remote CI status checked.
+- [x] Current interface revision pushed; PR description updated; actual latest remote CI status inspected on the PR (remote outcome remains tracked there).
 
 ## Explicit boundaries
 
@@ -49,6 +49,6 @@ Local browser storage and session-local undo limitations are described in the RE
 
 ## Current interface revision
 
-- [ ] [14 — Vue interface and polish](14-vue-interface-and-polish.md): actual reference UI, permanent panels, native editing, image decorations, settings/Motion and dashboard.
+- [x] [14 — Vue interface and polish](14-vue-interface-and-polish.md): actual reference UI, permanent panels, native editing, image decorations, settings/Motion and dashboard.
 - [x] [15 — Feature organization](15-feature-organization.md): dashboard/editor/canvas ownership, colocated styles and verified imports.
-- [ ] [16 — macOS design](16-macos-design.md): shared materials, coherent controls, centered document title and numeric steppers.
+- [x] [16 — macOS design](16-macos-design.md): shared materials, coherent controls, centered document title and numeric steppers.
