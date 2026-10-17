@@ -1,4 +1,5 @@
 import { Link } from "react-router";
+import { useTranslation } from "react-i18next";
 import { ArrowUpRight } from "lucide-react";
 import { renderResume, resumeCss } from "@resumi/cv";
 import type { Project } from "../../../lib/projects";
@@ -13,11 +14,12 @@ export function ProjectPreview({
   project: Project | null;
   onClose: () => void;
 }) {
+  const { t } = useTranslation();
   return (
     <Modal
       opened={!!project}
       onClose={onClose}
-      title={project?.document.name ?? "Resume preview"}
+      title={project?.document.name ?? t("dashboard.resumePreview")}
       size={860}
     >
       {project && (
@@ -42,7 +44,7 @@ export function ProjectPreview({
               to={`/editor/${project.id}`}
               rightSection={<ArrowUpRight size={16} aria-hidden />}
             >
-              Edit resume
+              {t("dashboard.editResume")}
             </Button>
           </div>
         </>

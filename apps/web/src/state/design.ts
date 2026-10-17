@@ -1,6 +1,7 @@
 import { atom } from "jotai";
 import {
   makeLayer,
+  groupFor,
   type Layer,
   type LayerPatch,
   type Command,
@@ -60,6 +61,50 @@ export const selectLayersAtom = atom(
         : null,
     );
     set(textRangeAtom, null);
+  },
+);
+/** Pointer/keyboard selection is shared by the canvas and its layer list. */
+export const selectLayerAtom = atom(
+  null,
+  (
+    get,
+    set,
+    input: {
+      id: string;
+      additive?: boolean;
+      wholeGroup?: boolean;
+      preserveSelection?: boolean;
+    },
+  ) => {
+    const doc = get(sessionAtom)?.document;
+    if (!doc?.blocks[input.id]?.design) return;
+    const selected = get(selectedIdsAtom),
+      group = groupFor(doc, input.id);
+    if (input.additive) {
+      set(selectLayersAtom, {
+        ids: selected.includes(input.id)
+          ? selected.filter((id) => id !== input.id)
+          : [...selected, input.id],
+      });
+    } else if (
+      input.preserveSelection !== false &&
+      selected.includes(input.id)
+    ) {
+      set(selectLayersAtom, {
+        ids: selected,
+        groupId:
+          group &&
+          selected.length === group.elementIds.length &&
+          group.elementIds.every((id) => selected.includes(id))
+            ? group.id
+            : undefined,
+      });
+    } else
+      set(selectLayersAtom, {
+        ids:
+          input.wholeGroup !== false && group ? group.elementIds : [input.id],
+        groupId: input.wholeGroup !== false ? group?.id : undefined,
+      });
   },
 );
 export const enableVisualAtom = atom(null, (get, set) => {

@@ -4,6 +4,7 @@ import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { Popover, ActionIcon, Loader } from "../../ui";
 import { Shapes, Smile, Upload } from "lucide-react";
 import { SHAPE_CATALOG, type LayerPatch } from "@resumi/engine";
+import { loadAssets } from "@resumi/assets";
 import { useSetAtom, useAtomValue, useStore } from "jotai";
 import { shapeToolAtom, toolAtom } from "../../state/design";
 import { sessionAtom } from "../../state/editor";
@@ -25,26 +26,14 @@ import styles from "./styles/Palette.module.css";
 type Vector = NonNullable<LayerPatch["vector"]>;
 type Item = Vector & { id: string; name: string; category?: string };
 type Category = "icons" | "brands" | "imported";
-type BrandCatalog = {
-  credits: Record<string, string>;
-  icons: (Item & { source: string; license: string })[];
-};
 let gallery: Promise<Item[]> | undefined,
   icons: Promise<Item[]> | undefined,
   brands: Promise<Item[]> | undefined;
 function loadIcons() {
-  return (icons ??= import("../../data/icons.json").then(
-    (module) => module.default,
-  ));
+  return (icons ??= loadAssets("icons"));
 }
 function loadBrands() {
-  return (brands ??= import("../../data/brands.json").then((module) => {
-    const catalog = module.default as BrandCatalog;
-    return catalog.icons.map((item) => ({
-      ...item,
-      attribution: `${catalog.credits[item.license]}\nSource: ${item.source}`,
-    }));
-  }));
+  return (brands ??= loadAssets("brands"));
 }
 function vectorKey(item: Item) {
   return JSON.stringify([
@@ -107,10 +96,8 @@ export function ShapePicker({ icon = false }: { icon?: boolean }) {
     setLoading(true);
     try {
       if (!icon) {
-        const data = await (gallery ??= import("../../data/shapes.json").then(
-          (module) => module.default,
-        ));
-        setItems([...SHAPE_CATALOG, ...data]);
+        const data = await (gallery ??= loadAssets("shapes"));
+        setItems(data);
       } else if (next === "icons") setItems(await loadIcons());
       else if (next === "brands") setBrandItems(await loadBrands());
     } catch (error) {

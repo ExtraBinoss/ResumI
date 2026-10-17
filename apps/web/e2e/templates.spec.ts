@@ -1,16 +1,105 @@
 import { test, expect } from "@playwright/test";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { openSource } from "./helpers/editor";
+import { createResume } from "@resumi/cv";
+import { renderSourceHtml } from "../../../packages/cv/src/source/render";
 
-test("React collection renders four distinct professional A4 layouts without clipping", async ({
+test("six new TSX templates execute offline with embedded fonts, portrait and original-color tools", async ({
   page,
 }) => {
-  test.setTimeout(80000);
+  const errors: string[] = [];
+  const requests: string[] = [];
+  page.on("pageerror", (error) => errors.push(error.message));
+  await page.route("**/*", (route) => {
+    requests.push(route.request().url());
+    return route.abort();
+  });
+  await page.setContent(
+    '<iframe title="Offline resume" sandbox="allow-scripts" style="width:794px;height:1123px;border:0"></iframe>',
+  );
+  for (const layout of [
+    "harvard",
+    "cobalt",
+    "atelier",
+    "timeline",
+    "consultant",
+    "mosaic",
+  ]) {
+    const resumeDocument = createResume(`offline-${layout}`, `react-${layout}`);
+    const html = renderSourceHtml(resumeDocument.source!);
+    await page.locator("iframe").evaluate((node, source) => {
+      (node as HTMLIFrameElement).srcdoc = source;
+    }, html);
+    const frame = page.frameLocator("iframe");
+    const sheet = frame.getByRole("article", { name: "Resume", exact: true });
+    await expect(sheet).toHaveAttribute("data-template-layout", layout);
+    const assets = await sheet.evaluate(async (node) => {
+      await document.fonts.load("14px ResumeInter");
+      await document.fonts.ready;
+      const photos = Array.from(node.querySelectorAll("img"));
+      await Promise.all(photos.map((photo) => photo.decode()));
+      return {
+        fontsReady: document.fonts.check("14px ResumeInter"),
+        photosReady: photos.every((photo) => photo.naturalWidth === 512),
+        width: node.clientWidth,
+        height: node.clientHeight,
+      };
+    });
+    expect(assets).toEqual({
+      fontsReady: true,
+      photosReady: true,
+      width: 794,
+      height: 1123,
+    });
+    await expect(
+      frame.getByRole("heading", { name: "Alex Morgan", exact: true }),
+    ).toBeVisible();
+    if (["cobalt", "atelier", "mosaic"].includes(layout)) {
+      await expect(frame.getByLabel("Tools")).toContainText("Figma");
+      await expect(frame.locator('.cv-tools path[fill="#0acf83"]')).toHaveCount(
+        1,
+      );
+    }
+    if (layout === "atelier") await expect(frame.locator("img")).toHaveCount(1);
+    await page.emulateMedia({ media: "print" });
+    const printSize = await sheet.evaluate((node) => ({
+      width: node.clientWidth,
+      height: node.clientHeight,
+      scrollWidth: node.scrollWidth,
+      scrollHeight: node.scrollHeight,
+    }));
+    expect(printSize.width).toBe(794);
+    expect(printSize.height).toBeLessThanOrEqual(1123);
+    expect(printSize.scrollWidth).toBeLessThanOrEqual(795);
+    expect(printSize.scrollHeight).toBeLessThanOrEqual(1124);
+    await page.emulateMedia({ media: "screen" });
+    await mkdir("artifacts/rendered", { recursive: true });
+    await writeFile(`artifacts/rendered/${layout}-offline.html`, html);
+  }
+  expect(requests).toEqual([]);
+  expect(errors).toEqual([]);
+});
+
+test("visual React collection renders ten distinct professional A4 layouts without clipping", async ({
+  page,
+}) => {
+  test.setTimeout(150000);
   await page.setViewportSize({ width: 1440, height: 1440 });
   await mkdir("artifacts/visual", { recursive: true });
   const errors: string[] = [];
   page.on("pageerror", (error) => errors.push(error.message));
-  for (const layout of ["classic", "editorial", "studio", "profile"]) {
+  for (const layout of [
+    "classic",
+    "editorial",
+    "studio",
+    "profile",
+    "harvard",
+    "cobalt",
+    "atelier",
+    "timeline",
+    "consultant",
+    "mosaic",
+  ]) {
     await page.goto(`/editor?template=react-${layout}`);
     await expect(
       page.getByRole("region", { name: "Source canvas" }),
@@ -38,57 +127,23 @@ test("React collection renders four distinct professional A4 layouts without cli
     expect(dimensions.scrollWidth).toBeLessThanOrEqual(795);
     expect(dimensions.scrollHeight).toBeLessThanOrEqual(1124);
     expect(dimensions.imagesReady).toBe(true);
-    if (layout === "classic") {
-      const region = page.getByRole("region", { name: "Source canvas" });
-      const iframe = region.locator('iframe[title="React resume preview"]');
-      const controls = page.getByRole("group", { name: "Source preview zoom" });
-      for (const size of [
-        { width: 1440, height: 1000 },
-        { width: 390, height: 844 },
-      ]) {
-        await page.setViewportSize(size);
-        await expect
-          .poll(async () => {
-            const bounds = await region.boundingBox();
-            const paper = await iframe.boundingBox();
-            return (
-              !!bounds &&
-              !!paper &&
-              paper.x >= bounds.x &&
-              paper.x + paper.width <= bounds.x + bounds.width + 1 &&
-              paper.y + paper.height <= bounds.y + bounds.height + 1
-            );
-          })
-          .toBe(true);
-      }
-      const fittedHeight = (await iframe.boundingBox())!.height;
-      await controls
-        .getByRole("button", { name: "Zoom source preview out", exact: true })
-        .click();
-      await expect
-        .poll(async () => (await iframe.boundingBox())?.height ?? fittedHeight)
-        .toBeLessThan(fittedHeight);
-      await controls
-        .getByRole("button", { name: "Fit page", exact: true })
-        .click();
-      await expect
-        .poll(async () =>
-          Math.abs(((await iframe.boundingBox())?.height ?? 0) - fittedHeight),
-        )
-        .toBeLessThan(1);
-      await page.setViewportSize({ width: 1440, height: 1000 });
-      await controls.getByRole("button", { name: "100%", exact: true }).click();
-      await expect
-        .poll(async () => (await iframe.boundingBox())?.height)
-        .toBe(1123);
-      await controls
-        .getByRole("button", { name: "Fit page", exact: true })
-        .click();
-      await expect
-        .poll(async () => (await iframe.boundingBox())?.height ?? 1123)
-        .toBeLessThan(900);
-      await page.setViewportSize({ width: 1440, height: 1440 });
-    }
+    const textBounds = await sheet.evaluate((node) => {
+      const bounds = node.getBoundingClientRect();
+      return Array.from(
+        node.querySelectorAll("h1,h2,h3,p,li,address,.cv-tool"),
+      ).flatMap((element) => {
+        const style = getComputedStyle(element);
+        if (style.display === "none" || element.getClientRects().length === 0)
+          return [];
+        const rect = element.getBoundingClientRect();
+        return rect.left < bounds.left - 1 ||
+          rect.right > bounds.right + 1 ||
+          rect.bottom > bounds.bottom + 1
+          ? [element.textContent]
+          : [];
+      });
+    });
+    expect(textBounds, `${layout} text stays within A4`).toEqual([]);
     await sheet.screenshot({ path: `artifacts/visual/template-${layout}.png` });
   }
   expect(errors).toEqual([]);

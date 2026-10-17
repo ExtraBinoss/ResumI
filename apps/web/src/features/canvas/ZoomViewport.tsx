@@ -5,21 +5,28 @@ import { useCanvasPan } from "./useCanvasPan";
 import styles from "./styles/Canvas.module.css";
 import viewportStyles from "./styles/Viewport.module.css";
 
-/** The text workspace uses exactly the canvas scale, anchoring and pan controller. */
+/** Source, text and structured views use the canvas scale and gesture controller. */
 export function ZoomViewport({
   children,
   width = 794,
   height = 900,
   className = "",
   onBlankClick,
+  initialFit,
+  contained = false,
 }: {
   children: ReactNode;
   width?: number;
   height?: number;
   className?: string;
   onBlankClick?: () => void;
+  initialFit?: string;
+  contained?: boolean;
 }) {
-  const pan = useCanvasPan(),
+  const pan = useCanvasPan({
+      contained,
+      initialFit: initialFit ? { id: initialFit, width, height } : undefined,
+    }),
     zoom = useAtomValue(zoomAtom);
   return (
     <div

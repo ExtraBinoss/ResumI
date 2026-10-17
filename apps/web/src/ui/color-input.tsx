@@ -1,4 +1,12 @@
-import { lazy, Suspense, useId, useState, type HTMLAttributes } from "react";
+import {
+  lazy,
+  Suspense,
+  useEffect,
+  useEffectEvent,
+  useId,
+  useState,
+  type HTMLAttributes,
+} from "react";
 import { Button } from "../components/ui/button";
 import {
   Popover,
@@ -17,6 +25,8 @@ type ColorInputProps = Omit<FieldProps, "rightSection"> & {
   value: string;
   onChange?: (value: string) => void;
   onChangeEnd?: (value: string) => void;
+  /** Paint a disposable preview; null restores the committed document. */
+  onPreview?: (value: string | null) => void;
   format?: string;
   swatches?: string[];
   eyeDropperButtonProps?: HTMLAttributes<HTMLButtonElement>;
@@ -29,6 +39,7 @@ export function ColorInput({
   value,
   onChange,
   onChangeEnd,
+  onPreview,
   label,
   description,
   error,
@@ -46,6 +57,8 @@ export function ColorInput({
     [open, setOpen] = useState(false);
   const accessibleLabel =
     ariaLabel ?? (typeof label === "string" ? label : "Color");
+  const restorePreview = useEffectEvent(() => onPreview?.(null));
+  useEffect(() => () => restorePreview(), []);
   return (
     <Field
       id={id}
@@ -59,6 +72,7 @@ export function ColorInput({
         open={open}
         onOpenChange={(next) => {
           if (next) setDraft(value);
+          else onPreview?.(null);
           setOpen(next);
         }}
       >
@@ -105,11 +119,16 @@ export function ColorInput({
               value={draft}
               alpha={/^#[0-9a-f]{8}$/i.test(value)}
               swatches={swatches}
-              change={setDraft}
+              change={(color) => {
+                onPreview?.(color);
+                setDraft(color);
+              }}
               commit={(color) => {
+                onPreview?.(null);
                 onChange?.(color);
                 onChangeEnd?.(color);
               }}
+              cancel={() => onPreview?.(null)}
             />
           </Suspense>
         </PopoverContent>

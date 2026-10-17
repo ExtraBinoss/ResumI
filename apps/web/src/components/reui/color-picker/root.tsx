@@ -18,6 +18,7 @@ export function ColorPicker({
   defaultValue = null,
   onValueChange,
   onValueCommit,
+  onValueCancel,
   format = "hex",
   alpha = false,
   swatches,
@@ -68,7 +69,10 @@ export function ColorPicker({
   useLayoutEffect(() => {
     latest.current = { value: raw, color: display };
   });
-  const interaction = useRef<{ from: string | null } | null>(null);
+  const interaction = useRef<{
+    from: string | null;
+    color: ColorPickerColor;
+  } | null>(null);
   const focusTarget = useRef<HTMLElement | null>(null);
   const fieldRef = useRef<HTMLInputElement | null>(null);
   const resetRef = useRef(() => {});
@@ -104,7 +108,10 @@ export function ColorPicker({
   };
 
   const startInteraction = () => {
-    interaction.current = { from: latest.current.value };
+    interaction.current = {
+      from: latest.current.value,
+      color: latest.current.color,
+    };
   };
 
   const endInteraction = () => {
@@ -113,6 +120,20 @@ export function ColorPicker({
     if (started && started.from !== latest.current.value) {
       onValueCommit?.(latest.current.value);
     }
+  };
+  const cancelInteraction = () => {
+    const started = interaction.current;
+    interaction.current = null;
+    if (!started) return;
+    const changed = latest.current.value !== started.from;
+    latest.current = { value: started.from, color: started.color };
+    setHeld({
+      value: started.from,
+      color: started.from === null ? null : started.color,
+    });
+    if (value === undefined) setUncontrolled(started.from);
+    if (changed) onValueChange?.(started.from);
+    onValueCancel?.();
   };
 
   /* The fields report the format they show, so a copy takes what is seen. */
@@ -152,6 +173,7 @@ export function ColorPicker({
     emit,
     startInteraction,
     endInteraction,
+    cancelInteraction,
     change: (next) => {
       startInteraction();
       emit(next);

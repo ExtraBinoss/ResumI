@@ -20,6 +20,7 @@ test("long blend menus keep the final mode reachable by wheel and undoable", asy
   });
   await blend.click();
   const popup = page.locator('[data-slot="select-content"]');
+  await expect(popup).toBeVisible();
   const last = page.getByRole("option", { name: "Luminosity", exact: true });
   await expect(last).not.toBeInViewport();
   const box = (await popup.boundingBox())!;

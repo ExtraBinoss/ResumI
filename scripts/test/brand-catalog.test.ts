@@ -1,6 +1,6 @@
 import { expect, test } from "bun:test";
 import { vectorSchema } from "../../packages/engine/src/canvas/schema";
-import catalog from "../../apps/web/src/data/brands.json";
+import catalog from "../../packages/assets/data/brands.json";
 
 test("all fifty local brand vectors validate and retain pinned source licenses", () => {
   expect(catalog.icons).toHaveLength(50);

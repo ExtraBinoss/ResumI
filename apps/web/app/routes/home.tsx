@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { Link, useLoaderData, useNavigation } from "react-router";
 import { motion, useReducedMotion } from "motion/react";
-import { createResume, resumeCss, templates } from "@resumi/cv";
-import { renderTemplateResume } from "@resumi/cv/templates";
+import {
+  templatePreviews,
+  templatePreviewCss,
+} from "../../src/lib/template-previews.server";
 import {
   ArrowRight,
   ArrowUpRight,
@@ -21,6 +23,10 @@ import {
 import { PublicHeader, PublicFooter } from "../../src/components/Brand";
 import { ResumePreview } from "../../src/components/ResumePreview";
 import { preloadEditor } from "../../src/lib/preload-editor";
+import {
+  templatePreviewFontCss,
+  templatePreviewHtml,
+} from "../../src/lib/template-preview-assets";
 import styles from "../../src/styles/Landing.module.css";
 
 export const meta = () => [
@@ -33,7 +39,7 @@ export const meta = () => [
 ];
 export function loader() {
   const choices = ["react-profile", "react-classic", "react-studio"];
-  const featured = templates.filter((template) =>
+  const featured = templatePreviews.filter((template) =>
     choices.includes(template.id),
   );
   const previews = (
@@ -41,47 +47,20 @@ export function loader() {
       ? choices.flatMap((id) =>
           featured.filter((template) => template.id === id),
         )
-      : templates.slice(0, 3)
+      : templatePreviews.slice(0, 3)
   ).map((template) => {
-    const document = createResume(`landing-${template.id}`, template.id);
     return {
       id: template.id,
       name: template.name.replace(/^React /, ""),
-      html: renderTemplateResume(document),
-      writing: {
-        name:
-          Object.values(document.blocks).find(
-            (block) => block.kind === "heading",
-          )?.text ?? "Alex Morgan",
-        role:
-          Object.values(document.blocks).find(
-            (block) => block.kind === "subtitle",
-          )?.text ?? "Product Designer",
-        sections: document.sectionIds
-          .map((id) => document.sections[id])
-          .filter((section) => section.title)
-          .slice(0, 2)
-          .map((section) => ({
-            title: section.title,
-            text: section.blockIds
-              .map((id) => document.blocks[id].text)
-              .filter(Boolean)
-              .slice(0, 3),
-          })),
-      },
+      html: template.html,
+      writing: template.writing,
     };
   });
-  return { previews, css: resumeCss };
+  return { previews, css: templatePreviewCss };
 }
 type Preview = ReturnType<typeof loader>["previews"][number];
 
-function ResumeShowcase({
-  previews,
-  css,
-}: {
-  previews: Preview[];
-  css: string;
-}) {
+function ResumeShowcase({ previews }: { previews: Preview[] }) {
   const [selectedId, setSelected] = useState(previews[0].id);
   const reduced = useReducedMotion();
   const selected =
@@ -119,7 +98,7 @@ function ResumeShowcase({
                   : { type: "spring", stiffness: 170, damping: 24 }
               }
             >
-              <ResumePreview html={preview.html} css={css} />
+              <ResumePreview html={templatePreviewHtml(preview.html)} css="" />
             </motion.div>
           );
         })}
@@ -178,7 +157,7 @@ function WritingPreview({ preview }: { preview: Preview }) {
     </article>
   );
 }
-function EditingPreview({ preview, css }: { preview: Preview; css: string }) {
+function EditingPreview({ preview }: { preview: Preview }) {
   const [mode, setMode] = useState("visual");
   const reduced = useReducedMotion();
   return (
@@ -208,7 +187,7 @@ function EditingPreview({ preview, css }: { preview: Preview; css: string }) {
             transition={{ duration: reduced ? 0 : 0.18 }}
           >
             <div className={styles.detailPaper}>
-              <ResumePreview html={preview.html} css={css} />
+              <ResumePreview html={templatePreviewHtml(preview.html)} css="" />
             </div>
           </motion.div>
         </TabsContent>
@@ -234,6 +213,7 @@ export default function Home() {
     previews.find((preview) => preview.id === "react-studio") ?? previews[0];
   return (
     <div className={styles.page}>
+      <style data-template-preview-styles>{templatePreviewFontCss + css}</style>
       <PublicHeader />
       <main>
         <section className={styles.hero}>
@@ -269,7 +249,7 @@ export default function Home() {
               </Link>
             </div>
           </div>
-          <ResumeShowcase previews={previews} css={css} />
+          <ResumeShowcase previews={previews} />
         </section>
         <section
           className={styles.workflows}
@@ -295,7 +275,7 @@ export default function Home() {
               <ArrowRight size={17} aria-hidden />
             </Link>
           </div>
-          <EditingPreview preview={editingPreview} css={css} />
+          <EditingPreview preview={editingPreview} />
         </section>
         <section className={styles.finish} aria-labelledby="finish-heading">
           <p className={styles.eyebrow}>

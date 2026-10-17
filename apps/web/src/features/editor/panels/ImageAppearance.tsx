@@ -4,6 +4,7 @@ import { type Layer, type LayerPatch } from "@resumi/engine";
 import { designCommandAtom } from "../../../state/design";
 import { ActionIcon, ColorInput, NumberInput, Select } from "../../../ui";
 import styles from "../styles/Inspector.module.css";
+import { useColorPreview } from "./useColorPreview";
 
 export function ImageBorderFields({
   id,
@@ -13,6 +14,7 @@ export function ImageBorderFields({
   layer: Extract<Layer, { type: "image" }>;
 }) {
   const dispatch = useSetAtom(designCommandAtom);
+  const preview = useColorPreview(id);
   const border = layer.border ?? {
     width: 0,
     color: "#151515",
@@ -42,6 +44,7 @@ export function ImageBorderFields({
         <ColorInput
           aria-label="Border color"
           value={border.color}
+          onPreview={(color) => preview({ kind: "border", id, layer }, color)}
           onChangeEnd={(color) =>
             patch({ border: { ...border, color, width: border.width || 1 } })
           }
@@ -90,6 +93,7 @@ export function ShadowFields({
   layer: Extract<Layer, { type: "shape" | "image" }>;
 }) {
   const dispatch = useSetAtom(designCommandAtom);
+  const preview = useColorPreview(id);
   const shadow = layer.shadow;
   function patch(value: LayerPatch) {
     dispatch({ type: "layer.update", ids: [id], patch: value });
@@ -121,6 +125,9 @@ export function ShadowFields({
             <ColorInput
               aria-label="Shadow color"
               value={shadow.color}
+              onPreview={(color) =>
+                preview({ kind: "shadow", id, layer }, color)
+              }
               onChangeEnd={(color) => patch({ shadow: { ...shadow, color } })}
             />
           </div>

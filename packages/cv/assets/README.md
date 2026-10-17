@@ -10,8 +10,14 @@ Templates embed the optimized asset as a data URL so standalone HTML does not re
 
 ## Offline assets and licenses
 
-The templates embed the Inter Latin variable WOFF2 font (48,256 bytes), distributed under the [SIL Open Font License](inter-license.txt), and code-native contact icons using vetted Lucide paths under the [ISC license](lucide-license.txt). The complete licenses travel inside the portable template's style comment. Classic omits the portrait; only Profile includes the synthetic photo.
+The templates embed the Inter Latin variable WOFF2 font (48,256 bytes), distributed under the [SIL Open Font License](inter-license.txt), and code-native contact icons using vetted Lucide paths under the [ISC license](lucide-license.txt). The complete licenses travel inside the portable template's style comment. Profile and Atelier include the synthetic photo. Other layouts omit it entirely.
 
 Run `bun scripts/build-template-assets.ts` after changing the portrait, font or `CodeResume.tsx`. It regenerates `src/templates/assets.generated.json` and the single-file TSX snapshot in `src/source/template.generated.json`. This does not rebuild or change the standalone React runtime. The existing `bun scripts/build-source-runtime.ts` command remains the runtime regeneration command when React itself changes.
 
 The human-editable TSX keeps content and layout at the top. Embedded binary data is isolated in an assets section at the bottom. The synthetic sample's career history and metrics are illustrative and do not describe a real user's professional history.
+
+## Brand tool marks
+
+Cobalt, Atelier and Mosaic include selected original-color Figma, TypeScript, HTML, CSS, Storybook, Sketch, Adobe Illustrator and Blender marks. Geometry and MIT credits are selected from `packages/assets/data/brands.json`, whose pinned provenance and license copies are documented in the shared asset package. Each portable source contains only its selected marks, original source URLs and the complete Devicon license. These identify the fictional applicant’s tools; they do not imply employment, sponsorship or endorsement.
+
+`CodeResume.tsx`, `TemplateContent.tsx`, `ExtendedLayouts.tsx`, `extended-css.ts` and `types.ts` are flattened by `scripts/template-source.ts` during asset regeneration. The source remains a single editable TSX component with no unresolved imports or remote assets.

@@ -1,22 +1,15 @@
-import { createInstance, type i18n } from "i18next";
 import { I18nextProvider, useTranslation } from "react-i18next";
 import { useEffect, useState, type ReactNode } from "react";
-import { interfaceLocale, resources } from "./resources";
-
-export function createInterfaceLanguage(locale: string): i18n {
-  const instance = createInstance();
-  void instance.init({
-    lng: interfaceLocale(locale),
-    fallbackLng: "en",
-    resources,
-    initAsync: false,
-    interpolation: { escapeValue: false },
-  });
-  return instance;
-}
-function LanguageDomSync() {
+import { resources } from "./resources";
+import {
+  createInterfaceLanguage,
+  replaceInterfaceResources,
+} from "./interface-language";
+function LanguageDomSync({ dictionaries }: { dictionaries: typeof resources }) {
   const { i18n } = useTranslation();
   useEffect(() => {
+    // Fast Refresh preserves useState, so the external store needs the new bundles.
+    replaceInterfaceResources(i18n, dictionaries);
     const sync = () => {
       document.documentElement.lang = i18n.language;
     };
@@ -25,7 +18,7 @@ function LanguageDomSync() {
     return () => {
       i18n.off("languageChanged", sync);
     };
-  }, [i18n]);
+  }, [i18n, dictionaries]);
   return null;
 }
 /** One isolated instance for each SSR/hydration tree. No browser reads during render. */
@@ -39,13 +32,8 @@ export function InterfaceLanguage({
   const [instance] = useState(() => createInterfaceLanguage(locale));
   return (
     <I18nextProvider i18n={instance}>
-      <LanguageDomSync />
+      <LanguageDomSync dictionaries={resources} />
       {children}
     </I18nextProvider>
   );
-}
-export function setInterfaceLanguage(instance: i18n, locale: string): void {
-  const next = interfaceLocale(locale);
-  document.cookie = `resumi-ui-language=${next}; Path=/; Max-Age=31536000; SameSite=Lax`;
-  void instance.changeLanguage(next);
 }

@@ -8,7 +8,9 @@ SearchInput is a shared input with at most six rotating hints and optional SVG p
 
 The font list renders at most eleven rows; the palette renders at most forty grid items around its viewport. Font rows subscribe to a visibility-driven preload queue with at most three background downloads. Leaving the viewport or unmounting removes queued work; newer visible rows have priority. An already-running shared download may finish and populate its cache, but never invokes a stale row callback. Samples reserve their height and show a neutral placeholder until the actual FontFace has loaded; hover separately previews the selected document content. Source discovery/import remains available while the family list is unified and categories filter by style.
 
-Dashboard navigation keeps the sidebar mounted and animates incoming opacity only. It does not translate, scale or animate grid dimensions during route changes, keeping text on its final pixel grid.
+Dashboard navigation keeps an opaque centered header mounted outside the library's fixed scroll viewport and animates incoming content opacity only. Navigation labels stay on their final pixel grid while their background pill moves. Resumes and Templates share one search-toolbar component; desktop/mobile EN/FR tests require identical input coordinates. Filtering does not resize the header or move the page scrollbar. Recent-menu typeahead and other overlays retain their own keyboard input.
+
+The [initial DevTools observation](../artifacts/performance/library-search-before.json) did not conclusively reproduce the reported raster jitter: fonts, geometry and sidebar mutations remained stable, despite a changing document height. After replacing that shell, [light/dark screenshot comparisons](../artifacts/performance/library-search-stability.json) filter six synthetic projects to zero and restore them, then scroll the list. Header geometry is identical; only one or two soft-shadow pixels differ by one color-channel level in Chromium. This is a rendering regression check, not a controlled performance improvement claim.
 
 ## Reproducing the measurement
 

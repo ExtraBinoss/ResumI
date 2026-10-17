@@ -77,8 +77,8 @@ export function CanvasText({
       store.sub(selectionAtom, () => {
         const selected = store.get(selectionAtom);
         if (
-          selected?.blockId !== block.id &&
-          !selected?.blockIds?.includes(block.id)
+          selected?.blockId !== block.id ||
+          (selected.blockIds?.length ?? 1) !== 1
         ) {
           input.current?.blur();
           finish();
@@ -158,7 +158,9 @@ export function CanvasText({
       suppressContentEditableWarning
       spellCheck
       style={style}
-      onPointerDown={(event) => event.stopPropagation()}
+      onPointerDown={(event) => {
+        if (!event.ctrlKey && !event.metaKey) event.stopPropagation();
+      }}
       onPointerUp={capture}
       onKeyUp={capture}
       onInput={sync}

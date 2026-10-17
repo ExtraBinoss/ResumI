@@ -41,9 +41,10 @@ export function EditorDock() {
     setError = useSetAtom(designErrorAtom),
     input = useRef<HTMLInputElement>(null);
   const sourceActive = !!source && source.enabled !== false;
-  const visual = !sourceActive && mode !== "text";
+  const visual = sourceActive || mode !== "text";
+  const editableVisual = visual && !sourceActive;
   function chooseMode(next: "visual" | "text") {
-    const active = visual ? "visual" : sourceActive ? null : "text";
+    const active = visual ? "visual" : "text";
     const target =
       active === next ? (next === "visual" ? "text" : "visual") : next;
     enable();
@@ -90,7 +91,7 @@ export function EditorDock() {
         aria-label="Editor tools"
       >
         <AnimatePresence initial={false}>
-          {visual && (
+          {editableVisual && (
             <motion.div
               key="tools"
               className={styles.dockSection}
@@ -194,10 +195,10 @@ export function EditorDock() {
           </Button>
           <Button
             variant="ghost"
-            aria-pressed={mode === "text" && !sourceActive}
+            aria-pressed={!visual}
             onClick={() => chooseMode("text")}
           >
-            {mode === "text" && !sourceActive && (
+            {!visual && (
               <motion.span
                 layoutId="editor-mode"
                 className={styles.modeHighlight}
@@ -212,62 +213,48 @@ export function EditorDock() {
             {t("editor.text")}
           </Button>
         </motion.div>
-        <AnimatePresence initial={false}>
-          {!sourceActive && (
-            <motion.div
-              key="zoom"
-              className={styles.dockSection}
-              initial={{ width: 0, opacity: 0 }}
-              animate={{ width: "auto", opacity: 1 }}
-              exit={{ width: 0, opacity: 0 }}
-              transition={{
-                duration: reduced ? 0 : 0.2,
-                ease: [0.2, 0.8, 0.2, 1],
-              }}
+        <motion.div layout="position" className={styles.dockSection}>
+          <span className={styles.rule} />
+          <Tooltip label="Zoom out">
+            <ActionIcon
+              aria-label="Zoom out"
+              variant="subtle"
+              color="gray"
+              disabled={zoom <= 15}
+              onClick={() => setZoom((current) => current - 10)}
             >
-              <span className={styles.rule} />
-              <Tooltip label="Zoom out">
-                <ActionIcon
-                  aria-label="Zoom out"
-                  variant="subtle"
-                  color="gray"
-                  disabled={zoom <= 15}
-                  onClick={() => setZoom((current) => current - 10)}
-                >
-                  <Minus size={16} aria-hidden />
-                </ActionIcon>
-              </Tooltip>
-              <div className={styles.zoom}>
-                <Input
-                  aria-label="Canvas zoom"
-                  type="number"
-                  value={zoom}
-                  style={{ width: `${String(zoom).length}ch` }}
-                  min={15}
-                  max={250}
-                  step={1}
-                  onChange={(event) => {
-                    const value = event.currentTarget.valueAsNumber;
-                    if (Number.isFinite(value))
-                      setZoom(Math.min(250, Math.max(15, value)));
-                  }}
-                />
-                <span aria-hidden>%</span>
-              </div>
-              <Tooltip label="Zoom in">
-                <ActionIcon
-                  aria-label="Zoom in"
-                  variant="subtle"
-                  color="gray"
-                  disabled={zoom >= 250}
-                  onClick={() => setZoom((current) => current + 10)}
-                >
-                  <Plus size={16} aria-hidden />
-                </ActionIcon>
-              </Tooltip>
-            </motion.div>
-          )}
-        </AnimatePresence>
+              <Minus size={16} aria-hidden />
+            </ActionIcon>
+          </Tooltip>
+          <div className={styles.zoom}>
+            <Input
+              aria-label="Canvas zoom"
+              type="number"
+              value={zoom}
+              style={{ width: `${String(zoom).length}ch` }}
+              min={15}
+              max={250}
+              step={1}
+              onChange={(event) => {
+                const value = event.currentTarget.valueAsNumber;
+                if (Number.isFinite(value))
+                  setZoom(Math.min(250, Math.max(15, value)));
+              }}
+            />
+            <span aria-hidden>%</span>
+          </div>
+          <Tooltip label="Zoom in">
+            <ActionIcon
+              aria-label="Zoom in"
+              variant="subtle"
+              color="gray"
+              disabled={zoom >= 250}
+              onClick={() => setZoom((current) => current + 10)}
+            >
+              <Plus size={16} aria-hidden />
+            </ActionIcon>
+          </Tooltip>
+        </motion.div>
       </motion.nav>
     </div>
   );

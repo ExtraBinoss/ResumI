@@ -13,6 +13,7 @@ export function PickerPanel({
   swatches,
   change,
   commit,
+  cancel,
 }: {
   value: string;
   alpha: boolean;
@@ -20,6 +21,7 @@ export function PickerPanel({
   swatches?: string[];
   change: (color: string) => void;
   commit: (color: string) => void;
+  cancel: () => void;
 }) {
   return (
     <ColorPicker
@@ -34,6 +36,7 @@ export function PickerPanel({
       onValueCommit={(color) => {
         if (color) commit(color);
       }}
+      onValueCancel={cancel}
     >
       <ColorPickerPanel>
         <ColorPickerArea />

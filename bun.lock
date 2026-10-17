@@ -48,6 +48,7 @@
         "@fontsource-variable/source-sans-3": "^5.3.1",
         "@fontsource-variable/space-grotesk": "^5.3.0",
         "@resumi/adapters": "workspace:*",
+        "@resumi/assets": "workspace:*",
         "@resumi/cv": "workspace:*",
         "@resumi/engine": "workspace:*",
         "class-variance-authority": "^0.7.1",
@@ -73,10 +74,17 @@
         "@resumi/cv": "workspace:*",
       },
     },
+    "packages/assets": {
+      "name": "@resumi/assets",
+      "dependencies": {
+        "@resumi/engine": "workspace:*",
+      },
+    },
     "packages/cli": {
       "name": "@resumi/cli",
       "dependencies": {
         "@resumi/adapters": "workspace:*",
+        "@resumi/assets": "workspace:*",
         "@resumi/cv": "workspace:*",
         "@resumi/engine": "workspace:*",
       },
@@ -368,6 +376,8 @@
     "@remix-run/route-pattern": ["@remix-run/route-pattern@0.22.1", "", {}, "sha512-czdGJWh09Lapvcqt7Vb09KlrU2PhRJ8xQaI+AItTuD9aDJ5MAgxnS38lnys6Ll+6RJEqPiaUqTwIQhVLwFvv+w=="],
 
     "@resumi/adapters": ["@resumi/adapters@workspace:packages/adapters"],
+
+    "@resumi/assets": ["@resumi/assets@workspace:packages/assets"],
 
     "@resumi/cli": ["@resumi/cli@workspace:packages/cli"],
 

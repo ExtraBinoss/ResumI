@@ -65,6 +65,15 @@ test("native word selection retains a visual mixed-style range through inspector
     '[data-slot="popover-content"] [data-channel="hex"]',
   );
   await hex.fill("C53030");
+  await expect(hex).toBeFocused();
+  await expect(content.locator("span").last()).toHaveCSS(
+    "color",
+    "rgb(197, 48, 48)",
+  );
+  await expect(content.locator("span").first()).not.toHaveCSS(
+    "color",
+    "rgb(197, 48, 48)",
+  );
   await hex.press("Enter");
   await page.keyboard.press("Escape");
   await expect(
@@ -78,6 +87,19 @@ test("native word selection retains a visual mixed-style range through inspector
     "color",
     "rgb(197, 48, 48)",
   );
+  await content.dblclick();
+  const edited = page.getByRole("textbox", {
+    name: "Edit text on canvas",
+    exact: true,
+  });
+  await edited.press("End");
+  await page.keyboard.type("!");
+  await expect(edited).toHaveText("Alex Morgan!");
+  await edited.press("Backspace");
+  await expect(edited).toHaveText("Alex Morgan");
+  await inspector
+    .getByRole("heading", { name: "Typography", exact: true })
+    .click();
   await mkdir("artifacts/visual", { recursive: true });
   await page.screenshot({ path: "artifacts/visual/native-mixed-visual.png" });
   await page.reload();

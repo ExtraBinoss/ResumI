@@ -12,6 +12,7 @@ import { useSetAtom } from "jotai";
 import {
   DEFAULT_VISUAL_EFFECTS,
   SHAPE_CATALOG,
+  shapeDefinition,
   type Layer,
   type LayerPatch,
   type VisualEffects,
@@ -21,6 +22,7 @@ import { VectorAppearance } from "./VectorAppearance";
 export { ShadowFields } from "./ImageAppearance";
 import { designCommandAtom } from "../../../state/design";
 import styles from "../styles/Inspector.module.css";
+import { useColorPreview } from "./useColorPreview";
 export function EffectsFields({
   id,
   layer,
@@ -178,10 +180,13 @@ export function ShapeFields({
   layer: Extract<Layer, { type: "shape" }>;
 }) {
   const dispatch = useSetAtom(designCommandAtom);
+  const preview = useColorPreview(id);
   function patch(patch: LayerPatch) {
     dispatch({ type: "layer.update", ids: [id], patch });
   }
   const gradient = layer.gradient;
+  const shape = layer.vector ?? shapeDefinition(layer.shape);
+  const strokeOnly = !!shape && "strokeOnly" in shape && !!shape.strokeOnly;
   if (layer.vector?.parts) return <VectorAppearance id={id} layer={layer} />;
   return (
     <section>
@@ -211,6 +216,7 @@ export function ShapeFields({
         withEyeDropper={false}
         format="hex"
         value={layer.fill}
+        onPreview={(value) => preview({ kind: "fill", id, strokeOnly }, value)}
         onChangeEnd={(value) => {
           if (/^#[0-9a-fA-F]{6}$/.test(value)) patch({ fill: value });
         }}
@@ -222,6 +228,9 @@ export function ShapeFields({
           withEyeDropper={false}
           format="hex"
           value={layer.stroke === "transparent" ? "#000000" : layer.stroke}
+          onPreview={(value) =>
+            preview({ kind: "stroke", id, strokeOnly }, value)
+          }
           onChangeEnd={(value) => {
             if (/^#[0-9a-fA-F]{6}$/.test(value))
               patch({ stroke: value, strokeWidth: layer.strokeWidth || 1 });
@@ -309,6 +318,9 @@ export function ShapeFields({
                 size="xs"
                 format="hex"
                 value={stop.color}
+                onPreview={(value) =>
+                  preview({ kind: "gradient", id, index }, value)
+                }
                 onChangeEnd={(value) => {
                   if (/^#[0-9a-fA-F]{6}$/.test(value))
                     patch({

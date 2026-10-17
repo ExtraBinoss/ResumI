@@ -2,9 +2,11 @@ import { useAtomValue, useSetAtom } from "jotai";
 import { Select, Slider, ColorInput } from "../../../ui";
 import { styleAtom, commandAtom } from "../../../state/editor";
 import styles from "../styles/LegacyPanels.module.css";
+import { useColorPreview } from "./useColorPreview";
 export function DocumentStyleFields() {
   const style = useAtomValue(styleAtom),
     dispatch = useSetAtom(commandAtom);
+  const preview = useColorPreview("document-style");
   if (!style) return null;
   return (
     <div className={styles.fieldGroup}>
@@ -34,6 +36,7 @@ export function DocumentStyleFields() {
         size="xs"
         mt="lg"
         value={style.accent}
+        onPreview={(value) => preview({ kind: "accent" }, value)}
         format="hex"
         swatches={["#2563eb", "#181b22", "#475569", "#334e68"]}
         onChangeEnd={(accent) => {

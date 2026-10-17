@@ -23,6 +23,7 @@ import {
 import { SearchInput } from "../../components/SearchInput";
 import { createSearchIndex } from "../../lib/search-index";
 import { ProjectCard } from "./components/ProjectCard";
+import { LibraryToolbar } from "./components/LibraryToolbar";
 import { ProjectPreview } from "./components/ProjectPreview";
 import { useDashboardProjects } from "./state/projects";
 import { projects, storageMessage, type Project } from "../../lib/projects";
@@ -103,7 +104,7 @@ export function Projects() {
                   disabled={busy || records === null}
                   className={styles.importButton}
                 >
-                  Import
+                  {t("dashboard.import")}
                 </Button>
               )}
             </FileButton>
@@ -124,12 +125,12 @@ export function Projects() {
           </div>
         </header>
         {error && (
-          <Alert color="red" title="Could not complete that action" mb="md">
+          <Alert color="red" title={t("dashboard.actionFailed")} mb="md">
             {error}
           </Alert>
         )}
-        <div className={styles.listHeader}>
-          <div className={styles.search}>
+        <LibraryToolbar
+          search={
             <SearchInput
               aria-label={t("dashboard.searchResumes")}
               prefix={t("common.search")}
@@ -141,49 +142,52 @@ export function Projects() {
               onChange={(e) => setSearch(e.currentTarget.value)}
               size="xs"
             />
-          </div>
-          <div className={styles.listTools}>
-            <Select
-              aria-label="Sort resumes"
-              value={sort}
-              onChange={(value) => {
-                if (value) setSort(value);
-              }}
-              allowDeselect={false}
-              data={[
-                { value: "recent", label: t("dashboard.lastEdited") },
-                { value: "name", label: "Name A–Z" },
-              ]}
-              size="xs"
-              className={styles.sort}
-            />
-            <SegmentedControl
-              aria-label="Resume view"
-              size="xs"
-              value={view}
-              onChange={setView}
-              data={[
-                {
-                  value: "grid",
-                  label: (
-                    <span aria-label="Grid view">
-                      <Grid2X2 size={16} aria-hidden />
-                    </span>
-                  ),
-                },
-                {
-                  value: "list",
-                  label: (
-                    <span aria-label="List view">
-                      <Rows3 size={16} aria-hidden />
-                    </span>
-                  ),
-                },
-              ]}
-            />
-          </div>
-        </div>
-        <section className={styles.collection} aria-label="Resume library">
+          }
+        >
+          <Select
+            aria-label={t("dashboard.sort")}
+            value={sort}
+            onChange={(value) => {
+              if (value) setSort(value);
+            }}
+            allowDeselect={false}
+            data={[
+              { value: "recent", label: t("dashboard.lastEdited") },
+              { value: "name", label: t("dashboard.sortName") },
+            ]}
+            size="xs"
+            className={styles.sort}
+            contentClassName={styles.sortMenu}
+          />
+          <SegmentedControl
+            aria-label={t("dashboard.view")}
+            size="xs"
+            value={view}
+            onChange={setView}
+            data={[
+              {
+                value: "grid",
+                label: (
+                  <span aria-label={t("dashboard.grid")}>
+                    <Grid2X2 size={16} aria-hidden />
+                  </span>
+                ),
+              },
+              {
+                value: "list",
+                label: (
+                  <span aria-label={t("dashboard.list")}>
+                    <Rows3 size={16} aria-hidden />
+                  </span>
+                ),
+              },
+            ]}
+          />
+        </LibraryToolbar>
+        <section
+          className={styles.collection}
+          aria-label={t("dashboard.library")}
+        >
           {!records && !error && (
             <div className={styles.empty}>
               <Loader size="sm" label={t("loading.projects")} text />
@@ -194,10 +198,13 @@ export function Projects() {
               <span className={styles.emptyPaper}>
                 <FileText size={36} strokeWidth={1.2} aria-hidden />
               </span>
-              <h2>{search ? "No results" : "No resumes yet"}</h2>
+              <h2>
+                {search ? t("dashboard.noResults") : t("dashboard.noResumes")}
+              </h2>
               {!search && (
                 <Button component={Link} to="/templates" variant="light">
-                  Choose a template <ArrowUpRight size={15} aria-hidden />
+                  {t("dashboard.chooseTemplate")}{" "}
+                  <ArrowUpRight size={15} aria-hidden />
                 </Button>
               )}
             </div>
@@ -231,7 +238,7 @@ export function Projects() {
       <Modal
         opened={!!renaming}
         onClose={() => setRenaming(null)}
-        title="Rename resume"
+        title={t("dashboard.renameResume")}
         centered
       >
         <form
@@ -245,7 +252,7 @@ export function Projects() {
           }}
         >
           <TextInput
-            label="Resume name"
+            label={t("dashboard.resumeName")}
             autoFocus
             value={name}
             maxLength={120}
@@ -253,20 +260,22 @@ export function Projects() {
             required
           />
           <Button type="submit" mt="lg" loading={busy} disabled={!name.trim()}>
-            Save name
+            {t("dashboard.saveName")}
           </Button>
         </form>
       </Modal>
       <Modal
         opened={!!deleting}
         onClose={() => setDeleting(null)}
-        title="Delete this resume?"
+        title={t("dashboard.deleteTitle")}
         centered
       >
-        <p>Delete “{deleting?.document.name}”?</p>
+        <p>
+          {t("dashboard.deleteConfirmation", { name: deleting?.document.name })}
+        </p>
         <div className={styles.actions}>
           <Button variant="default" onClick={() => setDeleting(null)}>
-            Keep resume
+            {t("dashboard.keepResume")}
           </Button>
           <Button
             color="red"
@@ -279,7 +288,7 @@ export function Projects() {
                 });
             }}
           >
-            Delete resume
+            {t("dashboard.deleteResume")}
           </Button>
         </div>
       </Modal>

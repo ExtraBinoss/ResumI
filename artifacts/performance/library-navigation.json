@@ -1,0 +1,493 @@
+{
+  "environment": {
+    "date": "2026-10-17",
+    "server": "http://127.0.0.1:5175",
+    "mode": "Vite development, isolated synthetic browser context",
+    "viewport": {
+      "width": 1905,
+      "height": 2053,
+      "dpr": 1
+    },
+    "cpuThrottle": 1,
+    "networkThrottle": "none",
+    "note": "Warm Vite/HTTP caches; a first visit after document reload is not a cold-network sample. No production timing claim."
+  },
+  "baselineFourTemplates": {
+    "dataRequests": [
+      {
+        "ms": 61.8,
+        "bytes": 384976
+      },
+      {
+        "ms": 50.3,
+        "bytes": 384976
+      },
+      {
+        "ms": 56,
+        "bytes": 384976
+      }
+    ],
+    "navigation": {
+      "mountMs": 446,
+      "opacityOneMs": 558.7
+    },
+    "inlineFontFaces": 4,
+    "trace": {
+      "cls": 0,
+      "forcedLayoutMs": 105,
+      "forcedLayoutCaller": "Motion measureScroll",
+      "layoutMs": 95,
+      "domElementsInsight": 480
+    }
+  },
+  "intermediateFourTemplates": {
+    "dataRequests": [
+      {
+        "ms": 48,
+        "bytes": 51394
+      },
+      {
+        "ms": 50.9,
+        "bytes": 51394
+      },
+      {
+        "ms": 37.4,
+        "bytes": 51394
+      }
+    ],
+    "note": "Assets externalized, styles deduplicated and header projection removed; extended CSS was already present, but only four templates registered."
+  },
+  "intermediateTenTemplates": {
+    "domNodes": 1210,
+    "templateCount": 10,
+    "trace": {
+      "cls": 0,
+      "layoutMs": 82,
+      "forcedReflowInsight": false,
+      "domSizeInsight": true
+    },
+    "note": "Actual HTML previews for all ten cards; before thumbnails."
+  },
+  "finalTenTemplates": {
+    "firstMeasuredVisitAfterReload": {
+      "mountMs": 371.80000000074506,
+      "opaqueMs": 559.3999999985099,
+      "visibleImagesReadyMs": 685.8000000007451,
+      "visibleImages": 10,
+      "allImagesDecoded": true,
+      "cls": 0,
+      "frames": 16,
+      "nodes": 250,
+      "templates": 10,
+      "images": [
+        {
+          "width": 440,
+          "height": 622
+        },
+        {
+          "width": 440,
+          "height": 622
+        },
+        {
+          "width": 440,
+          "height": 622
+        },
+        {
+          "width": 440,
+          "height": 622
+        },
+        {
+          "width": 440,
+          "height": 622
+        },
+        {
+          "width": 440,
+          "height": 622
+        },
+        {
+          "width": 440,
+          "height": 622
+        },
+        {
+          "width": 440,
+          "height": 622
+        },
+        {
+          "width": 440,
+          "height": 622
+        },
+        {
+          "width": 440,
+          "height": 622
+        }
+      ]
+    },
+    "warmRoundTrips": {
+      "reports": [
+        {
+          "path": "/projects",
+          "mountMs": 141.7,
+          "readyMs": 281.3,
+          "visibleImages": 0,
+          "imagesDecoded": true
+        },
+        {
+          "path": "/templates",
+          "mountMs": 145.1,
+          "readyMs": 387.9,
+          "visibleImages": 10,
+          "imagesDecoded": true
+        },
+        {
+          "path": "/projects",
+          "mountMs": 119,
+          "readyMs": 295.9,
+          "visibleImages": 0,
+          "imagesDecoded": true
+        },
+        {
+          "path": "/templates",
+          "mountMs": 264.7,
+          "readyMs": 439.8,
+          "visibleImages": 10,
+          "imagesDecoded": true
+        },
+        {
+          "path": "/projects",
+          "mountMs": 122.3,
+          "readyMs": 290.8,
+          "visibleImages": 0,
+          "imagesDecoded": true
+        },
+        {
+          "path": "/templates",
+          "mountMs": 143,
+          "readyMs": 382.7,
+          "visibleImages": 10,
+          "imagesDecoded": true
+        }
+      ],
+      "newFaces": [],
+      "sameStyle": true,
+      "newFontRequests": [],
+      "resources": [
+        {
+          "url": "http://127.0.0.1:5175/projects.data?_routes=root",
+          "ms": 32.1,
+          "decoded": 59
+        },
+        {
+          "url": "http://127.0.0.1:5175/templates.data?_routes=root%2Croutes%2Ftemplates",
+          "ms": 41.6,
+          "decoded": 67113
+        },
+        {
+          "url": "http://127.0.0.1:5175/projects.data?_routes=root",
+          "ms": 31.9,
+          "decoded": 59
+        },
+        {
+          "url": "http://127.0.0.1:5175/templates.data?_routes=root%2Croutes%2Ftemplates",
+          "ms": 18,
+          "decoded": 67113
+        },
+        {
+          "url": "http://127.0.0.1:5175/projects.data?_routes=root",
+          "ms": 30.6,
+          "decoded": 59
+        },
+        {
+          "url": "http://127.0.0.1:5175/templates.data?_routes=root%2Croutes%2Ftemplates",
+          "ms": 27.3,
+          "decoded": 67113
+        }
+      ],
+      "allResourceSizes": [
+        {
+          "url": "http://127.0.0.1:5175/templates.data?_routes=root%2Croutes%2Ftemplates",
+          "decoded": 67113,
+          "transfer": 67413
+        },
+        {
+          "url": "http://127.0.0.1:5175/src/assets/templates/react-studio.webp",
+          "decoded": 0,
+          "transfer": 300
+        },
+        {
+          "url": "http://127.0.0.1:5175/src/assets/templates/react-editorial.webp",
+          "decoded": 0,
+          "transfer": 300
+        },
+        {
+          "url": "http://127.0.0.1:5175/src/assets/templates/react-classic.webp",
+          "decoded": 0,
+          "transfer": 300
+        },
+        {
+          "url": "http://127.0.0.1:5175/src/assets/templates/react-profile.webp",
+          "decoded": 0,
+          "transfer": 300
+        },
+        {
+          "url": "http://127.0.0.1:5175/src/assets/templates/react-harvard.webp",
+          "decoded": 0,
+          "transfer": 300
+        },
+        {
+          "url": "http://127.0.0.1:5175/src/assets/templates/react-cobalt.webp",
+          "decoded": 0,
+          "transfer": 300
+        },
+        {
+          "url": "http://127.0.0.1:5175/src/assets/templates/react-atelier.webp",
+          "decoded": 0,
+          "transfer": 300
+        },
+        {
+          "url": "http://127.0.0.1:5175/src/assets/templates/react-timeline.webp",
+          "decoded": 0,
+          "transfer": 300
+        },
+        {
+          "url": "http://127.0.0.1:5175/src/assets/templates/react-consultant.webp",
+          "decoded": 0,
+          "transfer": 300
+        },
+        {
+          "url": "http://127.0.0.1:5175/src/assets/templates/react-mosaic.webp",
+          "decoded": 0,
+          "transfer": 300
+        },
+        {
+          "url": "http://127.0.0.1:5175/projects.data?_routes=root",
+          "decoded": 59,
+          "transfer": 359
+        },
+        {
+          "url": "http://127.0.0.1:5175/templates.data?_routes=root%2Croutes%2Ftemplates",
+          "decoded": 67113,
+          "transfer": 67413
+        },
+        {
+          "url": "http://127.0.0.1:5175/projects.data?_routes=root",
+          "decoded": 59,
+          "transfer": 359
+        },
+        {
+          "url": "http://127.0.0.1:5175/templates.data?_routes=root%2Croutes%2Ftemplates",
+          "decoded": 67113,
+          "transfer": 67413
+        },
+        {
+          "url": "http://127.0.0.1:5175/projects.data?_routes=root",
+          "decoded": 59,
+          "transfer": 359
+        },
+        {
+          "url": "http://127.0.0.1:5175/templates.data?_routes=root%2Croutes%2Ftemplates",
+          "decoded": 67113,
+          "transfer": 67413
+        }
+      ]
+    },
+    "mobileScroll": {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "initial": [
+        {
+          "top": 170,
+          "height": 368
+        },
+        {
+          "top": 562,
+          "height": 368
+        },
+        {
+          "top": 954,
+          "height": 368
+        },
+        {
+          "top": 1346,
+          "height": 368
+        },
+        {
+          "top": 1738,
+          "height": 368
+        },
+        {
+          "top": 2130,
+          "height": 368
+        },
+        {
+          "top": 2522,
+          "height": 368
+        },
+        {
+          "top": 2914,
+          "height": 368
+        },
+        {
+          "top": 3306,
+          "height": 368
+        },
+        {
+          "top": 3698,
+          "height": 368
+        }
+      ],
+      "initialScrollHeight": 4150,
+      "samples": [
+        {
+          "scrollTop": 0,
+          "scrollHeight": 4150,
+          "positions": [
+            170,
+            562,
+            954,
+            1346,
+            1738,
+            2130,
+            2522,
+            2914,
+            3306,
+            3698
+          ],
+          "visibleDecoded": true
+        },
+        {
+          "scrollTop": 600,
+          "scrollHeight": 4150,
+          "positions": [
+            170,
+            562,
+            954,
+            1346,
+            1738,
+            2130,
+            2522,
+            2914,
+            3306,
+            3698
+          ],
+          "visibleDecoded": true
+        },
+        {
+          "scrollTop": 1200,
+          "scrollHeight": 4150,
+          "positions": [
+            170,
+            562,
+            954,
+            1346,
+            1738,
+            2130,
+            2522,
+            2914,
+            3306,
+            3698
+          ],
+          "visibleDecoded": true
+        },
+        {
+          "scrollTop": 1800,
+          "scrollHeight": 4150,
+          "positions": [
+            170,
+            562,
+            954,
+            1346,
+            1738,
+            2130,
+            2522,
+            2914,
+            3306,
+            3698
+          ],
+          "visibleDecoded": true
+        },
+        {
+          "scrollTop": 2400,
+          "scrollHeight": 4150,
+          "positions": [
+            170,
+            562,
+            954,
+            1346,
+            1738,
+            2130,
+            2522,
+            2914,
+            3306,
+            3698
+          ],
+          "visibleDecoded": true
+        },
+        {
+          "scrollTop": 3000,
+          "scrollHeight": 4150,
+          "positions": [
+            170,
+            562,
+            954,
+            1346,
+            1738,
+            2130,
+            2522,
+            2914,
+            3306,
+            3698
+          ],
+          "visibleDecoded": true
+        },
+        {
+          "scrollTop": 3382,
+          "scrollHeight": 4150,
+          "positions": [
+            170,
+            562,
+            954,
+            1346,
+            1738,
+            2130,
+            2522,
+            2914,
+            3306,
+            3698
+          ],
+          "visibleDecoded": true
+        }
+      ],
+      "cls": 0
+    },
+    "trace": {
+      "forcedReflowInsight": false,
+      "domSizeInsight": false
+    },
+    "thumbnailFilesBytes": [
+      25376,
+      21088,
+      18028,
+      25234,
+      23974,
+      26300,
+      23756,
+      21384,
+      22028,
+      23128
+    ],
+    "afterAssetEmissionPatch": {
+      "decodedDataBytes": 66432,
+      "httpStatus": 200,
+      "note": "After the timed trace, asset URLs moved to a shared module referenced by actual client rendering: thumbnail src, font face and portrait interpolation. This ensures Vite client emission; DOM/images remain identical. Loader stopped duplicating thumbnail URLs and carries a portrait placeholder resolved by the client. No new timed speedup claim is made for this small transport change."
+    }
+  },
+  "boundaries": [
+    "Baseline has four templates, final catalog has ten, so navigation durations are not a controlled speedup percentage.",
+    "Images are actual browser captures of the trusted TSX templates; source documents and offline exports keep embedded fonts/assets.",
+    "Every measured visible thumbnail completed decode and had nonzero natural dimensions.",
+    "Earlier observations during HMR were excluded from final font lifecycle conclusions.",
+    "Production asset emission/HTTP decoding is checked by the browser regression test in the final production gate."
+  ]
+}

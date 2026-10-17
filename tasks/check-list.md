@@ -34,8 +34,8 @@ Tasks 00–13 record earlier verified milestones. Tasks 14–18 supersede their 
 - [x] Actual desktop/mobile screenshot inspection and standalone exports opened offline.
 - [x] Fresh-cache development SSR, direct/reload hydration regression and no hooks/PostCSS warning suppression.
 - [x] Code preview uses opaque iframe/CSP; CLI compiles without executing user components.
-- [x] Current `bun run check`: 122 unit tests, 76 engine tests (99.70% lines / 99.52% functions), five cold-dev and 68 production browser journeys, plus production build.
-- [x] Literal `bun run visual:check`: seven journeys pass; final desktop/mobile, light/dark and generated PDF screenshots opened and inspected.
+- [x] Current `bun run check`: 137 unit tests, 76 engine tests (99.70% lines / 99.52% functions), five cold-dev and 80 production browser journeys, plus production build.
+- [x] Literal `bun run visual:check`: twelve journeys pass; final desktop/mobile, light/dark and generated PDF screenshots opened and inspected.
 - [x] Feature branch and PR established; remote verification is tracked separately on the PR and inspected at delivery.
 
 ## Explicit boundaries
@@ -59,3 +59,8 @@ Local browser storage and session-local undo limitations are described in the RE
 - [x] [19 — Search, languages and viewport](19-search-language-and-viewport.md): indexed measured search, virtual previews, smooth library transitions, final zoom geometry, native mixed styling, content-only blending, validated CV languages and primary PDF preparation.
 - [x] [20 — Thinking Orbs](20-thinking-orb-loading.md): selected upstream geometry copied with MIT provenance; real light/dark/reduced loading lifecycle verified without an added package or opening delay.
 - [x] [21 — Brand and footer](21-brand-assets.md): supplied icon and browser sizes, retained tray original, shared Brand and large return-to-top footer with Plinka link.
+
+- [x] [22 — Centered library and stable search](22-centered-library-and-search-stability.md): shared search coordinates and EN/FR resources/HMR, compact sorting, centered desktop tabs, real Recents menu and one full-width frosted mobile bottom bar. Raster/geometry regression and production screenshot inspection pass.
+- [x] [23 — Gallery and navigation](23-gallery-and-navigation.md): ten distinct portable TSX layouts, real vetted brands, source-derived thumbnails with freshness checks, persistent shared assets/styles and measured navigation/mobile geometry.
+- [x] [24 — Discoverable CLI and visual feedback](24-cli-discovery-and-preview.md): comprehensive human/agent help, shared asset discovery, validated source authoring, actual JSON/HTML/source output and isolated offline screenshots by filesystem project name.
+- [x] [25 — Workspace and live canvas feedback](25-live-canvas-feedback.md): one Visual/Text selection and common source zoom, live color/range preview with cancellation and one Undo, Ctrl/Cmd selection, grouped movement/guides and coherent mobile controls.

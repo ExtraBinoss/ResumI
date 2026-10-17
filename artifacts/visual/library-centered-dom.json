@@ -1,0 +1,445 @@
+{
+  "environment": {
+    "url": "http://127.0.0.1:4187",
+    "browser": "156.0.8078.4",
+    "syntheticResumesOnly": true
+  },
+  "reports": [
+    {
+      "width": 1920,
+      "theme": "light",
+      "projectsSearch": {
+        "x": 376,
+        "y": 199,
+        "width": 234,
+        "height": 29
+      },
+      "templateSearch": {
+        "x": 376,
+        "y": 199,
+        "width": 234,
+        "height": 29
+      },
+      "recent": {
+        "box": {
+          "x": 1224,
+          "y": 71,
+          "width": 320,
+          "height": 92,
+          "top": 71,
+          "right": 1544,
+          "bottom": 163,
+          "left": 1224
+        },
+        "href": "/editor/e5506928-d0b8-45c6-ac5d-6d5185a9c5bf",
+        "date": "2026-10-17T14:35:41.134Z"
+      },
+      "dom": {
+        "viewport": {
+          "width": 1920,
+          "height": 959
+        },
+        "documentWidth": 1920,
+        "header": {
+          "x": 0,
+          "y": 0,
+          "width": 1920,
+          "height": 93,
+          "top": 0,
+          "right": 1920,
+          "bottom": 93,
+          "left": 0
+        },
+        "navigation": {
+          "x": 842,
+          "y": 25,
+          "width": 236,
+          "height": 42,
+          "top": 25,
+          "right": 1078,
+          "bottom": 67,
+          "left": 842
+        },
+        "settings": {
+          "x": 1866,
+          "y": 905,
+          "width": 36,
+          "height": 36,
+          "top": 905,
+          "right": 1902,
+          "bottom": 941,
+          "left": 1866
+        },
+        "headerStyle": {
+          "background": "rgb(251, 251, 253)",
+          "backdropFilter": "none",
+          "transform": "none"
+        },
+        "mobileBar": {
+          "box": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0,
+            "top": 0,
+            "right": 0,
+            "bottom": 0,
+            "left": 0
+          },
+          "background": "rgba(0, 0, 0, 0)",
+          "backdropFilter": "none"
+        },
+        "sidebarCount": 0,
+        "fontsLoaded": "loaded"
+      }
+    },
+    {
+      "width": 1920,
+      "theme": "dark",
+      "projectsSearch": {
+        "x": 376,
+        "y": 199,
+        "width": 234,
+        "height": 29
+      },
+      "templateSearch": {
+        "x": 376,
+        "y": 199,
+        "width": 234,
+        "height": 29
+      },
+      "recent": {
+        "box": {
+          "x": 1224,
+          "y": 71,
+          "width": 320,
+          "height": 92,
+          "top": 71,
+          "right": 1544,
+          "bottom": 163,
+          "left": 1224
+        },
+        "href": "/editor/e5506928-d0b8-45c6-ac5d-6d5185a9c5bf",
+        "date": "2026-10-17T14:35:41.134Z"
+      },
+      "dom": {
+        "viewport": {
+          "width": 1920,
+          "height": 959
+        },
+        "documentWidth": 1920,
+        "header": {
+          "x": 0,
+          "y": 0,
+          "width": 1920,
+          "height": 93,
+          "top": 0,
+          "right": 1920,
+          "bottom": 93,
+          "left": 0
+        },
+        "navigation": {
+          "x": 842,
+          "y": 25,
+          "width": 236,
+          "height": 42,
+          "top": 25,
+          "right": 1078,
+          "bottom": 67,
+          "left": 842
+        },
+        "settings": {
+          "x": 1866,
+          "y": 905,
+          "width": 36,
+          "height": 36,
+          "top": 905,
+          "right": 1902,
+          "bottom": 941,
+          "left": 1866
+        },
+        "headerStyle": {
+          "background": "rgb(28, 28, 30)",
+          "backdropFilter": "none",
+          "transform": "none"
+        },
+        "mobileBar": {
+          "box": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0,
+            "top": 0,
+            "right": 0,
+            "bottom": 0,
+            "left": 0
+          },
+          "background": "rgba(0, 0, 0, 0)",
+          "backdropFilter": "none"
+        },
+        "sidebarCount": 0,
+        "fontsLoaded": "loaded"
+      }
+    },
+    {
+      "width": 390,
+      "theme": "light",
+      "projectsSearch": {
+        "x": 20,
+        "y": 164,
+        "width": 350,
+        "height": 29
+      },
+      "templateSearch": {
+        "x": 20,
+        "y": 164,
+        "width": 350,
+        "height": 29
+      },
+      "recent": {
+        "box": {
+          "x": 8,
+          "y": 689,
+          "width": 320,
+          "height": 92,
+          "top": 689,
+          "right": 328,
+          "bottom": 781,
+          "left": 8
+        },
+        "href": "/editor/e5506928-d0b8-45c6-ac5d-6d5185a9c5bf",
+        "date": "2026-10-17T14:35:41.134Z"
+      },
+      "dom": {
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "documentWidth": 390,
+        "header": {
+          "x": 0,
+          "y": 0,
+          "width": 390,
+          "height": 76,
+          "top": 0,
+          "right": 390,
+          "bottom": 76,
+          "left": 0
+        },
+        "navigation": {
+          "x": 12,
+          "y": 788,
+          "width": 266,
+          "height": 44,
+          "top": 788,
+          "right": 278,
+          "bottom": 832,
+          "left": 12
+        },
+        "settings": {
+          "x": 334,
+          "y": 788,
+          "width": 44,
+          "height": 44,
+          "top": 788,
+          "right": 378,
+          "bottom": 832,
+          "left": 334
+        },
+        "headerStyle": {
+          "background": "rgb(251, 251, 253)",
+          "backdropFilter": "none",
+          "transform": "none"
+        },
+        "mobileBar": {
+          "box": {
+            "x": 0,
+            "y": 777,
+            "width": 390,
+            "height": 67,
+            "top": 777,
+            "right": 390,
+            "bottom": 844,
+            "left": 0
+          },
+          "background": "color(srgb 0.984314 0.984314 0.992157 / 0.88)",
+          "backdropFilter": "blur(24px) saturate(1.2)"
+        },
+        "sidebarCount": 0,
+        "fontsLoaded": "loaded"
+      }
+    },
+    {
+      "width": 390,
+      "theme": "dark",
+      "projectsSearch": {
+        "x": 20,
+        "y": 164,
+        "width": 350,
+        "height": 29
+      },
+      "templateSearch": {
+        "x": 20,
+        "y": 164,
+        "width": 350,
+        "height": 29
+      },
+      "recent": {
+        "box": {
+          "x": 8,
+          "y": 689,
+          "width": 320,
+          "height": 92,
+          "top": 689,
+          "right": 328,
+          "bottom": 781,
+          "left": 8
+        },
+        "href": "/editor/e5506928-d0b8-45c6-ac5d-6d5185a9c5bf",
+        "date": "2026-10-17T14:35:41.134Z"
+      },
+      "dom": {
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "documentWidth": 390,
+        "header": {
+          "x": 0,
+          "y": 0,
+          "width": 390,
+          "height": 76,
+          "top": 0,
+          "right": 390,
+          "bottom": 76,
+          "left": 0
+        },
+        "navigation": {
+          "x": 12,
+          "y": 788,
+          "width": 266,
+          "height": 44,
+          "top": 788,
+          "right": 278,
+          "bottom": 832,
+          "left": 12
+        },
+        "settings": {
+          "x": 334,
+          "y": 788,
+          "width": 44,
+          "height": 44,
+          "top": 788,
+          "right": 378,
+          "bottom": 832,
+          "left": 334
+        },
+        "headerStyle": {
+          "background": "rgb(28, 28, 30)",
+          "backdropFilter": "none",
+          "transform": "none"
+        },
+        "mobileBar": {
+          "box": {
+            "x": 0,
+            "y": 777,
+            "width": 390,
+            "height": 67,
+            "top": 777,
+            "right": 390,
+            "bottom": 844,
+            "left": 0
+          },
+          "background": "color(srgb 0.109804 0.109804 0.117647 / 0.88)",
+          "backdropFilter": "blur(24px) saturate(1.2)"
+        },
+        "sidebarCount": 0,
+        "fontsLoaded": "loaded"
+      }
+    }
+  ],
+  "narrowMobile": {
+    "nav": {
+      "x": 12,
+      "y": 684,
+      "width": 196,
+      "height": 44
+    },
+    "recents": {
+      "x": 214,
+      "y": 684,
+      "width": 44,
+      "height": 44
+    },
+    "settings": {
+      "x": 264,
+      "y": 684,
+      "width": 44,
+      "height": 44
+    },
+    "material": {
+      "x": 0,
+      "y": 673,
+      "width": 320,
+      "height": 67
+    },
+    "tabs": [
+      {
+        "label": "Resumes",
+        "fits": true,
+        "box": {
+          "x": 17,
+          "y": 689,
+          "width": 93,
+          "height": 34,
+          "top": 689,
+          "right": 110,
+          "bottom": 723,
+          "left": 17
+        }
+      },
+      {
+        "label": "Templates",
+        "fits": true,
+        "box": {
+          "x": 110,
+          "y": 689,
+          "width": 93,
+          "height": 34,
+          "top": 689,
+          "right": 203,
+          "bottom": 723,
+          "left": 110
+        }
+      }
+    ],
+    "lastCard": {
+      "x": 23,
+      "y": 289,
+      "width": 274,
+      "height": 366
+    },
+    "finalCapture": {
+      "theme": "dark",
+      "card": {
+        "x": 22,
+        "y": 286.27685546875,
+        "width": 276,
+        "height": 368
+      },
+      "material": {
+        "x": 0,
+        "y": 673,
+        "width": 320,
+        "height": 67
+      },
+      "image": {
+        "complete": true,
+        "width": 440,
+        "height": 622
+      },
+      "errors": []
+    }
+  },
+  "errors": []
+}

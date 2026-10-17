@@ -51,7 +51,8 @@
   scrollbar-color: color-mix(in srgb, var(--foreground) 24%, transparent)
     transparent;
 }
-.interactiveFrame {
+.interactiveFrame,
+.workspaceFrame {
   display: block;
   position: absolute;
   top: 0;
@@ -62,48 +63,13 @@
   background: white;
   transform-origin: top left;
 }
+.workspaceFrame {
+  pointer-events: none;
+  box-shadow: var(--shadow-sm);
+}
 .previewPage {
   position: relative;
   margin: 16px auto 0;
   background: white;
   box-shadow: var(--shadow-sm);
-}
-.previewControls {
-  position: sticky;
-  top: 0;
-  z-index: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 5px;
-  padding: 8px 12px;
-  background: var(--panel);
-  backdrop-filter: blur(16px);
-  border-bottom: 1px solid var(--line);
-}
-.previewControls button {
-  font-family: inherit;
-  font-size: 12px;
-  line-height: 1;
-  cursor: pointer;
-  border: 1px solid transparent;
-  background: transparent;
-  color: var(--muted-foreground);
-  border-radius: var(--radius-md);
-}
-.previewControls button[aria-pressed="true"] {
-  background: var(--segment-selected);
-  color: var(--foreground);
-  border-color: var(--control-border);
-  box-shadow: var(--segment-shadow);
-}
-.previewControls button:hover {
-  background: var(--control-hover);
-  color: var(--foreground);
-}
-.previewControls span {
-  font-size: 12px;
-  color: var(--muted-foreground);
-  min-width: 29px;
-  text-align: center;
 }

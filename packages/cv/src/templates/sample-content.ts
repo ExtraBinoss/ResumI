@@ -1,5 +1,6 @@
 import type { Block } from "@resumi/engine";
-import type { ResumeLayout } from "./CodeResume";
+import type { ResumeLayout } from "./types";
+import { extendedSampleSections } from "./extended-samples";
 export type SampleSection = {
   id: string;
   title: string;
@@ -11,6 +12,8 @@ export function reactSampleSections(
   sections: SampleSection[],
   layout: ResumeLayout,
 ): SampleSection[] {
+  const extended = extendedSampleSections(layout);
+  if (extended) return extended;
   const result: SampleSection[] = sections.map((section): SampleSection => ({
     ...section,
     blocks: section.blocks.map(([kind, text], index) => [

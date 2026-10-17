@@ -1,0 +1,28 @@
+{
+  "date": "2026-10-17T14:18:36.153Z",
+  "scope": "Isolated browser context on existing Vite 5175; dashboard dictionary keys temporarily removed before mount, restored via real HMR",
+  "before": [
+    "dashboard.import",
+    "dashboard.sortName"
+  ],
+  "after": [
+    "Importer",
+    "Nom A–Z"
+  ],
+  "language": "fr",
+  "searchDraftRetained": true,
+  "searchNodeRetained": true,
+  "pageReloaded": false,
+  "pageErrors": [],
+  "refresh": [
+    "[vite] connecting...",
+    "[vite] connected.",
+    "[vite] hot updated: /src/i18n/InterfaceLanguage.tsx",
+    "[vite] hot updated: /src/components/SettingsMenu.tsx",
+    "[vite] hot updated: /src/i18n/InterfaceLanguage.tsx",
+    "[vite] hot updated: /src/components/SettingsMenu.tsx",
+    "[vite] hot updated: /src/i18n/InterfaceLanguage.tsx",
+    "[vite] hot updated: /src/components/SettingsMenu.tsx",
+    "[vite] hot updated: /src/styles/global.css"
+  ]
+}

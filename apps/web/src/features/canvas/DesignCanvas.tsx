@@ -25,6 +25,7 @@ import {
 import {
   canvasAtom,
   selectedIdsAtom,
+  selectLayerAtom,
   selectLayersAtom,
   designCommandAtom,
   toolAtom,
@@ -58,6 +59,7 @@ function DesignLayer({
     zoom = useAtomValue(zoomAtom),
     store = useStore(),
     select = useSetAtom(selectLayersAtom),
+    selectLayer = useSetAtom(selectLayerAtom),
     dispatch = useSetAtom(designCommandAtom),
     tool = useAtomValue(toolAtom);
   const [editing, setEditing] = useState(false),
@@ -81,31 +83,18 @@ function DesignLayer({
     locked = layer.locked || groupLocked,
     active = selected.includes(id);
   function start(event: PointerEvent<HTMLElement>, handle?: ResizeHandle) {
-    if (event.button !== 0 || editing || tool !== "select") return;
+    const additive =
+      !handle && (event.shiftKey || event.ctrlKey || event.metaKey);
+    if (event.button !== 0 || (editing && !additive) || tool !== "select")
+      return;
     event.stopPropagation();
     if (locked) return;
-    const doc = store.get(sessionAtom)!.document,
-      group = groupFor(doc, id),
-      old = store.get(selectedIdsAtom);
-    let ids = event.shiftKey
-      ? old.includes(id)
-        ? old.filter((value) => value !== id)
-        : [...old, id]
-      : old.includes(id)
-        ? old
-        : group && !event.metaKey && !event.ctrlKey
-          ? group.elementIds
-          : [id];
-    if (handle) ids = [id];
-    select({
-      ids,
-      groupId:
-        !event.shiftKey && group && ids === group.elementIds
-          ? group.id
-          : undefined,
-    });
-    if (event.shiftKey) return;
+    const doc = store.get(sessionAtom)!.document;
+    if (handle) select({ ids: [id] });
+    else selectLayer({ id, additive });
     event.preventDefault();
+    const ids = store.get(selectedIdsAtom);
+    if (additive || ids.some((id) => isLocked(doc, id))) return;
     event.currentTarget.setPointerCapture(event.pointerId);
     const nodes = ids.flatMap((id) => [
       ...(event.currentTarget
@@ -116,7 +105,7 @@ function DesignLayer({
     ]);
     const canvas = doc.canvas!,
       other = canvas.order
-        .filter((id) => !ids.includes(id))
+        .filter((id) => !ids.includes(id) && !groupFor(doc, id)?.hidden)
         .map((id) => doc.blocks[id].design!)
         .filter((layer) => !layer.hidden);
     gesture.current = {
@@ -179,17 +168,23 @@ function DesignLayer({
         node.style.height = `${frame.height}px`;
       }
     } else {
-      if (event.shiftKey) {
-        if (Math.abs(drag.dx) > Math.abs(drag.dy)) drag.dy = 0;
-        else drag.dx = 0;
-      }
+      const axis = event.shiftKey
+        ? Math.abs(drag.dx) > Math.abs(drag.dy)
+          ? "x"
+          : "y"
+        : undefined;
+      if (axis === "x") drag.dy = 0;
+      if (axis === "y") drag.dx = 0;
       const snap = event.altKey
         ? { dx: drag.dx, dy: drag.dy, guideX: undefined, guideY: undefined }
         : snapMovement(
             drag.bounds,
             drag.dx,
             drag.dy,
-            drag.targets,
+            {
+              x: axis === "y" ? [] : drag.targets.x,
+              y: axis === "x" ? [] : drag.targets.y,
+            },
             6 / (zoom / 100),
           );
       drag.dx = snap.dx;
@@ -331,7 +326,7 @@ export function DesignCanvas() {
     select = useSetAtom(selectLayersAtom),
     add = useSetAtom(addLayerAtom),
     marquee = useRef<HTMLDivElement>(null),
-    drag = useRef<{ x: number; y: number; shift: boolean } | null>(null);
+    drag = useRef<{ x: number; y: number; additive: boolean } | null>(null);
   if (!canvas || !style) return null;
   const seen = new Set<string>();
   function point(event: PointerEvent<HTMLElement>) {
@@ -352,9 +347,10 @@ export function DesignCanvas() {
       event.stopPropagation();
     }
     const position = point(event);
-    drag.current = { ...position, shift: event.shiftKey };
+    const additive = event.shiftKey || event.ctrlKey || event.metaKey;
+    drag.current = { ...position, additive };
     event.currentTarget.setPointerCapture(event.pointerId);
-    if (!event.shiftKey) select({ ids: [] });
+    if (!additive) select({ ids: [] });
   }
   function move(event: PointerEvent<HTMLElement>) {
     const initial = drag.current,
@@ -406,7 +402,7 @@ export function DesignCanvas() {
             );
           });
         select({
-          ids: initial.shift
+          ids: initial.additive
             ? [...new Set([...store.get(selectedIdsAtom), ...ids])]
             : ids,
         });
@@ -420,7 +416,13 @@ export function DesignCanvas() {
       className={`${styles.viewport} ${viewportStyles.scroll}`}
       {...pan}
       onClick={(e) => {
-        if (e.target === e.currentTarget) select({ ids: [] });
+        if (
+          e.target === e.currentTarget &&
+          !e.shiftKey &&
+          !e.ctrlKey &&
+          !e.metaKey
+        )
+          select({ ids: [] });
       }}
     >
       {tool === "text" && (
@@ -431,7 +433,13 @@ export function DesignCanvas() {
       <div
         className={styles.stage}
         onPointerDown={(e) => {
-          if (e.target === e.currentTarget) select({ ids: [] });
+          if (
+            e.target === e.currentTarget &&
+            !e.shiftKey &&
+            !e.ctrlKey &&
+            !e.metaKey
+          )
+            select({ ids: [] });
         }}
       >
         <style>

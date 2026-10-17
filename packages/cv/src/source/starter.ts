@@ -3,14 +3,25 @@ import {
   localizedSectionTitle,
   type Document,
 } from "@resumi/engine";
-import type { ResumeData, ResumeLayout } from "../templates/CodeResume";
+import type { ResumeData, ResumeLayout } from "../templates/types";
 import assets from "../templates/assets.generated.json" with { type: "json" };
 import template from "./template.generated.json" with { type: "json" };
 export type ReactTemplateOptions = {
   layout?: ResumeLayout;
   portrait?: boolean | string;
 };
-const layouts: ResumeLayout[] = ["studio", "editorial", "classic", "profile"];
+const layouts: ResumeLayout[] = [
+  "studio",
+  "editorial",
+  "classic",
+  "profile",
+  "harvard",
+  "cobalt",
+  "atelier",
+  "timeline",
+  "consultant",
+  "mosaic",
+];
 function storedData(
   document: Document,
   kind: "data" | "assets",
@@ -43,7 +54,7 @@ export function makeReactSource(
   options: ReactTemplateOptions = {},
 ): string {
   const data = resumeData(document, options);
-  const { font, portrait, license, ...content } = data;
+  const { font, portrait, license, brands, ...content } = data;
   return template
     .replace(
       /\/\* resumi-template:[a-z]+ \*\//,
@@ -52,12 +63,12 @@ export function makeReactSource(
     .replace(
       /\/\* resume-data:start \*\/[\s\S]*?\/\* resume-data:end \*\//,
       () =>
-        `/* resumi-data */${JSON.stringify({ ...content, ...(portrait ? { portraitAsset: true } : {}) }, null, 2)}/* resumi-data-end */`,
+        `/* resumi-data */${JSON.stringify({ ...content, ...(portrait ? { portraitAsset: true } : {}), ...(brands ? { brandAssets: true } : {}) }, null, 2)}/* resumi-data-end */`,
     )
     .replace(
       /\/\* resume-assets:start \*\/[\s\S]*?\/\* resume-assets:end \*\//,
       () =>
-        `/* resumi-assets */${JSON.stringify({ font, ...(portrait ? { portrait } : {}), license }, null, 2)}/* resumi-assets-end */`,
+        `/* resumi-assets */${JSON.stringify({ font, ...(portrait ? { portrait } : {}), ...(brands ? { brands } : {}), license }, null, 2)}/* resumi-assets-end */`,
     );
 }
 export function resumeData(
@@ -92,14 +103,28 @@ export function resumeData(
             ? portraitValue(storedData(document, "assets")?.portrait)
             : undefined) ??
           (existingImage?.type === "image" ? existingImage.src : undefined));
+  const brandNames =
+    layout === "cobalt"
+      ? ["Figma", "TypeScript", "HTML", "CSS", "Storybook"]
+      : layout === "atelier"
+        ? ["Figma", "Sketch", "Adobe Illustrator"]
+        : layout === "mosaic"
+          ? ["Figma", "Adobe Illustrator", "Blender"]
+          : [];
+  const brands = assets.brands.filter((brand) =>
+    brandNames.includes(brand.name),
+  );
   return {
     name: document.name,
     accent: document.style.accent,
     serif: document.style.font === "serif",
     layout,
     font: assets.font,
-    license: assets.license,
-    ...(layout === "profile" && portrait ? { portrait } : {}),
+    license: `${assets.license}${brands.length ? `\n\n${assets.brandLicense}` : ""}`,
+    ...(["profile", "atelier"].includes(layout) && portrait
+      ? { portrait }
+      : {}),
+    ...(brands.length ? { brands } : {}),
     sections: document.sectionIds.map((id) => ({
       id,
       title: localizedSectionTitle(document, id),

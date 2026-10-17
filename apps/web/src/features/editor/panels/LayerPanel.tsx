@@ -37,6 +37,7 @@ import {
   canvasAtom,
   designCommandAtom,
   selectedIdsAtom,
+  selectLayerAtom,
   selectLayersAtom,
   groupSelectionAtom,
   duplicateSelectionAtom,
@@ -64,6 +65,7 @@ function Row({
     selection = useAtomValue(selectionAtom),
     dispatch = useSetAtom(designCommandAtom),
     select = useSetAtom(selectLayersAtom),
+    selectLayer = useSetAtom(selectLayerAtom),
     store = useStore();
   const [renaming, setRenaming] = useState(false),
     [draftName, setDraftName] = useState("");
@@ -85,17 +87,22 @@ function Row({
         className={styles.layerName}
         aria-label={`Select layer ${layer.name}`}
         aria-pressed={active}
-        onClick={(e) =>
-          select({
-            ids: e.shiftKey
-              ? active
-                ? selected.filter((value) => value !== id)
-                : [...selected, id]
-              : [id],
+        onClick={(event) =>
+          selectLayer({
+            id,
+            additive: event.shiftKey || event.ctrlKey || event.metaKey,
+            wholeGroup: false,
+            preserveSelection: false,
           })
         }
         onKeyDown={(event) => {
-          if (event.key === "Enter" && !renaming) select({ ids: [id] });
+          if (event.key === "Enter" && !renaming)
+            selectLayer({
+              id,
+              additive: event.shiftKey || event.ctrlKey || event.metaKey,
+              wholeGroup: false,
+              preserveSelection: false,
+            });
         }}
         onDoubleClick={() => {
           setDraftName(layer.name);

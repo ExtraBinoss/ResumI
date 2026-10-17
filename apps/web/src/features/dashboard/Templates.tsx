@@ -8,6 +8,11 @@ import { SearchInput } from "../../components/SearchInput";
 import { createSearchIndex } from "../../lib/search-index";
 import { ResumePreview } from "../../components/ResumePreview";
 import { preloadEditor } from "../../lib/preload-editor";
+import {
+  templatePreviewHtml,
+  templateThumbnailUrls,
+} from "../../lib/template-preview-assets";
+import { LibraryToolbar } from "./components/LibraryToolbar";
 import shell from "./styles/Dashboard.module.css";
 import styles from "./styles/Templates.module.css";
 
@@ -20,13 +25,7 @@ type TemplatePreview = {
 function displayName(name: string) {
   return name.replace(/^React /, "");
 }
-export function Templates({
-  templates,
-  css,
-}: {
-  templates: TemplatePreview[];
-  css: string;
-}) {
+export function Templates({ templates }: { templates: TemplatePreview[] }) {
   const { t } = useTranslation();
   const reducedMotion = useReducedMotion();
   const [search, setSearch] = useState("");
@@ -42,37 +41,44 @@ export function Templates({
   return (
     <>
       <main className={shell.main}>
-        <header className={`${shell.heading} ${styles.heading}`}>
+        <header className={shell.heading}>
           <div className={shell.collectionTitle}>
             <h1>{t("dashboard.templates")}</h1>
             <span className={shell.count}>{templates.length}</span>
           </div>
-          <SearchInput
-            aria-label={t("dashboard.searchTemplates")}
-            prefix={t("common.search")}
-            captureTyping
-            hints={templates.map((template) => ({
-              label: displayName(template.name),
-            }))}
-            value={search}
-            onChange={(event) => setSearch(event.currentTarget.value)}
-            size="xs"
-            className={styles.search}
-          />
         </header>
-        <section className={styles.catalog} aria-label="Resume templates">
+        <LibraryToolbar
+          search={
+            <SearchInput
+              aria-label={t("dashboard.searchTemplates")}
+              prefix={t("common.search")}
+              captureTyping
+              hints={templates.map((template) => ({
+                label: displayName(template.name),
+              }))}
+              value={search}
+              onChange={(event) => setSearch(event.currentTarget.value)}
+              size="xs"
+            />
+          }
+        />
+        <section
+          className={styles.catalog}
+          aria-label={t("dashboard.templateLibrary")}
+        >
           {!filtered.length && (
             <div className={shell.empty}>
               <span className={shell.emptyPaper}>
                 <LayoutTemplate size={32} strokeWidth={1.2} aria-hidden />
               </span>
-              <h2>No templates found</h2>
+              <h2>{t("dashboard.noTemplates")}</h2>
             </div>
           )}
           <div className={styles.grid}>
-            {filtered.map((template) => (
+            {filtered.map((template, index) => (
               <motion.article
                 key={template.id}
+                data-template-card={template.id}
                 className={styles.template}
                 initial={false}
                 whileHover={reducedMotion ? undefined : { y: -4 }}
@@ -80,13 +86,29 @@ export function Templates({
               >
                 <div className={styles.preview}>
                   <div className={styles.paper}>
-                    <ResumePreview html={template.html} css={css} />
+                    <img
+                      className={styles.thumbnail}
+                      src={
+                        templateThumbnailUrls[
+                          `../assets/templates/${template.id}.webp`
+                        ]
+                      }
+                      width={440}
+                      height={622}
+                      alt=""
+                      aria-hidden="true"
+                      loading={index < 4 ? "eager" : "lazy"}
+                      fetchPriority={index === 0 ? "high" : "auto"}
+                      decoding="async"
+                    />
                   </div>
                 </div>
                 <Link
                   to={`/editor?template=${template.id}`}
                   className={styles.templateLink}
-                  aria-label={`Use ${template.name}`}
+                  aria-label={t("dashboard.useTemplate", {
+                    name: template.name,
+                  })}
                   onPointerEnter={preloadEditor}
                   onFocus={preloadEditor}
                 >
@@ -100,7 +122,9 @@ export function Templates({
                   color="gray"
                   size="compact-xs"
                   className={styles.previewButton}
-                  aria-label={`Preview ${displayName(template.name)}`}
+                  aria-label={t("dashboard.previewResume", {
+                    name: displayName(template.name),
+                  })}
                   onClick={() => setPreview(template)}
                 >
                   <Eye size={16} aria-hidden />
@@ -113,26 +137,33 @@ export function Templates({
       <Modal
         opened={!!preview}
         onClose={() => setPreview(null)}
-        title={preview ? displayName(preview.name) : "Template preview"}
+        title={
+          preview ? displayName(preview.name) : t("dashboard.templatePreview")
+        }
         size={860}
       >
         {preview && (
           <>
             <div className={shell.previewScroller}>
               <div className={shell.previewPage}>
-                <ResumePreview html={preview.html} css={css} />
+                <ResumePreview
+                  html={templatePreviewHtml(preview.html)}
+                  css=""
+                />
               </div>
             </div>
             <div className={shell.previewFooter}>
               <Button
                 component={Link}
                 to={`/editor?template=${preview.id}`}
-                aria-label={`Use ${preview.name}`}
+                aria-label={t("dashboard.useTemplate", { name: preview.name })}
                 onPointerEnter={preloadEditor}
                 onFocus={preloadEditor}
                 rightSection={<ArrowRight size={16} aria-hidden />}
               >
-                Use {displayName(preview.name)}
+                {t("dashboard.useTemplate", {
+                  name: displayName(preview.name),
+                })}
               </Button>
             </div>
           </>

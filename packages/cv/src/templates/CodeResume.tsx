@@ -1,22 +1,8 @@
 import type { CSSProperties } from "react";
-
-export type ResumeLayout = "studio" | "editorial" | "classic" | "profile";
-export type ResumeSection = {
-  id?: string;
-  title: string;
-  blocks: { id?: string; kind: string; text: string }[];
-};
-export type ResumeData = {
-  name: string;
-  accent: string;
-  serif: boolean;
-  layout?: ResumeLayout;
-  portrait?: string;
-  portraitAsset?: boolean;
-  font?: string;
-  license?: string;
-  sections: ResumeSection[];
-};
+import type { ResumeData, ResumeSection, TemplateBrand } from "./types";
+import { Contacts, Section } from "./TemplateContent";
+import { ExtendedLayouts } from "./ExtendedLayouts.tsx";
+import { extendedCss } from "./extended-css";
 
 /* resumi-template:studio */
 const resume: ResumeData = /* resume-data:start */ {
@@ -58,159 +44,6 @@ const resume: ResumeData = /* resume-data:start */ {
     },
   ],
 }; /* resume-data:end */
-
-// Vetted Lucide paths (ISC); the portable template embeds its licenses with the font.
-function ContactIcon({
-  type,
-}: {
-  type: "mail" | "location" | "web" | "phone";
-}) {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      width="14"
-      height="14"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.6"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      {type === "mail" ? (
-        <>
-          <path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7" />
-          <rect x="2" y="4" width="20" height="16" rx="2" />
-        </>
-      ) : type === "location" ? (
-        <>
-          <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0" />
-          <circle cx="12" cy="10" r="3" />
-        </>
-      ) : type === "web" ? (
-        <>
-          <circle cx="12" cy="12" r="10" />
-          <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20M2 12h20" />
-        </>
-      ) : (
-        <path d="M13.832 16.568a1 1 0 0 0 1.213-.303l.355-.465A2 2 0 0 1 17 15h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2A18 18 0 0 1 2 4a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-.8 1.6l-.468.351a1 1 0 0 0-.292 1.233 14 14 0 0 0 6.392 6.384" />
-      )}
-    </svg>
-  );
-}
-function Contacts({ values }: { values: string[] }) {
-  return (
-    <address className="cv-contacts">
-      {values.map((value, index) => {
-        const type = value.includes("@")
-          ? "mail"
-          : /^\+?[\d ()-]{7,}$/.test(value)
-            ? "phone"
-            : /\.[a-z]{2,}/i.test(value)
-              ? "web"
-              : "location";
-        const href =
-          type === "mail"
-            ? `mailto:${value}`
-            : type === "web"
-              ? /^https?:\/\//i.test(value)
-                ? value
-                : `https://${value}`
-              : type === "phone"
-                ? `tel:${value.replace(/[^+\d]/g, "")}`
-                : undefined;
-        return (
-          <span key={index}>
-            <ContactIcon type={type} />
-            {href ? <a href={href}>{value}</a> : <span>{value}</span>}
-          </span>
-        );
-      })}
-    </address>
-  );
-}
-function entries(section: ResumeSection) {
-  const groups: {
-    title?: ResumeSection["blocks"][number];
-    meta?: ResumeSection["blocks"][number];
-    body: ResumeSection["blocks"];
-  }[] = [];
-  for (const block of section.blocks) {
-    if (block.kind === "subtitle") groups.push({ title: block, body: [] });
-    else {
-      if (!groups.length) groups.push({ body: [] });
-      const current = groups[groups.length - 1];
-      if (block.kind === "meta" && current.title && !current.meta)
-        current.meta = block;
-      else current.body.push(block);
-    }
-  }
-  return groups;
-}
-function Section({ section }: { section: ResumeSection }) {
-  const skills = /skill|competenc|compétenc/i.test(section.title);
-  return (
-    <section
-      className={`cv-section${skills ? " cv-skills-section" : ""}`}
-      data-section-id={section.id}
-    >
-      {section.title && <h2>{section.title}</h2>}
-      <div className="cv-section-content">
-        {skills ? (
-          <ul className="cv-skill-list">
-            {section.blocks
-              .flatMap((block) => block.text.split(/\s+\/\s+|\n/))
-              .filter(Boolean)
-              .map((skill, index) => (
-                <li key={index}>{skill.trim()}</li>
-              ))}
-          </ul>
-        ) : (
-          entries(section).map((entry, index) => (
-            <div className="cv-entry" key={index}>
-              {(entry.title || entry.meta) && (
-                <div className="cv-entry-head">
-                  {entry.title && (
-                    <h3 data-block-id={entry.title.id}>{entry.title.text}</h3>
-                  )}
-                  {entry.meta && (
-                    <p className="cv-meta" data-block-id={entry.meta.id}>
-                      {entry.meta.text}
-                    </p>
-                  )}
-                </div>
-              )}
-              {entry.body
-                .filter((block) => block.kind !== "bullet")
-                .map((block, blockIndex) => (
-                  <p
-                    className={
-                      block.kind === "meta" ? "cv-meta" : "cv-paragraph"
-                    }
-                    data-block-id={block.id}
-                    key={blockIndex}
-                  >
-                    {block.text}
-                  </p>
-                ))}
-              {entry.body.some((block) => block.kind === "bullet") && (
-                <ul className="cv-bullets">
-                  {entry.body
-                    .filter((block) => block.kind === "bullet")
-                    .map((block, blockIndex) => (
-                      <li data-block-id={block.id} key={blockIndex}>
-                        {block.text}
-                      </li>
-                    ))}
-                </ul>
-              )}
-            </div>
-          ))
-        )}
-      </div>
-    </section>
-  );
-}
 
 const css = `
 .resume.cv-sheet,.cv-sheet *{box-sizing:border-box}
@@ -303,6 +136,8 @@ export default function Resume({ data = resume }: { data?: ResumeData } = {}) {
   const license = data.license ?? templateAssets.license;
   const portrait =
     data.portrait ?? (data.portraitAsset ? templateAssets.portrait : undefined);
+  const brands =
+    data.brands ?? (data.brandAssets ? templateAssets.brands : undefined);
   const identity =
     data.sections.find((section) =>
       section.blocks.some((block) => block.kind === "heading"),
@@ -336,14 +171,30 @@ export default function Resume({ data = resume }: { data?: ResumeData } = {}) {
   );
   return (
     <>
-      <style>{`${license ? `/* ${license.replace(/\*\//g, "* / ")} */` : ""}${font ? `@font-face{font-family:ResumeInter;src:url('${font}') format('woff2');font-style:normal;font-weight:100 900;font-display:swap}` : ""}${css}`}</style>
+      <style>{`${license ? `/* ${license.replace(/\*\//g, "* / ")} */` : ""}${font ? `@font-face{font-family:ResumeInter;src:url('${font}') format('woff2');font-style:normal;font-weight:100 900;font-display:swap}` : ""}${css}${extendedCss}`}</style>
       <article
         className={`resume cv-sheet cv-${layout}`}
         aria-label="Resume"
         data-template-layout={layout}
         style={{ "--cv-accent": data.accent } as CSSProperties}
       >
-        {layout === "profile" ? (
+        {[
+          "harvard",
+          "cobalt",
+          "atelier",
+          "timeline",
+          "consultant",
+          "mosaic",
+        ].includes(layout) ? (
+          <ExtendedLayouts
+            data={{ ...data, brands }}
+            name={name}
+            role={role}
+            contacts={contacts}
+            sections={sections}
+            portrait={portrait}
+          />
+        ) : layout === "profile" ? (
           <>
             <aside className="cv-profile-rail">
               {portrait && (
@@ -398,5 +249,9 @@ export default function Resume({ data = resume }: { data?: ResumeData } = {}) {
 }
 
 // Embedded assets stay at the end so the editable content and component remain readable.
-const templateAssets: { font?: string; portrait?: string; license?: string } =
-  /* resume-assets:start */ {}; /* resume-assets:end */
+const templateAssets: {
+  font?: string;
+  portrait?: string;
+  license?: string;
+  brands?: TemplateBrand[];
+} = /* resume-assets:start */ {}; /* resume-assets:end */

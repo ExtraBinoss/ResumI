@@ -2,9 +2,9 @@ import { cpus } from "node:os";
 import { mkdir } from "node:fs/promises";
 import { createSearchIndex } from "../apps/web/src/lib/search-index";
 import googleFonts from "../apps/web/src/features/editor/panels/google-fonts.generated.json";
-import icons from "../apps/web/src/data/icons.json";
-import shapes from "../apps/web/src/data/shapes.json";
-import brands from "../apps/web/src/data/brands.json";
+import icons from "../packages/assets/data/icons.json";
+import shapes from "../packages/assets/data/shapes.json";
+import brands from "../packages/assets/data/brands.json";
 import { templates } from "../packages/cv/src/templates/catalog";
 
 type Item = { name: string; category: string };

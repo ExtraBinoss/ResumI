@@ -9,7 +9,7 @@ test("typing searches the library immediately without stealing shortcuts, IME or
     name: "Search templates",
     exact: true,
   });
-  await page.locator("body").click({ position: { x: 1200, y: 700 } });
+  await page.getByRole("heading", { name: "Templates", exact: true }).click();
   await page.keyboard.type("Editorial");
   await expect(search).toBeFocused();
   await expect(search).toHaveValue("Editorial");
@@ -19,7 +19,7 @@ test("typing searches the library immediately without stealing shortcuts, IME or
   await expect(
     page.getByRole("link", { name: "Use React Studio", exact: true }),
   ).toHaveCount(0);
-  await page.locator("body").click({ position: { x: 1200, y: 700 } });
+  await page.getByRole("heading", { name: "Templates", exact: true }).click();
   await page.evaluate(() => {
     for (const options of [
       { key: "x", ctrlKey: true },
@@ -50,7 +50,9 @@ test("typing searches the library immediately without stealing shortcuts, IME or
     name: "Search resumes",
     exact: true,
   });
-  await page.locator("body").click({ position: { x: 1200, y: 700 } });
+  await page
+    .getByRole("heading", { name: "Your resumes", exact: true })
+    .click();
   await page.keyboard.type("Alex");
   await expect(resumes).toHaveValue("Alex");
   await expect(resumes).toBeFocused();

@@ -1,13 +1,19 @@
 import { useEffect, useLayoutEffect, useRef, type PointerEvent } from "react";
 import { useAtomValue, useStore } from "jotai";
 import { zoomAtom } from "../../state/editor";
-import { zoomRequestAtom } from "../../state/canvas-view";
+import { fitViewportAtom, zoomRequestAtom } from "../../state/canvas-view";
 
 type Anchor = { x: number; y: number; clientX: number; clientY: number };
 const surfaceSelector = "[data-zoom-surface]";
 
-/** Both workspaces share one pointer-anchored, compositor-only zoom gesture. */
-export function useCanvasPan() {
+/** All workspaces share one pointer-anchored, compositor-only zoom gesture. */
+export function useCanvasPan({
+  contained = false,
+  initialFit,
+}: {
+  contained?: boolean;
+  initialFit?: { id: string; width: number; height: number };
+} = {}) {
   const store = useStore(),
     zoom = useAtomValue(zoomAtom);
   const zoomAnchor = useRef<Anchor | null>(null);
@@ -17,6 +23,20 @@ export function useCanvasPan() {
     pan = useRef<{ x: number; y: number; left: number; top: number } | null>(
       null,
     );
+  const fitId = initialFit?.id,
+    fitWidth = initialFit?.width,
+    fitHeight = initialFit?.height;
+  useLayoutEffect(() => {
+    const node = viewport.current;
+    if (!node || !fitId || !fitWidth || !fitHeight) return;
+    store.set(fitViewportAtom, {
+      id: fitId,
+      width: fitWidth,
+      height: fitHeight,
+      availableWidth: node.clientWidth,
+      availableHeight: node.clientHeight,
+    });
+  }, [fitId, fitWidth, fitHeight, store]);
   useEffect(() => {
     function reset() {
       space.current = false;
@@ -44,7 +64,7 @@ export function useCanvasPan() {
     const node = viewport.current;
     const usableHeight = () =>
       (node?.clientHeight ?? 0) *
-      (window.matchMedia("(max-width: 700px)").matches ? 0.6 : 1);
+      (!contained && window.matchMedia("(max-width: 700px)").matches ? 0.6 : 1);
     let previous = { width: node?.clientWidth ?? 0, height: usableHeight() };
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
     let zoomFrame = 0,
@@ -164,7 +184,7 @@ export function useCanvasPan() {
       window.removeEventListener("keyup", keyup);
       window.removeEventListener("blur", reset);
     };
-  }, [store]);
+  }, [contained, store]);
   useLayoutEffect(() => {
     const node = viewport.current,
       anchor = zoomAnchor.current;

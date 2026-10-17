@@ -5,6 +5,13 @@ const result = await runCli(Bun.argv.slice(2), {
   write: async (path, data) => {
     await Bun.write(path, data);
   },
+  writeBinary: async (path, data) => {
+    await Bun.write(path, data);
+  },
+  capture: async (html, width, height) => {
+    const { captureScreenshot } = await import("./screenshot");
+    return captureScreenshot(html, width, height);
+  },
   id: () => crypto.randomUUID(),
 });
 if (result.stdout) process.stdout.write(result.stdout);

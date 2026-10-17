@@ -38,6 +38,8 @@ export type ColorPickerContextValue = {
   emit: (color: ColorPickerColor | null) => void;
   startInteraction: () => void;
   endInteraction: () => void;
+  /** Restores the exact starting value and channels without committing. */
+  cancelInteraction: () => void;
   /** A whole interaction in one: emits and commits. */
   change: (color: ColorPickerColor | null) => void;
   /** The trigger or the input: where a failed `required` check sends focus. */
@@ -106,6 +108,8 @@ export type ColorPickerProps = {
   onValueChange?: (value: string | null) => void;
   /** Fires once an interaction ends: a drag released, a key, a field, a swatch. */
   onValueCommit?: (value: string | null) => void;
+  /** Ends a cancelled interaction without publishing a committed value. */
+  onValueCancel?: () => void;
   /** How the value is written. */
   format?: ColorPickerFormat;
   /** Adds the opacity slider and field, and lets the value carry alpha. */

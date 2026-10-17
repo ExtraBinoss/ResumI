@@ -125,7 +125,9 @@ export function createResume(id: string, templateId = "studio"): Document {
               format: "react",
               code: makeReactSource(document, {
                 layout: template.layout,
-                portrait: template.layout === "profile",
+                portrait:
+                  template.layout === "profile" ||
+                  template.layout === "atelier",
               }),
             },
           },

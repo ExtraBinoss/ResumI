@@ -208,8 +208,16 @@
     gap: 3px;
   }
   .nameButton {
-    max-width: none;
+    flex-shrink: 1;
+    max-width: 100%;
     font-size: 12px;
+  }
+  .nameButton span {
+    min-width: 0;
+  }
+  .toolbarLeft,
+  .toolbarRight {
+    flex-shrink: 0;
   }
   .projectTitle {
     flex: 1;
@@ -233,10 +241,6 @@
   .exportButton {
     width: 31px;
     padding: 0;
-  }
-  .exportButton > span:last-child,
-  .exportButton > span:nth-child(2) {
-    display: none;
   }
 }
 

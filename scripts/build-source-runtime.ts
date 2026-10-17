@@ -1,3 +1,4 @@
+import { templateSource } from "./template-source";
 /** Rebuild after updating React. The resulting JSON is an offline runtime asset. */
 const result = await Bun.build({
   entrypoints: [
@@ -18,9 +19,7 @@ await Bun.write(
   new URL("../packages/cv/src/source/runtime.generated.json", import.meta.url),
   JSON.stringify(runtime) + "\n",
 );
-const template = await Bun.file(
-  new URL("../packages/cv/src/templates/CodeResume.tsx", import.meta.url),
-).text();
+const template = await templateSource(new URL("../", import.meta.url));
 await Bun.write(
   new URL("../packages/cv/src/source/template.generated.json", import.meta.url),
   JSON.stringify(template) + "\n",

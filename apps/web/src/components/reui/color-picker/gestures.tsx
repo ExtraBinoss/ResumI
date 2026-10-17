@@ -86,11 +86,12 @@ export function useDrag(
 ) {
   const pointer = useRef<number | null>(null);
   const [dragging, setDragging] = useState(false);
-  const end = (event: ReactPointerEvent<HTMLElement>) => {
+  const end = (event: ReactPointerEvent<HTMLElement>, cancel = false) => {
     if (pointer.current !== event.pointerId) return;
     pointer.current = null;
     setDragging(false);
-    context.endInteraction();
+    if (cancel) context.cancelInteraction();
+    else context.endInteraction();
   };
   return {
     dragging,
@@ -108,8 +109,11 @@ export function useDrag(
           update(event, event.currentTarget);
         }
       },
-      onPointerUp: end,
-      onPointerCancel: end,
+      onPointerUp: (event: ReactPointerEvent<HTMLElement>) => end(event),
+      onPointerCancel: (event: ReactPointerEvent<HTMLElement>) =>
+        end(event, true),
+      onLostPointerCapture: (event: ReactPointerEvent<HTMLElement>) =>
+        end(event, true),
     },
   };
 }

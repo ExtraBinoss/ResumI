@@ -17,6 +17,7 @@ type SelectProps = FieldProps & {
   id?: string;
   "aria-label"?: string;
   className?: string;
+  contentClassName?: string;
   data: readonly SelectItem[];
   value?: string | null;
   onChange?: (value: string | null) => void;
@@ -33,6 +34,7 @@ export function Select({
   error,
   size = "sm",
   className,
+  contentClassName,
   data,
   value,
   onChange,
@@ -104,7 +106,7 @@ export function Select({
           align="start"
           alignItemWithTrigger={false}
           sideOffset={5}
-          className={styles.selectMenu}
+          className={classes(styles.selectMenu, contentClassName)}
           onPointerLeave={() => onOptionPreview?.(null)}
         >
           {data.map((item) => {

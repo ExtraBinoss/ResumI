@@ -86,12 +86,14 @@ function EditorWorkspace({ controller }: { controller: EditorController }) {
         selection = store.get(selectionAtom);
       if (modifier && key === "g") {
         event.preventDefault();
-        if (event.shiftKey && selection?.groupId) {
-          store.set(designCommandAtom, {
-            type: "group.ungroup",
-            id: selection.groupId,
-          });
-          store.set(selectLayersAtom, { ids });
+        if (event.shiftKey) {
+          if (selection?.groupId) {
+            store.set(designCommandAtom, {
+              type: "group.ungroup",
+              id: selection.groupId,
+            });
+            store.set(selectLayersAtom, { ids });
+          }
         } else store.set(groupSelectionAtom);
         return;
       }

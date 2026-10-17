@@ -13,6 +13,7 @@ import {
 } from "../../../ui";
 import { Shortcut } from "../../../components/Shortcut";
 import styles from "../styles/Inspector.module.css";
+import { useColorPreview } from "./useColorPreview";
 
 export function TextLinkButton({
   id,
@@ -25,6 +26,7 @@ export function TextLinkButton({
   const selection = useAtomValue(textRangeAtom);
   const setSelection = useSetAtom(textRangeAtom);
   const dispatch = useSetAtom(designCommandAtom);
+  const preview = useColorPreview(id);
   const [open, setOpen] = useState(false);
   const [label, setLabel] = useState("");
   const [href, setHref] = useState("https://");
@@ -113,6 +115,7 @@ export function TextLinkButton({
             aria-label="Link color"
             size="xs"
             value={color}
+            onPreview={(value) => preview({ kind: "text", id, range }, value)}
             onChangeEnd={setColor}
           />
           <div className={styles.linkActions}>

@@ -4,12 +4,14 @@ import { canvasAtom, designCommandAtom } from "../../../state/design";
 import { sessionAtom } from "../../../state/editor";
 import { FontAssets } from "./FontAssets";
 import { DocumentStyleFields } from "./DocumentStyleFields";
+import { useColorPreview } from "./useColorPreview";
 import styles from "../styles/Inspector.module.css";
 
 export function DocumentProperties() {
   const canvas = useAtomValue(canvasAtom);
   const document = useAtomValue(sessionAtom)!.document;
   const dispatch = useSetAtom(designCommandAtom);
+  const preview = useColorPreview("document");
   return (
     <>
       <section>
@@ -45,6 +47,7 @@ export function DocumentProperties() {
               format="hex"
               size="xs"
               value={canvas.background}
+              onPreview={(value) => preview({ kind: "page" }, value)}
               onChangeEnd={(value) =>
                 dispatch({
                   type: "canvas.update",

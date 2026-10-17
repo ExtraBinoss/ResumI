@@ -1,48 +1,34 @@
-import { Settings2, Sun, Moon, Monitor, Check } from "lucide-react";
+import { Settings, Sun, Moon, Monitor, Check } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { uiLanguages } from "../i18n/resources";
-import { setInterfaceLanguage } from "../i18n/InterfaceLanguage";
+import { setInterfaceLanguage } from "../i18n/interface-language";
 import { ActionIcon, Popover, Select } from "../ui";
 import { useTheme } from "../state/theme";
 import { Button } from "./ui/button";
 import styles from "../styles/Settings.module.css";
 
 export function SettingsMenu({
-  trigger = "icon",
-  fullWidth = trigger === "sidebar",
+  position = "bottom-end",
+  size = 32,
 }: {
-  trigger?: "icon" | "sidebar";
-  fullWidth?: boolean;
+  position?: "top-end" | "bottom-end";
+  size?: number | string;
 }) {
   const [theme, setTheme] = useTheme();
   const { t, i18n } = useTranslation();
   return (
-    <Popover
-      position={trigger === "sidebar" ? "top-start" : "bottom-end"}
-      width={210}
-    >
+    <Popover position={position} width={210}>
       <Popover.Target>
-        {fullWidth ? (
-          <Button
-            variant="ghost"
-            aria-label={t("common.settings")}
-            className={styles.sidebarTrigger}
-          >
-            <Settings2 size={17} aria-hidden />
-            <span>{t("common.settings")}</span>
-          </Button>
-        ) : (
-          <ActionIcon
-            w={32}
-            h={32}
-            variant="subtle"
-            color="gray"
-            aria-label={t("common.settings")}
-            title={t("common.settings")}
-          >
-            <Settings2 size={17} aria-hidden />
-          </ActionIcon>
-        )}
+        <ActionIcon
+          w={size}
+          h={size}
+          variant="subtle"
+          color="gray"
+          aria-label={t("common.settings")}
+          title={t("common.settings")}
+        >
+          <Settings size={17} aria-hidden />
+        </ActionIcon>
       </Popover.Target>
       <Popover.Dropdown className={styles.panel}>
         <h2>{t("settings.appearance")}</h2>

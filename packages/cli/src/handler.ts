@@ -4,127 +4,180 @@ import {
   serializeDocument,
   validateDocument,
   EngineError,
+  type Document,
 } from "@resumi/engine";
-import { createResume, renderDocumentHtml, templates } from "@resumi/cv";
-import { commandContract } from "@resumi/adapters/schema";
-export const HELP = `ResumI — portable resume tools for humans and agents
-Usage: bun run resumi document <command> [arguments]
+import { parseArgs, boundedInteger } from "./arguments";
+import { HELP, help } from "./help";
+import { CliError, read, readProject, write, type IO } from "./io";
+export { HELP } from "./help";
+export type { IO } from "./io";
 
-  create [--out FILE] [--template ${templates.map((template) => template.id).join("|")}]
-  inspect FILE              Read the complete normalized document (JSON)
-  validate FILE             Validate document schema and invariants (JSON)
-  apply FILE PATCH [--out FILE]   Apply one atomic v1 command batch
-  render FILE --format html --out FILE   Export the real portable HTML/CSS
-  schema                    Print the versioned command JSON Schema
-  --help                    Show this help
-
-All successful responses are JSON on stdout. Errors are JSON on stderr.
-Exit codes: 0 success; 2 arguments; 3 invalid input/operation; 4 file I/O.
-Without --out, create/apply return the document and never overwrite input.
-Use export → inspect → propose → apply → render → validated browser import.
-No network, provider credentials, browser access, MCP or live sync required.
-`;
-export interface IO {
-  read(path: string): Promise<string>;
-  write(path: string, data: string): Promise<void>;
-  id(): string;
+async function publishDocument(
+  document: Document,
+  flags: Map<string, string>,
+  io: IO,
+) {
+  if (flags.has("--out"))
+    await write(io, flags.get("--out")!, serializeDocument(document));
+  return {
+    document,
+    ...(flags.has("--out") ? { out: flags.get("--out") } : {}),
+  };
 }
-class CliError extends Error {
-  constructor(
-    public exit: number,
-    message: string,
-  ) {
-    super(message);
+async function source(document: Document, flags: Map<string, string>, io: IO) {
+  const file = flags.get("--file");
+  if (!file)
+    throw new CliError(
+      2,
+      "source requires --file Resume.html or Resume.tsx. See help source.",
+    );
+  const format =
+    flags.get("--format") ??
+    (/\.(tsx|jsx)$/i.test(file)
+      ? "react"
+      : /\.html?$/i.test(file)
+        ? "html"
+        : undefined);
+  if (format !== "html" && format !== "react")
+    throw new CliError(
+      2,
+      "Choose a .html/.tsx/.jsx source file, or --format html|react.",
+    );
+  const code = await read(io, file);
+  const result = applyCommands(document, {
+    version: 1,
+    actor: { kind: "agent", name: flags.get("--actor") ?? "ResumI CLI" },
+    commands: [{ type: "source.set", source: { format, code } }],
+  });
+  if (format === "react") {
+    const { compileReact } = await import("@resumi/cv/source-render");
+    compileReact(code);
   }
+  return {
+    ...(await publishDocument(result.document, flags, io)),
+    actor: result.batch.actor,
+  };
 }
-async function read(io: IO, path: string) {
+async function output(document: Document, flags: Map<string, string>, io: IO) {
+  const format = flags.get("--format") ?? "json";
+  if (!["json", "html", "source"].includes(format))
+    throw new CliError(2, "output --format must be json, html or source.");
+  let data: string;
+  if (format === "json") data = serializeDocument(document);
+  else if (format === "source") {
+    if (!document.source)
+      throw new CliError(
+        3,
+        "This project has no saved HTML/React source. Use output --format html for its rendered layout.",
+      );
+    data = document.source.code;
+  } else {
+    const { renderDocumentHtml } = await import("@resumi/cv");
+    data = await renderDocumentHtml(document);
+  }
+  if (!flags.has("--out")) return data.endsWith("\n") ? data : data + "\n";
+  await write(io, flags.get("--out")!, data);
+  return { format, out: flags.get("--out") };
+}
+async function screenshot(
+  document: Document,
+  flags: Map<string, string>,
+  io: IO,
+) {
+  const out = flags.get("--out");
+  if (!out || !/\.png$/i.test(out))
+    throw new CliError(
+      2,
+      "screenshot requires --out FILE.png. See help screenshot.",
+    );
+  const width = boundedInteger(
+    flags.get("--width"),
+    Math.ceil(document.canvas?.width ?? 794),
+    100,
+    5000,
+  );
+  const height = boundedInteger(
+    flags.get("--height"),
+    Math.ceil(document.canvas?.height ?? 1123),
+    100,
+    10000,
+  );
+  if (!io.capture || !io.writeBinary)
+    throw new CliError(
+      3,
+      "Screenshot capture is unavailable in this adapter. Run the Bun CLI after bunx playwright install chromium.",
+    );
+  const { renderDocumentHtml } = await import("@resumi/cv");
+  const capture = await io.capture(
+    await renderDocumentHtml(document),
+    width,
+    height,
+  );
   try {
-    return await io.read(path);
+    await io.writeBinary(out, capture.bytes);
   } catch {
-    throw new CliError(4, `Cannot read file: ${path}`);
+    throw new CliError(4, `Cannot write screenshot: ${out}`);
   }
-}
-async function write(io: IO, path: string, data: string) {
-  try {
-    await io.write(path, data);
-  } catch {
-    throw new CliError(4, `Cannot write file: ${path}`);
-  }
+  return {
+    format: "png",
+    out,
+    width: capture.width,
+    height: capture.height,
+    blockedRequests: capture.blockedRequests,
+  };
 }
 export async function runCli(
   args: string[],
   io: IO,
 ): Promise<{ exit: number; stdout: string; stderr: string }> {
   try {
-    if (!args.length || args.includes("--help") || args.includes("-h"))
-      return { exit: 0, stdout: HELP, stderr: "" };
-    if (args[0] !== "document")
-      throw new CliError(2, "Expected document. Use --help.");
-    const command = args[1],
-      positional: string[] = [],
-      flags = new Map<string, string>();
-    for (let i = 2; i < args.length; i++) {
-      const value = args[i];
-      if (value.startsWith("--")) {
-        if (
-          !["--out", "--format", "--template"].includes(value) ||
-          !args[i + 1] ||
-          args[i + 1].startsWith("--") ||
-          flags.has(value)
-        )
-          throw new CliError(2, `Invalid option: ${value}`);
-        flags.set(value, args[++i]);
-      } else positional.push(value);
-    }
-    const allowed: Record<string, string[]> = {
-      create: ["--out", "--template"],
-      inspect: [],
-      validate: [],
-      apply: ["--out"],
-      render: ["--format", "--out"],
-      schema: [],
-    };
     if (
-      !allowed[command] ||
-      [...flags.keys()].some((flag) => !allowed[command].includes(flag))
+      !args.length ||
+      args.includes("--help") ||
+      args.includes("-h") ||
+      args[0] === "help"
     )
-      throw new CliError(
-        2,
-        "Unknown command or incompatible option. Use --help.",
-      );
-    const count =
-      command === "create" || command === "schema"
-        ? 0
-        : command === "apply"
-          ? 2
-          : 1;
-    if (positional.length !== count)
-      throw new CliError(
-        2,
-        `${command} expects ${count} file argument(s). Use --help.`,
-      );
-    let output: unknown;
-    if (command === "schema") output = commandContract;
+      return {
+        exit: 0,
+        stdout: args[0] === "help" ? help(args[1]) : HELP,
+        stderr: "",
+      };
+    const { command, args: positional, flags } = parseArgs(args);
+    let result: unknown;
+    if (["commands", "capabilities", "templates", "assets"].includes(command)) {
+      const discovery = await import("./discovery");
+      if (command === "commands") result = { commands: discovery.commands() };
+      if (command === "capabilities") result = discovery.capabilities();
+      if (command === "templates")
+        result = await discovery.templateDiscovery(positional);
+      if (command === "assets")
+        result = await discovery.assetDiscovery(positional, flags, io);
+    } else if (command === "schema")
+      result = (await import("@resumi/adapters/schema")).commandContract;
     else if (command === "create") {
+      const { createResume, templates } = await import("@resumi/cv");
       const template = flags.get("--template") ?? "studio";
-      if (!templates.some((t) => t.id === template))
+      if (!templates.some((item) => item.id === template))
         throw new CliError(
           2,
-          `Unknown template. Choose ${templates.map((template) => template.id).join(", ")}.`,
+          `Unknown template: ${template}. Use templates list.`,
         );
-      const document = createResume(io.id(), template);
-      if (flags.has("--out"))
-        await write(io, flags.get("--out")!, serializeDocument(document));
-      output = {
-        document,
-        ...(flags.has("--out") ? { out: flags.get("--out") } : {}),
-      };
+      let document = createResume(io.id(), template);
+      if (flags.has("--name"))
+        document = applyCommands(document, {
+          version: 1,
+          actor: { kind: "agent", name: "ResumI CLI" },
+          commands: [{ type: "document.update", name: flags.get("--name") }],
+        }).document;
+      result = await publishDocument(document, flags, io);
     } else {
-      const document = deserializeDocument(await read(io, positional[0]));
-      if (command === "inspect") output = { document };
+      const document = deserializeDocument(
+        await readProject(io, positional[0]),
+      );
+      if (command === "inspect") result = { document };
       if (command === "validate") {
         validateDocument(document);
-        output = {
+        result = {
           valid: true,
           schemaVersion: document.schemaVersion,
           id: document.id,
@@ -134,37 +187,32 @@ export async function runCli(
         let patch: unknown;
         try {
           patch = JSON.parse(await read(io, positional[1]));
-        } catch (e) {
-          if (e instanceof CliError) throw e;
+        } catch (error) {
+          if (error instanceof CliError) throw error;
           throw new EngineError("INVALID_INPUT", "Invalid command JSON.");
         }
-        const result = applyCommands(document, patch);
-        if (flags.has("--out"))
-          await write(
-            io,
-            flags.get("--out")!,
-            serializeDocument(result.document),
-          );
-        output = {
-          document: result.document,
-          actor: result.batch.actor,
-          ...(flags.has("--out") ? { out: flags.get("--out") } : {}),
+        const applied = applyCommands(document, patch);
+        result = {
+          ...(await publishDocument(applied.document, flags, io)),
+          actor: applied.batch.actor,
         };
       }
+      if (command === "source") result = await source(document, flags, io);
+      if (command === "output") result = await output(document, flags, io);
+      if (command === "screenshot")
+        result = await screenshot(document, flags, io);
       if (command === "render") {
-        if (flags.get("--format") !== "html" || !flags.get("--out"))
+        if (flags.get("--format") !== "html" || !flags.has("--out"))
           throw new CliError(2, "render requires --format html --out FILE.");
-        await write(
-          io,
-          flags.get("--out")!,
-          await renderDocumentHtml(document),
-        );
-        output = { format: "html", out: flags.get("--out") };
+        result = await output(document, flags, io);
       }
     }
     return {
       exit: 0,
-      stdout: JSON.stringify(output, null, 2) + "\n",
+      stdout:
+        typeof result === "string"
+          ? result
+          : JSON.stringify(result, null, 2) + "\n",
       stderr: "",
     };
   } catch (error) {

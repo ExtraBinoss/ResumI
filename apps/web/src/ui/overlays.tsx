@@ -10,6 +10,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
   DropdownMenuLabel,
+  DropdownMenuGroup,
   DropdownMenuSeparator,
 } from "../components/ui/dropdown-menu";
 import {
@@ -135,6 +136,7 @@ function MenuLabel({ children }: { children: ReactNode }) {
 export const Menu = Object.assign(MenuRoot, {
   Target: MenuTarget,
   Dropdown: MenuDropdown,
+  Group: DropdownMenuGroup,
   Item: MenuItem,
   Divider: MenuDivider,
   Label: MenuLabel,

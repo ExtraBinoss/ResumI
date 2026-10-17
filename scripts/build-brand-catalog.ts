@@ -4,7 +4,7 @@ const iconifyRevision = "69ca5094ddd4aad6d797e689bb13ee8b692ae232";
 const logosRevision = "4a5b550414be64d5c007574cd395d910d50e8950";
 const sourceUrl = `https://raw.githubusercontent.com/iconify/icon-sets/${iconifyRevision}/json/devicon.json`;
 const microsoftUrl = `https://raw.githubusercontent.com/gilbarbara/logos/${logosRevision}/logos/microsoft-icon.svg`;
-const root = new URL("../apps/web/src/data/", import.meta.url);
+const root = new URL("../packages/assets/data/", import.meta.url);
 async function read(url: string) {
   const response = await fetch(url);
   if (!response.ok) throw new Error(`${response.status}: ${url}`);

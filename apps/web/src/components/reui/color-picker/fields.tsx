@@ -133,7 +133,14 @@ export function ColorPickerChannelInput({
   const current = channelText(context.display, space, channel);
   const shown = text ?? current;
   const fieldRef = useRef<HTMLInputElement | null>(null);
-  useEscapeRevert(fieldRef, text !== null, () => setText(null));
+  const typing = useRef(false);
+  useEscapeRevert(fieldRef, text !== null, () => {
+    if (typing.current) {
+      context.cancelInteraction();
+      typing.current = false;
+    }
+    setText(null);
+  });
   const { max } = channelRange(space, channel === "hex" ? "red" : channel);
   /* A number field is a spin button: a screen reader hears its range. */
   const spin =
@@ -153,9 +160,12 @@ export function ColorPickerChannelInput({
   const read = () => {
     if (text === null) return;
     setText(null);
-    if (text === current) return;
-    const next = readChannelText(text, context.display, space, channel);
-    if (next) context.change(next);
+    const next = readChannelText(text, context.getColor(), space, channel);
+    if (typing.current) {
+      if (next) context.emit(next);
+      context.endInteraction();
+      typing.current = false;
+    } else if (next && text !== current) context.change(next);
   };
 
   return (
@@ -194,6 +204,19 @@ export function ColorPickerChannelInput({
       onChange={(event) => {
         onChange?.(event);
         setText(event.target.value);
+        const next = readChannelText(
+          event.target.value,
+          context.getColor(),
+          space,
+          channel,
+        );
+        if (next && context.editable) {
+          if (!typing.current) {
+            typing.current = true;
+            context.startInteraction();
+          }
+          context.emit(next);
+        }
       }}
       onBlur={(event) => {
         onBlur?.(event);
@@ -208,6 +231,7 @@ export function ColorPickerChannelInput({
           flushSync(() => read());
         } else if (step && channel !== "hex" && context.editable) {
           event.preventDefault();
+          read();
           const from = readChannelText(shown, context.display, space, channel);
           if (!from) return;
           const unit =

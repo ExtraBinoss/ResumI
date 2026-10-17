@@ -1,6 +1,5 @@
 import { useLoaderData } from "react-router";
-import { templates, createResume, resumeCss } from "@resumi/cv";
-import { renderTemplateResume } from "@resumi/cv/templates";
+import { templatePreviews } from "../../src/lib/template-previews.server";
 import { Templates } from "../../src/features/dashboard/Templates";
 export const meta = () => [
   { title: "Templates — ResumI" },
@@ -8,15 +7,9 @@ export const meta = () => [
 ];
 export function loader() {
   return {
-    templates: templates
-      .filter((template) => !template.legacy)
-      .map((template) => ({
-        ...template,
-        html: renderTemplateResume(
-          createResume("preview-document", template.id),
-        ),
-      })),
-    css: resumeCss,
+    templates: templatePreviews.map(
+      ({ writing: _writing, ...template }) => template,
+    ),
   };
 }
 export default function TemplatesRoute() {

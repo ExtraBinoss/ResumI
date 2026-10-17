@@ -52,6 +52,10 @@ test("HTML and React sources share validated history, sandbox preview and portab
   await closeDialog(page, "Source");
   await page.getByRole("button", { name: "Visual", exact: true }).click();
   await expect(
+    page.getByRole("article", { name: "Text workspace", exact: true }),
+  ).toBeVisible();
+  await page.getByRole("button", { name: "Visual", exact: true }).click();
+  await expect(
     page.getByRole("article", { name: "Resume canvas" }),
   ).toBeVisible();
   await expect(

@@ -33,6 +33,7 @@ import { Shortcut } from "../../../components/Shortcut";
 import { TextLinkButton } from "./TextLinkButton";
 import { FontPicker } from "./FontPicker";
 import { useTextPreview } from "./useTextPreview";
+import { useColorPreview } from "./useColorPreview";
 import styles from "../styles/Inspector.module.css";
 
 type TextLayer = Extract<Layer, { type: "text" }>;
@@ -260,8 +261,9 @@ export function TypographyFields({
   layer: TextLayer;
   fonts?: string[];
 }) {
-  const { style, mixed, format } = useFormatting(id, layer);
+  const { style, mixed, format, selected } = useFormatting(id, layer);
   const preview = useTextPreview(id);
+  const previewColor = useColorPreview(id);
   return (
     <>
       <FontPicker
@@ -326,6 +328,12 @@ export function TypographyFields({
           aria-label="Text color"
           size="xs"
           value={style.color ?? layer.color}
+          onPreview={(color) =>
+            previewColor(
+              { kind: "text", id, range: selected, marks: layer.marks },
+              color,
+            )
+          }
           onChangeEnd={(color) => format({ color })}
         />
       </div>

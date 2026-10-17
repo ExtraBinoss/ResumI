@@ -1,18 +1,5 @@
-.search {
-  width: 234px;
-}
-.search :global([data-ui="input"]) {
-  background: color-mix(in srgb, var(--muted) 65%, var(--background));
-  border-color: transparent;
-  border-radius: 6px;
-  box-shadow: none;
-  font-size: 13px;
-}
-.search :global([data-ui="input"]):focus-visible {
-  border-color: var(--primary);
-}
 .catalog {
-  padding: 44px 36px 60px;
+  padding: 32px 36px 84px;
 }
 .grid {
   display: grid;
@@ -26,6 +13,9 @@
 .template {
   position: relative;
   min-width: 0;
+  height: 354px;
+  content-visibility: auto;
+  contain-intrinsic-block-size: auto 352px;
   overflow: hidden;
   border: 1px solid color-mix(in srgb, var(--foreground) 10%, transparent);
   border-radius: 8px;
@@ -66,6 +56,11 @@
   flex-shrink: 0;
   background: #fff;
   box-shadow: 0 1px 4px rgb(0 0 0 / 5%);
+}
+.thumbnail {
+  display: block;
+  width: 100%;
+  height: 100%;
 }
 .details {
   position: absolute;
@@ -119,27 +114,25 @@
 }
 @media (max-width: 1100px) {
   .catalog {
-    padding: 34px 26px 50px;
+    padding: 30px 26px 84px;
   }
   .grid {
     gap: 24px;
   }
 }
 @media (max-width: 520px) {
-  .heading {
-    flex-wrap: wrap;
-  }
-  .search {
-    width: 100%;
-  }
   .catalog {
-    padding: 30px 20px 44px;
+    padding: 28px 20px 84px;
   }
   .grid {
     grid-template-columns: minmax(0, 276px);
   }
   .templateLink {
     height: 366px;
+  }
+  .template {
+    height: 368px;
+    contain-intrinsic-block-size: auto 366px;
   }
 }
 @media (prefers-reduced-motion: reduce) {

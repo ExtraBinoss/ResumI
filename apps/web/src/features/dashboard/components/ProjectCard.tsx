@@ -1,4 +1,5 @@
 import { Link } from "react-router";
+import { useTranslation } from "react-i18next";
 import { motion, useReducedMotion } from "motion/react";
 import { Button, Menu } from "../../../ui";
 import {
@@ -32,6 +33,7 @@ export function ProjectCard({
   onPreview: () => void;
 }) {
   const reducedMotion = useReducedMotion();
+  const { t, i18n } = useTranslation();
   return (
     <motion.article
       className={`${styles.project} ${compact ? styles.compact : ""}`}
@@ -43,7 +45,7 @@ export function ProjectCard({
       <Link
         to={`/editor/${project.id}`}
         className={styles.projectLink}
-        aria-label={`Open ${project.document.name}`}
+        aria-label={t("dashboard.openResume", { name: project.document.name })}
         onPointerEnter={preloadEditor}
         onFocus={preloadEditor}
       >
@@ -64,12 +66,15 @@ export function ProjectCard({
         <div className={styles.projectInfo}>
           <h3 title={project.document.name}>{project.document.name}</h3>
           <p>
-            Edited{" "}
+            {t("dashboard.edited")}{" "}
             <time dateTime={project.updatedAt}>
-              {new Date(project.updatedAt).toLocaleDateString("en-GB", {
-                day: "numeric",
-                month: "short",
-              })}
+              {new Date(project.updatedAt).toLocaleDateString(
+                i18n.language === "fr" ? "fr-FR" : "en-GB",
+                {
+                  day: "numeric",
+                  month: "short",
+                },
+              )}
             </time>
           </p>
         </div>
@@ -78,7 +83,9 @@ export function ProjectCard({
         variant="subtle"
         color="gray"
         size="compact-xs"
-        aria-label={`Preview ${project.document.name}`}
+        aria-label={t("dashboard.previewResume", {
+          name: project.document.name,
+        })}
         className={styles.previewButton}
         onClick={onPreview}
       >
@@ -91,7 +98,9 @@ export function ProjectCard({
               variant="subtle"
               color="gray"
               size="compact-xs"
-              aria-label={`Actions for ${project.document.name}`}
+              aria-label={t("dashboard.actionsFor", {
+                name: project.document.name,
+              })}
             >
               <MoreHorizontal aria-hidden />
             </Button>
@@ -101,13 +110,13 @@ export function ProjectCard({
               leftSection={<Pencil size={14} aria-hidden />}
               onClick={onRename}
             >
-              Rename
+              {t("common.rename")}
             </Menu.Item>
             <Menu.Item
               leftSection={<Copy size={14} aria-hidden />}
               onClick={onDuplicate}
             >
-              Duplicate
+              {t("dashboard.duplicate")}
             </Menu.Item>
             <Menu.Item
               leftSection={<Download size={14} aria-hidden />}
@@ -118,7 +127,7 @@ export function ProjectCard({
                 )
               }
             >
-              Export JSON
+              {t("dashboard.exportJson")}
             </Menu.Item>
             <Menu.Divider />
             <Menu.Item
@@ -126,7 +135,7 @@ export function ProjectCard({
               leftSection={<Trash2 size={14} aria-hidden />}
               onClick={onDelete}
             >
-              Delete
+              {t("dashboard.delete")}
             </Menu.Item>
           </Menu.Dropdown>
         </Menu>

@@ -1,0 +1,218 @@
+.header {
+  --library-settings-size: 36px;
+  position: relative;
+  z-index: 10;
+  border-bottom: 1px solid var(--line);
+  background: var(--background);
+}
+.inner {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  gap: 24px;
+  width: calc(100% - 72px);
+  max-width: 1168px;
+  min-height: 92px;
+  margin: 0 auto;
+}
+.brand {
+  justify-self: start;
+}
+.brand > a {
+  font-size: 22px;
+}
+.controls {
+  display: contents;
+}
+.settings {
+  position: fixed;
+  z-index: 20;
+  right: max(18px, env(safe-area-inset-right));
+  bottom: max(18px, env(safe-area-inset-bottom));
+}
+.settings button {
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--background);
+  color: var(--muted-foreground);
+  box-shadow: var(--control-shadow);
+}
+.settings button:hover,
+.settings button[aria-expanded="true"] {
+  background: var(--accent);
+  color: var(--foreground);
+}
+.navigation {
+  position: relative;
+  display: flex;
+  padding: 4px;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  background: var(--segment-bg);
+}
+.tab {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-width: 112px;
+  min-height: 32px;
+  padding: 5px 14px;
+  border-radius: 4px;
+  color: var(--muted-foreground);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+}
+.tab[aria-current],
+.tab:hover {
+  color: var(--foreground);
+}
+.tab:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+.label {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  white-space: nowrap;
+}
+.pill {
+  position: absolute;
+  top: 4px;
+  bottom: 4px;
+  left: 4px;
+  width: calc(50% - 4px);
+  border: 1px solid var(--control-border);
+  border-radius: 4px;
+  background: var(--background);
+  box-shadow: var(--control-shadow);
+  pointer-events: none;
+}
+.recents {
+  justify-self: end;
+}
+.recentTrigger {
+  min-height: 36px;
+  gap: 7px;
+  padding: 6px 9px;
+  border-radius: 6px;
+  color: var(--muted-foreground);
+  font-size: 13px;
+}
+.recentTrigger:hover,
+.recentTrigger[aria-expanded="true"] {
+  color: var(--foreground);
+  background: var(--accent);
+}
+.recentTrigger > span {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.recentChevron {
+  width: 13px;
+  height: 13px;
+}
+.recentMenu {
+  max-width: calc(100vw - 24px);
+}
+.recentEmpty {
+  margin: 0;
+  padding: 12px 10px;
+  color: var(--muted-foreground);
+  font-size: 13px;
+  line-height: 20px;
+}
+.recentItem {
+  gap: 11px;
+  min-height: 54px;
+  padding: 8px 10px;
+}
+.recentItem > span:last-child {
+  display: grid;
+  flex: 1;
+  min-width: 0;
+  gap: 3px;
+}
+.recentName {
+  overflow: hidden;
+  color: var(--foreground);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 18px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.recentDate {
+  color: var(--muted-foreground);
+  font-size: 12px;
+  line-height: 16px;
+}
+@media (max-width: 760px) {
+  .inner {
+    display: flex;
+    justify-content: center;
+    width: calc(100% - 40px);
+    min-height: 68px;
+    padding: 16px 0;
+  }
+  .brand > a {
+    font-size: 21px;
+  }
+  .controls {
+    --library-settings-size: 44px;
+    position: fixed;
+    z-index: 20;
+    inset: auto 0 0;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px max(12px, env(safe-area-inset-right))
+      max(12px, env(safe-area-inset-bottom))
+      max(12px, env(safe-area-inset-left));
+    border-top: 1px solid var(--line);
+    background: color-mix(in srgb, var(--background) 88%, transparent);
+    backdrop-filter: blur(24px) saturate(1.2);
+  }
+  .navigation {
+    flex: 1;
+    min-width: 0;
+    min-height: 44px;
+  }
+  .tab {
+    flex: 1;
+    min-width: 0;
+    min-height: 34px;
+    padding-right: 6px;
+    padding-left: 6px;
+    font-size: 13px;
+  }
+  .label {
+    gap: 5px;
+  }
+  .recents {
+    flex: 0 0 44px;
+  }
+  .recentTrigger {
+    width: 44px;
+    height: 44px;
+    padding: 0;
+  }
+  .recentLabel,
+  .recentChevron {
+    display: none;
+  }
+  .settings {
+    position: static;
+    flex: 0 0 44px;
+  }
+  .settings button {
+    border-color: transparent;
+    background: transparent;
+    box-shadow: none;
+  }
+}

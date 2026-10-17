@@ -10,14 +10,20 @@ const layouts = [
   ["react-editorial", "editorial"],
   ["react-studio", "studio"],
   ["react-profile", "profile"],
+  ["react-harvard", "harvard"],
+  ["react-cobalt", "cobalt"],
+  ["react-atelier", "atelier"],
+  ["react-timeline", "timeline"],
+  ["react-consultant", "consultant"],
+  ["react-mosaic", "mosaic"],
 ] as const;
 
-test("the public catalog contains four distinct TSX layouts while legacy canvas IDs remain compatible", () => {
+test("the public catalog contains ten distinct TSX layouts while legacy canvas IDs remain compatible", () => {
   expect(
     templates
       .filter((template) => !template.legacy)
       .map((template) => template.format),
-  ).toEqual(["react", "react", "react", "react"]);
+  ).toEqual(Array.from({ length: 10 }, () => "react"));
   expect(createResume("canvas-studio", "studio").source).toBeUndefined();
   expect(createResume("canvas-serif", "editorial").style.font).toBe("serif");
   for (const [id, layout] of layouts) {
@@ -31,7 +37,7 @@ test("the public catalog contains four distinct TSX layouts while legacy canvas 
     expect(html).toContain(`data-template-layout="${layout}"`);
     expect(html).toContain('class="resume cv-sheet');
     expect(html).toContain("Alex Morgan");
-    expect(html).toContain("Senior Product Designer");
+    expect(html).toMatch(/Designer|Design Engineer|Strategy/);
     expect(html).toContain("Selected skills");
     expect(html).not.toMatch(
       /(?:src|href)=["']https?:[^"']+\.(?:jpg|png|webp|woff)/i,
@@ -61,7 +67,9 @@ test("Profile has one embedded professional portrait, real SVG contacts and lice
   expect(portable).toContain("data:image/jpeg;base64,");
   expect(portable).toContain("font-src data:");
   expect(portable).not.toMatch(/<script[^>]+src=/);
-  for (const [id] of layouts.filter(([id]) => id !== "react-profile")) {
+  for (const [id] of layouts.filter(
+    ([id]) => !["react-profile", "react-atelier"].includes(id),
+  )) {
     expect(createResume(`no-photo-${id}`, id).source!.code).not.toContain(
       "data:image/jpeg;base64,",
     );
@@ -69,6 +77,31 @@ test("Profile has one embedded professional portrait, real SVG contacts and lice
       renderTemplateResume(createResume(`no-photo-preview-${id}`, id)),
     ).not.toContain("<img ");
   }
+});
+
+test("extended templates preserve vetted brand colors, licenses and tailored content in readable offline source", () => {
+  for (const id of ["react-cobalt", "react-atelier", "react-mosaic"] as const) {
+    const document = createResume(`brand-${id}`, id);
+    const code = document.source!.code;
+    const html = renderTemplateResume(document);
+    expect(code).toContain('"brandAssets": true');
+    expect(code).toContain("Copyright (c) 2015 konpa");
+    expect(code).toContain("iconify/icon-sets/blob/69ca5094");
+    expect(html).toContain('aria-label="Tools"');
+    expect(html).toContain('fill="#0acf83"');
+    expect(code.indexOf('"brands": [')).toBeGreaterThan(
+      code.indexOf("// Embedded assets stay at the end"),
+    );
+    expect(code).not.toMatch(/^import\s/m);
+  }
+  const harvard = renderTemplateResume(
+    createResume("harvard-academic", "react-harvard"),
+  );
+  expect(harvard.indexOf('data-section-id="education"')).toBeLessThan(
+    harvard.indexOf('data-section-id="experience"'),
+  );
+  expect(harvard).toContain("Leadership &amp; Activities");
+  expect(harvard).not.toContain("<svg");
 });
 
 test("template regeneration preserves embedded Profile assets and escapes authored text without evaluating source", () => {

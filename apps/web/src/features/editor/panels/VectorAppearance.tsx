@@ -3,6 +3,7 @@ import type { Layer } from "@resumi/engine";
 import { ColorInput } from "../../../ui";
 import { designCommandAtom } from "../../../state/design";
 import styles from "../styles/Inspector.module.css";
+import { useColorPreview } from "./useColorPreview";
 
 /** Compound vectors expose their actual paints rather than an unused parent fill. */
 export function VectorAppearance({
@@ -13,6 +14,7 @@ export function VectorAppearance({
   layer: Extract<Layer, { type: "shape" }>;
 }) {
   const dispatch = useSetAtom(designCommandAtom);
+  const preview = useColorPreview(id);
   const vector = layer.vector!;
   const parts = vector.parts!;
   const colors = [
@@ -27,6 +29,7 @@ export function VectorAppearance({
           <ColorInput
             aria-label={"Vector color " + (index + 1)}
             value={color}
+            onPreview={(next) => preview({ kind: "vector", id, color }, next)}
             onChangeEnd={(next) => {
               if (!/^#[0-9a-fA-F]{6}([0-9a-fA-F]{2})?$/.test(next)) return;
               dispatch({
