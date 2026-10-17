@@ -1,6 +1,7 @@
 import { test, expect, type Page } from "@playwright/test";
 import { mkdir, writeFile } from "node:fs/promises";
 import { createResume } from "../../../packages/cv/src/index";
+import { closeDialog, openCommands } from "./helpers/editor";
 const artifacts = "artifacts";
 async function createLegacyFlow(page: Page) {
   await page.goto("/projects");
@@ -79,8 +80,8 @@ test("SSR public pages and nested routes return meaningful server HTML; hydratio
 }) => {
   const cases = [
     ["/", "Your resume"],
-    ["/templates", "A good place to begin"],
-    ["/projects", "Your workspace"],
+    ["/templates", "Templates"],
+    ["/projects", "Your resumes"],
     ["/editor/missing", "Opening your resume"],
   ];
   for (const [route, text] of cases) {
@@ -94,13 +95,16 @@ test("SSR public pages and nested routes return meaningful server HTML; hydratio
     if (msg.type() === "error") errors.push(msg.text());
   });
   await page.goto("/");
-  await page.getByRole("link", { name: "Templates", exact: true }).click();
+  await page
+    .getByRole("navigation", { name: "Main navigation" })
+    .getByRole("link", { name: "Templates", exact: true })
+    .click();
   await expect(
-    page.getByRole("heading", { name: "A good place to begin." }),
+    page.getByRole("heading", { name: "Templates", exact: true }),
   ).toBeVisible();
   await page.goto("/editor/missing");
   await expect(
-    page.getByRole("heading", { name: "This resume isn’t on this device." }),
+    page.getByRole("heading", { name: "Resume not found" }),
   ).toBeVisible();
   expect(errors).toEqual([]);
 });
@@ -128,8 +132,8 @@ test("human editor → save/reload → agent preview/undo → project lifecycle 
   await expect(
     page.getByRole("heading", { name: "Sam Taylor", exact: true }),
   ).toBeVisible();
-  await page.getByRole("button", { name: "Teammate", exact: true }).click();
-  await page.getByRole("button", { name: "Load a working example" }).click();
+  await openCommands(page);
+  await page.getByRole("button", { name: "Load example", exact: true }).click();
   await page.getByRole("button", { name: "Validate & preview" }).click();
   await expect(
     page.getByText("1 validated command", { exact: true }),
@@ -137,9 +141,10 @@ test("human editor → save/reload → agent preview/undo → project lifecycle 
   await page
     .getByRole("button", { name: "Apply changes", exact: true })
     .click();
+  await closeDialog(page, "Import commands");
   await expect(
     page.getByRole("article", { name: "Resume canvas" }),
-  ).toContainText("I design thoughtful digital products");
+  ).toContainText("Product designer focused on accessible software.");
   await page.getByRole("button", { name: "Undo", exact: true }).click();
   await expect(
     page.getByRole("article", { name: "Resume canvas" }),
@@ -147,9 +152,7 @@ test("human editor → save/reload → agent preview/undo → project lifecycle 
   await page.getByRole("button", { name: "Redo", exact: true }).click();
   await expect(
     page.getByRole("article", { name: "Resume canvas" }),
-  ).toContainText("I design thoughtful digital products");
-  await page.getByRole("button", { name: "Close agent panel" }).click();
-  await page.getByRole("button", { name: "Toggle outline" }).click();
+  ).toContainText("Product designer focused on accessible software.");
   await page.getByRole("button", { name: "Outline", exact: true }).click();
   await page.getByRole("button", { name: "Add section", exact: true }).click();
   await page
@@ -183,7 +186,7 @@ test("human editor → save/reload → agent preview/undo → project lifecycle 
   await saved(page);
   await page.getByRole("button", { name: "Back to projects" }).click();
   await expect(
-    page.getByRole("heading", { name: "Your workspace." }),
+    page.getByRole("heading", { name: "Your resumes", exact: true }),
   ).toBeVisible();
   await projectActions(page, "Alex Morgan — Resume");
   await page.getByRole("menuitem", { name: "Rename", exact: true }).click();
@@ -338,7 +341,6 @@ test("block CRUD, style updates and keyboard history share engine semantics", as
   page,
 }) => {
   await createLegacyFlow(page);
-  await page.getByRole("button", { name: "Toggle outline" }).click();
   await page.getByRole("button", { name: "Profile 1", exact: true }).click();
   await page
     .getByRole("button", { name: "Add text block", exact: true })
@@ -380,7 +382,7 @@ test("block CRUD, style updates and keyboard history share engine semantics", as
     "font-family",
     /Georgia/,
   );
-  await page.getByRole("button", { name: "Toggle properties" }).focus();
+  await page.getByRole("button", { name: /^Project: / }).focus();
   await page.keyboard.press("Control+z");
   await expect(page.locator('.resume[aria-label="Resume canvas"]')).toHaveCSS(
     "font-family",
@@ -391,12 +393,10 @@ test("block CRUD, style updates and keyboard history share engine semantics", as
     "font-family",
     /Georgia/,
   );
-  await page
-    .getByRole("textbox", { name: "Accent color", exact: true })
-    .fill("#334e68");
-  await page
-    .getByRole("textbox", { name: "Accent color", exact: true })
-    .press("Tab");
+  await page.getByRole("button", { name: "Accent color", exact: true }).click();
+  await page.getByRole("textbox", { name: "Hex", exact: true }).fill("334E68");
+  await page.getByRole("textbox", { name: "Hex", exact: true }).press("Enter");
+  await page.keyboard.press("Escape");
   await expect(page.locator('.resume[aria-label="Resume canvas"]')).toHaveCSS(
     "--resume-accent",
     "#334e68",
@@ -411,7 +411,6 @@ test("block CRUD, style updates and keyboard history share engine semantics", as
     "--resume-accent",
     "#334e68",
   );
-  await page.getByRole("button", { name: "Toggle properties" }).click();
   await page
     .locator('[aria-label="Resume canvas"]')
     .click({ position: { x: 400, y: 740 } });
@@ -423,11 +422,13 @@ test("block CRUD, style updates and keyboard history share engine semantics", as
   );
 });
 
-test("invalid imports and command proposals leave persisted documents intact", async ({
+test("invalid imports and proposals are atomic; validated commands can rename a persisted project", async ({
   page,
 }) => {
   await page.goto("/projects");
-  await expect(page.getByText("A fresh page, just for you.")).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "No resumes yet", exact: true }),
+  ).toBeVisible();
   await page.locator("input[type=file]").setInputFiles({
     name: "invalid.json",
     mimeType: "application/json",
@@ -441,7 +442,7 @@ test("invalid imports and command proposals leave persisted documents intact", a
   await expect(
     page.locator('.resume[aria-label="Resume canvas"]'),
   ).toBeVisible();
-  await page.getByRole("button", { name: "Teammate", exact: true }).click();
+  await openCommands(page);
   await page
     .getByRole("textbox", { name: "Command proposal" })
     .fill('{"version":1}');
@@ -452,6 +453,40 @@ test("invalid imports and command proposals leave persisted documents intact", a
   await expect(
     page.getByRole("button", { name: "Apply changes", exact: true }),
   ).toHaveCount(0);
+  await expect(
+    page.locator('.resume[aria-label="Resume canvas"]'),
+  ).toContainText("Alex Morgan");
+  await page.getByRole("textbox", { name: "Command proposal" }).fill(
+    JSON.stringify({
+      version: 1,
+      actor: { kind: "agent", name: "Title editing agent" },
+      commands: [{ type: "document.update", name: "Agent edited project" }],
+    }),
+  );
+  await page
+    .getByRole("button", { name: "Validate & preview", exact: true })
+    .click();
+  await expect(
+    page.getByText("1 validated command", { exact: true }),
+  ).toBeVisible();
+  await page
+    .getByRole("button", { name: "Apply changes", exact: true })
+    .click();
+  await closeDialog(page, "Import commands");
+  await expect(
+    page.getByRole("button", {
+      name: "Project: Agent edited project",
+      exact: true,
+    }),
+  ).toBeVisible();
+  await saved(page);
+  await page.reload();
+  await expect(
+    page.getByRole("button", {
+      name: "Project: Agent edited project",
+      exact: true,
+    }),
+  ).toBeVisible();
   await expect(
     page.locator('.resume[aria-label="Resume canvas"]'),
   ).toContainText("Alex Morgan");

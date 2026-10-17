@@ -29,8 +29,7 @@ export function PublicFooter() {
       <span>
         ResumI <span className={styles.muted}>by Plinka</span>
       </span>
-      <span>Made for your next chapter.</span>
-      <Link to="/projects">Local by design. Yours by default.</Link>
+      <Link to="/templates">Templates</Link>
     </footer>
   );
 }

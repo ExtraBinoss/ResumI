@@ -9,7 +9,7 @@ test("opening visual mode deactivates source and creates canvas as one undo step
   const original = createResume("switch-mode", "react-studio");
   const store = createStore();
   store.set(sessionAtom, createSession(original));
-  store.set(modeAtom, "code");
+  store.set(modeAtom, "text");
   store.set(enableVisualAtom);
   const session = store.get(sessionAtom)!;
   expect(session.document.canvas).toBeDefined();

@@ -36,6 +36,18 @@ export const effectsSchema = z.strictObject({
   contrast: number(0, 3),
   saturation: number(0, 3),
 });
+export const shadowSchema = z.strictObject({
+  x: number(-500, 500),
+  y: number(-500, 500),
+  blur: number(0, 200),
+  spread: number(-200, 200),
+  color: colorSchema,
+});
+export const borderSchema = z.strictObject({
+  width: number(0, 100),
+  color: colorSchema,
+  style: z.enum(["solid", "dashed", "dotted"]),
+});
 export const gradientSchema = z.strictObject({
   type: z.literal("linear"),
   angle: number(-360, 360),
@@ -114,6 +126,7 @@ export const shapeFields = {
   strokeWidth: number(0, 100),
   borderRadius: number(0, 2500),
   effects: effectsSchema,
+  shadow: z.optional(z.nullable(shadowSchema)),
 };
 export const imageFields = {
   src: z
@@ -127,6 +140,8 @@ export const imageFields = {
   objectPosition: z.strictObject({ x: number(0, 100), y: number(0, 100) }),
   imageScale: number(1, 5),
   borderRadius: number(0, 2500),
+  border: z.optional(borderSchema),
+  shadow: z.optional(z.nullable(shadowSchema)),
   effects: effectsSchema,
 };
 export const layerSchema = z.discriminatedUnion("type", [

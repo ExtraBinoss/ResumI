@@ -1,6 +1,5 @@
-11:32:21 PM [vite] (ssr) [optimizer] bundling dependencies...
 
-  VITE v8.3.4  ready in 6201 ms
+  VITE v8.3.4  ready in 1830 ms
 
   ➜  Local:   http://127.0.0.1:5189/
   ➜  Debug:   http://127.0.0.1:5189/__debug
@@ -21,6 +20,5 @@ Useful routes:
 If the routes above don't cover what you need, fetch the full OpenAPI schema (large - use only as a last resort):
   GET http://127.0.0.1:5189/cdn-cgi/local/explorer/api - OpenAPI schema
 
-11:32:23 PM [vite] (client) [optimizer] bundling dependencies...
 
-Default inspector port 9229 not available, using 9231 instead
+Default inspector port 9229 not available, using 9230 instead

@@ -22,7 +22,7 @@ Source of progress truth. Checkmarks describe verified local behavior; remote CI
 - [x] [12 — shadcn with Base UI](12-shadcn-base-ui.md): official CLI, 18 editable components, no Mantine/Radix imports or dependencies.
 - [x] [13 — React/HTML source](13-react-and-html-source.md): React-authored templates, isolated source preview, saved activation, hooks, portable offline exports and shared agent commands.
 
-Tasks 00–13 are implemented and locally verified. The final combined gate passes; Git delivery is recorded separately below.
+Tasks 00–13 record earlier verified milestones. Tasks 14–16 supersede their interface and file organization. Current verification is recorded below.
 
 ## Required gates
 
@@ -34,8 +34,9 @@ Tasks 00–13 are implemented and locally verified. The final combined gate pass
 - [x] Actual desktop/mobile screenshot inspection and standalone exports opened offline.
 - [x] Fresh-cache development SSR, direct/reload hydration regression and no hooks/PostCSS warning suppression.
 - [x] Code preview uses opaque iframe/CSP; CLI compiles without executing user components.
-- [x] Final `bun run check`: 69 unit tests, 44 engine tests, five cold-dev and 22 production browser journeys, plus production build.
-- [x] Final follow-up commit pushed; PR description updated; remote CI status checked.
+- [x] Current `bun run check`: 93 unit tests, 66 engine tests, five cold-dev and 28 production browser journeys, plus production build.
+- [x] Literal `bun run visual:check`: three journeys pass; screenshots opened and inspected. Final radius follow-up passes a fresh build and six relevant journeys.
+- [ ] Current interface revision pushed; PR description updated; actual latest remote CI status checked.
 
 ## Explicit boundaries
 
@@ -45,3 +46,9 @@ Tasks 00–13 are implemented and locally verified. The final combined gate pass
 - [ ] Automatic bidirectional arbitrary HTML/React-to-layer conversion or arbitrary npm project execution — outside this source-editor contract.
 
 Local browser storage and session-local undo limitations are described in the README. Tasks 00–08 record the initial scope; tasks 09–13 supersede its earlier freeform/library deferrals.
+
+## Current interface revision
+
+- [ ] [14 — Vue interface and polish](14-vue-interface-and-polish.md): actual reference UI, permanent panels, native editing, image decorations, settings/Motion and dashboard.
+- [x] [15 — Feature organization](15-feature-organization.md): dashboard/editor/canvas ownership, colocated styles and verified imports.
+- [ ] [16 — macOS design](16-macos-design.md): shared materials, coherent controls, centered document title and numeric steppers.

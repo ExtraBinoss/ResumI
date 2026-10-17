@@ -1,0 +1,229 @@
+.layers {
+  position: absolute;
+  z-index: 8;
+  top: 72px;
+  bottom: 12px;
+  left: 12px;
+  display: flex;
+  flex-direction: column;
+  width: 228px;
+  min-height: 0;
+  overflow: hidden;
+  border: 1px solid var(--line-strong);
+  border-radius: 8px;
+  background: var(--panel);
+  box-shadow: var(--shadow-panel);
+  backdrop-filter: blur(20px) saturate(1.2);
+  color: var(--ink);
+  font-size: 12px;
+  line-height: 1.45;
+}
+.compositionHeader {
+  height: 38px;
+  min-height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 14px;
+}
+.compositionHeader h2 {
+  margin: 0;
+  color: var(--muted-foreground);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0;
+}
+.compositionHeader > span {
+  color: var(--faint);
+  font-size: 11px;
+}
+.layerScroll {
+  flex: 1;
+  min-height: 0;
+  padding: 0;
+}
+.tabs {
+  height: 49px;
+  min-height: 49px;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 8px;
+  border-bottom: 1px solid var(--line);
+}
+.tabs > button {
+  display: flex;
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  min-height: 30px;
+  padding: 5px 6px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--muted-foreground);
+  font-size: 12px;
+  font-weight: 500;
+}
+.tabs > button[aria-pressed="true"] {
+  background: var(--segment-selected);
+  box-shadow: var(--segment-shadow);
+  color: var(--ink);
+}
+.blendRow {
+  padding: 11px 12px;
+  display: grid;
+  grid-template-columns: 68px minmax(0, 1fr);
+  gap: 6px;
+  border-bottom: 1px solid var(--line);
+}
+.blendRow > :first-child {
+  order: 2;
+}
+.blendRow > :last-child {
+  order: 1;
+}
+.layers .blendRow :global([data-ui="input"]) {
+  min-height: 34px;
+  border-radius: 6px;
+  font-size: 12px;
+}
+.blendRow input {
+  text-transform: capitalize;
+}
+.layerList {
+  padding: 4px 6px 8px;
+}
+.layerRow,
+.groupRow {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-height: 38px;
+  gap: 2px;
+  padding: 0 4px;
+  border-radius: 6px;
+}
+.layerRow:hover,
+.groupRow:hover {
+  background: var(--muted);
+}
+.active,
+.active:hover {
+  background: color-mix(in srgb, var(--primary) 15%, transparent);
+}
+.layerName {
+  min-width: 0;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  overflow: hidden;
+  padding: 8px 3px;
+  border: 0;
+  background: none;
+  color: var(--ink);
+  font-size: 12px;
+  line-height: 1.45;
+  text-align: left;
+}
+.layerName > svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  color: var(--muted-foreground);
+}
+.layerName > span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.layerName > small {
+  color: var(--faint);
+  margin-left: auto;
+  font-size: 11px;
+}
+.member {
+  padding-left: 23px;
+}
+.layerRow > :global([data-ui="button"]) {
+  opacity: 0.55;
+}
+.layerRow:hover > :global([data-ui="button"]),
+.active > :global([data-ui="button"]) {
+  opacity: 1;
+}
+@media (max-width: 1040px) {
+  .layers {
+    width: 198px;
+  }
+}
+@media (max-width: 700px) {
+  .layers {
+    top: auto;
+    bottom: 12px;
+    left: 12px;
+    width: calc(50% - 18px);
+    height: 40vh;
+  }
+  .compositionHeader {
+    height: 34px;
+    min-height: 34px;
+    padding: 0 10px;
+  }
+  .tabs {
+    height: 44px;
+    min-height: 44px;
+    padding: 4px;
+    gap: 2px;
+  }
+  .tabs > button {
+    min-height: 34px;
+    padding: 5px 3px;
+    gap: 4px;
+  }
+  .blendRow {
+    grid-template-columns: 60px minmax(0, 1fr);
+    padding: 8px;
+    gap: 5px;
+  }
+  .layerList {
+    padding: 4px 5px 8px;
+  }
+  .layerName {
+    gap: 5px;
+    padding: 8px 2px;
+  }
+  .layerRow,
+  .groupRow {
+    min-height: 36px;
+    gap: 0;
+    padding: 0 2px;
+  }
+  .layerRow > :global([data-ui="button"]),
+  .groupRow > :global([data-ui="button"]):first-child {
+    --ai-size: 20px;
+  }
+  .member {
+    padding-left: 10px;
+  }
+}
+
+.blendRow :global([data-slot="select-trigger"]) {
+  position: relative;
+  padding-inline: 22px;
+}
+.blendRow :global([data-slot="select-value"]) {
+  justify-content: center;
+  text-align: center;
+}
+.blendRow :global([data-slot="select-trigger"]) > svg {
+  position: absolute;
+  inset-inline-end: 7px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+.blendRow input {
+  text-align: center;
+}

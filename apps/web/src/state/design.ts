@@ -9,7 +9,7 @@ import {
 } from "@resumi/engine";
 import { visualCommands } from "@resumi/cv";
 import { sessionAtom, selectionAtom, commandAtom } from "./editor";
-export const modeAtom = atom<"visual" | "text" | "code">("visual");
+export const modeAtom = atom<"visual" | "text">("visual");
 export const toolAtom = atom<"select" | "text" | "shape">("select");
 export const shapeToolAtom = atom<LayerPatch>({ shape: "rectangle" });
 export const designErrorAtom = atom("");

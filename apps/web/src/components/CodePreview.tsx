@@ -2,6 +2,7 @@ import { Suspense, use, useEffect, useRef, useState } from "react";
 import { renderDocumentHtml } from "@resumi/cv";
 import type { Document, DocumentSource } from "@resumi/engine";
 import styles from "./Preview.module.css";
+import { Button } from "./ui/button";
 
 const previews = new WeakMap<DocumentSource, Promise<string>>();
 function previewFor(document: Document): Promise<string> {
@@ -30,6 +31,7 @@ function Frame({
     <iframe
       title={`${document.source?.format === "react" ? "React" : "HTML"} resume preview`}
       sandbox="allow-scripts"
+      tabIndex={interactive ? undefined : -1}
       loading="lazy"
       srcDoc={html}
       style={interactive ? { transform: `scale(${scale})` } : undefined}
@@ -60,25 +62,39 @@ function InteractivePreview({ document }: { document: Document }) {
         role="group"
         aria-label="Source preview zoom"
       >
-        <button aria-pressed={zoom === "fit"} onClick={() => setZoom("fit")}>
+        <Button
+          variant="ghost"
+          size="xs"
+          aria-pressed={zoom === "fit"}
+          onClick={() => setZoom("fit")}
+        >
           Fit page
-        </button>
-        <button aria-pressed={zoom === 1} onClick={() => setZoom(1)}>
+        </Button>
+        <Button
+          variant="ghost"
+          size="xs"
+          aria-pressed={zoom === 1}
+          onClick={() => setZoom(1)}
+        >
           100%
-        </button>
-        <button
+        </Button>
+        <Button
+          variant="ghost"
+          size="icon-xs"
           aria-label="Zoom source preview out"
           onClick={() => setZoom(Math.max(0.25, scale - 0.1))}
         >
           −
-        </button>
+        </Button>
         <span>{Math.round(scale * 100)}%</span>
-        <button
+        <Button
+          variant="ghost"
+          size="icon-xs"
           aria-label="Zoom source preview in"
           onClick={() => setZoom(Math.min(2, scale + 0.1))}
         >
           +
-        </button>
+        </Button>
       </div>
       <div
         className={styles.previewPage}

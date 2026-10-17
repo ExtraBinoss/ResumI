@@ -1,0 +1,1082 @@
+<html><head>
+  <script type="module" src="/@vite/client"></script>
+<meta name="viewport" content="width=device-width,initial-scale=1"><style type="text/css" data-vite-dev-id="/tmp/resumi-vue-reference-1gh313jw/src/components/editor/VisualEffectFilter.vue?vue&amp;type=style&amp;index=0&amp;scoped=a62916aa&amp;lang.css">
+.effect-filter[data-v-a62916aa] { position: absolute; width: 0; height: 0; overflow: hidden; pointer-events: none;
+}
+</style><style type="text/css" data-vite-dev-id="/tmp/resumi-vue-reference-1gh313jw/src/components/editor/WebGlDitherSurface.vue?vue&amp;type=style&amp;index=0&amp;scoped=7be9081e&amp;lang.css">
+.webgl-dither-surface[data-v-7be9081e] { position: absolute; inset: 0; z-index: 1; display: block; width: 100%; height: 100%; pointer-events: none; transform: translate3d(0, 0, 0);
+}
+</style><style type="text/css" data-vite-dev-id="/tmp/resumi-vue-reference-1gh313jw/src/ui/RichText/RichText.vue?vue&amp;type=style&amp;index=0&amp;scoped=5d79846a&amp;lang.css">
+a[data-v-5d79846a] { color: inherit; text-decoration-color: currentColor;
+}
+a[data-v-5d79846a]::selection { color: inherit;
+}
+a.is-underlined[data-v-5d79846a]::selection { text-decoration: underline; text-decoration-color: currentColor;
+}
+</style><style type="text/css" data-vite-dev-id="/tmp/resumi-vue-reference-1gh313jw/src/components/editor/CanvasElement.vue?vue&amp;type=style&amp;index=0&amp;scoped=70252e46&amp;lang.css">
+.canvas-element[data-v-70252e46] { position: absolute; transform-origin: center; user-select: none;
+}
+.canvas-element[data-v-70252e46]::after { content: ''; position: absolute; inset: 0; pointer-events: none; border: calc(1px / var(--canvas-zoom)) solid transparent;
+}
+.canvas-element.hovered[data-v-70252e46]:not(.selected)::after { border-color: color-mix(in srgb, var(--accent) 70%, transparent); background: color-mix(in srgb, var(--accent) 4%, transparent);
+}
+.canvas-element.selected[data-v-70252e46]::after { border-color: var(--accent);
+}
+.canvas-element.locked[data-v-70252e46] { cursor: default;
+}
+.canvas-element[data-v-70252e46]:not(.locked):not(.editing) { cursor: move;
+}
+.visual-frame[data-v-70252e46], .image-content[data-v-70252e46] { width: 100%; height: 100%;
+}
+.visual-frame[data-v-70252e46] { position: relative; overflow: hidden; pointer-events: none; contain: paint;
+}
+.image-content[data-v-70252e46] { transform: translate3d(0,0,0);
+}
+.canvas-element img[data-v-70252e46], .shape-content[data-v-70252e46] { display: block; width: 100%; height: 100%; pointer-events: none;
+}
+.visual-content[data-v-70252e46] { will-change: filter; backface-visibility: hidden;
+}
+.dither-source-hidden[data-v-70252e46] { opacity: 0;
+}
+.canvas-element img[data-v-70252e46] { transition: transform 120ms var(--ease);
+}
+.text-content[data-v-70252e46] { width: 100%; height: 100%; overflow: hidden; white-space: pre-wrap; outline: none; cursor: inherit; user-select: none; text-rendering: geometricPrecision; font-synthesis: none;
+}
+.editing .text-content[data-v-70252e46] { cursor: text; user-select: text;
+}
+.resize-handle[data-v-70252e46] { position: absolute; z-index: 2; width: calc(9px / var(--canvas-zoom)); height: calc(9px / var(--canvas-zoom)); padding: 0; border: calc(1.5px / var(--canvas-zoom)) solid var(--accent); border-radius: 50%; background: white; box-shadow: 0 0 0 calc(1px / var(--canvas-zoom)) rgba(255,255,255,.8);
+}
+.handle-nw[data-v-70252e46] { left: 0; top: 0; transform: translate(-50%,-50%); cursor: nwse-resize;
+}
+.handle-n[data-v-70252e46] { left: 50%; top: 0; transform: translate(-50%,-50%); cursor: ns-resize;
+}
+.handle-ne[data-v-70252e46] { right: 0; top: 0; transform: translate(50%,-50%); cursor: nesw-resize;
+}
+.handle-e[data-v-70252e46] { right: 0; top: 50%; transform: translate(50%,-50%); cursor: ew-resize;
+}
+.handle-se[data-v-70252e46] { right: 0; bottom: 0; transform: translate(50%,50%); cursor: nwse-resize;
+}
+.handle-s[data-v-70252e46] { left: 50%; bottom: 0; transform: translate(-50%,50%); cursor: ns-resize;
+}
+.handle-sw[data-v-70252e46] { left: 0; bottom: 0; transform: translate(-50%,50%); cursor: nesw-resize;
+}
+.handle-w[data-v-70252e46] { left: 0; top: 50%; transform: translate(-50%,-50%); cursor: ew-resize;
+}
+.size-label[data-v-70252e46] { position: absolute; left: 50%; top: calc(100% + 8px / var(--canvas-zoom)); z-index: 3; transform: translateX(-50%) scale(calc(1 / var(--canvas-zoom))); transform-origin: top center; padding: 3px 6px; border-radius: 5px; background: var(--accent); color: white; font-family: var(--font-ui); font-size: 10px; line-height: 1; white-space: nowrap; pointer-events: none;
+}
+.hover-label[data-v-70252e46] { position: absolute; left: 0; bottom: calc(100% + 5px / var(--canvas-zoom)); z-index: 3; transform: scale(calc(1 / var(--canvas-zoom))); transform-origin: bottom left; padding: 3px 6px; border-radius: 5px; background: var(--accent); color: white; font-family: var(--font-ui); font-size: 10px; line-height: 1; white-space: nowrap; pointer-events: none;
+}
+</style><style type="text/css" data-vite-dev-id="/tmp/resumi-vue-reference-1gh313jw/src/ui/IconButton/IconButton.vue?vue&amp;type=style&amp;index=0&amp;scoped=4d519345&amp;lang.css">
+.icon-button[data-v-4d519345] {
+  display: inline-grid;
+  place-items: center;
+  flex: 0 0 auto;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  color: var(--muted);
+  background: transparent;
+  cursor: pointer;
+  transition: color 140ms, background 140ms, transform 100ms var(--ease);
+}
+.icon-button.is-md[data-v-4d519345] { width: 34px; height: 34px;
+}
+.icon-button.is-sm[data-v-4d519345] { width: 28px; height: 28px; border-radius: 7px;
+}
+.icon-button[data-v-4d519345]:hover:not(:disabled) { color: var(--ink); background: var(--line);
+}
+.icon-button.active[data-v-4d519345] { color: var(--accent); background: var(--accent-soft);
+}
+.icon-button.mixed[data-v-4d519345] { color: var(--ink); background: color-mix(in srgb, var(--accent-soft) 55%, transparent); box-shadow: inset 0 -2px 0 var(--accent);
+}
+.icon-button[data-v-4d519345]:active:not(:disabled) { transform: scale(.93);
+}
+.icon-button[data-v-4d519345]:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px;
+}
+.icon-button[data-v-4d519345]:disabled { opacity: .35; cursor: default;
+}
+</style><style type="text/css" data-vite-dev-id="/tmp/resumi-vue-reference-1gh313jw/src/ui/Button/Button.vue?vue&amp;type=style&amp;index=0&amp;scoped=b38ecb53&amp;lang.css">
+.ui-button[data-v-b38ecb53] {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  white-space: nowrap;
+  cursor: pointer;
+  font-weight: 560;
+  letter-spacing: -0.01em;
+  transition: background 140ms var(--ease), border-color 140ms var(--ease), transform 100ms var(--ease), opacity 140ms;
+}
+.ui-button[data-v-b38ecb53]:active:not(:disabled) { transform: scale(0.975);
+}
+.ui-button[data-v-b38ecb53]:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px;
+}
+.ui-button[data-v-b38ecb53]:disabled { color: var(--faint); border-color: transparent; background: var(--line); box-shadow: none; opacity: 0.62; cursor: not-allowed;
+}
+.is-sm[data-v-b38ecb53] { height: 30px; padding: 0 10px; font-size: 12px;
+}
+.is-md[data-v-b38ecb53] { height: 36px; padding: 0 13px; font-size: 13px;
+}
+.is-lg[data-v-b38ecb53] { height: 42px; padding: 0 17px; font-size: 13px; border-radius: 10px;
+}
+.is-primary[data-v-b38ecb53] { color: var(--surface-solid); background: var(--ink); box-shadow: 0 1px 2px rgba(0,0,0,.16);
+}
+.is-primary[data-v-b38ecb53]:hover:not(:disabled) { filter: brightness(.92);
+}
+.is-secondary[data-v-b38ecb53] { color: var(--ink); background: var(--surface-raised); border-color: var(--line); box-shadow: var(--shadow-sm);
+}
+.is-secondary[data-v-b38ecb53]:hover:not(:disabled) { border-color: var(--line-strong); background: color-mix(in srgb, var(--surface-raised) 78%, var(--ink) 4%);
+}
+.is-ghost[data-v-b38ecb53] { background: transparent; color: var(--muted);
+}
+.is-ghost[data-v-b38ecb53]:hover { background: var(--line); color: var(--ink);
+}
+.is-danger[data-v-b38ecb53] { color: var(--danger); background: color-mix(in srgb, var(--danger) 9%, transparent);
+}
+.is-danger[data-v-b38ecb53]:hover { background: color-mix(in srgb, var(--danger) 15%, transparent);
+}
+</style><style type="text/css" data-vite-dev-id="/tmp/resumi-vue-reference-1gh313jw/src/ui/Input/Input.vue?vue&amp;type=style&amp;index=0&amp;scoped=3f668ade&amp;lang.css">
+.ui-input[data-v-3f668ade] {
+  width: 100%;
+  height: 34px;
+  min-width: 0;
+  padding: 0 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  outline: none;
+  color: var(--ink);
+  background: color-mix(in srgb, var(--surface-raised) 72%, transparent);
+  transition: border-color 140ms, box-shadow 140ms, background 140ms;
+}
+.ui-input[data-v-3f668ade]:hover { border-color: var(--line-strong);
+}
+.ui-input[data-v-3f668ade]:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); background: var(--surface-raised);
+}
+.ui-input[data-v-3f668ade]::placeholder { color: var(--faint);
+}
+</style><style type="text/css" data-vite-dev-id="/tmp/resumi-vue-reference-1gh313jw/src/ui/Popover/Popover.vue?vue&amp;type=style&amp;index=0&amp;scoped=e80e6fdf&amp;lang.css">
+.popover-root[data-v-e80e6fdf] { position: relative; display: inline-flex; min-width: 0;
+}
+.popover-content[data-v-e80e6fdf] { position: fixed; z-index: 1500; overflow: auto; padding: 8px; border: 1px solid var(--line-strong); border-radius: 13px; background: color-mix(in srgb, var(--surface-solid) 92%, transparent); box-shadow: var(--shadow-lg); -webkit-backdrop-filter: blur(32px) saturate(1.4); backdrop-filter: blur(32px) saturate(1.4);
+}
+.popover-enter-active[data-v-e80e6fdf], .popover-leave-active[data-v-e80e6fdf] { transition: opacity 150ms var(--ease), transform 150ms var(--ease);
+}
+.popover-enter-from[data-v-e80e6fdf], .popover-leave-to[data-v-e80e6fdf] { opacity: 0; transform: translateY(-4px) scale(.985);
+}
+</style><style type="text/css" data-vite-dev-id="/tmp/resumi-vue-reference-1gh313jw/src/ui/Select/Select.vue?vue&amp;type=style&amp;index=0&amp;scoped=09743faf&amp;lang.css">
+[data-v-09743faf] .popover-root { width: 100%;
+}
+.select-trigger[data-v-09743faf] { width: 100%; height: 34px; min-width: 0; display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 0 9px 0 10px; border: 1px solid var(--line); border-radius: 8px; outline: none; color: var(--ink); background: var(--surface-raised); cursor: pointer; text-align: left; font: inherit;
+}
+.select-trigger span[data-v-09743faf] { min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
+}
+.select-trigger svg[data-v-09743faf] { flex: 0 0 auto; color: var(--faint); transition: transform 140ms var(--ease);
+}
+.select-trigger.open[data-v-09743faf] { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft);
+}
+.select-trigger.mixed span[data-v-09743faf] { color: var(--faint); font-style: italic;
+}
+.select-trigger.open svg[data-v-09743faf] { transform: rotate(180deg);
+}
+.select-trigger[data-v-09743faf]:disabled { opacity: .45; cursor: default;
+}
+.select-options[data-v-09743faf] { display: grid; gap: 2px;
+}
+.select-options button[data-v-09743faf] { min-height: 31px; display: grid; grid-template-columns: 1fr 18px; align-items: center; gap: 8px; width: 100%; padding: 0 7px; border: 0; border-radius: 7px; background: transparent; color: var(--ink); cursor: pointer; text-align: left; font: inherit; font-size: 11px;
+}
+.select-options button[data-v-09743faf]:hover { background: var(--line);
+}
+.select-options button svg[data-v-09743faf] { color: var(--accent);
+}
+.select-options button[data-v-09743faf]:disabled { opacity: .4; cursor: default;
+}
+</style><style type="text/css" data-vite-dev-id="/tmp/resumi-vue-reference-1gh313jw/src/ui/ColorField/ColorSlider.vue?vue&amp;type=style&amp;index=0&amp;scoped=c6b6f7f0&amp;lang.css">
+.color-slider[data-v-c6b6f7f0] { position: relative; height: 16px; cursor: pointer; touch-action: none; outline: 0; contain: layout paint style; transform: translate3d(0,0,0); backface-visibility: hidden;
+}
+.slider-track[data-v-c6b6f7f0] { position: absolute; inset: 3px 0; overflow: hidden; border-radius: 999px; transform: translate3d(0,0,0); backface-visibility: hidden;
+}
+.is-hue .slider-track[data-v-c6b6f7f0] { background: linear-gradient(90deg, #f00, #ff0, #0f0, #0ff, #00f, #f0f, #f00);
+}
+.is-opacity .slider-track[data-v-c6b6f7f0] { background-color: #fff; background-image: linear-gradient(90deg, transparent, var(--slider-color)), linear-gradient(45deg, #aaa 25%, transparent 25%), linear-gradient(-45deg, #aaa 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #aaa 75%), linear-gradient(-45deg, transparent 75%, #aaa 75%); background-position: 0 0, 0 0, 0 4px, 4px -4px, -4px 0; background-size: auto, 8px 8px, 8px 8px, 8px 8px, 8px 8px;
+}
+.slider-thumb[data-v-c6b6f7f0] { position: absolute; z-index: 1; top: 50%; left: 0; width: 17px; height: 17px; margin-left: -8.5px; border: 2px solid var(--surface-solid); border-radius: 50%; background: #fff; box-shadow: 0 1px 5px rgba(0,0,0,.42); pointer-events: none; will-change: transform; backface-visibility: hidden;
+}
+.color-slider[data-v-c6b6f7f0]:focus-visible { border-radius: 999px; box-shadow: 0 0 0 3px var(--accent-soft);
+}
+</style><style type="text/css" data-vite-dev-id="/tmp/resumi-vue-reference-1gh313jw/src/ui/ColorField/ColorField.vue?vue&amp;type=style&amp;index=0&amp;scoped=269e2e0e&amp;lang.css">
+[data-v-269e2e0e] .popover-root { width: 100%;
+}
+[data-v-269e2e0e] .popover-root.color-popover-compact { width: auto;
+}
+.color-field[data-v-269e2e0e] { width: 100%; height: 34px; display: grid; place-items: center; overflow: hidden; padding: 0; border: 1px solid var(--line); border-radius: 8px; outline: 0; background: transparent; cursor: pointer;
+}
+.color-field.compact[data-v-269e2e0e] { width: 44px; height: 30px;
+}
+.color-field[data-v-269e2e0e]:hover { border-color: var(--line-strong);
+}
+.color-field.open[data-v-269e2e0e] { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft);
+}
+.color-field.mixed .checker[data-v-269e2e0e] { background: linear-gradient(135deg, var(--surface-raised) 0 44%, var(--faint) 45% 55%, var(--surface-raised) 56% 100%);
+}
+.color-field[data-v-269e2e0e]:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px;
+}
+.color-field[data-v-269e2e0e]:disabled { opacity: .45; cursor: default;
+}
+.checker[data-v-269e2e0e] { overflow: hidden; background-color: #fff; background-image: linear-gradient(45deg, #bbb 25%, transparent 25%), linear-gradient(-45deg, #bbb 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #bbb 75%), linear-gradient(-45deg, transparent 75%, #bbb 75%); background-position: 0 0, 0 4px, 4px -4px, -4px 0; background-size: 8px 8px;
+}
+.checker i[data-v-269e2e0e] { display: block; width: 100%; height: 100%; transform: translate3d(0,0,0); backface-visibility: hidden;
+}
+.color-field .checker[data-v-269e2e0e] { width: 100%; height: 100%; border-radius: inherit;
+}
+.color-picker[data-v-269e2e0e] { display: grid; gap: 11px; contain: layout paint style; isolation: isolate; transform: translate3d(0,0,0); backface-visibility: hidden;
+}
+.color-pad[data-v-269e2e0e] { position: relative; height: 170px; overflow: hidden; border-radius: 10px; cursor: crosshair; touch-action: none; contain: layout paint style; transform: translate3d(0,0,0); backface-visibility: hidden; box-shadow: inset 0 0 0 1px rgba(255,255,255,.1);
+}
+.color-pad[data-v-269e2e0e]::before { position: absolute; inset: 0; content: ''; background: linear-gradient(to top, #000, transparent), linear-gradient(to right, #fff, transparent); transform: translate3d(0,0,0); backface-visibility: hidden;
+}
+.pad-cursor[data-v-269e2e0e] { position: absolute; z-index: 1; top: 0; left: 0; width: 17px; height: 17px; border: 2px solid #fff; border-radius: 50%; box-shadow: 0 1px 5px #0009, inset 0 0 0 1px #0002; pointer-events: none; will-change: transform; backface-visibility: hidden;
+}
+.color-controls[data-v-269e2e0e] { display: grid; grid-template-columns: 32px 1fr 28px; align-items: center; gap: 9px; transform: translate3d(0,0,0); backface-visibility: hidden;
+}
+.color-preview[data-v-269e2e0e] { width: 32px; height: 32px; border: 1px solid var(--line-strong); border-radius: 50%; transform: translate3d(0,0,0); backface-visibility: hidden;
+}
+.color-sliders[data-v-269e2e0e] { display: grid; gap: 5px; transform: translate3d(0,0,0);
+}
+.color-values[data-v-269e2e0e] { display: grid; grid-template-columns: 50px 1fr; gap: 7px; transform: translate3d(0,0,0); backface-visibility: hidden;
+}
+.mode-switch[data-v-269e2e0e] { height: 44px; padding: 0; border: 1px solid var(--line); border-radius: 9px; color: var(--muted); background: var(--surface-raised); cursor: pointer; font: 10px var(--font-ui); transition: color 120ms, border-color 120ms, transform 90ms var(--ease); transform: translate3d(0,0,0); backface-visibility: hidden;
+}
+.mode-switch[data-v-269e2e0e]:hover { border-color: var(--line-strong); color: var(--ink);
+}
+.mode-switch[data-v-269e2e0e]:active { transform: translate3d(0,1px,0) scale3d(.98,.98,1);
+}
+.value-grid[data-v-269e2e0e] { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px;
+}
+.value-grid.one[data-v-269e2e0e] { grid-template-columns: 1fr;
+}
+.value-grid label[data-v-269e2e0e] { position: relative; min-width: 0;
+}
+.value-grid span[data-v-269e2e0e] { position: absolute; top: 5px; left: 9px; color: var(--faint); font-size: 8px; letter-spacing: .04em; text-transform: uppercase; pointer-events: none;
+}
+.value-grid input[data-v-269e2e0e] { width: 100%; height: 44px; padding: 15px 9px 2px; border: 1px solid var(--line); border-radius: 9px; outline: 0; color: var(--ink); background: var(--surface-raised); font: 13px var(--font-ui); font-variant-numeric: tabular-nums; appearance: textfield; transform: translate3d(0,0,0); backface-visibility: hidden;
+}
+.value-grid input[data-v-269e2e0e]:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft);
+}
+.value-grid input[data-v-269e2e0e]::-webkit-inner-spin-button { appearance: none;
+}
+</style><style type="text/css" data-vite-dev-id="/tmp/resumi-vue-reference-1gh313jw/src/ui/Select/FontPicker.vue?vue&amp;type=style&amp;index=0&amp;scoped=d3746983&amp;lang.css">
+[data-v-d3746983] .popover-root { width: 100%;
+}
+.font-trigger[data-v-d3746983] { width: 100%; height: 34px; min-width: 0; display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 0 9px 0 10px; border: 1px solid var(--line); border-radius: 8px; outline: none; color: var(--ink); background: var(--surface-raised); cursor: pointer; text-align: left; font: inherit;
+}
+.font-trigger > span[data-v-d3746983] { min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
+}
+.font-trigger > svg[data-v-d3746983] { flex: 0 0 auto; color: var(--faint); transition: transform 140ms var(--ease);
+}
+.font-trigger[data-v-d3746983]:hover:not(:disabled) { border-color: var(--line-strong);
+}
+.font-trigger.open[data-v-d3746983] { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft);
+}
+.font-trigger.mixed > span[data-v-d3746983] { color: var(--faint); font-style: italic;
+}
+.font-trigger.open > svg[data-v-d3746983] { transform: rotate(180deg);
+}
+.font-trigger[data-v-d3746983]:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px;
+}
+.font-trigger[data-v-d3746983]:disabled { opacity: .45; cursor: default;
+}
+.font-picker[data-v-d3746983] { min-width: 0;
+}
+.font-actions[data-v-d3746983] { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: 5px;
+}
+.font-search[data-v-d3746983] { height: 34px; min-width: 0; display: flex; align-items: center; gap: 7px; padding: 0 9px; border: 1px solid var(--line); border-radius: 8px; color: var(--faint); background: var(--surface-raised);
+}
+.font-search[data-v-d3746983]:focus-within { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); color: var(--ink);
+}
+.font-search input[data-v-d3746983] { width: 100%; min-width: 0; border: 0; outline: 0; color: var(--ink); background: transparent; font: inherit;
+}
+.font-search input[data-v-d3746983]::placeholder { color: var(--faint);
+}
+.font-search input[data-v-d3746983]::-webkit-search-cancel-button { display: none;
+}
+.font-summary[data-v-d3746983] { height: 25px; display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 0 5px; color: var(--faint); font-size: 9px;
+}
+.font-list[data-v-d3746983] { position: relative; overflow-x: hidden; overflow-y: auto; overscroll-behavior: contain; border-top: 1px solid var(--line); scrollbar-color: var(--line-strong) transparent; scrollbar-width: thin;
+}
+.font-spacer[data-v-d3746983] { position: relative; width: 100%;
+}
+.font-option[data-v-d3746983] { position: absolute; inset: 0 0 auto; width: 100%; height: 58px; display: grid; grid-template-columns: minmax(0, 1fr) auto 18px; align-items: center; gap: 8px; padding: 6px 7px 6px 9px; border: 0; border-radius: 8px; color: var(--ink); background: transparent; cursor: pointer; text-align: left;
+}
+.font-option.highlighted[data-v-d3746983] { background: var(--line);
+}
+.font-option[aria-selected='true'][data-v-d3746983] { background: var(--accent-soft);
+}
+.font-option[data-v-d3746983]:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px;
+}
+.font-copy[data-v-d3746983] { min-width: 0; display: grid; gap: 4px;
+}
+.font-name[data-v-d3746983], .font-preview[data-v-d3746983] { overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
+}
+.font-name[data-v-d3746983] { font-size: 12px; font-weight: 600;
+}
+.font-preview[data-v-d3746983] { color: var(--muted); font-size: 14px;
+}
+.font-option small[data-v-d3746983] { color: var(--faint); font: 8px var(--font-ui); text-transform: uppercase;
+}
+.font-option > svg[data-v-d3746983] { color: var(--accent);
+}
+.font-empty[data-v-d3746983] { height: 72px; display: grid; place-items: center; color: var(--faint); font-size: 10px;
+}
+</style><style type="text/css" data-vite-dev-id="/tmp/resumi-vue-reference-1gh313jw/src/ui/NumberField/NumberField.vue?vue&amp;type=style&amp;index=0&amp;scoped=36e02aab&amp;lang.css">
+.number-field[data-v-36e02aab] { height: 34px; display: flex; align-items: center; overflow: hidden; border: 1px solid var(--line); border-radius: 8px; background: var(--surface-raised); transition: border-color 140ms, box-shadow 140ms, background 140ms;
+}
+.number-field[data-v-36e02aab]:hover:not(.disabled) { border-color: var(--line-strong); background: color-mix(in srgb, var(--surface-raised) 84%, var(--ink) 3%);
+}
+.number-field[data-v-36e02aab]:focus-within { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft);
+}
+.number-field[data-v-36e02aab] { cursor: ew-resize; touch-action: none;
+}
+.number-field.editing[data-v-36e02aab] { cursor: text;
+}
+.scrubber[data-v-36e02aab] { width: 30px; height: 100%; display: grid; place-items: center; flex: 0 0 auto; color: var(--muted);
+}
+input[data-v-36e02aab] { width: 100%; min-width: 0; height: 100%; padding: 0 8px; border: 0; outline: 0; background: transparent; color: var(--ink); cursor: inherit; font: inherit; font-size: 11px; font-variant-numeric: tabular-nums; line-height: 32px; text-align: center; appearance: textfield;
+}
+.editing input[data-v-36e02aab] { cursor: text; user-select: text;
+}
+.suffix[data-v-36e02aab] { padding-right: 8px; color: var(--faint); font-size: 10px; line-height: 1; pointer-events: none;
+}
+.disabled[data-v-36e02aab] { opacity: .45;
+}
+.mixed input[data-v-36e02aab]::placeholder { color: var(--faint);
+}
+</style><style type="text/css" data-vite-dev-id="/tmp/resumi-vue-reference-1gh313jw/src/ui/Slider/Slider.vue?vue&amp;type=style&amp;index=0&amp;scoped=02ff597e&amp;lang.css">
+.ui-slider[data-v-02ff597e] { position: relative; width: 100%; height: 28px; outline: 0; cursor: pointer; touch-action: none; contain: layout paint style; transform: translate3d(0,0,0); backface-visibility: hidden;
+}
+.slider-rail[data-v-02ff597e] { position: absolute; top: 50%; right: 7px; left: 7px; height: 6px; overflow: visible; border-radius: 999px; background: color-mix(in srgb, var(--ink) 28%, var(--surface-solid)); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--ink) 8%, transparent); transform: translate3d(0,-50%,0); backface-visibility: hidden;
+}
+.slider-fill[data-v-02ff597e] { position: absolute; inset: 0; border-radius: inherit; background: var(--accent); box-shadow: inset 0 0 0 1px color-mix(in srgb, #fff 18%, transparent); transform-origin: 0 50%; will-change: transform; backface-visibility: hidden;
+}
+.slider-ticks[data-v-02ff597e] { position: absolute; z-index: 1; inset: -4px 0; pointer-events: none;
+}
+.slider-ticks i[data-v-02ff597e] { position: absolute; top: 3px; width: 1px; height: 8px; background: color-mix(in srgb, var(--surface-solid) 78%, var(--ink)); opacity: .9; transform: translate3d(-.5px,0,0); backface-visibility: hidden;
+}
+.slider-thumb[data-v-02ff597e] { position: absolute; z-index: 2; top: 50%; left: 0; width: 17px; height: 17px; margin-left: -8.5px; border: 3px solid var(--accent); border-radius: 50%; background: var(--surface-solid); box-shadow: 0 1px 5px rgba(0,0,0,.34); pointer-events: none; will-change: transform; backface-visibility: hidden;
+}
+.ui-slider[data-v-02ff597e]:focus-visible { border-radius: 999px; box-shadow: 0 0 0 3px var(--accent-soft);
+}
+.ui-slider:hover .slider-thumb[data-v-02ff597e] { box-shadow: 0 1px 6px rgba(0,0,0,.34), 0 0 0 3px var(--accent-soft);
+}
+</style><style type="text/css" data-vite-dev-id="/tmp/resumi-vue-reference-1gh313jw/src/ui/RichTextEditor/RichTextEditor.vue?vue&amp;type=style&amp;index=0&amp;scoped=5c819b9c&amp;lang.css">
+.rich-text-editor[data-v-5c819b9c] { white-space: pre-wrap; overflow-wrap: anywhere; outline: none;
+}
+.rich-text-editor[data-v-5c819b9c]:empty::before { content: attr(data-placeholder); color: var(--faint); pointer-events: none;
+}
+.rich-text-editor[data-v-5c819b9c] a { cursor: text;
+}
+</style><style type="text/css" data-vite-dev-id="/tmp/resumi-vue-reference-1gh313jw/src/components/editor/TextMode.vue?vue&amp;type=style&amp;index=0&amp;scoped=6228768b&amp;lang.css">
+.copy-editor[data-v-6228768b] {
+  --ink: #151513;
+  --muted: #565650;
+  --faint: #70706a;
+  --line: rgba(21,21,19,.12);
+  --line-strong: rgba(21,21,19,.22);
+  --surface: #fffffc;
+  --surface-solid: #fbfbf8;
+  --surface-raised: #fff;
+  --accent: #2958e8;
+  --accent-soft: rgba(41,88,232,.12);
+  width: min(794px, calc(100vw - 560px));
+  min-width: 460px;
+  height: min(1123px, calc(100vh - 142px));
+  min-height: 420px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid rgba(20,20,18,.12);
+  border-radius: 4px;
+  background: #fff;
+  color: #151515;
+  box-shadow: 0 2px 8px rgba(20,20,18,.08), 0 32px 90px rgba(20,20,18,.16);
+}
+.copy-toolbar[data-v-6228768b] { position: relative; z-index: 2; flex: 0 0 auto; min-height: 52px; display: flex; align-items: center; gap: 2px; padding: 7px 12px; border-bottom: 1px solid #e5e5df; background: rgba(255,255,252,.94); -webkit-backdrop-filter: blur(18px); backdrop-filter: blur(18px);
+}
+.copy-toolbar[data-v-6228768b] >  .popover-root:first-child, .copy-toolbar[data-v-6228768b] >  .popover-root:first-child .select-trigger { width: 92px;
+}
+.copy-toolbar[data-v-6228768b] .select-trigger { border-color: #d7d7d0; background: #f6f6f2; color: #20201d;
+}
+.copy-toolbar[data-v-6228768b] .select-trigger:hover:not(:disabled) { border-color: #bfbfb8; background: #eeeeea;
+}
+.copy-toolbar[data-v-6228768b] .select-trigger:focus-visible { outline-color: #2958e8;
+}
+.copy-toolbar[data-v-6228768b] .icon-button { border-color: transparent; color: #565650; transition: color 140ms, background 140ms, border-color 140ms, transform 100ms var(--ease);
+}
+.copy-toolbar[data-v-6228768b] .icon-button:hover:not(:disabled) { border-color: #d9d9d2; background: #ecece7; color: #11110f;
+}
+.copy-toolbar[data-v-6228768b] .icon-button.active { border-color: #cbd8ff; background: #e9efff; color: #1f51dc;
+}
+.copy-toolbar[data-v-6228768b] .icon-button:focus-visible { outline-color: #2958e8;
+}
+.copy-toolbar[data-v-6228768b] .icon-button:disabled { color: #9a9a94; opacity: .55;
+}
+.toolbar-rule[data-v-6228768b] { width: 1px; height: 20px; margin: 0 5px; background: #deded8;
+}
+.copy-list[data-v-6228768b] { flex: 1 1 auto; min-height: 0; overflow-x: hidden; overflow-y: scroll; overscroll-behavior: contain; scrollbar-gutter: stable; padding: 42px 52px 72px; scrollbar-color: #c5c5bf transparent; scrollbar-width: thin;
+}
+.copy-block[data-v-6228768b] { display: grid; grid-template-columns: 128px minmax(0, 1fr); gap: 24px; padding: 14px 12px; border: 1px solid transparent; border-radius: 8px; transition: border-color 130ms, background 130ms;
+}
+.copy-block + .copy-block[data-v-6228768b] { margin-top: 2px;
+}
+.copy-block.active[data-v-6228768b] { border-color: #dfdfd9; background: #fbfbf8;
+}
+.copy-meta[data-v-6228768b] { padding-top: 6px;
+}
+.copy-meta strong[data-v-6228768b], .copy-meta small[data-v-6228768b] { display: block; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
+}
+.copy-meta strong[data-v-6228768b] { font-size: 10px;
+}
+.copy-meta small[data-v-6228768b] { margin-top: 5px; color: #686864; font-size: 9px;
+}
+.copy-rich-editor[data-v-6228768b] { width: 100%; min-height: 34px; padding: 4px 7px 8px; border: 0; border-radius: 6px; outline: 0; background: transparent; font-variation-settings: "MONO" 100;
+}
+.copy-rich-editor[data-v-6228768b]:focus { background: #fff; box-shadow: 0 0 0 3px rgba(31,99,224,.1);
+}
+footer[data-v-6228768b] { flex: 0 0 auto; padding: 12px 42px; border-top: 1px solid #ecece7; color: #686864; font-size: 9px;
+}
+.copy-empty[data-v-6228768b] { padding: 80px 20px; color: #686864; text-align: center;
+}
+.type-popover[data-v-6228768b] { display: grid; gap: 10px;
+}
+.link-popover[data-v-6228768b] { display: grid; gap: 10px; padding: 2px;
+}
+.link-popover label[data-v-6228768b] { display: grid; gap: 5px;
+}
+.link-popover label > span[data-v-6228768b] { color: var(--muted); font-size: 9px;
+}
+.link-style-row[data-v-6228768b] { display: grid; grid-template-columns: minmax(0, 1fr) repeat(4, 32px); align-items: center; gap: 4px; padding-top: 2px;
+}
+.link-style-row[data-v-6228768b] .color-field { width: 100%;
+}
+.link-actions[data-v-6228768b] { display: grid; grid-template-columns: 34px 1fr auto; align-items: center; padding-top: 8px; border-top: 1px solid var(--line);
+}
+.type-popover label[data-v-6228768b], .font-picker-field[data-v-6228768b] { display: grid; gap: 5px;
+}
+.type-basics[data-v-6228768b] { display: grid; grid-template-columns: 72px minmax(0, 1fr); gap: 7px;
+}
+.type-popover span[data-v-6228768b] { color: var(--muted); font-size: 9px;
+}
+.setting-head[data-v-6228768b] { display: flex; align-items: center; justify-content: space-between;
+}
+.setting-head[data-v-6228768b] .setting-value { width: 76px; height: 30px;
+}
+.setting-head[data-v-6228768b] .setting-value input { color: var(--ink); font-size: 10px;
+}
+.align-settings[data-v-6228768b] { display: grid; grid-template-columns: repeat(3, 34px); justify-content: end; padding-top: 7px; border-top: 1px solid var(--line);
+}
+.color-row[data-v-6228768b] { grid-template-columns: 1fr auto; align-items: center;
+}
+.color-row[data-v-6228768b] .color-field { width: 40px;
+}
+@media (max-width: 1040px) {
+.copy-editor[data-v-6228768b] { width: min(650px, calc(100vw - 500px));
+}
+.copy-list[data-v-6228768b] { padding-inline: 26px;
+}
+.copy-block[data-v-6228768b] { grid-template-columns: 104px 1fr; gap: 16px;
+}
+}
+@media (max-width: 700px) {
+.copy-editor[data-v-6228768b] { width: calc(100vw - 32px); min-width: 0; height: calc(60vh - 92px); min-height: 260px;
+}
+.copy-list[data-v-6228768b] { padding: 22px 14px 40px;
+}
+.copy-block[data-v-6228768b] { grid-template-columns: 1fr; gap: 5px;
+}
+footer[data-v-6228768b] { padding-inline: 20px;
+}
+}
+</style><style type="text/css" data-vite-dev-id="/tmp/resumi-vue-reference-1gh313jw/src/ui/ScrollArea/ScrollArea.vue?vue&amp;type=style&amp;index=0&amp;scoped=758bff64&amp;lang.css">
+.scroll-area[data-v-758bff64] { position: relative; min-width: 0; min-height: 0;
+}
+.scroll-area-viewport[data-v-758bff64] { max-height: inherit; overflow-y: auto; overscroll-behavior: contain; scrollbar-gutter: stable both-edges; scrollbar-width: thin; scrollbar-color: var(--line-strong) transparent; outline: none;
+}
+.scroll-area-viewport[data-v-758bff64]:focus-visible { border-radius: 9px; box-shadow: inset 0 0 0 1px var(--accent);
+}
+.scroll-shadow[data-v-758bff64] { position: absolute; z-index: 2; right: 7px; left: 7px; height: 22px; opacity: 0; pointer-events: none; transition: opacity 120ms var(--ease);
+}
+.scroll-shadow.visible[data-v-758bff64] { opacity: 1;
+}
+.scroll-shadow-top[data-v-758bff64] { top: 0; background: linear-gradient(to bottom, color-mix(in srgb, var(--surface-solid) 88%, transparent), transparent);
+}
+.scroll-shadow-bottom[data-v-758bff64] { bottom: 0; background: linear-gradient(to top, color-mix(in srgb, var(--surface-solid) 88%, transparent), transparent);
+}
+</style><style type="text/css" data-vite-dev-id="/tmp/resumi-vue-reference-1gh313jw/src/ui/Select/ShapePicker.vue?vue&amp;type=style&amp;index=0&amp;scoped=da666a1c&amp;lang.css">
+.shape-trigger[data-v-da666a1c] { height: 34px; min-width: 0; display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 0 9px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface-raised); color: var(--ink); cursor: pointer; font: 11px var(--font-ui);
+}
+.shape-trigger.compact[data-v-da666a1c] { width: 34px; padding: 0; border-color: transparent; background: transparent;
+}
+.shape-trigger[data-v-da666a1c]:hover, .shape-trigger.active[data-v-da666a1c] { background: var(--hover); border-color: var(--line-strong);
+}
+.shape-trigger svg[data-v-da666a1c]:first-child { width: 16px; height: 16px; fill: currentColor;
+}
+.shape-trigger > span[data-v-da666a1c] { flex: 1; overflow: hidden; text-align: left; white-space: nowrap; text-overflow: ellipsis;
+}
+.shape-picker-head[data-v-da666a1c] { height: 34px; display: flex; align-items: center; justify-content: space-between; padding: 0 5px 7px; color: var(--ink); font-size: 11px; font-weight: 650;
+}
+.shape-picker-head small[data-v-da666a1c] { color: var(--faint); font-size: 9px; font-weight: 500;
+}
+.shape-scroll[data-v-da666a1c] { margin-inline: -2px;
+}
+.shape-grid[data-v-da666a1c] { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; padding: 0 2px;
+}
+.shape-grid button[data-v-da666a1c] { aspect-ratio: 1; display: grid; place-items: center; padding: 10px; border: 1px solid transparent; border-radius: 9px; background: transparent; color: var(--muted); cursor: pointer;
+}
+.shape-grid button[data-v-da666a1c]:hover { background: var(--hover); color: var(--ink);
+}
+.shape-grid button.selected[data-v-da666a1c] { border-color: color-mix(in srgb, var(--accent) 52%, transparent); background: var(--accent-soft); color: var(--accent);
+}
+.shape-grid svg[data-v-da666a1c] { width: 100%; height: 100%; overflow: visible; fill: currentColor;
+}
+</style><style type="text/css" data-vite-dev-id="/tmp/resumi-vue-reference-1gh313jw/src/ui/Select/IconPicker.vue?vue&amp;type=style&amp;index=0&amp;scoped=b47a5ef3&amp;lang.css">
+.icon-trigger[data-v-b47a5ef3] { width: 34px; height: 34px; display: inline-grid; place-items: center; padding: 0; border: 1px solid transparent; border-radius: 8px; background: transparent; color: var(--ink); cursor: pointer;
+}
+.icon-trigger[data-v-b47a5ef3]:not(.compact) { width: auto; display: inline-flex; gap: 7px; padding: 0 9px;
+}
+.icon-trigger[data-v-b47a5ef3]:hover, .icon-trigger.active[data-v-b47a5ef3] { border-color: var(--line-strong); background: var(--hover);
+}
+.icon-actions[data-v-b47a5ef3] { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 5px;
+}
+.icon-search[data-v-b47a5ef3] { height: 34px; display: flex; align-items: center; gap: 7px; padding: 0 9px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface-raised); color: var(--faint);
+}
+.icon-search[data-v-b47a5ef3]:focus-within { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); color: var(--ink);
+}
+.icon-search input[data-v-b47a5ef3] { width: 100%; min-width: 0; border: 0; outline: 0; background: transparent; color: var(--ink); font: inherit;
+}
+.icon-search input[data-v-b47a5ef3]::-webkit-search-cancel-button { display: none;
+}
+.icon-summary[data-v-b47a5ef3] { height: 27px; display: flex; align-items: center; padding: 0 5px; color: var(--faint); font-size: 9px;
+}
+.icon-viewport-wrap[data-v-b47a5ef3] { position: relative; margin-inline: -3px;
+}
+.icon-viewport[data-v-b47a5ef3] { height: 300px; overflow-x: hidden; overflow-y: scroll; scrollbar-gutter: stable; overscroll-behavior: contain; scrollbar-color: var(--line-strong) transparent; scrollbar-width: thin;
+}
+.icon-spacer[data-v-b47a5ef3] { position: relative; width: 300px;
+}
+.icon-spacer button[data-v-b47a5ef3] { position: absolute; left: 0; top: 0; width: 46px; height: 46px; display: grid; place-items: center; padding: 12px; border: 1px solid transparent; border-radius: 9px; background: transparent; color: var(--muted); cursor: pointer; will-change: transform;
+}
+.icon-spacer button[data-v-b47a5ef3]:hover { background: var(--hover); color: var(--ink);
+}
+.icon-spacer button[aria-selected='true'][data-v-b47a5ef3] { border-color: color-mix(in srgb, var(--accent) 52%, transparent); background: var(--accent-soft); color: var(--accent);
+}
+.icon-spacer svg[data-v-b47a5ef3] { width: 100%; height: 100%; overflow: visible; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+}
+.scroll-shadow[data-v-b47a5ef3] { position: absolute; z-index: 2; left: 0; right: 9px; height: 28px; opacity: 0; pointer-events: none; transition: opacity 120ms;
+}
+.scroll-shadow.visible[data-v-b47a5ef3] { opacity: 1;
+}
+.scroll-shadow.top[data-v-b47a5ef3] { top: 0; background: linear-gradient(to bottom, var(--surface-solid), transparent);
+}
+.scroll-shadow.bottom[data-v-b47a5ef3] { bottom: 0; background: linear-gradient(to top, var(--surface-solid), transparent);
+}
+</style><style type="text/css" data-vite-dev-id="/tmp/resumi-vue-reference-1gh313jw/src/components/editor/CanvasStage.vue?vue&amp;type=style&amp;index=0&amp;scoped=7333804d&amp;lang.css">
+.canvas-viewport[data-v-7333804d] { position: absolute; inset: 0; overflow: auto; overscroll-behavior: none; background-color: var(--bg); background-image: radial-gradient(circle, color-mix(in srgb, var(--ink) 14%, transparent) .7px, transparent .8px); background-size: 18px 18px; cursor: default;
+}
+.canvas-viewport.panning[data-v-7333804d] { cursor: grabbing; user-select: none;
+}
+.canvas-viewport.tool-crosshair[data-v-7333804d] { cursor: crosshair;
+}
+.canvas-center[data-v-7333804d] { width: 100%; min-width: max(6000px, 300vw); height: 100%; min-height: max(6000px, 300vh); display: flex; align-items: center; justify-content: center; padding: 1000px;
+}
+.canvas-shell[data-v-7333804d] { position: relative; flex: 0 0 auto; contain: layout style; transform-origin: center;
+}
+.canvas-page[data-v-7333804d] { position: absolute; inset: 0 auto auto 0; overflow: hidden; box-shadow: 0 0 0 1px rgba(20,20,18,.08), 0 3px 7px rgba(20,20,18,.08), 0 30px 60px rgba(20,20,18,.12);
+}
+.canvas-group[data-v-7333804d] { position: absolute; inset: 0; pointer-events: none;
+}
+.canvas-group[data-v-7333804d] .canvas-element { pointer-events: auto;
+}
+.group-hover-outline[data-v-7333804d] { position: absolute; z-index: 997; border: calc(1px / var(--canvas-zoom)) solid color-mix(in srgb, var(--accent) 72%, transparent); background: color-mix(in srgb, var(--accent) 3%, transparent); pointer-events: none;
+}
+.group-hover-outline span[data-v-7333804d] { position: absolute; left: 0; bottom: calc(100% + 5px / var(--canvas-zoom)); transform: scale(calc(1 / var(--canvas-zoom))); transform-origin: bottom left; padding: 3px 6px; border-radius: 5px; background: var(--accent); color: white; font-family: var(--font-ui); font-size: 10px; line-height: 1; white-space: nowrap;
+}
+.selection-marquee[data-v-7333804d] { position: absolute; z-index: 998; border: calc(1px / var(--canvas-zoom)) solid var(--accent); background: color-mix(in srgb, var(--accent) 10%, transparent); pointer-events: none;
+}
+.shape-draw-preview[data-v-7333804d] { position: absolute; z-index: 998; overflow: visible; fill: color-mix(in srgb, var(--accent) 20%, transparent); stroke: var(--accent); stroke-width: calc(1px / var(--canvas-zoom)); pointer-events: none;
+}
+.shape-draw-preview.icon[data-v-7333804d] { fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+}
+.shape-draw-preview path[data-v-7333804d] { vector-effect: non-scaling-stroke;
+}
+.guide[data-v-7333804d] { position: absolute; z-index: 999; pointer-events: none; background: #ff3d8d;
+}
+.guide-x[data-v-7333804d] { top: 0; bottom: 0; left: 0; width: calc(1px / var(--canvas-zoom)); display: none; will-change: transform;
+}
+.guide-y[data-v-7333804d] { left: 0; right: 0; top: 0; height: calc(1px / var(--canvas-zoom)); display: none; will-change: transform;
+}
+.bottom-dock[data-v-7333804d] { position: fixed; z-index: 120; left: 50%; bottom: 16px; display: flex; align-items: center; gap: 5px; transform: translateX(-50%); padding: 5px; border: 1px solid var(--line-strong); border-radius: 14px; background: var(--surface); box-shadow: var(--shadow-lg); backdrop-filter: blur(24px) saturate(1.25);
+}
+.dock-group[data-v-7333804d] { display: flex; align-items: center; gap: 2px;
+}
+.dock-separator[data-v-7333804d] { width: 1px; height: 22px; margin: 0 3px; background: var(--line-strong);
+}
+.mode-switch[data-v-7333804d] { padding: 2px; border-radius: 8px; background: var(--line);
+}
+.mode-switch button[data-v-7333804d] { height: 28px; display: flex; align-items: center; gap: 5px; padding: 0 8px; border: 0; border-radius: 6px; background: transparent; color: var(--muted); cursor: pointer; font-size: 9px;
+}
+.mode-switch button.active[data-v-7333804d] { background: var(--surface-raised); color: var(--ink); box-shadow: 0 1px 3px rgba(0,0,0,.1);
+}
+.zoom-group[data-v-7333804d] { width: 72px;
+}
+.zoom-group[data-v-7333804d] .number-field { width: 100%; height: 30px; border-color: transparent; background: transparent;
+}
+.zoom-group[data-v-7333804d] .number-field:hover:not(.disabled) { border-color: var(--line-strong); background: var(--surface-raised);
+}
+.zoom-group[data-v-7333804d] .number-field:focus-within { border-color: var(--accent); background: var(--surface-raised);
+}
+.zoom-group[data-v-7333804d] input { padding-right: 2px; font-size: 11px; font-weight: 650;
+}
+.zoom-group[data-v-7333804d] .suffix { padding-right: 9px; color: var(--muted); font-size: 10px;
+}
+@media (max-width: 520px) {
+.bottom-dock[data-v-7333804d] { bottom: calc(40vh + 22px); max-width: calc(100vw - 20px);
+}
+.mode-switch button[data-v-7333804d] { padding: 0 6px;
+}
+}
+</style><style type="text/css" data-vite-dev-id="/tmp/resumi-vue-reference-1gh313jw/src/ui/SegmentedControl/SegmentedControl.vue?vue&amp;type=style&amp;index=0&amp;scoped=8021ada9&amp;lang.css">
+.segmented[data-v-8021ada9] { display: flex; padding: 3px; border-radius: 9px; background: var(--line);
+}
+.segmented button[data-v-8021ada9] { flex: 1; height: 27px; padding: 0 9px; border: 0; border-radius: 7px; background: transparent; color: var(--muted); cursor: pointer; font-size: 12px;
+}
+.segmented button.active[data-v-8021ada9] { color: var(--ink); background: var(--surface-raised); box-shadow: 0 1px 3px rgba(0,0,0,.08);
+}
+</style><style type="text/css" data-vite-dev-id="/tmp/resumi-vue-reference-1gh313jw/src/ui/PaintField/PaintField.vue?vue&amp;type=style&amp;index=0&amp;scoped=b5e99225&amp;lang.css">
+[data-v-b5e99225] .popover-root { width: 100%;
+}
+.paint-trigger[data-v-b5e99225] { width: 100%; height: 34px; padding: 0; overflow: hidden; border: 1px solid var(--line); border-radius: 8px; outline: 0; background: repeating-conic-gradient(#c7c7c7 0 25%, #fff 0 50%) 0 / 8px 8px; cursor: pointer;
+}
+.paint-trigger i[data-v-b5e99225] { display: block; width: 100%; height: 100%; transform: translate3d(0,0,0);
+}
+.paint-trigger[data-v-b5e99225]:hover { border-color: var(--line-strong);
+}
+.paint-trigger.open[data-v-b5e99225] { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft);
+}
+.paint-editor[data-v-b5e99225] { display: grid; gap: 11px;
+}
+.gradient-preview[data-v-b5e99225] { height: 54px; border: 1px solid var(--line); border-radius: 10px; transform: translate3d(0,0,0);
+}
+.angle-head[data-v-b5e99225], .stops-head[data-v-b5e99225] { display: flex; align-items: center; justify-content: space-between; color: var(--muted); font-size: 10px;
+}
+.angle-head[data-v-b5e99225] .number-field { width: 88px;
+}
+.stops[data-v-b5e99225] { display: grid; gap: 6px; max-height: 190px; overflow: auto; padding-right: 2px; scrollbar-gutter: stable;
+}
+.stop-row[data-v-b5e99225] { display: grid; grid-template-columns: 44px 1fr 28px; align-items: center; gap: 6px;
+}
+</style><style type="text/css" data-vite-dev-id="/tmp/resumi-vue-reference-1gh313jw/src/components/editor/InspectorPanel.vue?vue&amp;type=style&amp;index=0&amp;scoped=143222dc&amp;lang.css">
+.inspector[data-v-143222dc] { position: absolute; z-index: 80; top: 72px; right: 12px; bottom: 12px; width: 252px; min-height: 0; overflow: auto; border: 1px solid var(--line-strong); border-radius: 14px; background: var(--surface); box-shadow: var(--shadow-sm); backdrop-filter: blur(24px) saturate(1.2);
+}
+header[data-v-143222dc] { height: 49px; display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 0 12px 0 16px; border-bottom: 1px solid var(--line);
+}
+header > div[data-v-143222dc]:first-child { min-width: 0; display: flex; align-items: baseline; gap: 7px;
+}
+header span[data-v-143222dc] { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font-weight: 600;
+}
+header small[data-v-143222dc] { color: var(--faint); text-transform: capitalize;
+}
+.layer-actions[data-v-143222dc] { display: flex;
+}
+section[data-v-143222dc] { padding: 18px 14px 22px; border-bottom: 1px solid var(--line);
+}
+h3[data-v-143222dc] { margin: 0 0 18px; color: var(--muted); font-size: 10px; font-weight: 700; line-height: 1.4; letter-spacing: .13em; text-transform: uppercase;
+}
+.section-head[data-v-143222dc] { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;
+}
+.section-head h3[data-v-143222dc] { margin: 0;
+}
+.field[data-v-143222dc] { display: grid; gap: 7px; margin-top: 12px;
+}
+.field[data-v-143222dc]:first-of-type { margin-top: 0;
+}
+.field.row[data-v-143222dc] { grid-template-columns: 78px 1fr; align-items: center;
+}
+.field-title[data-v-143222dc], .inline-field[data-v-143222dc] { display: flex; justify-content: space-between; align-items: center; color: var(--muted); font-size: 11px;
+}
+.quad-grid[data-v-143222dc], .double-grid[data-v-143222dc] { display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
+}
+.frame-field[data-v-143222dc] { position: relative; min-width: 0;
+}
+.frame-field > span[data-v-143222dc] { position: absolute; z-index: 1; top: 50%; left: 8px; color: var(--faint); font-size: 10px; line-height: 1; transform: translateY(-50%); pointer-events: none;
+}
+.quad-grid[data-v-143222dc] input { padding-left: 27px;
+}
+.double-grid > div[data-v-143222dc], .font-basics > div[data-v-143222dc] { display: grid; gap: 7px; min-width: 0; color: var(--muted); font-size: 10px;
+}
+.double-grid[data-v-143222dc] input { min-width: 0;
+}
+.inline-field[data-v-143222dc] { margin: 8px 0;
+}
+.font-basics[data-v-143222dc] { display: grid; grid-template-columns: 76px minmax(0, 1fr); gap: 8px; margin-top: 12px;
+}
+.shape-source-row[data-v-143222dc] { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 6px;
+}
+.type-toolbar[data-v-143222dc] { display: grid; grid-template-columns: repeat(5, 34px) 1fr 34px; margin: 10px 0 12px;
+}
+.inspector-rich-editor[data-v-143222dc] { width: 100%; min-height: 76px; max-height: 180px; overflow: auto; padding: 9px 10px; border: 1px solid var(--line); border-radius: 8px; outline: 0; background: var(--surface-raised); color: var(--ink); font-size: 11px; line-height: 1.45; scrollbar-gutter: stable;
+}
+.inspector-rich-editor[data-v-143222dc]:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft);
+}
+.link-popover[data-v-143222dc], .link-popover label[data-v-143222dc] { display: grid; gap: 6px;
+}
+.link-popover[data-v-143222dc] { gap: 10px;
+}
+.link-popover label > span[data-v-143222dc] { color: var(--muted); font-size: 10px;
+}
+.link-style-row[data-v-143222dc] { display: grid; grid-template-columns: minmax(0, 1fr) repeat(4, 34px); gap: 3px; align-items: center;
+}
+.link-actions[data-v-143222dc] { display: grid; grid-template-columns: 34px 1fr auto; align-items: center;
+}
+.type-settings[data-v-143222dc] { display: grid; gap: 8px; padding: 3px 2px 2px;
+}
+.setting-head[data-v-143222dc] { display: flex; align-items: center; justify-content: space-between; color: var(--muted); font-size: 10px;
+}
+.setting-head[data-v-143222dc]:not(:first-child) { margin-top: 5px;
+}
+.setting-head[data-v-143222dc] .setting-value { width: 76px; height: 30px;
+}
+.setting-head[data-v-143222dc] .setting-value input { font-size: 10px;
+}
+.effects-section[data-v-143222dc] { display: grid; gap: 7px;
+}
+.effect-control[data-v-143222dc] { display: grid; gap: 1px;
+}
+.effect-control.secondary[data-v-143222dc] { padding: 0 0 3px 10px; border-left: 1px solid var(--line-strong);
+}
+.effects-section[data-v-143222dc] .setting-value { width: 76px; height: 30px;
+}
+.effects-section[data-v-143222dc] .setting-value input { font-size: 10px;
+}
+section[data-v-143222dc] .shape-picker, section[data-v-143222dc] .shape-trigger:not(.compact) { width: 100%;
+}
+.align-settings[data-v-143222dc] { display: grid; grid-template-columns: repeat(3, 34px); justify-content: end; gap: 2px; margin-top: 4px; padding-top: 9px; border-top: 1px solid var(--line);
+}
+.stacked-label[data-v-143222dc] { display: grid; gap: 7px;
+}
+.stacked-label > span[data-v-143222dc], .field > label[data-v-143222dc], .field.row > label[data-v-143222dc] { color: var(--muted); font-size: 11px;
+}
+.field.row[data-v-143222dc] .color-field { justify-self: end;
+}
+.format-static[data-v-143222dc] { justify-self: end; padding: 5px 8px; border-radius: 6px; background: var(--line); color: var(--ink); font-size: 10px;
+}
+.inspector-hint[data-v-143222dc] { margin: 30px 24px; color: var(--faint); text-align: center; line-height: 1.5;
+}
+.locked-notice[data-v-143222dc] { display: grid; justify-items: center; gap: 8px; margin: 28px 18px; padding: 22px 14px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface-raised); color: var(--muted); text-align: center;
+}
+.locked-notice svg[data-v-143222dc] { color: var(--faint);
+}
+.locked-notice strong[data-v-143222dc] { color: var(--ink); font-size: 12px;
+}
+.locked-notice span[data-v-143222dc] { max-width: 190px; font-size: 10px; line-height: 1.5;
+}
+.contrast-head[data-v-143222dc] { display: flex; align-items: center; justify-content: space-between; gap: 8px;
+}
+.contrast-head h3[data-v-143222dc] { margin: 0;
+}
+.contrast-grade[data-v-143222dc] { display: inline-flex; align-items: center; gap: 4px; padding: 4px 6px; border-radius: 6px; background: var(--line); color: var(--muted); font-size: 9px; font-weight: 700;
+}
+.contrast-grade.grade-aa[data-v-143222dc], .contrast-grade.grade-aaa[data-v-143222dc] { background: color-mix(in srgb, #238653 14%, transparent); color: #187044;
+}
+.contrast-grade.grade-fail[data-v-143222dc] { background: color-mix(in srgb, var(--danger) 12%, transparent); color: var(--danger);
+}
+.contrast-score[data-v-143222dc] { display: flex; align-items: baseline; margin-top: 13px;
+}
+.contrast-score strong[data-v-143222dc] { font-size: 25px; letter-spacing: -.06em;
+}
+.contrast-score span[data-v-143222dc] { margin-left: 4px; color: var(--muted); font-size: 11px;
+}
+.contrast-meter[data-v-143222dc] { height: 4px; overflow: hidden; margin-top: 8px; border-radius: 4px; background: var(--line-strong);
+}
+.contrast-meter i[data-v-143222dc] { display: block; height: 100%; border-radius: inherit; background: var(--accent);
+}
+.contrast-meter.unknown i[data-v-143222dc] { display: none;
+}
+.swatches[data-v-143222dc] { display: flex; align-items: center; margin-top: 10px;
+}
+.swatches > span[data-v-143222dc] { width: 18px; height: 18px; margin-right: -4px; border: 1px solid var(--surface-solid); border-radius: 50%; box-shadow: 0 0 0 1px var(--line);
+}
+.swatches small[data-v-143222dc] { margin-left: 12px; color: var(--muted); font-size: 9px; line-height: 1.35;
+}
+@media (max-width: 1040px) {
+.inspector[data-v-143222dc] { width: 222px;
+}
+}
+@media (max-width: 700px) {
+.inspector[data-v-143222dc] { top: auto; left: calc(50% + 6px); bottom: 12px; width: auto; height: 40vh;
+}
+}
+</style><style type="text/css" data-vite-dev-id="/tmp/resumi-vue-reference-1gh313jw/src/ui/ContextMenu/ContextMenu.vue?vue&amp;type=style&amp;index=0&amp;scoped=73d3f116&amp;lang.css">
+.context-menu[data-v-73d3f116] { position: fixed; z-index: 1800; display: grid; gap: 2px; padding: 6px; border: 1px solid var(--line-strong); border-radius: 12px; background: color-mix(in srgb, var(--surface-solid) 92%, transparent); box-shadow: var(--shadow-lg); backdrop-filter: blur(28px) saturate(1.35);
+}
+[data-v-73d3f116] button[role='menuitem'] { width: 100%; height: 34px; display: flex; align-items: center; gap: 9px; padding: 0 9px; border: 0; border-radius: 7px; background: transparent; color: var(--ink); cursor: pointer; font: 11px var(--font-ui); text-align: left;
+}
+[data-v-73d3f116] button[role='menuitem']:hover { background: var(--line);
+}
+[data-v-73d3f116] button[role='menuitem'] svg { color: var(--muted);
+}
+.context-menu-enter-active[data-v-73d3f116], .context-menu-leave-active[data-v-73d3f116] { transition: opacity 110ms var(--ease), transform 110ms var(--ease); transform-origin: top left;
+}
+.context-menu-enter-from[data-v-73d3f116], .context-menu-leave-to[data-v-73d3f116] { opacity: 0; transform: scale(.97);
+}
+</style><style type="text/css" data-vite-dev-id="/tmp/resumi-vue-reference-1gh313jw/src/components/editor/LayersPanel.vue?vue&amp;type=style&amp;index=0&amp;scoped=2470b392&amp;lang.css">
+.left-panel[data-v-2470b392] { position: absolute; z-index: 80; top: 72px; bottom: 12px; left: 12px; width: 228px; min-height: 0; overflow: auto; border: 1px solid var(--line-strong); border-radius: 14px; background: var(--surface); box-shadow: var(--shadow-sm); backdrop-filter: blur(24px) saturate(1.2);
+}
+.panel-tabs[data-v-2470b392] { display: flex; height: 48px; padding: 8px; gap: 3px; border-bottom: 1px solid var(--line);
+}
+.panel-tabs button[data-v-2470b392] { display: flex; align-items: center; justify-content: center; gap: 6px; flex: 1; border: 0; border-radius: 8px; background: transparent; color: var(--muted); font-size: 12px; cursor: pointer;
+}
+.panel-tabs button.active[data-v-2470b392] { background: var(--line); color: var(--ink);
+}
+.section-label[data-v-2470b392] { display: flex; justify-content: space-between; padding: 19px 14px 10px; color: var(--faint); font-size: 10px; font-weight: 650; line-height: 1.4; letter-spacing: .1em; text-transform: uppercase;
+}
+.selection-appearance[data-v-2470b392] { display: grid; grid-template-columns: 72px 1fr; align-items: center; gap: 7px; padding: 12px 10px 4px;
+}
+.selection-appearance[data-v-2470b392] .ui-select { height: 32px; font-size: 10px;
+}
+.layer-list[data-v-2470b392] { padding: 0 8px 12px;
+}
+.root-drop-zone[data-v-2470b392] { height: 8px; border-radius: 4px; transition: background 100ms var(--ease);
+}
+.root-drop-zone.active[data-v-2470b392] { background: var(--accent);
+}
+.layer-row[data-v-2470b392] { width: 100%; height: 38px; display: flex; align-items: center; gap: 7px; padding: 0 4px 0 8px; border: 0; border-radius: 8px; background: transparent; color: var(--muted); cursor: pointer; text-align: left;
+}
+.layer-list.dragging .layer-row[data-v-2470b392] { cursor: grab;
+}
+.layer-row.drop-above[data-v-2470b392] { box-shadow: inset 0 2px 0 var(--accent);
+}
+.layer-row.drop-below[data-v-2470b392] { box-shadow: inset 0 -2px 0 var(--accent);
+}
+.layer-row.drop-inside[data-v-2470b392] { background: var(--accent-soft); color: var(--accent); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 50%, transparent);
+}
+.layer-row[data-v-2470b392]:hover { background: var(--line); color: var(--ink);
+}
+.layer-row.active[data-v-2470b392] { color: var(--accent); background: var(--accent-soft);
+}
+.layer-row.muted[data-v-2470b392] { opacity: .5;
+}
+.group-row[data-v-2470b392] { padding-left: 3px;
+}
+.group-row > svg[data-v-2470b392] { flex: 0 0 auto; color: var(--muted);
+}
+.group-row input[data-v-2470b392] { flex: 1; min-width: 0; height: 28px; padding: 0 3px; border: 0; border-bottom: 1px solid transparent; outline: 0; background: transparent; color: inherit; font: inherit;
+}
+.group-row input[data-v-2470b392]:focus { border-bottom-color: var(--accent);
+}
+.disclosure[data-v-2470b392] { width: 22px; height: 28px; display: grid; place-items: center; padding: 0; border: 0; background: transparent; color: var(--muted); cursor: pointer;
+}
+.group-child[data-v-2470b392] { padding-left: 31px;
+}
+.layer-icon[data-v-2470b392] { display: grid; place-items: center; width: 20px;
+}
+.layer-name[data-v-2470b392] { flex: 1; min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
+}
+.empty-state[data-v-2470b392] { margin: 24px 18px; color: var(--faint); font-size: 12px; line-height: 1.5; text-align: center;
+}
+.language-head[data-v-2470b392] { padding: 16px 14px 14px; border-bottom: 1px solid var(--line);
+}
+.locale-row[data-v-2470b392], .add-row[data-v-2470b392] { display: grid; grid-template-columns: 1fr 28px; align-items: center; gap: 6px;
+}
+.add-row[data-v-2470b392] { margin-top: 7px;
+}
+.add-row[data-v-2470b392] .ui-input { height: 30px; font-size: 11px;
+}
+.translations[data-v-2470b392] { display: grid; gap: 16px; padding: 16px 14px 24px;
+}
+.translations label[data-v-2470b392] { display: grid; gap: 6px;
+}
+.translation-key[data-v-2470b392] { display: flex; align-items: center; gap: 4px;
+}
+.translation-key input[data-v-2470b392] { min-width: 0; flex: 1; padding: 3px 2px; border: 0; border-bottom: 1px solid transparent; outline: 0; background: transparent; color: var(--muted); font-size: 10px; font-weight: 650; letter-spacing: .04em;
+}
+.translation-key input[data-v-2470b392]:focus { border-bottom-color: var(--accent); color: var(--ink);
+}
+.translations textarea[data-v-2470b392] { width: 100%; resize: vertical; min-height: 54px; padding: 8px 9px; border: 1px solid var(--line); border-radius: 8px; outline: none; background: var(--surface-raised); color: var(--ink); font-size: 12px; line-height: 1.4;
+}
+.translations textarea[data-v-2470b392]:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft);
+}
+@media (max-width: 1040px) {
+.left-panel[data-v-2470b392] { width: 198px;
+}
+.panel-tabs button[data-v-2470b392] { gap: 4px; font-size: 10px;
+}
+}
+@media (max-width: 700px) {
+.left-panel[data-v-2470b392] { top: auto; right: auto; bottom: 12px; width: calc(50% - 18px); height: 40vh;
+}
+}
+</style><style type="text/css" data-vite-dev-id="/tmp/resumi-vue-reference-1gh313jw/src/components/layout/TopBar.vue?vue&amp;type=style&amp;index=0&amp;scoped=2648c9b9&amp;lang.css">
+.topbar[data-v-2648c9b9] { position: absolute; z-index: 100; top: 12px; left: 252px; right: 276px; height: 48px; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; padding: 0 7px; border: 1px solid var(--line-strong); border-radius: 14px; background: var(--surface); box-shadow: var(--shadow-sm); backdrop-filter: blur(24px) saturate(1.2);
+}
+.topbar-left[data-v-2648c9b9], .topbar-right[data-v-2648c9b9], .history-actions[data-v-2648c9b9] { display: flex; align-items: center;
+}
+.topbar-left[data-v-2648c9b9] { min-width: 0; gap: 8px;
+}
+.topbar-right[data-v-2648c9b9] { justify-content: flex-end; gap: 3px;
+}
+.export-button.active[data-v-2648c9b9] { border-color: var(--accent); background: var(--accent-soft); color: var(--accent); box-shadow: none;
+}
+.history-actions[data-v-2648c9b9] { gap: 2px;
+}
+.brand-mark[data-v-2648c9b9] { display: grid; place-items: center; flex: 0 0 auto; width: 26px; height: 26px; padding: 0; border: 0; border-radius: 8px; background: var(--ink); color: var(--surface-solid); font-family: Georgia, serif; font-size: 14px; font-weight: 700; cursor: pointer; transition: transform 120ms var(--ease), box-shadow 140ms var(--ease);
+}
+.brand-mark[data-v-2648c9b9]:hover, .brand-mark.active[data-v-2648c9b9] { transform: translate3d(0,-1px,0); box-shadow: 0 0 0 3px var(--accent-soft);
+}
+.brand-mark[data-v-2648c9b9]:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px;
+}
+.document-title[data-v-2648c9b9] { min-width: 80px; max-width: 260px; width: min(22vw, 260px); height: 30px; padding: 0 7px; border: 1px solid transparent; border-radius: 7px; outline: none; background: transparent; color: var(--ink); font-weight: 650;
+}
+.document-title[data-v-2648c9b9]:hover { border-color: var(--line);
+}
+.document-title[data-v-2648c9b9]:focus { border-color: var(--accent); background: var(--surface-raised); box-shadow: 0 0 0 3px var(--accent-soft);
+}
+.popover-title[data-v-2648c9b9] { padding: 5px 7px 8px; color: var(--faint); font-size: 9px; font-weight: 750; letter-spacing: .08em; text-transform: uppercase;
+}
+.menu-row[data-v-2648c9b9] { display: grid; grid-template-columns: 24px 1fr auto; align-items: center; gap: 7px; width: 100%; min-height: 45px; padding: 6px 8px; border: 0; border-radius: 8px; background: transparent; color: var(--ink); text-align: left; cursor: pointer;
+}
+.menu-row[data-v-2648c9b9]:hover { background: var(--line);
+}
+.menu-row > svg[data-v-2648c9b9] { color: var(--muted);
+}
+.menu-row > svg[data-v-2648c9b9]:last-child { color: #258a51;
+}
+.menu-row strong[data-v-2648c9b9], .menu-row small[data-v-2648c9b9] { display: block;
+}
+.menu-row strong[data-v-2648c9b9] { font-size: 11px;
+}
+.menu-row small[data-v-2648c9b9] { margin-top: 3px; color: var(--muted); font-size: 9px;
+}
+.menu-row.danger[data-v-2648c9b9], .menu-row.danger > svg[data-v-2648c9b9] { color: var(--danger);
+}
+.setting-row[data-v-2648c9b9] { display: grid; grid-template-columns: 60px 1fr; align-items: center; gap: 10px; padding: 5px 7px 10px; color: var(--muted); font-size: 10px;
+}
+.toggle-row[data-v-2648c9b9] { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 9px 8px; border-radius: 8px; cursor: pointer;
+}
+.toggle-row[data-v-2648c9b9]:hover { background: var(--line);
+}
+.toggle-row strong[data-v-2648c9b9], .toggle-row small[data-v-2648c9b9] { display: block;
+}
+.toggle-row strong[data-v-2648c9b9] { font-size: 10px;
+}
+.toggle-row small[data-v-2648c9b9] { margin-top: 3px; color: var(--muted); font-size: 9px;
+}
+.toggle-row input[data-v-2648c9b9] { accent-color: var(--accent);
+}
+.popover-separator[data-v-2648c9b9] { height: 1px; margin: 6px 4px; background: var(--line);
+}
+@media (max-width: 1040px) {
+.topbar[data-v-2648c9b9] { left: 222px; right: 246px;
+}
+}
+@media (max-width: 700px) {
+.topbar[data-v-2648c9b9] { left: 12px; right: 12px;
+}
+.topbar[data-v-2648c9b9] { grid-template-columns: minmax(0, 1fr) auto;
+}
+.history-actions[data-v-2648c9b9] { display: none;
+}
+.document-title[data-v-2648c9b9] { width: 100%;
+}
+.export-button[data-v-2648c9b9] span { display: none;
+}
+.export-button[data-v-2648c9b9] { width: 30px; padding: 0;
+}
+}
+</style><style type="text/css" data-vite-dev-id="/tmp/resumi-vue-reference-1gh313jw/src/Reference.vue?vue&amp;type=style&amp;index=0&amp;lang.css">.app-shell{position:relative;width:100%;height:100%;overflow:hidden;}</style><style type="text/css" data-vite-dev-id="/tmp/resumi-vue-reference-1gh313jw/src/styles/tokens.css">:root {
+  color-scheme: light;
+  --font-ui: "Areal Mono", "SFMono-Regular", "Cascadia Mono", monospace;
+  --bg: #e8e8e4;
+  --surface: rgba(252, 252, 249, 0.9);
+  --surface-solid: #f9f9f6;
+  --surface-raised: #ffffff;
+  --ink: #10100f;
+  --muted: #565651;
+  --faint: #70706a;
+  --line: rgba(16, 16, 15, 0.14);
+  --line-strong: rgba(16, 16, 15, 0.24);
+  --accent: #2958e8;
+  --accent-soft: rgba(41, 88, 232, 0.12);
+  --danger: #d83b3b;
+  --shadow-sm: 0 1px 2px rgba(20, 20, 18, 0.06), 0 5px 18px rgba(20, 20, 18, 0.04);
+  --shadow-lg: 0 2px 8px rgba(20, 20, 18, 0.06), 0 24px 80px rgba(20, 20, 18, 0.13);
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 18px;
+  --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --bg: #0e0e0d;
+  --surface: rgba(24, 24, 22, 0.9);
+  --surface-solid: #191918;
+  --surface-raised: #222220;
+  --ink: #f7f7f2;
+  --muted: #b9b9b1;
+  --faint: #8f8f87;
+  --line: rgba(255, 255, 250, 0.14);
+  --line-strong: rgba(255, 255, 250, 0.24);
+  --accent: #6d8cff;
+  --accent-soft: rgba(109, 140, 255, 0.14);
+  --danger: #ff6a6a;
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.2), 0 8px 24px rgba(0, 0, 0, 0.16);
+  --shadow-lg: 0 2px 8px rgba(0, 0, 0, 0.26), 0 32px 100px rgba(0, 0, 0, 0.5);
+}
+
+@font-face {
+  font-family: "Areal Mono";
+  src: url("/src/assets/fonts/Areal.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+</style><style type="text/css" data-vite-dev-id="/tmp/resumi-vue-reference-1gh313jw/src/styles/global.css">* { box-sizing: border-box; }
+
+html, body, #app { width: 100%; height: 100%; margin: 0; overflow: hidden; }
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-ui);
+  font-size: 13px;
+  font-variation-settings: "MONO" 100;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+button, input, select, textarea { font: inherit; }
+button { color: inherit; }
+button, [role='button'] { -webkit-tap-highlight-color: transparent; }
+
+::selection { background: var(--accent-soft); color: inherit; }
+
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-thumb { background: var(--line-strong); border: 3px solid transparent; background-clip: padding-box; border-radius: 999px; }
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.fade-enter-active, .fade-leave-active { transition: opacity 160ms var(--ease); }
+.fade-enter-from, .fade-leave-to { opacity: 0; }
+</style></head><body><div id="app" data-v-app=""><div class="app-shell"><header data-v-2648c9b9="" class="topbar"><div data-v-2648c9b9="" class="topbar-left"><div data-v-e80e6fdf="" data-v-2648c9b9="" class="popover-root"><button data-v-2648c9b9="" class="brand-mark" type="button" aria-label="Options" aria-expanded="false">F</button><!--teleport start--><!--teleport end--></div><input data-v-2648c9b9="" class="document-title" aria-label="Nom du projet" value="Alex Morgan — Resume" style=""></div><div data-v-2648c9b9="" class="history-actions"><button data-v-4d519345="" data-v-2648c9b9="" class="icon-button is-md" type="button" aria-label="Annuler" aria-pressed="false" title="Annuler" disabled=""><svg data-v-2648c9b9="" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-undo-2" aria-hidden="true"><path d="M9 14 4 9l5-5"></path><path d="M4 9h10.5a5.5 5.5 0 0 1 5.5 5.5a5.5 5.5 0 0 1-5.5 5.5H11"></path></svg></button><button data-v-4d519345="" data-v-2648c9b9="" class="icon-button is-md" type="button" aria-label="Rétablir" aria-pressed="false" title="Rétablir" disabled=""><svg data-v-2648c9b9="" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-redo-2" aria-hidden="true"><path d="m15 14 5-5-5-5"></path><path d="M20 9H9.5A5.5 5.5 0 0 0 4 14.5A5.5 5.5 0 0 0 9.5 20H13"></path></svg></button></div><div data-v-2648c9b9="" class="topbar-right"><div data-v-e80e6fdf="" data-v-2648c9b9="" class="popover-root"><button data-v-4d519345="" data-v-2648c9b9="" class="icon-button is-md" type="button" aria-label="Projets" aria-pressed="false" title="Projets"><svg data-v-2648c9b9="" xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-folder-open" aria-hidden="true"><path d="m6 14 1.5-2.9A2 2 0 0 1 9.24 10H20a2 2 0 0 1 1.94 2.5l-1.54 6a2 2 0 0 1-1.95 1.5H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H18a2 2 0 0 1 2 2v2"></path></svg></button><!--teleport start--><!--teleport end--></div><div data-v-e80e6fdf="" data-v-2648c9b9="" class="popover-root"><button data-v-b38ecb53="" data-v-2648c9b9="" class="ui-button is-secondary is-sm export-button" type="button"><svg data-v-2648c9b9="" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-download" aria-hidden="true"><path d="M12 15V3"></path><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><path d="m7 10 5 5 5-5"></path></svg><span data-v-b38ecb53="">Exporter</span></button><!--teleport start--><!--teleport end--></div></div></header><aside data-v-2470b392="" class="left-panel"><div data-v-2470b392="" class="panel-tabs"><button data-v-2470b392="" type="button" class="active"><svg data-v-2470b392="" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-layers lucide-layers-3" aria-hidden="true"><path d="M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83z"></path><path d="M2 12a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 12"></path><path d="M2 17a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 17"></path></svg> Calques</button><button data-v-2470b392="" type="button" class=""><svg data-v-2470b392="" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-languages" aria-hidden="true"><path d="m5 8 6 6"></path><path d="m4 14 6-6 2-3"></path><path d="M2 5h12"></path><path d="M7 2h1"></path><path d="m22 22-5-10-5 10"></path><path d="M14 18h6"></path></svg> Langues</button></div><div data-v-2470b392="" class="selection-appearance"><label data-v-36e02aab="" data-v-2470b392="" class="number-field has-leading" title="Opacité — glisser, Maj ×10, cliquer pour saisir"><span data-v-36e02aab="" class="scrubber"><svg data-v-2470b392="" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sun-medium" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 3v1"></path><path d="M12 20v1"></path><path d="M3 12h1"></path><path d="M20 12h1"></path><path d="m18.364 5.636-.707.707"></path><path d="m6.343 17.657-.707.707"></path><path d="m5.636 5.636.707.707"></path><path d="m17.657 17.657.707.707"></path></svg></span><input data-v-36e02aab="" type="text" inputmode="decimal" autocomplete="off" spellcheck="false" aria-label="Opacité" readonly="" value="100" style=""><!--v-if--></label><div data-v-e80e6fdf="" data-v-09743faf="" data-v-2470b392="" class="popover-root"><button data-v-09743faf="" class="select-trigger" type="button" role="combobox" aria-label="Mode de fusion" aria-expanded="false"><span data-v-09743faf="">Normal</span><svg data-v-09743faf="" xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></button><!--teleport start--><!--teleport end--></div></div><div data-v-2470b392="" class="section-label"><span data-v-2470b392="">Plan du document</span><span data-v-2470b392="">18</span></div><!--v-if--><div data-v-2470b392="" class="layer-list"><!--v-if--><button data-v-2470b392="" type="button" class="layer-row" draggable="true" aria-grabbed="false"><span data-v-2470b392="" class="layer-icon"><svg data-v-2470b392="" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-text-cursor-input" aria-hidden="true"><path d="M12 20h-1a2 2 0 0 1-2-2 2 2 0 0 1-2 2H6"></path><path d="M13 8h7a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-7"></path><path d="M5 16H4a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h1"></path><path d="M6 4h1a2 2 0 0 1 2 2 2 2 0 0 1 2-2h1"></path><path d="M9 6v12"></path></svg></span><span data-v-2470b392="" class="layer-name">Product strategy   /   User research   /   In</span><button data-v-4d519345="" data-v-2470b392="" class="icon-button is-sm" type="button" aria-label="Masquer" aria-pressed="false" title="Masquer"><svg data-v-2470b392="" xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye" aria-hidden="true"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"></path><circle cx="12" cy="12" r="3"></circle></svg></button><button data-v-4d519345="" data-v-2470b392="" class="icon-button is-sm" type="button" aria-label="Verrouiller" aria-pressed="false" title="Verrouiller"><svg data-v-2470b392="" xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-lock-open lucide-unlock" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 9.9-1"></path></svg></button></button><button data-v-2470b392="" type="button" class="layer-row" draggable="true" aria-grabbed="false"><span data-v-2470b392="" class="layer-icon"><svg data-v-2470b392="" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-text-cursor-input" aria-hidden="true"><path d="M12 20h-1a2 2 0 0 1-2-2 2 2 0 0 1-2 2H6"></path><path d="M13 8h7a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-7"></path><path d="M5 16H4a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h1"></path><path d="M6 4h1a2 2 0 0 1 2 2 2 2 0 0 1 2-2h1"></path><path d="M9 6v12"></path></svg></span><span data-v-2470b392="" class="layer-name">Selected skills</span><button data-v-4d519345="" data-v-2470b392="" class="icon-button is-sm" type="button" aria-label="Masquer" aria-pressed="false" title="Masquer"><svg data-v-2470b392="" xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye" aria-hidden="true"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"></path><circle cx="12" cy="12" r="3"></circle></svg></button><button data-v-4d519345="" data-v-2470b392="" class="icon-button is-sm" type="button" aria-label="Verrouiller" aria-pressed="false" title="Verrouiller"><svg data-v-2470b392="" xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-lock-open lucide-unlock" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 9.9-1"></path></svg></button></button><button data-v-2470b392="" type="button" class="layer-row" draggable="true" aria-grabbed="false"><span data-v-2470b392="" class="layer-icon"><svg data-v-2470b392="" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-text-cursor-input" aria-hidden="true"><path d="M12 20h-1a2 2 0 0 1-2-2 2 2 0 0 1-2 2H6"></path><path d="M13 8h7a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-7"></path><path d="M5 16H4a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h1"></path><path d="M6 4h1a2 2 0 0 1 2 2 2 2 0 0 1 2-2h1"></path><path d="M9 6v12"></path></svg></span><span data-v-2470b392="" class="layer-name">École des Gobelins  ·  2018 — 2020</span><button data-v-4d519345="" data-v-2470b392="" class="icon-button is-sm" type="button" aria-label="Masquer" aria-pressed="false" title="Masquer"><svg data-v-2470b392="" xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye" aria-hidden="true"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"></path><circle cx="12" cy="12" r="3"></circle></svg></button><button data-v-4d519345="" data-v-2470b392="" class="icon-button is-sm" type="button" aria-label="Verrouiller" aria-pressed="false" title="Verrouiller"><svg data-v-2470b392="" xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-lock-open lucide-unlock" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 9.9-1"></path></svg></button></button><button data-v-2470b392="" type="button" class="layer-row" draggable="true" aria-grabbed="false"><span data-v-2470b392="" class="layer-icon"><svg data-v-2470b392="" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-text-cursor-input" aria-hidden="true"><path d="M12 20h-1a2 2 0 0 1-2-2 2 2 0 0 1-2 2H6"></path><path d="M13 8h7a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-7"></path><path d="M5 16H4a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h1"></path><path d="M6 4h1a2 2 0 0 1 2 2 2 2 0 0 1 2-2h1"></path><path d="M9 6v12"></path></svg></span><span data-v-2470b392="" class="layer-name">MA, Interaction Design</span><button data-v-4d519345="" data-v-2470b392="" class="icon-button is-sm" type="button" aria-label="Masquer" aria-pressed="false" title="Masquer"><svg data-v-2470b392="" xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye" aria-hidden="true"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"></path><circle cx="12" cy="12" r="3"></circle></svg></button><button data-v-4d519345="" data-v-2470b392="" class="icon-button is-sm" type="button" aria-label="Verrouiller" aria-pressed="false" title="Verrouiller"><svg data-v-2470b392="" xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-lock-open lucide-unlock" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 9.9-1"></path></svg></button></button><button data-v-2470b392="" type="button" class="layer-row" draggable="true" aria-grabbed="false"><span data-v-2470b392="" class="layer-icon"><svg data-v-2470b392="" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-text-cursor-input" aria-hidden="true"><path d="M12 20h-1a2 2 0 0 1-2-2 2 2 0 0 1-2 2H6"></path><path d="M13 8h7a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-7"></path><path d="M5 16H4a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h1"></path><path d="M6 4h1a2 2 0 0 1 2 2 2 2 0 0 1 2-2h1"></path><path d="M9 6v12"></path></svg></span><span data-v-2470b392="" class="layer-name">Education</span><button data-v-4d519345="" data-v-2470b392="" class="icon-button is-sm" type="button" aria-label="Masquer" aria-pressed="false" title="Masquer"><svg data-v-2470b392="" xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye" aria-hidden="true"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"></path><circle cx="12" cy="12" r="3"></circle></svg></button><button data-v-4d519345="" data-v-2470b392="" class="icon-button is-sm" type="button" aria-label="Verrouiller" aria-pressed="false" title="Verrouiller"><svg data-v-2470b392="" xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-lock-open lucide-unlock" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 9.9-1"></path></svg></button></button><button data-v-2470b392="" type="button" class="layer-row" draggable="true" aria-grabbed="false"><span data-v-2470b392="" class="layer-icon"><svg data-v-2470b392="" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-text-cursor-input" aria-hidden="true"><path d="M12 20h-1a2 2 0 0 1-2-2 2 2 0 0 1-2 2H6"></path><path d="M13 8h7a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-7"></path><path d="M5 16H4a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h1"></path><path d="M6 4h1a2 2 0 0 1 2 2 2 2 0 0 1 2-2h1"></path><path d="M9 6v12"></path></svg></span><span data-v-2470b392="" class="layer-name">Shaped the onboarding experience from researc</span><button data-v-4d519345="" data-v-2470b392="" class="icon-button is-sm" type="button" aria-label="Masquer" aria-pressed="false" title="Masquer"><svg data-v-2470b392="" xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye" aria-hidden="true"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"></path><circle cx="12" cy="12" r="3"></circle></svg></button><button data-v-4d519345="" data-v-2470b392="" class="icon-button is-sm" type="button" aria-label="Verrouiller" aria-pressed="false" title="Verrouiller"><svg data-v-2470b392="" xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-lock-open lucide-unlock" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 9.9-1"></path></svg></button></button><button data-v-2470b392="" type="button" class="layer-row" draggable="true" aria-grabbed="false"><span data-v-2470b392="" class="layer-icon"><svg data-v-2470b392="" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-text-cursor-input" aria-hidden="true"><path d="M12 20h-1a2 2 0 0 1-2-2 2 2 0 0 1-2 2H6"></path><path d="M13 8h7a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-7"></path><path d="M5 16H4a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h1"></path><path d="M6 4h1a2 2 0 0 1 2 2 2 2 0 0 1 2-2h1"></path><path d="M9 6v12"></path></svg></span><span data-v-2470b392="" class="layer-name">2020 — 2022  /  Remote</span><button data-v-4d519345="" data-v-2470b392="" class="icon-button is-sm" type="button" aria-label="Masquer" aria-pressed="false" title="Masquer"><svg data-v-2470b392="" xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye" aria-hidden="true"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"></path><circle cx="12" cy="12" r="3"></circle></svg></button><button data-v-4d519345="" data-v-2470b392="" class="icon-button is-sm" type="button" aria-label="Verrouiller" aria-pressed="false" title="Verrouiller"><svg data-v-2470b392="" xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-lock-open lucide-unlock" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 9.9-1"></path></svg></button></button><button data-v-2470b392="" type="button" class="layer-row" draggable="true" aria-grabbed="false"><span data-v-2470b392="" class="layer-icon"><svg data-v-2470b392="" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-text-cursor-input" aria-hidden="true"><path d="M12 20h-1a2 2 0 0 1-2-2 2 2 0 0 1-2 2H6"></path><path d="M13 8h7a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-7"></path><path d="M5 16H4a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h1"></path><path d="M6 4h1a2 2 0 0 1 2 2 2 2 0 0 1 2-2h1"></path><path d="M9 6v12"></path></svg></span><span data-v-2470b392="" class="layer-name">Product Designer · Northstar</span><button data-v-4d519345="" data-v-2470b392="" class="icon-button is-sm" type="button" aria-label="Masquer" aria-pressed="false" title="Masquer"><svg data-v-2470b392="" xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye" aria-hidden="true"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"></path><circle cx="12" cy="12" r="3"></circle></svg></button><button data-v-4d519345="" data-v-2470b392="" class="icon-button is-sm" type="button" aria-label="Verrouiller" aria-pressed="false" title="Verrouiller"><svg data-v-2470b392="" xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-lock-open lucide-unlock" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 9.9-1"></path></svg></button></button><button data-v-2470b392="" type="button" class="layer-row" draggable="true" aria-grabbed="false"><span data-v-2470b392="" class="layer-icon"><svg data-v-2470b392="" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-text-cursor-input" aria-hidden="true"><path d="M12 20h-1a2 2 0 0 1-2-2 2 2 0 0 1-2 2H6"></path><path d="M13 8h7a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-7"></path><path d="M5 16H4a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h1"></path><path d="M6 4h1a2 2 0 0 1 2 2 2 2 0 0 1 2-2h1"></path><path d="M9 6v12"></path></svg></span><span data-v-2470b392="" class="layer-name">Built a design system with engineering that r</span><button data-v-4d519345="" data-v-2470b392="" class="icon-button is-sm" type="button" aria-label="Masquer" aria-pressed="false" title="Masquer"><svg data-v-2470b392="" xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye" aria-hidden="true"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"></path><circle cx="12" cy="12" r="3"></circle></svg></button><button data-v-4d519345="" data-v-2470b392="" class="icon-button is-sm" type="button" aria-label="Verrouiller" aria-pressed="false" title="Verrouiller"><svg data-v-2470b392="" xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-lock-open lucide-unlock" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 9.9-1"></path></svg></button></button><button data-v-2470b392="" type="button" class="layer-row" draggable="true" aria-grabbed="false"><span data-v-2470b392="" class="layer-icon"><svg data-v-2470b392="" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-text-cursor-input" aria-hidden="true"><path d="M12 20h-1a2 2 0 0 1-2-2 2 2 0 0 1-2 2H6"></path><path d="M13 8h7a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-7"></path><path d="M5 16H4a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h1"></path><path d="M6 4h1a2 2 0 0 1 2 2 2 2 0 0 1 2-2h1"></path><path d="M9 6v12"></path></svg></span><span data-v-2470b392="" class="layer-name">Led the redesign of a workspace used by 40,00</span><button data-v-4d519345="" data-v-2470b392="" class="icon-button is-sm" type="button" aria-label="Masquer" aria-pressed="false" title="Masquer"><svg data-v-2470b392="" xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye" aria-hidden="true"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"></path><circle cx="12" cy="12" r="3"></circle></svg></button><button data-v-4d519345="" data-v-2470b392="" class="icon-button is-sm" type="button" aria-label="Verrouiller" aria-pressed="false" title="Verrouiller"><svg data-v-2470b392="" xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-lock-open lucide-unlock" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 9.9-1"></path></svg></button></button><button data-v-2470b392="" type="button" class="layer-row" draggable="true" aria-grabbed="false"><span data-v-2470b392="" class="layer-icon"><svg data-v-2470b392="" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-text-cursor-input" aria-hidden="true"><path d="M12 20h-1a2 2 0 0 1-2-2 2 2 0 0 1-2 2H6"></path><path d="M13 8h7a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-7"></path><path d="M5 16H4a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h1"></path><path d="M6 4h1a2 2 0 0 1 2 2 2 2 0 0 1 2-2h1"></path><path d="M9 6v12"></path></svg></span><span data-v-2470b392="" class="layer-name">2022 — Present  /  Paris, France</span><button data-v-4d519345="" data-v-2470b392="" class="icon-button is-sm" type="button" aria-label="Masquer" aria-pressed="false" title="Masquer"><svg data-v-2470b392="" xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye" aria-hidden="true"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"></path><circle cx="12" cy="12" r="3"></circle></svg></button><button data-v-4d519345="" data-v-2470b392="" class="icon-button is-sm" type="button" aria-label="Verrouiller" aria-pressed="false" title="Verrouiller"><svg data-v-2470b392="" xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-lock-open lucide-unlock" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 9.9-1"></path></svg></button></button><button data-v-2470b392="" type="button" class="layer-row" draggable="true" aria-grabbed="false"><span data-v-2470b392="" class="layer-icon"><svg data-v-2470b392="" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-text-cursor-input" aria-hidden="true"><path d="M12 20h-1a2 2 0 0 1-2-2 2 2 0 0 1-2 2H6"></path><path d="M13 8h7a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-7"></path><path d="M5 16H4a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h1"></path><path d="M6 4h1a2 2 0 0 1 2 2 2 2 0 0 1 2-2h1"></path><path d="M9 6v12"></path></svg></span><span data-v-2470b392="" class="layer-name">Senior Product Designer · Forma</span><button data-v-4d519345="" data-v-2470b392="" class="icon-button is-sm" type="button" aria-label="Masquer" aria-pressed="false" title="Masquer"><svg data-v-2470b392="" xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye" aria-hidden="true"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"></path><circle cx="12" cy="12" r="3"></circle></svg></button><button data-v-4d519345="" data-v-2470b392="" class="icon-button is-sm" type="button" aria-label="Verrouiller" aria-pressed="false" title="Verrouiller"><svg data-v-2470b392="" xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-lock-open lucide-unlock" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 9.9-1"></path></svg></button></button><button data-v-2470b392="" type="button" class="layer-row" draggable="true" aria-grabbed="false"><span data-v-2470b392="" class="layer-icon"><svg data-v-2470b392="" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-text-cursor-input" aria-hidden="true"><path d="M12 20h-1a2 2 0 0 1-2-2 2 2 0 0 1-2 2H6"></path><path d="M13 8h7a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-7"></path><path d="M5 16H4a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h1"></path><path d="M6 4h1a2 2 0 0 1 2 2 2 2 0 0 1 2-2h1"></path><path d="M9 6v12"></path></svg></span><span data-v-2470b392="" class="layer-name">Experience</span><button data-v-4d519345="" data-v-2470b392="" class="icon-button is-sm" type="button" aria-label="Masquer" aria-pressed="false" title="Masquer"><svg data-v-2470b392="" xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye" aria-hidden="true"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"></path><circle cx="12" cy="12" r="3"></circle></svg></button><button data-v-4d519345="" data-v-2470b392="" class="icon-button is-sm" type="button" aria-label="Verrouiller" aria-pressed="false" title="Verrouiller"><svg data-v-2470b392="" xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-lock-open lucide-unlock" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 9.9-1"></path></svg></button></button><button data-v-2470b392="" type="button" class="layer-row" draggable="true" aria-grabbed="false"><span data-v-2470b392="" class="layer-icon"><svg data-v-2470b392="" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-text-cursor-input" aria-hidden="true"><path d="M12 20h-1a2 2 0 0 1-2-2 2 2 0 0 1-2 2H6"></path><path d="M13 8h7a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-7"></path><path d="M5 16H4a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h1"></path><path d="M6 4h1a2 2 0 0 1 2 2 2 2 0 0 1 2-2h1"></path><path d="M9 6v12"></path></svg></span><span data-v-2470b392="" class="layer-name">I turn complex problems into clear, thoughtfu</span><button data-v-4d519345="" data-v-2470b392="" class="icon-button is-sm" type="button" aria-label="Masquer" aria-pressed="false" title="Masquer"><svg data-v-2470b392="" xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye" aria-hidden="true"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"></path><circle cx="12" cy="12" r="3"></circle></svg></button><button data-v-4d519345="" data-v-2470b392="" class="icon-button is-sm" type="button" aria-label="Verrouiller" aria-pressed="false" title="Verrouiller"><svg data-v-2470b392="" xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-lock-open lucide-unlock" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 9.9-1"></path></svg></button></button><button data-v-2470b392="" type="button" class="layer-row" draggable="true" aria-grabbed="false"><span data-v-2470b392="" class="layer-icon"><svg data-v-2470b392="" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-text-cursor-input" aria-hidden="true"><path d="M12 20h-1a2 2 0 0 1-2-2 2 2 0 0 1-2 2H6"></path><path d="M13 8h7a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-7"></path><path d="M5 16H4a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h1"></path><path d="M6 4h1a2 2 0 0 1 2 2 2 2 0 0 1 2-2h1"></path><path d="M9 6v12"></path></svg></span><span data-v-2470b392="" class="layer-name">Profile</span><button data-v-4d519345="" data-v-2470b392="" class="icon-button is-sm" type="button" aria-label="Masquer" aria-pressed="false" title="Masquer"><svg data-v-2470b392="" xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye" aria-hidden="true"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"></path><circle cx="12" cy="12" r="3"></circle></svg></button><button data-v-4d519345="" data-v-2470b392="" class="icon-button is-sm" type="button" aria-label="Verrouiller" aria-pressed="false" title="Verrouiller"><svg data-v-2470b392="" xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-lock-open lucide-unlock" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 9.9-1"></path></svg></button></button><button data-v-2470b392="" type="button" class="layer-row" draggable="true" aria-grabbed="false"><span data-v-2470b392="" class="layer-icon"><svg data-v-2470b392="" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-text-cursor-input" aria-hidden="true"><path d="M12 20h-1a2 2 0 0 1-2-2 2 2 0 0 1-2 2H6"></path><path d="M13 8h7a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-7"></path><path d="M5 16H4a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h1"></path><path d="M6 4h1a2 2 0 0 1 2 2 2 2 0 0 1 2-2h1"></path><path d="M9 6v12"></path></svg></span><span data-v-2470b392="" class="layer-name">Paris, France   ·   alex@example.com   ·   al</span><button data-v-4d519345="" data-v-2470b392="" class="icon-button is-sm" type="button" aria-label="Masquer" aria-pressed="false" title="Masquer"><svg data-v-2470b392="" xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye" aria-hidden="true"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"></path><circle cx="12" cy="12" r="3"></circle></svg></button><button data-v-4d519345="" data-v-2470b392="" class="icon-button is-sm" type="button" aria-label="Verrouiller" aria-pressed="false" title="Verrouiller"><svg data-v-2470b392="" xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-lock-open lucide-unlock" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 9.9-1"></path></svg></button></button><button data-v-2470b392="" type="button" class="layer-row" draggable="true" aria-grabbed="false"><span data-v-2470b392="" class="layer-icon"><svg data-v-2470b392="" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-text-cursor-input" aria-hidden="true"><path d="M12 20h-1a2 2 0 0 1-2-2 2 2 0 0 1-2 2H6"></path><path d="M13 8h7a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-7"></path><path d="M5 16H4a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h1"></path><path d="M6 4h1a2 2 0 0 1 2 2 2 2 0 0 1 2-2h1"></path><path d="M9 6v12"></path></svg></span><span data-v-2470b392="" class="layer-name">Product Designer</span><button data-v-4d519345="" data-v-2470b392="" class="icon-button is-sm" type="button" aria-label="Masquer" aria-pressed="false" title="Masquer"><svg data-v-2470b392="" xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye" aria-hidden="true"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"></path><circle cx="12" cy="12" r="3"></circle></svg></button><button data-v-4d519345="" data-v-2470b392="" class="icon-button is-sm" type="button" aria-label="Verrouiller" aria-pressed="false" title="Verrouiller"><svg data-v-2470b392="" xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-lock-open lucide-unlock" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 9.9-1"></path></svg></button></button><button data-v-2470b392="" type="button" class="layer-row active" draggable="true" aria-grabbed="false"><span data-v-2470b392="" class="layer-icon"><svg data-v-2470b392="" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-text-cursor-input" aria-hidden="true"><path d="M12 20h-1a2 2 0 0 1-2-2 2 2 0 0 1-2 2H6"></path><path d="M13 8h7a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-7"></path><path d="M5 16H4a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h1"></path><path d="M6 4h1a2 2 0 0 1 2 2 2 2 0 0 1 2-2h1"></path><path d="M9 6v12"></path></svg></span><span data-v-2470b392="" class="layer-name">Name</span><button data-v-4d519345="" data-v-2470b392="" class="icon-button is-sm" type="button" aria-label="Masquer" aria-pressed="false" title="Masquer"><svg data-v-2470b392="" xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye" aria-hidden="true"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"></path><circle cx="12" cy="12" r="3"></circle></svg></button><button data-v-4d519345="" data-v-2470b392="" class="icon-button is-sm" type="button" aria-label="Verrouiller" aria-pressed="false" title="Verrouiller"><svg data-v-2470b392="" xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-lock-open lucide-unlock" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 9.9-1"></path></svg></button></button><!--v-if--></div><!--v-if--></aside><main data-v-7333804d="" class="canvas-viewport" aria-label="Zone de travail"><div data-v-7333804d="" class="canvas-center"><div data-v-7333804d="" class="canvas-shell" style="width: 794px; height: 1123px; zoom: 0.744435; transform: none; will-change: auto; backface-visibility: visible; --canvas-zoom: 0.7444345503116652;"><div data-v-7333804d="" class="canvas-page" style="width: 794px; height: 1123px; background: rgb(255, 255, 255);"><div data-v-70252e46="" data-v-7333804d="" class="canvas-element is-text selected primary" data-element-id="identity-0" style="left: 64px; top: 62px; width: 666px; height: 48px; opacity: 1; mix-blend-mode: normal; transform: rotate(0deg);"><div data-v-70252e46="" class="text-content" contenteditable="false" spellcheck="false" style="font-family: Arial, sans-serif; font-size: 38px; font-weight: 650; font-style: normal; line-height: 1.15; letter-spacing: -1.3px; text-align: left; color: rgb(32, 37, 45);"><span data-v-5d79846a="">Alex Morgan</span></div><!--v-if--><button data-v-70252e46="" type="button" class="resize-handle handle-nw" aria-label="Redimensionner nw"></button><button data-v-70252e46="" type="button" class="resize-handle handle-n" aria-label="Redimensionner n"></button><button data-v-70252e46="" type="button" class="resize-handle handle-ne" aria-label="Redimensionner ne"></button><button data-v-70252e46="" type="button" class="resize-handle handle-e" aria-label="Redimensionner e"></button><button data-v-70252e46="" type="button" class="resize-handle handle-se" aria-label="Redimensionner se"></button><button data-v-70252e46="" type="button" class="resize-handle handle-s" aria-label="Redimensionner s"></button><button data-v-70252e46="" type="button" class="resize-handle handle-sw" aria-label="Redimensionner sw"></button><button data-v-70252e46="" type="button" class="resize-handle handle-w" aria-label="Redimensionner w"></button><!--v-if--><span data-v-70252e46="" class="size-label">666 × 48</span></div><div data-v-70252e46="" data-v-7333804d="" class="canvas-element is-text" data-element-id="identity-1" style="left: 64px; top: 117px; width: 666px; height: 24.75px; opacity: 1; mix-blend-mode: normal; transform: rotate(0deg);"><div data-v-70252e46="" class="text-content" contenteditable="false" spellcheck="false" style="font-family: Arial, sans-serif; font-size: 15px; font-weight: 650; font-style: normal; line-height: 1.65; letter-spacing: 0px; text-align: left; color: rgb(37, 99, 235);"><span data-v-5d79846a="">Product Designer</span></div><!--v-if--><!--v-if--><!--v-if--><!--v-if--></div><div data-v-70252e46="" data-v-7333804d="" class="canvas-element is-text" data-element-id="identity-2" style="left: 64px; top: 148.75px; width: 666px; height: 20px; opacity: 1; mix-blend-mode: normal; transform: rotate(0deg);"><div data-v-70252e46="" class="text-content" contenteditable="false" spellcheck="false" style="font-family: Arial, sans-serif; font-size: 10.44px; font-weight: 400; font-style: normal; line-height: 1.65; letter-spacing: 0px; text-align: left; color: rgb(96, 106, 121);"><span data-v-5d79846a="">Paris, France   ·   alex@example.com   ·   alexmorgan.design</span></div><!--v-if--><!--v-if--><!--v-if--><!--v-if--></div><div data-v-70252e46="" data-v-7333804d="" class="canvas-element is-text" data-element-id="profile-label" style="left: 64px; top: 199.75px; width: 666px; height: 22px; opacity: 1; mix-blend-mode: normal; transform: rotate(0deg);"><div data-v-70252e46="" class="text-content" contenteditable="false" spellcheck="false" style="font-family: Arial, sans-serif; font-size: 10px; font-weight: 700; font-style: normal; line-height: 1.25; letter-spacing: 1.8px; text-align: left; color: rgb(37, 99, 235); text-transform: uppercase;"><span data-v-5d79846a="">Profile</span></div><!--v-if--><!--v-if--><!--v-if--><!--v-if--></div><div data-v-70252e46="" data-v-7333804d="" class="canvas-element is-text" data-element-id="profile-0" style="left: 64px; top: 234.75px; width: 666px; height: 39.6px; opacity: 1; mix-blend-mode: normal; transform: rotate(0deg);"><div data-v-70252e46="" class="text-content" contenteditable="false" spellcheck="false" style="font-family: Arial, sans-serif; font-size: 12px; font-weight: 400; font-style: normal; line-height: 1.65; letter-spacing: 0px; text-align: left; color: rgb(32, 37, 45);"><span data-v-5d79846a="">I turn complex problems into clear, thoughtful digital experiences. A product designer with 6 years of experience bringing people, strategy, and craft together.</span></div><!--v-if--><!--v-if--><!--v-if--><!--v-if--></div><div data-v-70252e46="" data-v-7333804d="" class="canvas-element is-text" data-element-id="experience-label" style="left: 64px; top: 305.35px; width: 666px; height: 22px; opacity: 1; mix-blend-mode: normal; transform: rotate(0deg);"><div data-v-70252e46="" class="text-content" contenteditable="false" spellcheck="false" style="font-family: Arial, sans-serif; font-size: 10px; font-weight: 700; font-style: normal; line-height: 1.25; letter-spacing: 1.8px; text-align: left; color: rgb(37, 99, 235); text-transform: uppercase;"><span data-v-5d79846a="">Experience</span></div><!--v-if--><!--v-if--><!--v-if--><!--v-if--></div><div data-v-70252e46="" data-v-7333804d="" class="canvas-element is-text" data-element-id="experience-0" style="left: 64px; top: 340.35px; width: 666px; height: 21.78px; opacity: 1; mix-blend-mode: normal; transform: rotate(0deg);"><div data-v-70252e46="" class="text-content" contenteditable="false" spellcheck="false" style="font-family: Arial, sans-serif; font-size: 13.2px; font-weight: 650; font-style: normal; line-height: 1.65; letter-spacing: 0px; text-align: left; color: rgb(32, 37, 45);"><span data-v-5d79846a="">Senior Product Designer · Forma</span></div><!--v-if--><!--v-if--><!--v-if--><!--v-if--></div><div data-v-70252e46="" data-v-7333804d="" class="canvas-element is-text" data-element-id="experience-1" style="left: 64px; top: 369.13px; width: 666px; height: 20px; opacity: 1; mix-blend-mode: normal; transform: rotate(0deg);"><div data-v-70252e46="" class="text-content" contenteditable="false" spellcheck="false" style="font-family: Arial, sans-serif; font-size: 10.44px; font-weight: 400; font-style: normal; line-height: 1.65; letter-spacing: 0px; text-align: left; color: rgb(96, 106, 121);"><span data-v-5d79846a="">2022 — Present  /  Paris, France</span></div><!--v-if--><!--v-if--><!--v-if--><!--v-if--></div><div data-v-70252e46="" data-v-7333804d="" class="canvas-element is-text" data-element-id="experience-2" style="left: 64px; top: 396.13px; width: 666px; height: 20px; opacity: 1; mix-blend-mode: normal; transform: rotate(0deg);"><div data-v-70252e46="" class="text-content" contenteditable="false" spellcheck="false" style="font-family: Arial, sans-serif; font-size: 12px; font-weight: 400; font-style: normal; line-height: 1.65; letter-spacing: 0px; text-align: left; color: rgb(32, 37, 45);"><span data-v-5d79846a="">Led the redesign of a workspace used by 40,000 teams, making everyday work simpler and more focused.</span></div><!--v-if--><!--v-if--><!--v-if--><!--v-if--></div><div data-v-70252e46="" data-v-7333804d="" class="canvas-element is-text" data-element-id="experience-3" style="left: 64px; top: 423.13px; width: 666px; height: 20px; opacity: 1; mix-blend-mode: normal; transform: rotate(0deg);"><div data-v-70252e46="" class="text-content" contenteditable="false" spellcheck="false" style="font-family: Arial, sans-serif; font-size: 12px; font-weight: 400; font-style: normal; line-height: 1.65; letter-spacing: 0px; text-align: left; color: rgb(32, 37, 45);"><span data-v-5d79846a="">Built a design system with engineering that reduced delivery time by 30%.</span></div><!--v-if--><!--v-if--><!--v-if--><!--v-if--></div><div data-v-70252e46="" data-v-7333804d="" class="canvas-element is-text" data-element-id="experience-4" style="left: 64px; top: 450.13px; width: 666px; height: 21.78px; opacity: 1; mix-blend-mode: normal; transform: rotate(0deg);"><div data-v-70252e46="" class="text-content" contenteditable="false" spellcheck="false" style="font-family: Arial, sans-serif; font-size: 13.2px; font-weight: 650; font-style: normal; line-height: 1.65; letter-spacing: 0px; text-align: left; color: rgb(32, 37, 45);"><span data-v-5d79846a="">Product Designer · Northstar</span></div><!--v-if--><!--v-if--><!--v-if--><!--v-if--></div><div data-v-70252e46="" data-v-7333804d="" class="canvas-element is-text" data-element-id="experience-5" style="left: 64px; top: 478.91px; width: 666px; height: 20px; opacity: 1; mix-blend-mode: normal; transform: rotate(0deg);"><div data-v-70252e46="" class="text-content" contenteditable="false" spellcheck="false" style="font-family: Arial, sans-serif; font-size: 10.44px; font-weight: 400; font-style: normal; line-height: 1.65; letter-spacing: 0px; text-align: left; color: rgb(96, 106, 121);"><span data-v-5d79846a="">2020 — 2022  /  Remote</span></div><!--v-if--><!--v-if--><!--v-if--><!--v-if--></div><div data-v-70252e46="" data-v-7333804d="" class="canvas-element is-text" data-element-id="experience-6" style="left: 64px; top: 505.91px; width: 666px; height: 20px; opacity: 1; mix-blend-mode: normal; transform: rotate(0deg);"><div data-v-70252e46="" class="text-content" contenteditable="false" spellcheck="false" style="font-family: Arial, sans-serif; font-size: 12px; font-weight: 400; font-style: normal; line-height: 1.65; letter-spacing: 0px; text-align: left; color: rgb(32, 37, 45);"><span data-v-5d79846a="">Shaped the onboarding experience from research to release, improving activation by 24%.</span></div><!--v-if--><!--v-if--><!--v-if--><!--v-if--></div><div data-v-70252e46="" data-v-7333804d="" class="canvas-element is-text" data-element-id="education-label" style="left: 64px; top: 556.91px; width: 666px; height: 22px; opacity: 1; mix-blend-mode: normal; transform: rotate(0deg);"><div data-v-70252e46="" class="text-content" contenteditable="false" spellcheck="false" style="font-family: Arial, sans-serif; font-size: 10px; font-weight: 700; font-style: normal; line-height: 1.25; letter-spacing: 1.8px; text-align: left; color: rgb(37, 99, 235); text-transform: uppercase;"><span data-v-5d79846a="">Education</span></div><!--v-if--><!--v-if--><!--v-if--><!--v-if--></div><div data-v-70252e46="" data-v-7333804d="" class="canvas-element is-text" data-element-id="education-0" style="left: 64px; top: 591.91px; width: 666px; height: 21.78px; opacity: 1; mix-blend-mode: normal; transform: rotate(0deg);"><div data-v-70252e46="" class="text-content" contenteditable="false" spellcheck="false" style="font-family: Arial, sans-serif; font-size: 13.2px; font-weight: 650; font-style: normal; line-height: 1.65; letter-spacing: 0px; text-align: left; color: rgb(32, 37, 45);"><span data-v-5d79846a="">MA, Interaction Design</span></div><!--v-if--><!--v-if--><!--v-if--><!--v-if--></div><div data-v-70252e46="" data-v-7333804d="" class="canvas-element is-text" data-element-id="education-1" style="left: 64px; top: 620.69px; width: 666px; height: 20px; opacity: 1; mix-blend-mode: normal; transform: rotate(0deg);"><div data-v-70252e46="" class="text-content" contenteditable="false" spellcheck="false" style="font-family: Arial, sans-serif; font-size: 10.44px; font-weight: 400; font-style: normal; line-height: 1.65; letter-spacing: 0px; text-align: left; color: rgb(96, 106, 121);"><span data-v-5d79846a="">École des Gobelins  ·  2018 — 2020</span></div><!--v-if--><!--v-if--><!--v-if--><!--v-if--></div><div data-v-70252e46="" data-v-7333804d="" class="canvas-element is-text" data-element-id="skills-label" style="left: 64px; top: 671.69px; width: 666px; height: 22px; opacity: 1; mix-blend-mode: normal; transform: rotate(0deg);"><div data-v-70252e46="" class="text-content" contenteditable="false" spellcheck="false" style="font-family: Arial, sans-serif; font-size: 10px; font-weight: 700; font-style: normal; line-height: 1.25; letter-spacing: 1.8px; text-align: left; color: rgb(37, 99, 235); text-transform: uppercase;"><span data-v-5d79846a="">Selected skills</span></div><!--v-if--><!--v-if--><!--v-if--><!--v-if--></div><div data-v-70252e46="" data-v-7333804d="" class="canvas-element is-text" data-element-id="skills-0" style="left: 64px; top: 706.69px; width: 666px; height: 39.6px; opacity: 1; mix-blend-mode: normal; transform: rotate(0deg);"><div data-v-70252e46="" class="text-content" contenteditable="false" spellcheck="false" style="font-family: Arial, sans-serif; font-size: 12px; font-weight: 400; font-style: normal; line-height: 1.65; letter-spacing: 0px; text-align: left; color: rgb(32, 37, 45);"><span data-v-5d79846a="">Product strategy   /   User research   /   Interaction design
+Design systems   /   Prototyping   /   Figma   /   HTML &amp; CSS</span></div><!--v-if--><!--v-if--><!--v-if--><!--v-if--></div><!--v-if--><!--v-if--><!--v-if--><div data-v-7333804d="" class="guide guide-x"></div><div data-v-7333804d="" class="guide guide-y"></div></div></div></div><div data-v-7333804d="" class="bottom-dock"><div data-v-7333804d="" class="dock-group tools"><button data-v-4d519345="" data-v-7333804d="" class="icon-button is-md active" type="button" aria-label="Sélection (V)" aria-pressed="true" title="Sélection (V)"><svg data-v-7333804d="" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-mouse-pointer-2" aria-hidden="true"><path d="M4.037 4.688a.495.495 0 0 1 .651-.651l16 6.5a.5.5 0 0 1-.063.947l-6.124 1.58a2 2 0 0 0-1.438 1.435l-1.579 6.126a.5.5 0 0 1-.947.063z"></path></svg></button><button data-v-4d519345="" data-v-7333804d="" class="icon-button is-md" type="button" aria-label="Texte (T)" aria-pressed="false" title="Texte (T)"><svg data-v-7333804d="" xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-type" aria-hidden="true"><path d="M12 4v16"></path><path d="M4 7V5a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v2"></path><path d="M9 20h6"></path></svg></button><button data-v-4d519345="" data-v-7333804d="" class="icon-button is-md" type="button" aria-label="Image" aria-pressed="false" title="Image"><svg data-v-7333804d="" xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-image-plus" aria-hidden="true"><path d="M16 5h6"></path><path d="M19 2v6"></path><path d="M21 11.5V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7.5"></path><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"></path><circle cx="9" cy="9" r="2"></circle></svg></button><div data-v-e80e6fdf="" data-v-da666a1c="" data-v-7333804d="" class="popover-root shape-picker"><button data-v-da666a1c="" type="button" class="shape-trigger compact" aria-label="Forme : Rectangle" aria-expanded="false"><svg data-v-da666a1c="" viewBox="0 0 100 100" aria-hidden="true"><path data-v-da666a1c="" d="M0 0H100V100H0Z" fill="currentColor" stroke="none" stroke-width="0" stroke-linecap="round" stroke-linejoin="round"></path></svg><!--v-if--><!--v-if--></button><!--teleport start--><!--teleport end--></div><div data-v-e80e6fdf="" data-v-b47a5ef3="" data-v-7333804d="" class="popover-root icon-picker"><button data-v-b47a5ef3="" type="button" class="icon-trigger compact" aria-label="Icône : Rectangle" aria-expanded="false"><svg data-v-b47a5ef3="" xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-shapes" aria-hidden="true"><path d="M8.3 10a.7.7 0 0 1-.626-1.079L11.4 3a.7.7 0 0 1 1.198-.043L16.3 8.9a.7.7 0 0 1-.572 1.1Z"></path><rect x="3" y="14" width="7" height="7" rx="1"></rect><circle cx="17.5" cy="17.5" r="3.5"></circle></svg><!--v-if--></button><!--teleport start--><!--teleport end--></div><input data-v-7333804d="" class="sr-only" type="file" accept="image/png,image/jpeg,image/webp" style=""></div><span data-v-7333804d="" class="dock-separator"></span><div data-v-7333804d="" class="dock-group mode-switch"><button data-v-7333804d="" type="button" class="active"><svg data-v-7333804d="" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-layout-template" aria-hidden="true"><rect width="18" height="7" x="3" y="3" rx="1"></rect><rect width="9" height="7" x="3" y="14" rx="1"></rect><rect width="5" height="7" x="16" y="14" rx="1"></rect></svg>Layout</button><button data-v-7333804d="" type="button" class=""><svg data-v-7333804d="" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-pen-line lucide-file-signature" aria-hidden="true"><path d="M14.364 13.634a2 2 0 0 0-.506.854l-.837 2.87a.5.5 0 0 0 .62.62l2.87-.837a2 2 0 0 0 .854-.506l4.013-4.009a1 1 0 0 0-3.004-3.004z"></path><path d="M14.487 7.858A1 1 0 0 1 14 7V2"></path><path d="M20 19.645V20a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l2.516 2.516"></path><path d="M8 18h1"></path></svg>Texte</button></div><span data-v-7333804d="" class="dock-separator"></span><div data-v-7333804d="" class="dock-group zoom-group"><label data-v-36e02aab="" data-v-7333804d="" class="number-field" title="Zoom — glisser, Maj ×10, cliquer pour saisir"><!--v-if--><input data-v-36e02aab="" type="text" inputmode="decimal" autocomplete="off" spellcheck="false" aria-label="Zoom" readonly="" value="74" style=""><span data-v-36e02aab="" class="suffix">%</span></label></div></div></main><aside data-v-143222dc="" class="inspector"><header data-v-143222dc=""><div data-v-143222dc=""><span data-v-143222dc="">Name</span><small data-v-143222dc="">text</small></div><div data-v-143222dc="" class="layer-actions"><button data-v-4d519345="" data-v-143222dc="" class="icon-button is-sm" type="button" aria-label="Reculer" aria-pressed="false" title="Reculer"><svg data-v-143222dc="" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></button><button data-v-4d519345="" data-v-143222dc="" class="icon-button is-sm" type="button" aria-label="Avancer" aria-pressed="false" title="Avancer"><svg data-v-143222dc="" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-up" aria-hidden="true"><path d="m18 15-6-6-6 6"></path></svg></button><button data-v-4d519345="" data-v-143222dc="" class="icon-button is-sm" type="button" aria-label="Masquer" aria-pressed="false" title="Masquer"><svg data-v-143222dc="" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye" aria-hidden="true"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"></path><circle cx="12" cy="12" r="3"></circle></svg></button><button data-v-4d519345="" data-v-143222dc="" class="icon-button is-sm" type="button" aria-label="Verrouiller" aria-pressed="false" title="Verrouiller"><svg data-v-143222dc="" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-lock-open lucide-unlock" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 9.9-1"></path></svg></button></div></header><section data-v-143222dc=""><h3 data-v-143222dc="">Cadre</h3><div data-v-143222dc="" class="quad-grid"><div data-v-143222dc="" class="frame-field"><span data-v-143222dc="">X</span><label data-v-36e02aab="" data-v-143222dc="" class="number-field" title="Position X — glisser, Maj ×10, cliquer pour saisir"><!--v-if--><input data-v-36e02aab="" type="text" inputmode="decimal" autocomplete="off" spellcheck="false" aria-label="Position X" readonly="" value="64" style=""><!--v-if--></label></div><div data-v-143222dc="" class="frame-field"><span data-v-143222dc="">Y</span><label data-v-36e02aab="" data-v-143222dc="" class="number-field" title="Position Y — glisser, Maj ×10, cliquer pour saisir"><!--v-if--><input data-v-36e02aab="" type="text" inputmode="decimal" autocomplete="off" spellcheck="false" aria-label="Position Y" readonly="" value="62" style=""><!--v-if--></label></div><div data-v-143222dc="" class="frame-field"><span data-v-143222dc="">L</span><label data-v-36e02aab="" data-v-143222dc="" class="number-field" title="Largeur — glisser, Maj ×10, cliquer pour saisir"><!--v-if--><input data-v-36e02aab="" type="text" inputmode="decimal" autocomplete="off" spellcheck="false" aria-label="Largeur" readonly="" value="666" style=""><!--v-if--></label></div><div data-v-143222dc="" class="frame-field"><span data-v-143222dc="">H</span><label data-v-36e02aab="" data-v-143222dc="" class="number-field" title="Hauteur — glisser, Maj ×10, cliquer pour saisir"><!--v-if--><input data-v-36e02aab="" type="text" inputmode="decimal" autocomplete="off" spellcheck="false" aria-label="Hauteur" readonly="" value="48" style=""><!--v-if--></label></div></div><div data-v-143222dc="" class="inline-field"><span data-v-143222dc="">Proportions</span><button data-v-4d519345="" data-v-143222dc="" class="icon-button is-sm" type="button" aria-label="Conserver les proportions" aria-pressed="false" title="Conserver les proportions"><svg data-v-143222dc="" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-link-2-off" aria-hidden="true"><path d="M9 17H7A5 5 0 0 1 7 7"></path><path d="M15 7h2a5 5 0 0 1 4 8"></path><line x1="8" x2="12" y1="12" y2="12"></line><line x1="2" x2="22" y1="2" y2="22"></line></svg></button></div><div data-v-143222dc="" class="field row"><label data-v-143222dc="">Rotation</label><label data-v-36e02aab="" data-v-143222dc="" class="number-field" title="Rotation — glisser, Maj ×10, cliquer pour saisir"><!--v-if--><input data-v-36e02aab="" type="text" inputmode="decimal" autocomplete="off" spellcheck="false" aria-label="Rotation" readonly="" value="0" style=""><!--v-if--></label></div></section><section data-v-143222dc=""><h3 data-v-143222dc="">Typographie</h3><div data-v-e80e6fdf="" data-v-d3746983="" data-v-143222dc="" class="popover-root"><button data-v-d3746983="" class="font-trigger" type="button" role="combobox" aria-label="Police" aria-expanded="false"><span data-v-d3746983="" style="font-family: Arial, sans-serif;">Arial</span><svg data-v-d3746983="" xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></button><!--teleport start--><!--teleport end--></div><div data-v-143222dc="" class="font-basics"><div data-v-143222dc=""><span data-v-143222dc="">Taille</span><label data-v-36e02aab="" data-v-143222dc="" class="number-field" title="Taille — glisser, Maj ×10, cliquer pour saisir"><!--v-if--><input data-v-36e02aab="" type="text" inputmode="decimal" autocomplete="off" spellcheck="false" aria-label="Taille" readonly="" value="38" style=""><!--v-if--></label></div><div data-v-143222dc=""><span data-v-143222dc="">Graisse</span><div data-v-e80e6fdf="" data-v-09743faf="" data-v-143222dc="" class="popover-root"><button data-v-09743faf="" class="select-trigger" type="button" role="combobox" aria-label="Graisse" aria-expanded="false"><span data-v-09743faf="">Fort · 650</span><svg data-v-09743faf="" xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></button><!--teleport start--><!--teleport end--></div></div></div><div data-v-143222dc="" class="type-toolbar"><button data-v-4d519345="" data-v-143222dc="" class="icon-button is-md active" type="button" aria-label="Gras" aria-pressed="true" title="Gras"><svg data-v-143222dc="" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-bold" aria-hidden="true"><path d="M6 12h9a4 4 0 0 1 0 8H7a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h7a4 4 0 0 1 0 8"></path></svg></button><button data-v-4d519345="" data-v-143222dc="" class="icon-button is-md" type="button" aria-label="Italique" aria-pressed="false" title="Italique"><svg data-v-143222dc="" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-italic" aria-hidden="true"><line x1="19" x2="10" y1="4" y2="4"></line><line x1="14" x2="5" y1="20" y2="20"></line><line x1="15" x2="9" y1="4" y2="20"></line></svg></button><button data-v-4d519345="" data-v-143222dc="" class="icon-button is-md" type="button" aria-label="Souligné" aria-pressed="false" title="Souligné"><svg data-v-143222dc="" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-underline" aria-hidden="true"><path d="M6 4v6a6 6 0 0 0 12 0V4"></path><line x1="4" x2="20" y1="20" y2="20"></line></svg></button><button data-v-4d519345="" data-v-143222dc="" class="icon-button is-md" type="button" aria-label="Barré" aria-pressed="false" title="Barré"><svg data-v-143222dc="" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-strikethrough" aria-hidden="true"><path d="M16 4H9a3 3 0 0 0-2.83 4"></path><path d="M14 12a4 4 0 0 1 0 8H6"></path><line x1="4" x2="20" y1="12" y2="12"></line></svg></button><div data-v-e80e6fdf="" data-v-143222dc="" class="popover-root"><button data-v-4d519345="" data-v-143222dc="" class="icon-button is-md" type="button" aria-label="Ajouter ou modifier un lien" aria-pressed="false" title="Ajouter ou modifier un lien"><svg data-v-143222dc="" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-link-2" aria-hidden="true"><path d="M9 17H7A5 5 0 0 1 7 7h2"></path><path d="M15 7h2a5 5 0 1 1 0 10h-2"></path><line x1="8" x2="16" y1="12" y2="12"></line></svg></button><!--teleport start--><!--teleport end--></div><span data-v-143222dc=""></span><div data-v-e80e6fdf="" data-v-143222dc="" class="popover-root"><button data-v-4d519345="" data-v-143222dc="" class="icon-button is-md" type="button" aria-label="Réglages typographiques" aria-pressed="false" title="Réglages typographiques"><svg data-v-143222dc="" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sliders-horizontal" aria-hidden="true"><path d="M10 5H3"></path><path d="M12 19H3"></path><path d="M14 3v4"></path><path d="M16 17v4"></path><path d="M21 12h-9"></path><path d="M21 19h-5"></path><path d="M21 5h-7"></path><path d="M8 10v4"></path><path d="M8 12H3"></path></svg></button><!--teleport start--><!--teleport end--></div></div><div data-v-143222dc="" class="field row"><label data-v-143222dc="">Couleur</label><div data-v-e80e6fdf="" data-v-269e2e0e="" data-v-143222dc="" class="popover-root"><button data-v-269e2e0e="" class="color-field" type="button" aria-label="Couleur du texte" aria-expanded="false"><span data-v-269e2e0e="" class="checker"><i data-v-269e2e0e="" style="background: rgb(32, 37, 45); opacity: 1;"></i></span></button><!--teleport start--><!--teleport end--></div></div></section><section data-v-143222dc=""><h3 data-v-143222dc="">Contenu &amp; i18n</h3><label data-v-143222dc="" class="stacked-label text-editor-field"><span data-v-143222dc="">Texte</span><div data-v-5c819b9c="" data-v-143222dc="" class="rich-text-editor inspector-rich-editor" contenteditable="true" role="textbox" aria-multiline="true" data-placeholder="" spellcheck="true" style="font-family: Arial, sans-serif; font-size: 38px; font-weight: 650; font-style: normal; color: rgb(32, 37, 45); line-height: 1.15;"><span data-v-5d79846a="">Alex Morgan</span></div></label><label data-v-143222dc="" class="stacked-label"><span data-v-143222dc="">Clé de traduction</span><input data-v-3f668ade="" data-v-143222dc="" class="ui-input" type="text" placeholder="ex. experience.title" value="" style=""></label></section><section data-v-143222dc="" class="contrast-section"><div data-v-143222dc="" class="contrast-head"><h3 data-v-143222dc="">Contraste</h3><span data-v-143222dc="" class="contrast-grade grade-aaa"><svg data-v-143222dc="" xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-shield-check" aria-hidden="true"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"></path><path d="m9 12 2 2 4-4"></path></svg> AAA</span></div><div data-v-143222dc="" class="contrast-score"><strong data-v-143222dc="">15.40</strong><span data-v-143222dc="">: 1</span></div><div data-v-143222dc="" class="contrast-meter"><i data-v-143222dc="" style="width: 73.3173%;"></i></div><div data-v-143222dc="" class="swatches"><span data-v-143222dc="" title="#20252d" style="background: rgb(32, 37, 45);"></span><span data-v-143222dc="" title="#ffffff" style="background: rgb(255, 255, 255);"></span><small data-v-143222dc="">Grand texte · seuil AA 3:1</small></div></section><!--v-if--><!--v-if--><!--v-if--></aside></div></div><script type="module" src="/src/reference.ts"></script><!--v-if--><!--v-if--><!--v-if--><!--v-if--><!--v-if--><!--v-if--><!--v-if--><!--v-if--><!--v-if--><!--v-if--><!--v-if--></body></html>

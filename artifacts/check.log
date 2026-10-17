@@ -2,201 +2,257 @@ $ bun run typecheck && bun run lint && bun run check:files && bun run test && bu
 $ cd apps/web && react-router typegen && cd ../.. && tsc --noEmit
 $ eslint .
 $ bun scripts/check-file-length.ts
-WARN apps/web/src/styles/Projects.module.css: 544 lines
 Source length: 0 failures; limit is <600.
 $ bun test packages apps/web/test scripts/test
 bun test v1.4.2 (744846f84)
 
 scripts/test/check-file-length.test.ts:
-(pass) physical line counting respects terminal newlines and CRLF [0.12ms]
-(pass) generic recursive scanner includes future packages, custom extensions, exclusions and exact thresholds [7.22ms]
+(pass) physical line counting respects terminal newlines and CRLF [0.06ms]
+(pass) generic recursive scanner includes future packages, custom extensions, exclusions and exact thresholds [2.02ms]
 
 packages/cv/test/renderer.test.ts:
-(pass) actual portable renderer shares blocks and styles, escapes untrusted content [30.82ms]
+(pass) actual portable renderer shares blocks and styles, escapes untrusted content [5.18ms]
 
 packages/cv/test/design-renderer.test.ts:
-(pass) freeform renderer uses actual layer frames and escapes rich text and links [5.44ms]
-(pass) groups preserve z-order, composite appearance, and hide children without leaking content [15.30ms]
-(pass) shape gradients, rounded geometry and visual effects are preserved in portable SVG [7.78ms]
-(pass) raster images retain crop, effects and escaped alt text; fonts are offline embedded [8.74ms]
-(pass) public renderer rejects unsafe SVG/CSS/link/image payloads before interpolation [11.48ms]
-(pass) range formatting can remove a base underline and strike without decoration propagating from the parent [9.09ms]
+(pass) freeform renderer uses actual layer frames and escapes rich text and links [2.16ms]
+(pass) groups preserve z-order, composite appearance, and hide children without leaking content [1.99ms]
+(pass) shape gradients, rounded geometry and visual effects are preserved in portable SVG [1.79ms]
+(pass) raster images retain crop, effects and escaped alt text; fonts are offline embedded [3.18ms]
+(pass) public renderer rejects unsafe SVG/CSS/link/image payloads before interpolation [1.52ms]
+(pass) range formatting can remove a base underline and strike without decoration propagating from the parent [0.68ms]
+(pass) image border radius and shadow render identically in canvas styles and portable CSS [0.65ms]
 
 packages/cli/test/handler.test.ts:
-(pass) CLI create → inspect → validate → atomic apply → real render [136.85ms]
-(pass) CLI errors are actionable JSON stderr with explicit exit codes [11.49ms]
+(pass) CLI create → inspect → validate → atomic apply → real render [34.01ms]
+(pass) CLI errors are actionable JSON stderr with explicit exit codes [2.25ms]
 
 packages/cli/test/source-safety.test.ts:
-(pass) CLI validates, inspects and exports React or HTML source without executing it [94.25ms]
+(pass) CLI validates, inspects and exports React or HTML source without executing it [35.09ms]
 
 packages/adapters/test/index.test.ts:
-(pass) protocol-independent preview is validated and does not mutate current session [1.93ms]
+(pass) protocol-independent preview is validated and does not mutate current session [0.78ms]
 
 apps/web/test/lib/projects.test.ts:
-(pass) IndexedDB complete project CRUD, reload, duplicate independence, validation and stale writes [137.06ms]
-(pass) version 1 → 2 storage upgrade preserves records and initializes revisions [20.15ms]
-(pass) storage failure feedback distinguishes quota and conflicts [0.17ms]
+(pass) IndexedDB complete project CRUD, reload, duplicate independence, validation and stale writes [20.83ms]
+(pass) version 1 → 2 storage upgrade preserves records and initializes revisions [2.18ms]
+(pass) storage failure feedback distinguishes quota and conflicts [0.06ms]
 
 apps/web/test/lib/files.test.ts:
-(pass) browser document imports share the engine file-size gate and validation [211.34ms]
+(pass) browser document imports share the engine file-size gate and validation [58.23ms]
 
 apps/web/test/lib/geometry.test.ts:
-(pass) moving layers snaps the nearest edge or center independently on each axis [0.28ms]
+(pass) moving layers snaps the nearest edge or center independently on each axis [0.34ms]
+(pass) eight resize handles preserve the opposite anchor and aspect ratio, including rotated layers [0.34ms]
 
 apps/web/test/state/editor.test.ts:
-(pass) one-field commands notify only changed block subscribers, with one canonical session [4.89ms]
-(pass) overlapping autosave/navigation flushes serialize writes and drain the latest edit [3.59ms]
-(pass) editor persistence reconnects after StrictMode cleanup [222.36ms]
+(pass) one-field commands notify only changed block subscribers, with one canonical session [3.15ms]
+(pass) overlapping autosave/navigation flushes serialize writes and drain the latest edit [1.92ms]
+(pass) editor persistence reconnects after StrictMode cleanup [221.68ms]
 
 apps/web/test/state/design.test.ts:
-(pass) opening visual mode deactivates source and creates canvas as one undo step [6.59ms]
+(pass) opening visual mode deactivates source and creates canvas as one undo step [3.25ms]
 
 packages/engine/test/document/schema.test.ts:
-(pass) document schema and invariants > creates independent valid documents [0.20ms]
-(pass) document schema and invariants > rejects external malformed values [1.34ms]
-(pass) document schema and invariants > rejects missing, duplicate, mismatched and unordered sections [0.69ms]
-(pass) document schema and invariants > rejects orphan, repeated, mismatched, missing blocks and cross entity duplicate IDs [0.40ms]
+(pass) document schema and invariants > creates independent valid documents [0.13ms]
+(pass) document schema and invariants > rejects external malformed values [0.88ms]
+(pass) document schema and invariants > rejects missing, duplicate, mismatched and unordered sections [0.34ms]
+(pass) document schema and invariants > rejects orphan, repeated, mismatched, missing blocks and cross entity duplicate IDs [0.22ms]
 
 packages/engine/test/document/limits.test.ts:
-(pass) UTF-8 and canonical JSON accounting include Unicode, escapes and indentation exactly [10.15ms]
-(pass) a document at the shared content budget round-trips with embedded assets [638.50ms]
-(pass) global budget rejects oversized valid assets or text and failed commands stay atomic [310.10ms]
-(pass) file limits count UTF-8 bytes, not JavaScript string length [17.32ms]
+(pass) UTF-8 and canonical JSON accounting include Unicode, escapes and indentation exactly [2.44ms]
+(pass) a document at the shared content budget round-trips with embedded assets [178.98ms]
+(pass) global budget rejects oversized valid assets or text and failed commands stay atomic [134.16ms]
+(pass) file limits count UTF-8 bytes, not JavaScript string length [6.57ms]
 
 packages/engine/test/commands/apply.test.ts:
-(pass) atomic document operations > complete section and block CRUD and structural sharing [2.01ms]
-(pass) atomic document operations > inserts and reorders without dropping IDs [0.76ms]
-(pass) atomic document operations > agent and human commands have equivalent document semantics [0.71ms]
-(pass) atomic document operations > failures leave original untouched; errors have stable codes [3.89ms]
+(pass) atomic document operations > complete section and block CRUD and structural sharing [0.73ms]
+(pass) atomic document operations > inserts and reorders without dropping IDs [0.41ms]
+(pass) atomic document operations > agent and human commands have equivalent document semantics [0.36ms]
+(pass) atomic document operations > failures leave original untouched; errors have stable codes [2.18ms]
 
 packages/engine/test/history/history.test.ts:
-(pass) batch history is one attributed step, with undo/redo and branch invalidation [0.43ms]
-(pass) history is bounded [3.19ms]
+(pass) batch history is one attributed step, with undo/redo and branch invalidation [0.23ms]
+(pass) history is bounded [1.38ms]
 
 packages/engine/test/serialization/serialization.test.ts:
-(pass) round trip and v0 migration [2.72ms]
-(pass) duplication allocates independent stable identifiers and validates ID collisions [0.61ms]
+(pass) round trip and v0 migration [1.53ms]
+(pass) duplication allocates independent stable identifiers and validates ID collisions [0.35ms]
 
 packages/engine/test/canvas/commands.test.ts:
-(pass) canvas enable requires every block and preserves semantic content [1.70ms]
-(pass) geometry and appearance commands are immutable, deterministic and structurally shared [3.86ms]
-(pass) grouping makes selected layers contiguous and reassigns prior membership [3.33ms]
-(pass) hidden layers remain editable while locks protect layer and group content [12.00ms]
-(pass) layer relocation covers relative order, group membership and complete group moves [5.88ms]
-(pass) layer copies allocate explicit IDs, offset geometry and remain outside the original group [1.66ms]
-(pass) block creation and deletion keep visual and semantic references consistent [1.67ms]
-(pass) visual command batches are atomic and restore exact geometry with undo and redo [2.08ms]
-(pass) invalid references, unsafe patches and illegal nested or locked destinations fail [29.32ms]
+(pass) canvas enable requires every block and preserves semantic content [0.74ms]
+(pass) geometry and appearance commands are immutable, deterministic and structurally shared [1.48ms]
+(pass) grouping makes selected layers contiguous and reassigns prior membership [1.12ms]
+(pass) hidden layers remain editable while locks protect layer and group content [2.01ms]
+(pass) layer relocation covers relative order, group membership and complete group moves [2.31ms]
+(pass) layer copies allocate explicit IDs, offset geometry and remain outside the original group [1.08ms]
+(pass) block creation and deletion keep visual and semantic references consistent [1.20ms]
+(pass) visual command batches are atomic and restore exact geometry with undo and redo [0.74ms]
+(pass) invalid references, unsafe patches and illegal nested or locked destinations fail [3.24ms]
 
 packages/engine/test/canvas/appearance.test.ts:
-(pass) visual effect normalization bounds every channel and tolerates missing or nonfinite input [0.27ms]
-(pass) effect SVG is deterministic, escaped and faithfully carries brightness, noise and dither [0.27ms]
-(pass) solid paint fallback handles hex, RGB and invalid colors deterministically [0.42ms]
-(pass) gradients are normalized, sorted and projected consistently into CSS and SVG [0.48ms]
-(pass) shape catalog exposes valid finite geometry and custom vectors remain explicit [0.47ms]
-(pass) shape and image commands retain portable effects, gradients and crop properties [2.75ms]
+(pass) visual effect normalization bounds every channel and tolerates missing or nonfinite input [0.12ms]
+(pass) effect SVG is deterministic, escaped and faithfully carries brightness, noise and dither [0.14ms]
+(pass) solid paint fallback handles hex, RGB and invalid colors deterministically [0.19ms]
+(pass) gradients are normalized, sorted and projected consistently into CSS and SVG [0.21ms]
+(pass) shape catalog exposes valid finite geometry and custom vectors remain explicit [0.22ms]
+(pass) shape and image commands retain portable effects, gradients and crop properties [1.37ms]
 
 packages/engine/test/canvas/marks.test.ts:
-(pass) rich text segments preserve precise overlapping styles and winning mark order [0.32ms]
-(pass) selection style reports mixed values without losing common or inherited styles [0.32ms]
-(pass) text replacements shift, trim, extend and remove affected ranges without changing the input [0.34ms]
-(pass) rich formatting uses validated commands, replaces mark IDs and follows text edits [2.40ms]
-(pass) editing across the start of a styled range creates valid deterministic noncolliding IDs [1.67ms]
+(pass) rich text segments preserve precise overlapping styles and winning mark order [0.20ms]
+(pass) selection style reports mixed values without losing common or inherited styles [0.22ms]
+(pass) text replacements shift, trim, extend and remove affected ranges without changing the input [0.22ms]
+(pass) rich formatting uses validated commands, replaces mark IDs and follows text edits [1.79ms]
+(pass) editing across the start of a styled range creates valid deterministic noncolliding IDs [1.29ms]
 
 packages/engine/test/canvas/invariants.test.ts:
-(pass) visual documents remain portable and duplication rekeys canvas order and group ownership [3.79ms]
-(pass) canvas invariants reject missing or repeated z-order entries and wrong layer variants [5.00ms]
-(pass) groups enforce unique IDs, unique membership and contiguous layer order [25.86ms]
-(pass) text range imports reject duplicate IDs, inverted or out-of-bounds ranges [2.53ms]
-(pass) shape, gradient, embedded font and raster sources reject unchecked payloads [5.07ms]
+(pass) visual documents remain portable and duplication rekeys canvas order and group ownership [1.54ms]
+(pass) canvas invariants reject missing or repeated z-order entries and wrong layer variants [2.12ms]
+(pass) groups enforce unique IDs, unique membership and contiguous layer order [2.53ms]
+(pass) text range imports reject duplicate IDs, inverted or out-of-bounds ranges [0.83ms]
+(pass) shape, gradient, embedded font and raster sources reject unchecked payloads [2.79ms]
+
+packages/engine/test/canvas/decorations.test.ts:
+(pass) image borders and shadows share validated human/agent history and portable JSON [1.50ms]
+(pass) invalid decorations fail atomically, including wrong layer kinds and CSS injection [1.55ms]
+
+packages/engine/test/canvas/contrast.test.ts:
+(pass) WCAG contrast helpers use exact luminance and reject colors without an opaque context [0.20ms]
+(pass) read-only text analysis reports exact black/white contrast without changing a frozen document [0.92ms]
+(pass) large text thresholds and AA grading do not round a failing ratio up [0.51ms]
+(pass) RGBA text, layer opacity and translucent solid fills composite over the actual page [0.29ms]
+(pass) flat group opacity composites once after its opaque child layers [0.74ms]
+(pass) the selected text and its background share their parent group's composite opacity [0.50ms]
+(pass) complex backgrounds return Unknown: Image background / image [0.17ms]
+(pass) complex backgrounds return Unknown: Gradient background / shape [0.13ms]
+(pass) complex backgrounds return Unknown: Variable background / shape [0.09ms]
+(pass) complex backgrounds return Unknown: Variable background / shape [0.09ms]
+(pass) complex backgrounds return Unknown: Variable background / shape [0.09ms]
+(pass) complex backgrounds return Unknown: Filtered background / shape [0.10ms]
+(pass) complex backgrounds return Unknown: Shadow background / shape [0.14ms]
+(pass) complex backgrounds return Unknown: Blended background / shape [0.09ms]
+(pass) complex backgrounds return Unknown: Overlapping text / text [0.08ms]
+(pass) foreground covers, group blends and text blends never yield a false AA [0.50ms]
+(pass) hidden and transparent decoration or nonoverlapping elements do not obscure the audit [0.42ms]
+(pass) mixed rich text reports the worst grade and a selected range audits its own styling [0.28ms]
+(pass) missing visual contexts, empty text and transparent pages remain unmeasured [0.26ms]
+(pass) active source previews are not confused with their inactive visual backup [0.30ms]
 
 packages/engine/test/source/source.test.ts:
-(pass) source is validated opaque data with the same atomic human/agent history [0.39ms]
-(pass) bad source batches fail without publishing changes or executing code [0.89ms]
-(pass) source activation preserves source across undo, serialization and missing-source errors [0.35ms]
+(pass) source is validated opaque data with the same atomic human/agent history [0.25ms]
+(pass) bad source batches fail without publishing changes or executing code [0.68ms]
+(pass) source activation preserves source across undo, serialization and missing-source errors [0.23ms]
 
 packages/cv/test/source/source.test.ts:
-(pass) React templates are editable TSX with actual document data and safe data injection [40.66ms]
-(pass) portable HTML and React compile offline without evaluating user source [4.21ms]
-(pass) inactive source preserves its code while exporting the visual document [1.73ms]
+(pass) React templates are editable TSX with actual document data and safe data injection [7.65ms]
+(pass) portable HTML and React compile offline without evaluating user source [1.94ms]
+(pass) inactive source preserves its code while exporting the visual document [0.87ms]
 
- 69 pass
+ 93 pass
  0 fail
- 818 expect() calls
-Ran 69 tests across 22 files. [2.27s]
+ 908 expect() calls
+Ran 93 tests across 24 files. [870.00ms]
 $ bun scripts/engine-coverage.ts
 bun test v1.4.2 (744846f84)
 
 packages/engine/test/document/schema.test.ts:
-(pass) document schema and invariants > creates independent valid documents [22.55ms]
-(pass) document schema and invariants > rejects external malformed values [3.57ms]
-(pass) document schema and invariants > rejects missing, duplicate, mismatched and unordered sections [1.41ms]
-(pass) document schema and invariants > rejects orphan, repeated, mismatched, missing blocks and cross entity duplicate IDs [0.95ms]
+(pass) document schema and invariants > creates independent valid documents [3.34ms]
+(pass) document schema and invariants > rejects external malformed values [2.34ms]
+(pass) document schema and invariants > rejects missing, duplicate, mismatched and unordered sections [1.12ms]
+(pass) document schema and invariants > rejects orphan, repeated, mismatched, missing blocks and cross entity duplicate IDs [0.90ms]
 
 packages/engine/test/document/limits.test.ts:
-(pass) UTF-8 and canonical JSON accounting include Unicode, escapes and indentation exactly [9.95ms]
-(pass) a document at the shared content budget round-trips with embedded assets [950.39ms]
-(pass) global budget rejects oversized valid assets or text and failed commands stay atomic [542.43ms]
-(pass) file limits count UTF-8 bytes, not JavaScript string length [54.82ms]
+(pass) UTF-8 and canonical JSON accounting include Unicode, escapes and indentation exactly [13.55ms]
+(pass) a document at the shared content budget round-trips with embedded assets [335.02ms]
+(pass) global budget rejects oversized valid assets or text and failed commands stay atomic [161.52ms]
+(pass) file limits count UTF-8 bytes, not JavaScript string length [21.08ms]
 
 packages/engine/test/commands/apply.test.ts:
-(pass) atomic document operations > complete section and block CRUD and structural sharing [3.24ms]
-(pass) atomic document operations > inserts and reorders without dropping IDs [3.14ms]
-(pass) atomic document operations > agent and human commands have equivalent document semantics [3.84ms]
-(pass) atomic document operations > failures leave original untouched; errors have stable codes [11.00ms]
+(pass) atomic document operations > complete section and block CRUD and structural sharing [1.28ms]
+(pass) atomic document operations > inserts and reorders without dropping IDs [0.76ms]
+(pass) atomic document operations > agent and human commands have equivalent document semantics [0.55ms]
+(pass) atomic document operations > failures leave original untouched; errors have stable codes [2.57ms]
 
 packages/engine/test/history/history.test.ts:
-(pass) batch history is one attributed step, with undo/redo and branch invalidation [0.82ms]
-(pass) history is bounded [4.31ms]
+(pass) batch history is one attributed step, with undo/redo and branch invalidation [0.38ms]
+(pass) history is bounded [1.64ms]
 
 packages/engine/test/serialization/serialization.test.ts:
-(pass) round trip and v0 migration [3.28ms]
-(pass) duplication allocates independent stable identifiers and validates ID collisions [1.27ms]
+(pass) round trip and v0 migration [5.21ms]
+(pass) duplication allocates independent stable identifiers and validates ID collisions [0.60ms]
 
 packages/engine/test/canvas/commands.test.ts:
-(pass) canvas enable requires every block and preserves semantic content [3.06ms]
-(pass) geometry and appearance commands are immutable, deterministic and structurally shared [8.69ms]
-(pass) grouping makes selected layers contiguous and reassigns prior membership [9.36ms]
-(pass) hidden layers remain editable while locks protect layer and group content [6.82ms]
-(pass) layer relocation covers relative order, group membership and complete group moves [7.06ms]
-(pass) layer copies allocate explicit IDs, offset geometry and remain outside the original group [2.99ms]
-(pass) block creation and deletion keep visual and semantic references consistent [3.92ms]
-(pass) visual command batches are atomic and restore exact geometry with undo and redo [3.05ms]
-(pass) invalid references, unsafe patches and illegal nested or locked destinations fail [29.10ms]
+(pass) canvas enable requires every block and preserves semantic content [0.90ms]
+(pass) geometry and appearance commands are immutable, deterministic and structurally shared [1.71ms]
+(pass) grouping makes selected layers contiguous and reassigns prior membership [1.19ms]
+(pass) hidden layers remain editable while locks protect layer and group content [2.35ms]
+(pass) layer relocation covers relative order, group membership and complete group moves [2.61ms]
+(pass) layer copies allocate explicit IDs, offset geometry and remain outside the original group [1.09ms]
+(pass) block creation and deletion keep visual and semantic references consistent [1.20ms]
+(pass) visual command batches are atomic and restore exact geometry with undo and redo [0.75ms]
+(pass) invalid references, unsafe patches and illegal nested or locked destinations fail [3.51ms]
 
 packages/engine/test/canvas/appearance.test.ts:
-(pass) visual effect normalization bounds every channel and tolerates missing or nonfinite input [0.38ms]
-(pass) effect SVG is deterministic, escaped and faithfully carries brightness, noise and dither [0.49ms]
-(pass) solid paint fallback handles hex, RGB and invalid colors deterministically [0.39ms]
-(pass) gradients are normalized, sorted and projected consistently into CSS and SVG [0.52ms]
-(pass) shape catalog exposes valid finite geometry and custom vectors remain explicit [0.51ms]
-(pass) shape and image commands retain portable effects, gradients and crop properties [4.50ms]
+(pass) visual effect normalization bounds every channel and tolerates missing or nonfinite input [0.20ms]
+(pass) effect SVG is deterministic, escaped and faithfully carries brightness, noise and dither [0.25ms]
+(pass) solid paint fallback handles hex, RGB and invalid colors deterministically [0.19ms]
+(pass) gradients are normalized, sorted and projected consistently into CSS and SVG [0.25ms]
+(pass) shape catalog exposes valid finite geometry and custom vectors remain explicit [0.23ms]
+(pass) shape and image commands retain portable effects, gradients and crop properties [1.85ms]
 
 packages/engine/test/canvas/marks.test.ts:
-(pass) rich text segments preserve precise overlapping styles and winning mark order [0.98ms]
-(pass) selection style reports mixed values without losing common or inherited styles [0.64ms]
-(pass) text replacements shift, trim, extend and remove affected ranges without changing the input [0.70ms]
-(pass) rich formatting uses validated commands, replaces mark IDs and follows text edits [9.06ms]
-(pass) editing across the start of a styled range creates valid deterministic noncolliding IDs [17.78ms]
+(pass) rich text segments preserve precise overlapping styles and winning mark order [0.38ms]
+(pass) selection style reports mixed values without losing common or inherited styles [0.28ms]
+(pass) text replacements shift, trim, extend and remove affected ranges without changing the input [0.28ms]
+(pass) rich formatting uses validated commands, replaces mark IDs and follows text edits [1.97ms]
+(pass) editing across the start of a styled range creates valid deterministic noncolliding IDs [1.28ms]
 
 packages/engine/test/canvas/invariants.test.ts:
-(pass) visual documents remain portable and duplication rekeys canvas order and group ownership [5.13ms]
-(pass) canvas invariants reject missing or repeated z-order entries and wrong layer variants [6.43ms]
-(pass) groups enforce unique IDs, unique membership and contiguous layer order [11.30ms]
-(pass) text range imports reject duplicate IDs, inverted or out-of-bounds ranges [11.55ms]
-(pass) shape, gradient, embedded font and raster sources reject unchecked payloads [10.60ms]
+(pass) visual documents remain portable and duplication rekeys canvas order and group ownership [1.53ms]
+(pass) canvas invariants reject missing or repeated z-order entries and wrong layer variants [2.28ms]
+(pass) groups enforce unique IDs, unique membership and contiguous layer order [2.81ms]
+(pass) text range imports reject duplicate IDs, inverted or out-of-bounds ranges [0.97ms]
+(pass) shape, gradient, embedded font and raster sources reject unchecked payloads [3.54ms]
+
+packages/engine/test/canvas/decorations.test.ts:
+(pass) image borders and shadows share validated human/agent history and portable JSON [1.66ms]
+(pass) invalid decorations fail atomically, including wrong layer kinds and CSS injection [1.70ms]
+
+packages/engine/test/canvas/contrast.test.ts:
+(pass) WCAG contrast helpers use exact luminance and reject colors without an opaque context [1.57ms]
+(pass) read-only text analysis reports exact black/white contrast without changing a frozen document [0.94ms]
+(pass) large text thresholds and AA grading do not round a failing ratio up [0.55ms]
+(pass) RGBA text, layer opacity and translucent solid fills composite over the actual page [0.30ms]
+(pass) flat group opacity composites once after its opaque child layers [0.76ms]
+(pass) the selected text and its background share their parent group's composite opacity [0.55ms]
+(pass) complex backgrounds return Unknown: Image background / image [0.20ms]
+(pass) complex backgrounds return Unknown: Gradient background / shape [0.17ms]
+(pass) complex backgrounds return Unknown: Variable background / shape [0.10ms]
+(pass) complex backgrounds return Unknown: Variable background / shape [0.10ms]
+(pass) complex backgrounds return Unknown: Variable background / shape [0.12ms]
+(pass) complex backgrounds return Unknown: Filtered background / shape [0.12ms]
+(pass) complex backgrounds return Unknown: Shadow background / shape [0.15ms]
+(pass) complex backgrounds return Unknown: Blended background / shape [0.11ms]
+(pass) complex backgrounds return Unknown: Overlapping text / text [0.08ms]
+(pass) foreground covers, group blends and text blends never yield a false AA [0.53ms]
+(pass) hidden and transparent decoration or nonoverlapping elements do not obscure the audit [0.46ms]
+(pass) mixed rich text reports the worst grade and a selected range audits its own styling [0.26ms]
+(pass) missing visual contexts, empty text and transparent pages remain unmeasured [0.28ms]
+(pass) active source previews are not confused with their inactive visual backup [0.30ms]
 
 packages/engine/test/source/source.test.ts:
-(pass) source is validated opaque data with the same atomic human/agent history [0.72ms]
-(pass) bad source batches fail without publishing changes or executing code [1.90ms]
-(pass) source activation preserves source across undo, serialization and missing-source errors [0.80ms]
+(pass) source is validated opaque data with the same atomic human/agent history [0.27ms]
+(pass) bad source batches fail without publishing changes or executing code [0.76ms]
+(pass) source activation preserves source across undo, serialization and missing-source errors [0.25ms]
 ----------------------------------------------------|---------|---------|-------------------
 File                                                | % Funcs | % Lines | Uncovered Line #s
 ----------------------------------------------------|---------|---------|-------------------
-All files                                           |   99.59 |   99.56 |
+All files                                           |   99.64 |   99.61 |
  coverage/all-engine.ts                             |  100.00 |  100.00 |
  packages/engine/src/canvas/apply.ts                |  100.00 |   99.58 | 251
  packages/engine/src/canvas/commands.ts             |  100.00 |  100.00 |
+ packages/engine/src/canvas/contrast-background.ts  |  100.00 |  100.00 |
+ packages/engine/src/canvas/contrast-colors.ts      |  100.00 |  100.00 |
+ packages/engine/src/canvas/contrast.ts             |  100.00 |  100.00 |
  packages/engine/src/canvas/defaults.ts             |  100.00 |  100.00 |
  packages/engine/src/canvas/effects.ts              |   90.91 |   90.79 | 64-70
  packages/engine/src/canvas/fills.ts                |  100.00 |  100.00 |
@@ -218,134 +274,204 @@ All files                                           |   99.59 |   99.56 |
  packages/engine/test/canvas/fixtures.ts            |  100.00 |  100.00 |
 ----------------------------------------------------|---------|---------|-------------------
 
- 44 pass
+ 66 pass
  0 fail
- 615 expect() calls
-Ran 44 tests across 10 files. [1.95s]
-Engine: 99.59% lines; 99.38% functions. Threshold: 85% each.
+ 678 expect() calls
+Ran 66 tests across 12 files. [653.00ms]
+Engine: 99.64% lines; 99.47% functions. Threshold: 85% each.
 $ bun scripts/dev-smoke.ts
 
 Running 5 tests using 1 worker
 
-(node:2055649) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(node:25164) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
 (Use `node --trace-warnings ...` to show where the warning was created)
-  ✓  1 apps/web/e2e/hydration.spec.ts:7:3 › SSR document hydration replaces the loading screen at 1440px after direct open and reload (11.1s)
-  ✓  2 apps/web/e2e/hydration.spec.ts:7:3 › SSR document hydration replaces the loading screen at 390px after direct open and reload (3.9s)
-  ✓  3 apps/web/e2e/source.spec.ts:4:1 › HTML and React sources share validated history, sandbox preview and portable export (9.4s)
-  ✓  4 apps/web/e2e/workflows.spec.ts:76:1 › SSR public pages and nested routes return meaningful server HTML; hydration is clean (3.9s)
-  ✓  5 apps/web/e2e/workflows.spec.ts:108:1 › human editor → save/reload → agent preview/undo → project lifecycle → JSON import (16.6s)
+  ✓  1 apps/web/e2e/hydration.spec.ts:7:3 › SSR document hydration replaces the loading screen at 1440px after direct open and reload (5.1s)
+  ✓  2 apps/web/e2e/hydration.spec.ts:7:3 › SSR document hydration replaces the loading screen at 390px after direct open and reload (2.3s)
+  ✓  3 apps/web/e2e/source.spec.ts:5:1 › HTML and React sources share validated history, sandbox preview and portable export (8.2s)
+  ✓  4 apps/web/e2e/workflows.spec.ts:77:1 › SSR public pages and nested routes return meaningful server HTML; hydration is clean (2.5s)
+  ✓  5 apps/web/e2e/workflows.spec.ts:112:1 › human editor → save/reload → agent preview/undo → project lifecycle → JSON import (12.6s)
 
-  5 passed (47.0s)
+  5 passed (31.8s)
 Cold-cache development check: passed. See artifacts/dev-smoke.log.
 $ cd apps/web && react-router build
 Using Vite Environment API
 vite v8.3.4 building client environment for production...
 transforming...
-✓ 2774 modules transformed.
+✓ 3249 modules transformed.
 rendering chunks...
 computing gzip size...
-build/client/.assetsignore                                    0.02 kB
-build/client/.vite/manifest.json                              6.99 kB │ gzip:   1.14 kB
-build/client/assets/inter-latin-wght-normal-Dx4kXJAl.woff2   48.25 kB
-build/client/assets/templates-DCyMdkqf.css                    1.16 kB │ gzip:   0.50 kB
-build/client/assets/preload-editor-sREiYMmH.css               1.38 kB │ gzip:   0.56 kB
-build/client/assets/CodeEditor-CYK5DGDN.css                   2.85 kB │ gzip:   1.03 kB
-build/client/assets/home-CK8msAjG.css                         6.22 kB │ gzip:   1.72 kB
-build/client/assets/projects-Mx8FE_TY.css                     8.32 kB │ gzip:   2.18 kB
-build/client/assets/Preview-DcpaHKU-.css                     12.24 kB │ gzip:   3.33 kB
-build/client/assets/editor-Bk4jSq6i.css                      21.92 kB │ gzip:   5.37 kB
-build/client/assets/root-DTraa5qo.css                        65.37 kB │ gzip:  11.30 kB
-build/client/assets/editor-BwL2MykA.js                        0.09 kB │ gzip:   0.10 kB
-build/client/assets/arrow-up-right-DjrWfBQV.js                0.20 kB │ gzip:   0.18 kB
-build/client/assets/undo-2-Bve-wTZz.js                        0.61 kB │ gzip:   0.36 kB
-build/client/assets/root-DZefO5Tt.js                          1.61 kB │ gzip:   0.81 kB
-build/client/assets/templates-DnMwZ0el.js                     1.98 kB │ gzip:   1.02 kB
-build/client/assets/preload-editor-CNJ8g1j0.js                3.15 kB │ gzip:   1.28 kB
-build/client/assets/CodePreview-C7erGV79.js                   3.94 kB │ gzip:   1.87 kB
-build/client/assets/CodeEditor-C9lInUey.js                    6.08 kB │ gzip:   2.50 kB
-build/client/assets/home-B8c3--ie.js                          7.82 kB │ gzip:   2.87 kB
-build/client/assets/projects-was4W9X9.js                      7.98 kB │ gzip:   3.30 kB
-build/client/assets/projects-BsiU4AqG.js                     14.89 kB │ gzip:   5.37 kB
-build/client/assets/shapes-DnXbmIMV.js                       40.46 kB │ gzip:   7.72 kB
-build/client/assets/src-Ccv0aAqn.js                          76.48 kB │ gzip:  24.96 kB
-build/client/assets/editor-H0weSzG3.js                      117.67 kB │ gzip:  39.44 kB
-build/client/assets/jsx-runtime-ChSX9B0H.js                 124.87 kB │ gzip:  40.78 kB
-build/client/assets/tooltip-CV5NKs90.js                     130.53 kB │ gzip:  47.32 kB
-build/client/assets/Preview.module-BiiezmSy.js              193.53 kB │ gzip:  63.52 kB
-build/client/assets/render-70utNcwV.js                      202.65 kB │ gzip:  62.02 kB
-build/client/assets/entry.client-f_m3EBV6.js                210.90 kB │ gzip:  66.25 kB
-build/client/assets/render-dQ5n-sPe.js                      432.45 kB │ gzip: 117.33 kB
-build/client/assets/icons-DL0vQxlW.js                       452.56 kB │ gzip:  97.24 kB
+build/client/.assetsignore                                                   0.02 kB
+build/client/assets/space-grotesk-vietnamese-wght-normal-D0rl6rjA.woff2      6.71 kB
+build/client/assets/source-sans-3-greek-ext-wght-normal-BXZfsJY4.woff2       9.74 kB
+build/client/assets/source-sans-3-vietnamese-wght-normal-BDs68eHQ.woff2     10.36 kB
+build/client/assets/source-sans-3-cyrillic-ext-wght-normal-c-5QAGAI.woff2   10.73 kB
+build/client/assets/source-sans-3-greek-wght-normal-Cc-u-6OI.woff2          14.52 kB
+build/client/.vite/manifest.json                                            16.46 kB │ gzip:   2.01 kB
+build/client/assets/source-sans-3-cyrillic-wght-normal-BMDVbyM7.woff2       18.49 kB
+build/client/assets/space-grotesk-latin-ext-wght-normal-D9tNdqV9.woff2      18.94 kB
+build/client/assets/space-grotesk-latin-wght-normal-BhU9QXUp.woff2          22.28 kB
+build/client/assets/source-sans-3-latin-wght-normal-Bo_j9asI.woff2          28.87 kB
+build/client/assets/inter-latin-wght-normal-Dx4kXJAl.woff2                  48.25 kB
+build/client/assets/source-sans-3-latin-ext-wght-normal-C8iNium2.woff2      60.08 kB
+build/client/assets/SettingsMenu-OQgOuNXs.css                                0.60 kB │ gzip:   0.32 kB
+build/client/assets/templates-B7eyamsk.css                                   0.91 kB │ gzip:   0.46 kB
+build/client/assets/Brand-sREiYMmH.css                                       1.38 kB │ gzip:   0.56 kB
+build/client/assets/Preview-C0E6gntp.css                                     1.72 kB │ gzip:   0.71 kB
+build/client/assets/AgentPanel-Crsujq5z.css                                  2.01 kB │ gzip:   0.79 kB
+build/client/assets/CodeEditor-DLnbHiSN.css                                  3.01 kB │ gzip:   1.04 kB
+build/client/assets/home-Bz21ZOMZ.css                                        3.60 kB │ gzip:   1.10 kB
+build/client/assets/Dashboard-C0vD3duP.css                                   7.62 kB │ gzip:   2.00 kB
+build/client/assets/ui-BSDMNoo8.css                                         12.70 kB │ gzip:   3.08 kB
+build/client/assets/editor-_ERz2w9B.css                                     32.44 kB │ gzip:   6.99 kB
+build/client/assets/root-NBLfbcVC.css                                       87.74 kB │ gzip:  14.85 kB
+build/client/assets/editor-Kf6-a6Kz.js                                       0.09 kB │ gzip:   0.10 kB
+build/client/assets/arrow-right-DkFN3FT0.js                                  0.19 kB │ gzip:   0.17 kB
+build/client/assets/arrow-up-right-DtjWOKUG.js                               0.19 kB │ gzip:   0.17 kB
+build/client/assets/use-reduced-motion-B0CY_FiR.js                           0.21 kB │ gzip:   0.17 kB
+build/client/assets/copy-BRpgfXuq.js                                         0.26 kB │ gzip:   0.22 kB
+build/client/assets/Preview.module-B39cVF2Q.js                               0.33 kB │ gzip:   0.17 kB
+build/client/assets/type-DPn_MmEc.js                                         0.46 kB │ gzip:   0.30 kB
+build/client/assets/Dashboard.module-DN78cmmJ.js                             0.87 kB │ gzip:   0.38 kB
+build/client/assets/preload-editor-llYFMNdD.js                               0.87 kB │ gzip:   0.50 kB
+build/client/assets/projects-B4Id8unO.js                                     1.04 kB │ gzip:   0.61 kB
+build/client/assets/ResumePreview-DCoaDyFv.js                                1.37 kB │ gzip:   0.76 kB
+build/client/assets/Brand-IFhvMtsB.js                                        1.59 kB │ gzip:   0.60 kB
+build/client/assets/theme-DDJmP7la.js                                        1.77 kB │ gzip:   0.70 kB
+build/client/assets/templates-DxgwaMHS.js                                    1.88 kB │ gzip:   0.98 kB
+build/client/assets/files-DpiucR4j.js                                        1.96 kB │ gzip:   0.92 kB
+build/client/assets/root-BFOrlRSl.js                                         2.68 kB │ gzip:   1.32 kB
+build/client/assets/SettingsMenu-FXarDZdE.js                                 2.99 kB │ gzip:   1.38 kB
+build/client/assets/dashboard-Ffyj3sdn.js                                    3.20 kB │ gzip:   1.36 kB
+build/client/assets/CodePreview-D_EDAiWe.js                                  4.11 kB │ gzip:   1.95 kB
+build/client/assets/home-DezCnt4R.js                                         4.41 kB │ gzip:   1.76 kB
+build/client/assets/projects-DwcQ1eRR.js                                     5.54 kB │ gzip:   2.22 kB
+build/client/assets/CodeEditor-CvPF0EAt.js                                   5.66 kB │ gzip:   2.31 kB
+build/client/assets/AgentPanel-DsbTg8-N.js                                   7.34 kB │ gzip:   3.09 kB
+build/client/assets/projects--zLsaXjB.js                                    10.14 kB │ gzip:   4.00 kB
+build/client/assets/shapes-DnXbmIMV.js                                      40.46 kB │ gzip:   7.72 kB
+build/client/assets/color-picker-panel-DvtwQCOh.js                          52.06 kB │ gzip:  19.96 kB
+build/client/assets/src-Rz8aSH9D.js                                         76.98 kB │ gzip:  25.12 kB
+build/client/assets/jsx-runtime-BERqWRS_.js                                124.90 kB │ gzip:  40.79 kB
+build/client/assets/tooltip-Ccum1wFp.js                                    130.70 kB │ gzip:  47.36 kB
+build/client/assets/react-CZz3Nskv.js                                      131.37 kB │ gzip:  43.21 kB
+build/client/assets/editor-ovSX4T5r.js                                     158.08 kB │ gzip:  54.12 kB
+build/client/assets/ui-B-w7kyaX.js                                         190.54 kB │ gzip:  62.58 kB
+build/client/assets/render-Br39y-9j.js                                     202.65 kB │ gzip:  62.02 kB
+build/client/assets/entry.client-Cj4zAsHf.js                               210.90 kB │ gzip:  66.26 kB
+build/client/assets/render-upMDFt_6.js                                     432.45 kB │ gzip: 117.33 kB
+build/client/assets/icons-DL0vQxlW.js                                      452.56 kB │ gzip:  97.24 kB
 
-✓ built in 12.22s
+✓ built in 6.02s
+[33m[PLUGIN_TIMINGS] [0mJavaScript callbacks ran for 5.7s of this 6.0s build (95%).
+The slowest callbacks, timed inside each callback (the wait before a callback starts is excluded, the time it awaits is included):
+  - plugin babel-plugin transform (61%, 3.7s, 3249 calls)
+  - plugin @tailwindcss/vite:generate:build transform (27%, 1.6s, 29 calls)
+Additional callback time came from the callbacks below and from callbacks under 1s.
+3 callbacks are listed without a time. Their calls overlapped, so the time inside one call includes work from other calls. To find their cost, profile the build with `node --cpu-prof`:
+  - plugin react-router:dot-server resolveId (10508 calls)
+  - plugin react-router:build-client-route transform (3249 calls)
+  - plugin vite:css transform (29 calls)
+See https://rolldown.rs/reference/InputOptions.checks#bundlertimings for more details.
+
 vite v8.3.4 building ssr environment for production...
 transforming...
-✓ 2765 modules transformed.
+✓ 3239 modules transformed.
 rendering chunks...
-
-✓ 1 asset copied from React Router server build to client assets.
-build/client/assets/CodePreview-C0E6gntp.css
-
 computing gzip size...
-build/server/wrangler.json                                      1.39 kB │ gzip:   0.69 kB
-build/server/.vite/manifest.json                                4.51 kB │ gzip:   0.84 kB
-build/server/assets/inter-latin-wght-normal-Dx4kXJAl.woff2     48.25 kB
-build/server/assets/CodePreview-C0E6gntp.css                    1.72 kB │ gzip:   0.71 kB
-build/server/assets/CodeEditor-CYK5DGDN.css                     2.85 kB │ gzip:   1.03 kB
-build/server/assets/server-build-CWgefAM6.css                 114.89 kB │ gzip:  21.88 kB
-build/server/assets/render-B6RFrJ1a.js                          0.07 kB │ gzip:   0.09 kB
-build/server/assets/editor-BvuAHX88.js                          0.11 kB │ gzip:   0.12 kB
-build/server/assets/escape-Bcsid6hX.js                          0.29 kB │ gzip:   0.23 kB │ map:     0.51 kB
-build/server/assets/rolldown-runtime-Bk_YeHJf.js                1.45 kB │ gzip:   0.67 kB
-build/server/assets/react-dom-CcJJRvk8.js                       7.29 kB │ gzip:   2.12 kB │ map:    13.32 kB
-build/server/assets/CodeEditor-CG17aVRB.js                     11.74 kB │ gzip:   3.34 kB │ map:    18.91 kB
-build/server/assets/react-5hAPVX-d.js                          16.61 kB │ gzip:   4.51 kB │ map:    28.82 kB
-build/server/assets/CodePreview-Ciqkz4EK.js                    19.98 kB │ gzip:   6.43 kB │ map:    33.45 kB
-build/server/index.js                                          40.11 kB │ gzip:   9.39 kB │ map:    76.65 kB
-build/server/assets/shapes-BRxDEZzR.js                         42.47 kB │ gzip:   7.90 kB │ map:    42.42 kB
-build/server/assets/fog-of-war-DwoCEvaO.js                    109.73 kB │ gzip:  26.41 kB │ map:   302.06 kB
-build/server/assets/renderer-4op9zCl6.js                      129.94 kB │ gzip:  31.51 kB │ map:   449.24 kB
-build/server/assets/icons-h9C0lfNN.js                         485.95 kB │ gzip:  98.32 kB │ map:   485.91 kB
-build/server/assets/render-Dr6G8Skj.js                        660.79 kB │ gzip: 150.15 kB │ map: 1,084.76 kB
-build/server/assets/server-build-C90NGZb9.js                1,718.72 kB │ gzip: 368.84 kB │ map: 3,316.50 kB
+build/server/wrangler.json                                                     1.39 kB │ gzip:   0.69 kB
+build/server/assets/space-grotesk-vietnamese-wght-normal-D0rl6rjA.woff2        6.71 kB
+build/server/assets/source-sans-3-greek-ext-wght-normal-BXZfsJY4.woff2         9.74 kB
+build/server/assets/source-sans-3-vietnamese-wght-normal-BDs68eHQ.woff2       10.36 kB
+build/server/assets/source-sans-3-cyrillic-ext-wght-normal-c-5QAGAI.woff2     10.73 kB
+build/server/.vite/manifest.json                                              10.99 kB │ gzip:   1.33 kB
+build/server/assets/source-sans-3-greek-wght-normal-Cc-u-6OI.woff2            14.52 kB
+build/server/assets/source-sans-3-cyrillic-wght-normal-BMDVbyM7.woff2         18.49 kB
+build/server/assets/space-grotesk-latin-ext-wght-normal-D9tNdqV9.woff2        18.94 kB
+build/server/assets/space-grotesk-latin-wght-normal-BhU9QXUp.woff2            22.28 kB
+build/server/assets/source-sans-3-latin-wght-normal-Bo_j9asI.woff2            28.87 kB
+build/server/assets/inter-latin-wght-normal-Dx4kXJAl.woff2                    48.25 kB
+build/server/assets/source-sans-3-latin-ext-wght-normal-C8iNium2.woff2        60.08 kB
+build/server/assets/AgentPanel-Crsujq5z.css                                    2.01 kB │ gzip:   0.79 kB
+build/server/assets/CodeEditor-DLnbHiSN.css                                    3.01 kB │ gzip:   1.04 kB
+build/server/assets/server-build-s8kcUfUz.css                                148.75 kB │ gzip:  26.63 kB
+build/server/assets/CodePreview-4aKh9ebB.js                                    0.06 kB │ gzip:   0.08 kB
+build/server/assets/render-Dx0ZOmOg.js                                         0.07 kB │ gzip:   0.09 kB
+build/server/assets/editor-BNmIPD96.js                                         0.11 kB │ gzip:   0.12 kB
+build/server/assets/escape-Bcsid6hX.js                                         0.29 kB │ gzip:   0.23 kB │ map:     0.51 kB
+build/server/assets/rolldown-runtime-Bk_YeHJf.js                               1.45 kB │ gzip:   0.67 kB
+build/server/assets/jsx-runtime-DGJXe0ml.js                                    1.53 kB │ gzip:   0.70 kB │ map:     2.02 kB
+build/server/assets/react-dom-CcJJRvk8.js                                      7.29 kB │ gzip:   2.12 kB │ map:    13.32 kB
+build/server/assets/CodeEditor-B5FBaX27.js                                    11.23 kB │ gzip:   3.19 kB │ map:    18.55 kB
+build/server/assets/AgentPanel-B86bqu8i.js                                    14.49 kB │ gzip:   4.37 kB │ map:    23.01 kB
+build/server/assets/react-5hAPVX-d.js                                         16.61 kB │ gzip:   4.51 kB │ map:    28.82 kB
+build/server/index.js                                                         40.11 kB │ gzip:   9.39 kB │ map:    76.65 kB
+build/server/assets/shapes-BRxDEZzR.js                                        42.47 kB │ gzip:   7.90 kB │ map:    42.42 kB
+build/server/assets/button-DPxEb3Cj.js                                        84.69 kB │ gzip:  25.45 kB │ map:   148.85 kB
+build/server/assets/color-picker-panel-CNpAOMR1.js                            97.51 kB │ gzip:  26.19 kB │ map:   196.26 kB
+build/server/assets/fog-of-war-DwoCEvaO.js                                   109.73 kB │ gzip:  26.41 kB │ map:   302.06 kB
+build/server/assets/renderer-Cq-68-XC.js                                     129.42 kB │ gzip:  31.19 kB │ map:   449.06 kB
+build/server/assets/popover-DomXuY5E.js                                      428.29 kB │ gzip:  94.76 kB │ map:   870.60 kB
+build/server/assets/icons-h9C0lfNN.js                                        485.95 kB │ gzip:  98.32 kB │ map:   485.91 kB
+build/server/assets/render-Dr6G8Skj.js                                       660.79 kB │ gzip: 150.15 kB │ map: 1,084.76 kB
+build/server/assets/server-build-DSIBvz2Y.js                               1,713.84 kB │ gzip: 382.09 kB │ map: 3,255.50 kB
+
+[33m[INEFFECTIVE_DYNAMIC_IMPORT] [0m../../packages/cv/src/templates/render.tsx is dynamically imported by ../../packages/cv/src/source/index.ts but also statically imported by app/routes/home.tsx, app/routes/templates.tsx, dynamic import will not move module into another chunk.
+
+[33m[INEFFECTIVE_DYNAMIC_IMPORT] [0msrc/components/CodePreview.tsx is dynamically imported by src/components/ResumePreview.tsx but also statically imported by src/features/editor/agent/ResumeDiff.tsx, src/features/editor/source/CodeEditor.tsx, src/features/editor/source/SourceCanvas.tsx, dynamic import will not move module into another chunk.
 
 [33m[INEFFECTIVE_DYNAMIC_IMPORT] [0mapp/routes/editor.tsx is dynamically imported by src/lib/preload-editor.ts but also statically imported by \0virtual:react-router/server-build, dynamic import will not move module into another chunk.
 
 [plugin @tailwindcss/vite:generate:build] [33m[SOURCEMAP_BROKEN] [0mSourcemap is likely to be incorrect: a plugin (@tailwindcss/vite:generate:build) was used to transform files, but didn't generate a sourcemap for the transformation. Consult the plugin documentation for help: https://rolldown.rs/guide/troubleshooting#warning-sourcemap-is-likely-to-be-incorrect
 
-✓ built in 8.16s
+✓ built in 5.51s
+[33m[PLUGIN_TIMINGS] [0mJavaScript callbacks ran for 5.2s of this 5.5s build (95%).
+The slowest callbacks, timed inside each callback (the wait before a callback starts is excluded, the time it awaits is included):
+  - plugin react-router:virtual-modules load (94%, 5.2s, 3238 calls)
+  - plugin babel-plugin transform (69%, 3.8s, 3239 calls)
+  - plugin @tailwindcss/vite:generate:build transform (54%, 2.9s, 29 calls)
+These rows add up to more than the total. Callbacks can overlap, so the same time counts for more than one row.
+1 callback is listed without a time. Its calls overlapped, so the time inside one call includes work from other calls. To find its cost, profile the build with `node --cpu-prof`:
+  - plugin vite:css transform (29 calls)
+See https://rolldown.rs/reference/InputOptions.checks#bundlertimings for more details.
+
 $ playwright test
 [WebServer] $ cd apps/web && vite preview --host 127.0.0.1 --port 4187 --strictPort
-[WebServer] (node:2056361) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (node:25595) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
 [WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
-[WebServer] Default inspector port 9229 not available, using 9231 instead
+[WebServer] Default inspector port 9229 not available, using 9230 instead
 [WebServer]
 
-Running 22 tests using 1 worker
+Running 28 tests using 1 worker
 
-(node:2056453) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(node:25672) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
 (Use `node --trace-warnings ...` to show where the warning was created)
-  ✓   1 apps/web/e2e/fonts.spec.ts:25:1 › imported font actually loads on canvas, remains embedded in HTML and survives reload (3.4s)
-  ✓   2 apps/web/e2e/hydration.spec.ts:7:3 › SSR document hydration replaces the loading screen at 1440px after direct open and reload (1.2s)
-  ✓   3 apps/web/e2e/hydration.spec.ts:7:3 › SSR document hydration replaces the loading screen at 390px after direct open and reload (1.1s)
-  ✓   4 apps/web/e2e/layers.spec.ts:8:1 › layers multi-select → group appearance/movement → lock/hide/undo → persisted text/visual editing (5.0s)
-  ✓   5 apps/web/e2e/layers.spec.ts:14:1 › shape picker → drawn canvas shape → brightness/blur/gradient → faithful portable HTML (3.3s)
-  ✓   6 apps/web/e2e/layers.spec.ts:20:1 › synthetic image upload → crop and pointer resize → persistent visual document (2.9s)
-  ✓   7 apps/web/e2e/render.spec.ts:3:1 › portable CLI HTML renders the same synthetic CV independently of the application (408ms)
-  ✓   8 apps/web/e2e/resilience.spec.ts:5:1 › browser IndexedDB v1 migration survives reopen and offline editing (2.0s)
-  ✓   9 apps/web/e2e/resilience.spec.ts:83:1 › storage denial yields actionable error without creating a project (889ms)
-  ✓  10 apps/web/e2e/resilience.spec.ts:107:1 › measured editor opening and text-input latency on a synthetic document (1.8s)
-  ✓  11 apps/web/e2e/resilience.spec.ts:149:1 › mobile editor keeps the canvas visible and opens one contextual panel at a time (1.5s)
-  ✓  12 apps/web/e2e/resilience.spec.ts:199:1 › two browser tabs cannot overwrite a newer save and can still export the unsaved edit (2.9s)
-  ✓  13 apps/web/e2e/resilience.spec.ts:245:1 › a proposal preview becomes stale after a human canvas edit and requires fresh review (1.9s)
-  ✓  14 apps/web/e2e/resilience.spec.ts:288:1 › editor intent preloads code without creating a resume; one click creates exactly one record (1.3s)
-  ✓  15 apps/web/e2e/resilience.spec.ts:331:1 › dashboard resumes real work and supports search, sorting and list view (2.2s)
-  ✓  16 apps/web/e2e/source.spec.ts:4:1 › HTML and React sources share validated history, sandbox preview and portable export (5.6s)
-  ✓  17 apps/web/e2e/source.spec.ts:116:1 › React template opens as editable TSX and compiler errors preserve the saved preview (2.3s)
-  ✓  18 apps/web/e2e/workflows.spec.ts:76:1 › SSR public pages and nested routes return meaningful server HTML; hydration is clean (1.2s)
-  ✓  19 apps/web/e2e/workflows.spec.ts:108:1 › human editor → save/reload → agent preview/undo → project lifecycle → JSON import (9.6s)
-  ✓  20 apps/web/e2e/workflows.spec.ts:243:1 › visual desktop/mobile screenshots, rendered DOM/CSS and real canvas (3.4s)
-  ✓  21 apps/web/e2e/workflows.spec.ts:337:1 › block CRUD, style updates and keyboard history share engine semantics (3.4s)
-  ✓  22 apps/web/e2e/workflows.spec.ts:426:1 › invalid imports and command proposals leave persisted documents intact (1.6s)
+  ✓   1 apps/web/e2e/dashboard.spec.ts:7:3 › dashboard and templates share persistent navigation at 1440px (1.3s)
+  ✓   2 apps/web/e2e/dashboard.spec.ts:7:3 › dashboard and templates share persistent navigation at 390px (1.0s)
+  ✓   3 apps/web/e2e/fonts.spec.ts:25:1 › imported font actually loads on canvas, remains embedded in HTML and survives reload (2.1s)
+  ✓   4 apps/web/e2e/hydration.spec.ts:7:3 › SSR document hydration replaces the loading screen at 1440px after direct open and reload (1.0s)
+  ✓   5 apps/web/e2e/hydration.spec.ts:7:3 › SSR document hydration replaces the loading screen at 390px after direct open and reload (923ms)
+  ✓   6 apps/web/e2e/layers.spec.ts:8:1 › layers multi-select → group appearance/movement → lock/hide/undo → persisted text/visual editing (3.7s)
+  ✓   7 apps/web/e2e/layers.spec.ts:14:1 › shape picker → drawn canvas shape → brightness/blur/gradient → faithful portable HTML (3.3s)
+  ✓   8 apps/web/e2e/layers.spec.ts:20:1 › synthetic image upload → crop and pointer resize → persistent visual document (3.2s)
+  ✓   9 apps/web/e2e/render.spec.ts:3:1 › portable CLI HTML renders the same synthetic CV independently of the application (230ms)
+  ✓  10 apps/web/e2e/resilience.spec.ts:6:1 › browser IndexedDB v1 migration survives reopen and offline editing (1.8s)
+  ✓  11 apps/web/e2e/resilience.spec.ts:84:1 › storage denial yields actionable error without creating a project (467ms)
+  ✓  12 apps/web/e2e/resilience.spec.ts:108:1 › measured editor opening and text-input latency on a synthetic document (1.2s)
+  ✓  13 apps/web/e2e/resilience.spec.ts:150:1 › mobile editor keeps the canvas and both composition and properties available (607ms)
+  ✓  14 apps/web/e2e/resilience.spec.ts:203:1 › two browser tabs cannot overwrite a newer save and can still export the unsaved edit (2.2s)
+  ✓  15 apps/web/e2e/resilience.spec.ts:249:1 › a proposal preview becomes stale after a human history edit and requires fresh review (2.8s)
+  ✓  16 apps/web/e2e/resilience.spec.ts:303:1 › editor intent preloads code without creating a resume; one click creates exactly one record (911ms)
+  ✓  17 apps/web/e2e/resilience.spec.ts:346:1 › dashboard centers previews, opens an eye preview and supports search, sorting and list view (3.2s)
+  ✓  18 apps/web/e2e/source.spec.ts:5:1 › HTML and React sources share validated history, sandbox preview and portable export (5.8s)
+  ✓  19 apps/web/e2e/source.spec.ts:129:1 › React template opens as editable TSX and compiler errors preserve the saved preview (2.9s)
+  ✓  20 apps/web/e2e/workflows.spec.ts:77:1 › SSR public pages and nested routes return meaningful server HTML; hydration is clean (714ms)
+  ✓  21 apps/web/e2e/workflows.spec.ts:112:1 › human editor → save/reload → agent preview/undo → project lifecycle → JSON import (8.3s)
+  ✓  22 apps/web/e2e/workflows.spec.ts:246:1 › visual desktop/mobile screenshots, rendered DOM/CSS and real canvas (2.0s)
+  ✓  23 apps/web/e2e/workflows.spec.ts:340:1 › block CRUD, style updates and keyboard history share engine semantics (2.9s)
+  ✓  24 apps/web/e2e/workflows.spec.ts:425:1 › invalid imports and proposals are atomic; validated commands can rename a persisted project (2.5s)
+  ✓  25 apps/web/e2e/workspace.spec.ts:10:1 › permanent panels and native styled text editing preserve content across reload (1.8s)
+  ✓  26 apps/web/e2e/workspace.spec.ts:89:3 › Ctrl-wheel anchors canvas zoom and keeps permanent panels at 1440px (1.4s)
+  ✓  27 apps/web/e2e/workspace.spec.ts:89:3 › Ctrl-wheel anchors canvas zoom and keeps permanent panels at 390px (1.3s)
+  ✓  28 apps/web/e2e/workspace.spec.ts:162:1 › appearance settings persist both themes and use the preset interface fonts (2.5s)
 
-  22 passed (1.1m)
+  28 passed (1.1m)

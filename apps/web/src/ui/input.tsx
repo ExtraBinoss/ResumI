@@ -3,6 +3,7 @@ import {
   type CSSProperties,
   type InputHTMLAttributes,
   type ReactNode,
+  type Ref,
   type TextareaHTMLAttributes,
 } from "react";
 import { classes, layoutStyle, type LayoutProps, type Size } from "./shared";
@@ -53,7 +54,7 @@ export type TextInputProps = Omit<
   InputHTMLAttributes<HTMLInputElement>,
   "size"
 > &
-  FieldProps;
+  FieldProps & { ref?: Ref<HTMLInputElement> };
 export function TextInput({
   id: givenId,
   label,
@@ -112,7 +113,9 @@ export function TextInput({
           aria-invalid={!!error || undefined}
         />
         {rightSection && (
-          <span className={styles.inputRight}>{rightSection}</span>
+          <span className={styles.inputRight} data-ui="input-right">
+            {rightSection}
+          </span>
         )}
       </div>
     </Field>
@@ -179,48 +182,6 @@ export function Textarea({
         }}
       />
     </Field>
-  );
-}
-type NumberInputProps = Omit<
-  TextInputProps,
-  "onChange" | "value" | "defaultValue" | "type"
-> & {
-  value?: string | number;
-  defaultValue?: number;
-  onChange?: (value: string | number) => void;
-  suffix?: string;
-  hideControls?: boolean;
-  decimalScale?: number;
-};
-export function NumberInput({
-  onChange,
-  suffix,
-  hideControls,
-  decimalScale: _decimalScale,
-  className,
-  ...props
-}: NumberInputProps) {
-  return (
-    <TextInput
-      {...props}
-      type="number"
-      inputMode="decimal"
-      className={classes(hideControls && styles.noSpinner, className)}
-      rightSection={
-        suffix ? (
-          <span className={styles.suffix}>{suffix}</span>
-        ) : (
-          props.rightSection
-        )
-      }
-      onChange={(event) =>
-        onChange?.(
-          event.currentTarget.value === ""
-            ? ""
-            : Number(event.currentTarget.value),
-        )
-      }
-    />
   );
 }
 export function FileButton({

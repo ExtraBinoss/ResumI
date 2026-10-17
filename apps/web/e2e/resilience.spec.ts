@@ -1,6 +1,7 @@
 import { test, expect } from "@playwright/test";
 import { createResume } from "@resumi/cv";
 import { mkdir, writeFile } from "node:fs/promises";
+import { closeDialog, openCommands } from "./helpers/editor";
 
 test("browser IndexedDB v1 migration survives reopen and offline editing", async ({
   page,
@@ -146,7 +147,7 @@ test("measured editor opening and text-input latency on a synthetic document", a
   expect(errors).toEqual([]);
 });
 
-test("mobile editor keeps the canvas visible and opens one contextual panel at a time", async ({
+test("mobile editor keeps the canvas and both composition and properties available", async ({
   page,
 }) => {
   await page.setViewportSize({ width: 390, height: 844 });
@@ -155,27 +156,30 @@ test("mobile editor keeps the canvas visible and opens one contextual panel at a
     page.locator('.resume[aria-label="Resume canvas"]'),
   ).toBeVisible();
   await expect(page.locator("body main.recovery")).toHaveCount(0);
-  await expect(page.locator("#app > main")).toHaveCount(1);
+  await expect(page.locator("#app main")).toHaveCount(1);
   await expect(
-    page.getByRole("complementary", { name: "Document structure" }),
-  ).toHaveCount(0);
+    page.getByRole("complementary", { name: "Layers panel" }),
+  ).toBeVisible();
   await expect(
     page.getByRole("complementary", { name: "Properties inspector" }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("button", { name: /^Toggle (outline|properties)$/ }),
   ).toHaveCount(0);
-  await page.getByRole("button", { name: "Toggle outline" }).click();
   await page.getByRole("button", { name: "Outline", exact: true }).click();
   await expect(
     page.getByRole("complementary", { name: "Document structure" }),
   ).toBeVisible();
   await page.getByRole("button", { name: "Profile 2", exact: true }).click();
-  await page.getByRole("button", { name: "Toggle properties" }).click();
   await expect(
     page.getByRole("complementary", { name: "Document structure" }),
-  ).toHaveCount(0);
+  ).toBeVisible();
   await expect(
     page.getByRole("textbox", { name: "Section title" }),
   ).toBeVisible();
-  await page.getByRole("button", { name: "Close properties" }).click();
+  await expect(
+    page.getByRole("complementary", { name: "Properties inspector" }),
+  ).toBeVisible();
   await page.screenshot({
     path: "artifacts/visual/editor-mobile.png",
     fullPage: true,
@@ -242,28 +246,38 @@ test("two browser tabs cannot overwrite a newer save and can still export the un
   await other.close();
 });
 
-test("a proposal preview becomes stale after a human canvas edit and requires fresh review", async ({
+test("a proposal preview becomes stale after a human history edit and requires fresh review", async ({
   page,
 }) => {
   await page.goto("/editor");
   await expect(
     page.locator('.resume[aria-label="Resume canvas"]'),
   ).toBeVisible();
-  await page.getByRole("button", { name: "Teammate", exact: true }).click();
-  await page.getByRole("button", { name: "Load a working example" }).click();
-  await page.getByRole("button", { name: "Validate & preview" }).click();
-  await expect(
-    page.getByRole("button", { name: "Apply changes", exact: true }),
-  ).toBeEnabled();
   await page
     .getByRole("button", { name: "Edit heading: Alex Morgan", exact: true })
     .dblclick();
   await page
     .getByRole("textbox", { name: "Edit text on canvas" })
-    .fill("Human change after preview");
+    .fill("Human edit before review");
   await page
     .getByRole("textbox", { name: "Edit text on canvas" })
     .press("Control+Enter");
+  await expect(
+    page.getByRole("heading", {
+      name: "Human edit before review",
+      exact: true,
+    }),
+  ).toBeVisible();
+  await openCommands(page);
+  await page.getByRole("button", { name: "Load example", exact: true }).click();
+  await page.getByRole("button", { name: "Validate & preview" }).click();
+  await expect(
+    page.getByRole("button", { name: "Apply changes", exact: true }),
+  ).toBeEnabled();
+  await page
+    .getByRole("button", { name: "Validate & preview", exact: true })
+    .focus();
+  await page.keyboard.press("Control+z");
   await expect(
     page.getByRole("button", { name: "Apply changes", exact: true }),
   ).toBeDisabled();
@@ -274,15 +288,16 @@ test("a proposal preview becomes stale after a human canvas edit and requires fr
   await page
     .getByRole("button", { name: "Apply changes", exact: true })
     .click();
+  await closeDialog(page, "Import commands");
   await expect(
     page.getByRole("heading", {
-      name: "Human change after preview",
+      name: "Alex Morgan",
       exact: true,
     }),
   ).toBeVisible();
   await expect(
     page.locator('.resume[aria-label="Resume canvas"]'),
-  ).toContainText("I design thoughtful digital products");
+  ).toContainText("Product designer focused on accessible software.");
 });
 
 test("editor intent preloads code without creating a resume; one click creates exactly one record", async ({
@@ -328,7 +343,7 @@ test("editor intent preloads code without creating a resume; one click creates e
   ).toHaveCount(0);
 });
 
-test("dashboard resumes real work and supports search, sorting and list view", async ({
+test("dashboard centers previews, opens an eye preview and supports search, sorting and list view", async ({
   page,
 }) => {
   await page.goto("/editor");
@@ -337,11 +352,43 @@ test("dashboard resumes real work and supports search, sorting and list view", a
   ).toBeVisible();
   await page.getByRole("button", { name: "Back to projects" }).click();
   await expect(
-    page.getByRole("heading", { name: "Your workspace.", exact: true }),
+    page.getByRole("heading", { name: "Your resumes", exact: true }),
   ).toBeVisible();
   await expect(
-    page.getByRole("link", { name: "Continue editing", exact: true }),
+    page.getByRole("link", { name: "Open Alex Morgan — Resume", exact: true }),
   ).toBeVisible();
+  const card = page.getByRole("link", {
+    name: "Open Alex Morgan — Resume",
+    exact: true,
+  });
+  const cardBounds = await card.boundingBox();
+  const paperBounds = await card.locator(".resume").boundingBox();
+  expect(cardBounds).toBeTruthy();
+  expect(paperBounds).toBeTruthy();
+  expect(
+    Math.abs(
+      cardBounds!.x +
+        cardBounds!.width / 2 -
+        (paperBounds!.x + paperBounds!.width / 2),
+    ),
+  ).toBeLessThan(2);
+  await card.hover();
+  await page
+    .getByRole("button", { name: "Preview Alex Morgan — Resume", exact: true })
+    .click();
+  const preview = page.getByRole("dialog", {
+    name: "Alex Morgan — Resume",
+    exact: true,
+  });
+  await expect(preview).toBeVisible();
+  await expect(preview.locator(".resume")).toContainText("Alex Morgan");
+  const previewBounds = await preview.locator(".resume").boundingBox();
+  expect(previewBounds!.width).toBeGreaterThan(paperBounds!.width);
+  await expect(
+    preview.getByRole("link", { name: "Edit resume", exact: true }),
+  ).toBeVisible();
+  await page.keyboard.press("Escape");
+  await expect(preview).toHaveCount(0);
   await page
     .getByRole("button", {
       name: "Actions for Alex Morgan — Resume",
@@ -369,7 +416,10 @@ test("dashboard resumes real work and supports search, sorting and list view", a
   await expect(page.getByRole("link", { name: /^Open / })).toHaveCount(1);
   await page.getByRole("textbox", { name: "Search resumes" }).fill("");
   await page
-    .getByRole("link", { name: "Continue editing", exact: true })
+    .getByRole("link", {
+      name: "Open Alex Morgan — Resume (copy)",
+      exact: true,
+    })
     .click();
   await expect(
     page.getByRole("article", { name: "Resume canvas" }),

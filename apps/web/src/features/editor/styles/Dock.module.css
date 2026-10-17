@@ -1,0 +1,138 @@
+.position {
+  position: absolute;
+  z-index: 15;
+  left: 50%;
+  bottom: 16px;
+  transform: translateX(-50%);
+  max-width: calc(100% - 20px);
+  width: max-content;
+}
+.dock {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
+  background: var(--panel);
+  backdrop-filter: blur(24px) saturate(1.25);
+  box-shadow:
+    var(--material-highlight),
+    0 4px 12px rgb(0 0 0 / 8%),
+    0 14px 32px rgb(0 0 0 / 8%);
+  white-space: nowrap;
+}
+.dock :global([data-ui="button"]) {
+  border-radius: 7px;
+  --ai-size: 32px;
+}
+.rule {
+  width: 1px;
+  height: 22px;
+  background: var(--line);
+  margin: 0 3px;
+  flex-shrink: 0;
+}
+.toolGroup {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+.modeSwitch {
+  display: flex;
+  padding: 2px;
+  border-radius: 8px;
+  background: var(--segment-bg);
+}
+.modeSwitch button {
+  position: relative;
+  isolation: isolate;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 0 8px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--faint);
+  cursor: pointer;
+  font-size: 12px;
+}
+.modeSwitch button[aria-pressed="true"] {
+  color: var(--ink);
+  background: transparent;
+}
+.modeHighlight {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--segment-selected);
+  border-radius: 6px;
+  box-shadow: var(--segment-shadow);
+}
+.shortcutLabel {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-size: 12px;
+}
+.dock .zoom {
+  width: 64px;
+  flex: 0 0 64px;
+}
+.zoom input {
+  height: 30px;
+  border: 1px solid transparent;
+  background: transparent;
+  font-size: 12px;
+  padding: 0 5px;
+  text-align: center;
+  font-weight: 600;
+}
+.zoom input:hover {
+  border-color: var(--line-strong);
+  background: var(--surface-raised);
+}
+@media (max-width: 850px) {
+  .dock {
+    flex-wrap: wrap;
+    justify-content: center;
+    max-width: calc(100vw - 20px);
+    gap: 2px;
+  }
+  .dock :global([data-ui="button"]) {
+    --ai-size: 28px;
+  }
+  .toolGroup {
+    gap: 0;
+  }
+  .rule {
+    margin-inline: 1px;
+  }
+  .modeSwitch button {
+    padding-inline: 6px;
+    font-size: 12px;
+  }
+  .dock .zoom {
+    width: 48px;
+    flex-basis: 48px;
+  }
+}
+
+@media (max-width: 700px) {
+  .position {
+    bottom: calc(40vh + 22px);
+  }
+}
+
+.dockSection {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+.dock :global(button:focus-visible) {
+  outline-offset: -2px;
+}

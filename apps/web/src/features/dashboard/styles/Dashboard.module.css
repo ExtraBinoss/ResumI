@@ -1,0 +1,442 @@
+.dashboard {
+  display: grid;
+  grid-template-columns: 220px minmax(0, 1fr);
+  min-height: 100dvh;
+  background: var(--background);
+}
+.sidebar {
+  position: sticky;
+  top: 0;
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  gap: 26px;
+  padding: 26px 14px 16px;
+  background: color-mix(in srgb, var(--muted) 82%, transparent);
+  border-right: 1px solid var(--line);
+  backdrop-filter: blur(18px);
+}
+.sidebar > a {
+  margin-left: 10px;
+}
+.sidebar nav,
+.mobileHeader nav {
+  display: grid;
+  gap: 5px;
+}
+.sidebar nav a,
+.mobileHeader nav a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 36px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  color: var(--muted-foreground);
+  font-size: 14px;
+  transition:
+    background 160ms,
+    color 160ms;
+}
+.sidebar nav a[aria-current],
+.mobileHeader nav a[aria-current] {
+  color: var(--foreground);
+  background: color-mix(in srgb, var(--foreground) 8%, transparent);
+  font-weight: 550;
+}
+.sidebar nav a > span,
+.mobileHeader nav a > span {
+  margin-left: auto;
+  font-size: 12px;
+  color: var(--muted-foreground);
+}
+.sidebar nav a:hover,
+.mobileHeader nav a:hover,
+.recentNav a:hover {
+  color: var(--foreground);
+  background: var(--accent);
+}
+.recentNav h2 {
+  margin: 0 0 10px 12px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--muted-foreground);
+}
+.recentNav a {
+  display: block;
+  padding: 10px 12px;
+  border-radius: 6px;
+  font-size: 13px;
+  color: var(--muted-foreground);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.sidebarFooter {
+  margin-top: auto;
+}
+.dashboardBody {
+  min-width: 0;
+}
+.main {
+  width: 100%;
+  max-width: 1370px;
+  margin: 0 auto;
+  padding: 32px 36px 48px;
+}
+.heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 30px;
+}
+.heading h1 {
+  font-size: 25px;
+  font-weight: 550;
+  letter-spacing: -0.7px;
+  margin: 0;
+}
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.actions button,
+.empty a {
+  border-radius: 8px;
+  font-size: 14px;
+}
+.mobileHeader {
+  display: none;
+}
+.listHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 22px;
+  gap: 18px;
+}
+.listHeader h2 {
+  font-size: 14px;
+  font-weight: 550;
+  margin: 0;
+  white-space: nowrap;
+}
+.listHeader h2 span {
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--muted-foreground);
+  margin-left: 8px;
+}
+.listTools {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.listTools > div:first-child {
+  width: 200px;
+  flex: 0 0 200px;
+}
+.listTools .sort {
+  width: 134px;
+  flex: 0 0 134px;
+}
+.listTools :global([data-ui="input"]) {
+  font-size: 13px;
+  border-radius: 8px;
+  background: var(--control-bg);
+}
+.sort :global([data-slot="select-trigger"]) {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 28px;
+  min-height: 34px;
+}
+.sort :global([data-slot="select-value"]) {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  min-width: 0;
+  line-height: 1;
+}
+.sort :global([data-slot="select-trigger"] > svg) {
+  position: absolute;
+  right: 9px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 22px;
+}
+.project {
+  position: relative;
+  min-width: 0;
+  overflow: hidden;
+  border-radius: 8px;
+  background: var(--background);
+  box-shadow:
+    0 0 0 1px var(--line),
+    0 3px 10px rgb(0 0 0 / 2%);
+}
+.projectLink {
+  display: block;
+  position: relative;
+  aspect-ratio: 0.79;
+  min-height: 330px;
+  overflow: hidden;
+}
+.projectLink:focus-visible {
+  outline-offset: -3px;
+  border-radius: 8px;
+}
+.thumbnail {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: color-mix(in srgb, var(--surface) 90%, var(--line));
+}
+.miniPaper {
+  height: 100%;
+  aspect-ratio: 794 / 1123;
+  max-width: 100%;
+  flex-shrink: 0;
+  pointer-events: none;
+  background: #fff;
+  box-shadow:
+    0 2px 7px rgb(0 0 0 / 4%),
+    0 10px 24px rgb(0 0 0 / 5%);
+}
+.projectInfo {
+  position: absolute;
+  inset: auto 0 0;
+  z-index: 1;
+  padding: 58px 16px 16px;
+  color: #fff;
+  background: linear-gradient(
+    transparent,
+    rgb(0 0 0 / 58%) 70%,
+    rgb(0 0 0 / 72%)
+  );
+}
+.projectInfo h3 {
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 550;
+  margin: 0 74px 6px 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.projectInfo p {
+  font-size: 12px;
+  line-height: 16px;
+  color: rgb(255 255 255 / 72%);
+  margin: 0;
+}
+.previewButton,
+.menu {
+  position: absolute;
+  z-index: 2;
+  bottom: 33px;
+}
+.project .previewButton,
+.project .menu button {
+  width: 30px;
+  height: 30px;
+  min-height: 30px;
+  padding: 0;
+  border: 1px solid rgb(255 255 255 / 12%);
+  border-radius: 6px;
+  background: rgb(255 255 255 / 10%);
+  color: #fff;
+  backdrop-filter: blur(8px);
+}
+.project .previewButton {
+  right: 49px;
+}
+.menu {
+  right: 12px;
+}
+.project .previewButton:hover,
+.project .menu button:hover {
+  background: rgb(255 255 255 / 24%);
+  color: #fff;
+}
+.empty {
+  min-height: 340px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  color: var(--muted-foreground);
+  border: 1px dashed var(--line);
+  border-radius: 8px;
+  padding: 30px;
+  gap: 18px;
+}
+.empty h2 {
+  font-size: 17px;
+  color: var(--foreground);
+  font-weight: 500;
+  margin: 0;
+}
+.listView {
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+.listView .projectLink {
+  min-height: 105px;
+  aspect-ratio: auto;
+  height: 105px;
+}
+.listView .thumbnail {
+  width: 112px;
+  padding: 10px;
+}
+.listView .projectInfo {
+  inset: 0 90px 0 132px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background: none;
+  color: var(--foreground);
+  padding: 0;
+}
+.listView .projectInfo h3 {
+  margin-right: 0;
+}
+.listView .projectInfo p {
+  color: var(--muted-foreground);
+}
+.listView .previewButton,
+.listView .menu {
+  top: 27px;
+  bottom: auto;
+}
+.listView .previewButton,
+.listView .menu button {
+  color: var(--muted-foreground);
+  background: var(--background);
+  border-color: var(--line);
+}
+.previewScroller {
+  max-height: min(72dvh, 1123px);
+  overflow: auto;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+.previewPage {
+  width: 100%;
+  max-width: 794px;
+  aspect-ratio: 794 / 1123;
+  margin: 0 auto;
+  background: #fff;
+}
+.previewFooter {
+  display: flex;
+  justify-content: flex-end;
+}
+@media (max-width: 1250px) {
+  .dashboard {
+    grid-template-columns: 200px minmax(0, 1fr);
+  }
+  .main {
+    padding: 40px 30px;
+  }
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .listView {
+    grid-template-columns: 1fr;
+  }
+  .listTools > div:first-child {
+    width: 160px;
+    flex-basis: 160px;
+  }
+}
+@media (max-width: 900px) {
+  .dashboard {
+    grid-template-columns: 1fr;
+  }
+  .sidebar {
+    display: none;
+  }
+  .mobileHeader {
+    display: block;
+    padding: 22px 30px 0;
+  }
+  .mobileBrand {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+  }
+  .mobileHeader nav {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    margin-top: 20px;
+  }
+  .main {
+    padding-top: 32px;
+  }
+}
+@media (max-width: 600px) {
+  .mobileHeader {
+    padding: 22px 22px 0;
+  }
+  .main {
+    padding: 30px 22px;
+  }
+  .heading {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 22px;
+    margin-bottom: 30px;
+  }
+  .heading h1 {
+    font-size: 27px;
+  }
+  .listHeader {
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .listTools {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    width: 100%;
+    gap: 8px;
+  }
+  .listTools > div:first-child {
+    grid-column: 1 / -1;
+    width: 100%;
+  }
+  .listTools .sort {
+    width: 100%;
+  }
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  .projectLink {
+    min-height: 390px;
+    aspect-ratio: 0.84;
+  }
+  .listView .projectLink {
+    min-height: 105px;
+  }
+  .listView .projectInfo {
+    left: 112px;
+  }
+  .listView .thumbnail {
+    width: 94px;
+  }
+}

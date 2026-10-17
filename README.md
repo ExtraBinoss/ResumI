@@ -1,24 +1,22 @@
 # ResumI
 
-**Your resume just got a new teammate.**
-
-ResumI by Plinka is an engine-first, agent-native document editing platform. People work on a real HTML/CSS resume canvas; agents use the same validated TypeScript commands through a CLI or a reviewed JSON proposal. One engine owns document meaning. The workspace is local-first and provider-independent.
+ResumI is a resume editor with a shared TypeScript command engine. Edit on the canvas or apply reviewed agent commands. Documents are stored locally and export as JSON or standalone HTML.
 
 ## What works today
 
 - Real SSR landing and template catalog, with repository-authored React templates and visual / React starters.
-- A local dashboard with actual document previews, continue editing, search, sorting, grid/list, rename, duplication, deletion and JSON import/export.
-- A floating workspace inspired by the original cv-creator: selection, text, image, shapes/icons, Visual / Text / Code and zoom in its bottom dock.
+- A shared dashboard/template layout with centered previews, an eye button for a larger preview, search, sorting, grid/list, rename, duplication, deletion and JSON import/export.
+- Permanent composition and properties panels, a compact project menu and a bottom dock with selection, text, image, shapes/icons, Visual / Text and zoom.
 - Freeform A4 layers: drag, resize, snapping guides, Space to pan, Shift multiselection, flat groups, z-order, visibility, locks, opacity and blend modes.
-- Detailed typography and inline ranges/links; embedded fonts; shapes with gradients and strokes; image cropping; blur, grain, dither, brightness, contrast and saturation.
+- Detailed typography and inline ranges/links; embedded fonts; shape gradients and strokes; image cropping and borders; image/shape shadows, blur, grain, dither, brightness, contrast and saturation. Selected text also has a conservative AA/AAA contrast inspection.
 - A synchronized Text workspace for the same canonical layer text. Structured resumes saved by the first version still open and remain editable.
-- HTML / React source editing with an isolated preview, source import/export and offline self-contained HTML, including React hooks. [Source contract](docs/code-templates.md).
-- Shared runtime-validated human/agent commands, atomic batches, attributed undo/redo, CLI and Teammate proposal review with actual rendered changes.
+- HTML / React authoring through **project menu → Edit source**, with isolated preview, source import/export and offline self-contained HTML. [Source contract](docs/code-templates.md).
+- Runtime-validated human/agent commands, atomic batches, attributed undo/redo, CLI and **project menu → Import commands** with preview before applying. Agents can rename the project with `document.update`.
+- Shared scroll shadows, keyboard hints, Motion transitions and light/dark/system appearance settings.
+- A macOS-inspired control system: coherent light/dark materials, centered document title, segmented controls, native numeric editing with themed steppers and restrained menus.
 - JSON backups, real HTML export and browser printing for canvas documents; source documents export HTML for printing from the standalone file.
 
-Shortcuts: ⌘/Ctrl Z / Shift Z / Ctrl Y, ⌘/Ctrl G / Shift G to group/ungroup, ⌘/Ctrl D to duplicate, arrows to nudge (Shift = 10px), V / T for tools. Direct text: double-click or Enter; Escape cancels, ⌘/Ctrl Enter or blur commits.
-
-Brand marks for Claude Code, Codex and Grok identify **CLI/file compatibility**. No provider inference, native integration, partnership, MCP or WebMCP connection is claimed. See [asset provenance](docs/brand-assets.md).
+Shortcuts: ⌘/Ctrl Z / Shift Z / Ctrl Y, ⌘/Ctrl G / Shift G to group/ungroup, ⌘/Ctrl D to duplicate, arrows to nudge (Shift = 10px), V / T for tools. Double-click or Enter edits text in place; ⌘/Ctrl Enter, Escape or blur commits. Space + drag or the middle mouse button pans; ⌘/Ctrl + wheel zooms around the pointer.
 
 ## Run locally
 
@@ -35,17 +33,28 @@ No credentials or environment file is required. `/` and `/templates` are public 
 
 ## Architecture
 
-Stack: strict TypeScript, **React 19**, Bun workspaces, **Vite + React Router framework SSR**, Cloudflare Vite plugin, **shadcn/ui with Base UI**, **Jotai**, **Lucide** and React Compiler. Official CLI-generated components use Tailwind v4; application layouts use CSS Modules and shared tokens. Controls remain editable in `apps/web/src/components/ui`; lightweight CSS focus/hover transitions respect reduced motion.
+Stack: strict TypeScript, **React 19**, Bun workspaces, **Vite + React Router framework SSR**, Cloudflare Vite plugin, **shadcn/ui with Base UI**, **Jotai**, **Lucide**, **Motion** and React Compiler. The UI uses the Base UI Luma preset with neutral surfaces, Blue-600 `#2563EB`, 6–8px UI radii, Source Sans 3 and Space Grotesk. Generated components use Tailwind v4; application layouts use CSS Modules and shared tokens. CV typography remains document data, independent of UI fonts.
 
 ```text
 apps/web/
   app/                     SSR routes, root, client hydration
   workers/                 Workers request handler
-  src/components/          Brand and shared preview presentation
-  src/features/            Projects, canvas, inspector, command review
-  src/state/               Canonical Jotai session and granular selectors
-  src/lib/                 Typed IndexedDB repository and file handoff
-  src/styles/              CSS Modules and design tokens
+  src/features/
+    dashboard/             Shared layout, project list, templates, styles/
+    editor/                Workspace composition and styles/
+      components/          Topbar, dock, project menu and dialogs
+      panels/              Composition, properties and text controls
+      agent/               Command review and rendered diff
+      source/              HTML/React source dialog and source preview
+      text/                Text workspace
+    canvas/                Rendering, gestures, palettes and styles/
+  src/components/          Shared previews, settings, ScrollShadow, Shortcut
+    ui/                    Editable shadcn/Base UI primitives
+    reui/                  CLI-imported Base UI color picker
+  src/ui/                  Small adapters over generated UI components
+  src/state/               Canonical session, selectors, interaction state/theme
+  src/lib/                 IndexedDB repository, files and shared utilities
+  src/styles/              Global tokens and public-page CSS Modules
   test/                    Mirrored browser-adapter unit tests
   e2e/                     Production-runtime Playwright workflows
 packages/
@@ -60,7 +69,7 @@ tasks/                     Numbered execution plan and master checklist
 docs/                      Architecture, command contract, ADRs, verification
 ```
 
-The generic engine knows normalized sections, blocks, styles and invariants, not React or employment history. The CV package adds resume defaults and rendering. A per-editor Jotai store holds one canonical engine session; derived block atoms receive only relevant changes. Persistence is an adapter, not another document engine. [Architecture and ownership](docs/architecture.md) · [Engine/CLI contract](docs/engine.md) · [Foundation decision and V1 audit](docs/decisions/001-foundation.md).
+The engine owns normalized document rules; the CV package owns resume defaults and portable rendering. The editor composes panels and canvas, the canvas owns gestures, and the dashboard owns project browsing. Feature CSS lives beside its feature. A per-editor Jotai store holds one canonical session; persistence remains an adapter. [Architecture and ownership](docs/architecture.md) · [Engine/CLI contract](docs/engine.md).
 
 ## CLI and agent handoff
 
@@ -81,7 +90,7 @@ Example `patch.json`:
   "version": 1,
   "actor": { "kind": "agent", "name": "Codex" },
   "commands": [
-    { "type": "document.update", "name": "My next chapter" },
+    { "type": "document.update", "name": "Design application" },
     { "type": "style.update", "patch": { "accent": "#334e68" } }
   ]
 }
@@ -89,7 +98,7 @@ Example `patch.json`:
 
 CLI document responses are JSON stdout; errors are JSON stderr, with exit codes 2 arguments, 3 validation, 4 file I/O. Help is plain text. Without `--out`, apply/create emit a document without overwriting input. Section/block IDs come from `inspect`; commands never execute arbitrary code or unchecked HTML.
 
-External agents cannot access private browser IndexedDB. Export a JSON document, let any CLI-capable agent inspect/edit/render it, then **import the validated JSON as a new local project**. Alternatively paste its proposed batch into Teammate, validate/preview and apply. [Detailed contract and future remote MCP/browser WebMCP boundaries](docs/engine.md).
+External agents cannot access private browser IndexedDB. Export JSON, let a CLI-capable agent inspect/edit/render it, then import the result as a new project. Alternatively open the project name menu, choose **Import commands**, paste the batch, preview and apply. [Command and transport boundaries](docs/engine.md).
 
 ## Local storage and privacy
 
@@ -116,9 +125,9 @@ bun run check                           # all required gates, including cold dev
 
 The coverage runner imports every engine source before measuring so untested modules cannot disappear. Bun currently reports lines/functions, not branch coverage. The generic recursive source scanner includes future workspaces, `.ts/.tsx/.js/.jsx/.css/.mjs`, warns at 500 lines and **fails at 600**. Only generated Worker declarations are explicitly excluded in [source-policy.json](source-policy.json); dependencies/build output/artifacts are excluded by the scanner. Exclusion and 599/600 boundary tests are included. Handwritten declaration files are included unless explicitly excluded.
 
-Playwright starts the built Worker preview automatically. Run `bun run build` first after application changes. Deterministic screenshots are in [artifacts/visual](artifacts/visual/): landing/projects desktop and mobile, editor desktop and templates mobile. They were opened and visually inspected. Rendered page snapshots, actual standalone [resume HTML/CSS](artifacts/rendered/resume.html), [command schema](artifacts/rendered/commands.schema.json) and [computed canvas properties](artifacts/rendered/canvas-computed.json) are retained. Page DOM snapshots reference built assets; the resume HTML is independently portable. [Measured interaction timings](artifacts/performance/interactions.json) include Playwright overhead and are not a field performance benchmark.
+Playwright starts the built Worker preview automatically; rebuild after application changes. Visual checks write [screenshots](artifacts/visual/), rendered DOM and [computed canvas properties](artifacts/rendered/canvas-computed.json). Standalone [HTML](artifacts/rendered/resume.html) and the [command schema](artifacts/rendered/commands.schema.json) are separate portable artifacts. Inspect screenshots alongside DOM/CSS rather than relying on file existence.
 
-Creation profiling on a warmed local Vite server measured a 366ms median click-to-canvas, compared with 611ms before the creation-path changes (three fresh contexts, 250ms pointer intent, no throttling). Cold development compilation is separate. [Before](artifacts/performance/create-before.json) · [Final](artifacts/performance/create-final.json).
+[Interaction timings](artifacts/performance/interactions.json) include Playwright overhead. Earlier creation-path profiles are retained as [before](artifacts/performance/create-before.json) and [after](artifacts/performance/create-final.json) evidence; they are not a fresh benchmark of every UI revision.
 
 See [verification results](docs/verification.md), [task index](tasks/README.md) and the [master completion checklist](tasks/check-list.md). [AGENTS.md](AGENTS.md) enforces engine ownership, React performance rules, genuine external-system effects, stable atoms and visual review. GitHub Actions runs `bun run check` and retains evidence; remote CI results must be read from the PR separately.
 

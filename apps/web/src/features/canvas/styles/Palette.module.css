@@ -1,0 +1,51 @@
+.picker {
+  padding: 0;
+  gap: 8px;
+  background: var(--panel);
+  backdrop-filter: blur(16px) saturate(1.1);
+  border-color: var(--line-strong);
+  border-radius: var(--radius-md);
+}
+.picker header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  padding: 12px 12px 0;
+  margin-bottom: 0;
+}
+.picker header span {
+  font-size: 10px;
+  color: var(--faint);
+}
+.picker > :global([data-ui="field"]) {
+  margin: 0 12px;
+}
+.picker > div:last-child {
+  border-radius: 0 0 var(--radius-md) var(--radius-md);
+}
+.shapeGrid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 4px;
+  padding: 3px 12px 12px;
+}
+.shapeGrid button {
+  display: grid;
+  place-items: center;
+  height: 43px;
+  background: var(--muted);
+  border: 1px solid transparent;
+  border-radius: 7px;
+  cursor: pointer;
+  color: var(--ink);
+}
+.shapeGrid button:hover {
+  color: var(--primary);
+  background: var(--accent-soft);
+  border-color: color-mix(in srgb, var(--primary) 25%, var(--background));
+}
+.shapeGrid svg {
+  width: 25px;
+  height: 25px;
+}

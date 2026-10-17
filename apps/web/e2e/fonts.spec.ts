@@ -33,9 +33,6 @@ test("imported font actually loads on canvas, remains embedded in HTML and survi
     page.getByRole("article", { name: "Resume canvas" }),
   ).toBeVisible();
   await page.getByRole("button", { name: "Visual", exact: true }).click();
-  await page
-    .getByRole("button", { name: "Toggle properties", exact: true })
-    .click();
   const chooser = page.waitForEvent("filechooser");
   await page.getByRole("button", { name: "Import font", exact: true }).click();
   const bytes = await readFile(
@@ -53,9 +50,6 @@ test("imported font actually loads on canvas, remains embedded in HTML and survi
       .getByRole("complementary", { name: "Properties inspector" })
       .getByText("Interface", { exact: true }),
   ).toBeVisible();
-  await page
-    .getByRole("button", { name: "Toggle outline", exact: true })
-    .click();
   await page
     .getByRole("button", { name: "Select layer Name", exact: true })
     .click();

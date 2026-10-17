@@ -1,0 +1,57 @@
+.canvasArea {
+  flex: 1;
+  min-width: 0;
+  overflow: auto;
+  padding: 102px 270px 90px 250px;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  background: var(--workspace);
+  background-image: radial-gradient(var(--canvas-dot) 0.7px, transparent 0.7px);
+  background-size: 18px 18px;
+}
+.pageBounds {
+  position: relative;
+  flex-shrink: 0;
+  margin: 0 auto;
+}
+.canvasPaper {
+  box-shadow: 0 3px 18px #1b273a10;
+  transform-origin: top left;
+}
+.canvasSection {
+  cursor: pointer;
+  border-radius: 2px;
+}
+.canvasSection::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+  inset: -7px -10px;
+  border: 1px solid transparent;
+  border-radius: 3px;
+}
+.canvasSection:hover::after {
+  border-color: color-mix(in srgb, var(--primary) 25%, var(--background));
+}
+.canvasSection.selected::after {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 1px var(--accent-soft);
+}
+.editableBlock > div {
+  border-radius: 1px;
+  outline-offset: 2px;
+}
+.editableBlock > div:hover {
+  background: color-mix(in srgb, var(--primary) 2%, transparent);
+}
+.emptyCanvas {
+  color: var(--muted-foreground);
+  font-size: 14px;
+  margin: 20px 0;
+}
+@media (max-width: 700px) {
+  .canvasArea {
+    padding: 85px 16px calc(40vh + 78px);
+  }
+}

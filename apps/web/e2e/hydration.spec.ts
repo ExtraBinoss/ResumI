@@ -26,13 +26,13 @@ for (const viewport of [
         }),
       ).toHaveCount(0);
       await expect(page.getByRole("main")).toHaveCount(1);
-      await expect(page.locator("#app > main")).toHaveCount(1);
+      await expect(page.locator("#app main")).toHaveCount(1);
       await expect
         .poll(() =>
           page.evaluate(() => ({
             height: document.documentElement.scrollHeight,
             viewport: window.innerHeight,
-            top: document.querySelector("#app > main")?.getBoundingClientRect()
+            top: document.querySelector("#app main")?.getBoundingClientRect()
               .top,
           })),
         )

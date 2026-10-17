@@ -2,9 +2,13 @@
 
 Templates in `packages/cv/src/templates` are React components. `ResumeTemplate.tsx` renders structured Studio/Editorial documents on the server; `CodeResume.tsx` is also the editable starter for React Studio/React Editorial. Template data is supplied separately from the component. The SSR renderer is a separate `@resumi/cv/templates` entry, so creating a visual document does not load React's server renderer into the editor.
 
-The template catalog offers visual and React versions. A React template creates a normal validated document with `source: { format: "react", code: "…" }`. Visual documents expose Code in the bottom dock. Opening Code does not modify the resume: **Start with HTML** copies the current rendered layout into a draft; **Start with React** builds a TSX component with the current structured text. The React starter uses semantic content, rather than reverse-engineering arbitrary positioned layers into components.
+The catalog offers visual and React templates. A React template creates a validated document with `source: { format: "react", code: "…" }`. Open the project name menu and choose **Edit source** to author HTML/React in a dialog. The dock keeps **Visual / Text**; source is not a third workspace mode.
 
-**Apply & preview** commits one validated `source.set` command and activates it. Draft typing is local interaction state; the applied source belongs to the same Jotai session, history and IndexedDB record as other commands. Invalid TSX and failed engine validation preserve the applied preview. A source changed by another command while a draft is open must be reloaded before applying. Visual/Text deactivate the source and return to the preserved canvas; Code reactivates the saved source. The selected representation survives reload, and changing views does not delete code. There is no automatic bidirectional conversion between arbitrary source and canvas layers. **New HTML source** and **New React source** explicitly start replacement drafts from the visual layout or structured content; the saved source stays intact until Apply.
+Opening the Source dialog does not modify the resume. **Start with HTML** copies the current rendered layout into a draft; **Start with React** builds a TSX component from its structured text. This uses semantic content, not reverse-engineering of arbitrary positioned layers.
+
+**Apply & preview** compiles React drafts before publishing one validated `source.set` command and activating the source. Draft typing is local state; applied code belongs to the same Jotai session, history and IndexedDB record as other edits. Compilation or engine-validation errors preserve the applied preview. If another command changes the saved source while a draft is open, reload it before applying.
+
+Visual/Text deactivate source and return to the preserved canvas. To restore saved source, reopen **Edit source** and apply it. Activation survives reload; switching modes does not delete code. **New HTML source** and **New React source** create replacement drafts, leaving saved code intact until Apply. Arbitrary HTML/React is not converted back into editable layers.
 
 ## Source contract
 
@@ -36,7 +40,9 @@ Sucrase compiles TSX without running it. Applied source is displayed only inside
 
 `renderDocumentHtml(document)` validates the document and dispatches to the selected representation. Inactive source is preserved in JSON while HTML export renders the canvas/structured document. Active source React exports contain a bundled React/ReactDOM runtime and compiled component in one HTML file; they work offline without a CDN. The CLI compiles source but never executes user components. A standalone exported React file executes its component when opened in a browser. Printing active source is done from that exported file; the application does not write source into a same-origin popup.
 
-The source editor imports `.html`, `.htm`, `.tsx` and `.jsx` files, and exports the original `.html`/`.tsx` source or the portable rendered HTML. The normal JSON export preserves the complete document. To author through CLI, use `document apply` with `source.set`, then `document render ... --format html --out ...`. `document create --template react-studio` and `react-editorial` are available alongside the visual starters.
+The dialog imports `.html`, `.htm`, `.tsx` and `.jsx` files, and exports original source or portable rendered HTML. JSON preserves the complete document. To author through CLI, use `document apply` with `source.set`, then `document render ... --format html --out ...`. `document create --template react-studio` and `react-editorial` are available alongside visual starters. Reviewed agent batches enter through **Project menu → Import commands**.
+
+UI ownership lives in `apps/web/src/features/editor/source`, with its CSS in the adjacent editor `styles` directory. Shared isolated preview components stay in `src/components`; compilation and portable rendering stay in `packages/cv/src/source`. Feature UI never adds document rules to the engine's source contract.
 
 Run `bun scripts/build-source-runtime.ts` after updating React or `CodeResume.tsx`. It regenerates `runtime.generated.json` and `template.generated.json` from source; these are checked-in generated assets. The compiler/runtime are lazy chunks, separate from normal visual project creation.
 

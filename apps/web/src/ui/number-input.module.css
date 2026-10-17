@@ -1,0 +1,67 @@
+.number input {
+  appearance: textfield;
+  -moz-appearance: textfield;
+  font-variant-numeric: tabular-nums;
+}
+.number input::-webkit-inner-spin-button,
+.number input::-webkit-outer-spin-button {
+  appearance: none;
+  margin: 0;
+}
+.number input[data-ui="input"] {
+  padding-right: 25px;
+}
+.number:has(.suffix):has(.stepper) input[data-ui="input"] {
+  padding-right: 44px;
+}
+.number:has(.suffix):not(:has(.stepper)) input[data-ui="input"] {
+  padding-right: 18px;
+}
+.number:not(:has(.stepper)):not(:has(.suffix)) input[data-ui="input"] {
+  padding-right: 10px;
+}
+.number :global([data-ui="input-right"]) {
+  width: auto;
+  right: 4px;
+}
+.trailing {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.suffix {
+  color: var(--muted-foreground);
+  font-size: 12px;
+}
+.stepper {
+  display: grid;
+  align-content: center;
+  width: 17px;
+  height: 24px;
+  overflow: hidden;
+  border: 1px solid var(--control-border);
+  border-radius: 4px;
+  background: var(--control-bg);
+  box-shadow: var(--control-shadow);
+  pointer-events: auto;
+}
+.stepper button {
+  width: 100%;
+  height: 11px;
+  min-height: 0;
+  padding: 0;
+  border-radius: 0;
+  color: var(--ink);
+}
+.stepper button + button {
+  border-top: 1px solid var(--line);
+}
+.stepper button svg {
+  width: 10px;
+  height: 10px;
+  stroke-width: 2;
+}
+.stepper button:hover {
+  background: var(--primary);
+  color: var(--primary-foreground);
+}

@@ -48,7 +48,6 @@ async function exportHtml(page: Page) {
 
 export async function groupedLayerJourney(page: Page) {
   await createVisual(page);
-  await page.getByRole("button", { name: "Toggle outline" }).click();
   await layers(page)
     .getByRole("button", { name: "Select layer Name", exact: true })
     .click();
@@ -56,8 +55,17 @@ export async function groupedLayerJourney(page: Page) {
     .getByRole("button", { name: "Select layer Product Designer", exact: true })
     .click({ modifiers: ["Shift"] });
   await expect(
-    layers(page).getByText("2 selected", { exact: true }),
-  ).toBeVisible();
+    layers(page).getByRole("button", {
+      name: "Select layer Name",
+      exact: true,
+    }),
+  ).toHaveAttribute("aria-pressed", "true");
+  await expect(
+    layers(page).getByRole("button", {
+      name: "Select layer Product Designer",
+      exact: true,
+    }),
+  ).toHaveAttribute("aria-pressed", "true");
   await page.keyboard.press("Control+g");
   await expect(
     inspector(page).getByRole("textbox", { name: "Group name", exact: true }),
@@ -65,17 +73,34 @@ export async function groupedLayerJourney(page: Page) {
   await inspector(page)
     .getByRole("textbox", { name: "Group name", exact: true })
     .fill("Identity");
-  await inspector(page)
-    .getByRole("spinbutton", { name: "Opacity", exact: true })
+  await layers(page)
+    .getByRole("spinbutton", { name: "Selection opacity", exact: true })
     .fill("65");
   await selectOption(
     page,
-    inspector(page).getByRole("combobox", { name: "Blend mode", exact: true }),
-    "multiply",
+    layers(page).getByRole("combobox", {
+      name: "Selection blend mode",
+      exact: true,
+    }),
+    "Multiply",
   );
   const group = canvas(page).locator("[data-group-id]");
   await expect(group).toHaveCSS("opacity", "0.65");
   await expect(group).toHaveCSS("mix-blend-mode", "multiply");
+  const blend = layers(page).getByRole("combobox", {
+    name: "Selection blend mode",
+    exact: true,
+  });
+  await blend.click();
+  await page.getByRole("option", { name: "Screen", exact: true }).hover();
+  await expect(group).toHaveCSS("mix-blend-mode", "screen");
+  await page.keyboard.press("Escape");
+  await expect(group).toHaveCSS("mix-blend-mode", "multiply");
+  await page.getByRole("button", { name: "Undo", exact: true }).click();
+  await expect(group).toHaveCSS("mix-blend-mode", "normal");
+  await page.getByRole("button", { name: "Redo", exact: true }).click();
+  await expect(group).toHaveCSS("mix-blend-mode", "multiply");
+
   const name = canvas(page)
     .getByRole("button", { name: "Edit heading: Alex Morgan", exact: true })
     .locator("..");
@@ -102,7 +127,7 @@ export async function groupedLayerJourney(page: Page) {
     .getByRole("button", { name: "Lock group Identity", exact: true })
     .click();
   await expect(
-    inspector(page).getByText("Selection locked", { exact: true }),
+    inspector(page).getByText("Locked", { exact: true }),
   ).toBeVisible();
   await layers(page)
     .getByRole("button", { name: "Hide group Identity", exact: true })
@@ -112,7 +137,6 @@ export async function groupedLayerJourney(page: Page) {
   await expect(group).toHaveCount(1);
   await saved(page);
   await page.reload();
-  await page.getByRole("button", { name: "Toggle outline" }).click();
   await layers(page)
     .getByRole("button", { name: "Select group Identity", exact: true })
     .click();
@@ -122,7 +146,7 @@ export async function groupedLayerJourney(page: Page) {
     .poll(() => coordinates(name))
     .toEqual({ x: beforeName.x + 10, y: beforeName.y + 1 });
   await expect(
-    inspector(page).getByText("Selection locked", { exact: true }),
+    inspector(page).getByText("Locked", { exact: true }),
   ).toBeVisible();
   await layers(page)
     .getByRole("button", { name: "Unlock group Identity", exact: true })
@@ -177,12 +201,15 @@ export async function shapeAppearanceJourney(page: Page) {
   await inspector(page)
     .getByRole("spinbutton", { name: "Gradient angle", exact: true })
     .fill("30");
-  const endColor = inspector(page).getByRole("textbox", {
+  const endColor = inspector(page).getByRole("button", {
     name: "Gradient stop 2 color",
     exact: true,
   });
-  await endColor.fill("#123456");
-  await endColor.press("Enter");
+  await endColor.click();
+  const hex = page.getByRole("textbox", { name: "Hex", exact: true });
+  await hex.fill("#123456");
+  await hex.press("Enter");
+  await hex.press("Escape");
   const selectedShape = canvas(page).locator(`[data-layer-id="${id}"]`);
   await expect(selectedShape.locator("feGaussianBlur")).toHaveAttribute(
     "stdDeviation",
@@ -276,6 +303,38 @@ export async function imageCropJourney(page: Page) {
   await expect(image).toHaveCSS("object-fit", "contain");
   await expect(image).toHaveCSS("object-position", "25% 75%");
   await expect(image).toHaveAttribute("style", /scale\(1\.8\)/);
+  await inspector(page)
+    .getByRole("spinbutton", { name: "Border width", exact: true })
+    .fill("3");
+  await selectOption(
+    page,
+    inspector(page).getByRole("combobox", {
+      name: "Border style",
+      exact: true,
+    }),
+    "dashed",
+  );
+  await inspector(page)
+    .getByRole("button", { name: "Add shadow", exact: true })
+    .click();
+  await inspector(page)
+    .getByRole("spinbutton", { name: "Shadow blur", exact: true })
+    .fill("18");
+  await expect(imageLayer).toHaveCSS("border-width", "3px");
+  await expect(imageLayer).toHaveCSS("border-style", "dashed");
+  await expect(imageLayer).toHaveCSS(
+    "box-shadow",
+    "rgba(0, 0, 0, 0.2) 0px 8px 18px 0px",
+  );
+  const html = await exportHtml(page);
+  expect(html).toContain("border:3px dashed #151515");
+  expect(html).toContain("box-shadow:0px 8px 18px 0px #00000033");
+  await page.getByRole("button", { name: "Undo", exact: true }).click();
+  await expect(imageLayer).toHaveCSS(
+    "box-shadow",
+    "rgba(0, 0, 0, 0.2) 0px 8px 24px 0px",
+  );
+  await page.getByRole("button", { name: "Redo", exact: true }).click();
   await saved(page);
   await page.reload();
   const restored = canvas(page).locator(`[data-layer-id="${id}"]`);
@@ -283,4 +342,9 @@ export async function imageCropJourney(page: Page) {
   await expect(restored).toHaveCSS("height", `${dimensions.height}px`);
   await expect(restored.locator("img")).toHaveCSS("object-position", "25% 75%");
   await expect(restored.locator("img")).toHaveCSS("object-fit", "contain");
+  await expect(restored).toHaveCSS("border", "3px dashed rgb(21, 21, 21)");
+  await expect(restored).toHaveCSS(
+    "box-shadow",
+    "rgba(0, 0, 0, 0.2) 0px 8px 18px 0px",
+  );
 }

@@ -14,3 +14,5 @@ export * from "./canvas/marks";
 export * from "./canvas/shapes";
 
 export * from "./source/schema";
+
+export * from "./canvas/contrast";

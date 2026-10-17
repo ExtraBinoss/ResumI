@@ -1,0 +1,35 @@
+.trigger {
+  width: 100%;
+  height: 30px;
+  min-width: 0;
+  justify-content: flex-start;
+  padding: 0 8px;
+  gap: 6px;
+  font-size: 12px;
+  border-radius: var(--radius-md);
+}
+.swatch {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+}
+.value {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: left;
+}
+.popup {
+  background: var(--panel);
+  backdrop-filter: blur(16px) saturate(1.1);
+  width: 288px;
+  max-width: calc(100vw - 24px);
+}
+.loading {
+  display: block;
+  height: 180px;
+  border-radius: 6px;
+  background: var(--muted);
+}

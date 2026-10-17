@@ -6,8 +6,9 @@ import {
   useParams,
   type ClientLoaderFunctionArgs,
 } from "react-router";
-import { Button, Loader } from "../../src/ui";
-import { Editor } from "../../src/features/Editor";
+import { Button } from "../../src/ui";
+import { SharedLoading } from "../../src/components/SharedLoading";
+import { Editor } from "../../src/features/editor/Editor";
 import { projects, storageMessage } from "../../src/lib/projects";
 export const meta = () => [
   { title: "Resume workspace — ResumI" },
@@ -31,9 +32,8 @@ export async function clientLoader({
 clientLoader.hydrate = true as const;
 export function HydrateFallback() {
   return (
-    <main className="recovery">
-      <h1>Opening your resume…</h1>
-      <Loader size="sm" />
+    <main>
+      <SharedLoading page label="Opening your resume…" />
     </main>
   );
 }
@@ -51,14 +51,9 @@ export default function EditorRoute() {
   return (
     <main className="recovery">
       <h1>
-        {data.error
-          ? "Could not open your workspace."
-          : "This resume isn’t on this device."}
+        {data.error ? "Could not open your workspace." : "Resume not found"}
       </h1>
-      <p>
-        {data.error ||
-          "Local resumes belong to the browser where you created them. Import a JSON backup, or start a new chapter."}
-      </p>
+      <p>{data.error || "Import a backup or create a resume."}</p>
       <Button component={Link} to="/projects">
         Go to projects
       </Button>

@@ -291,3 +291,28 @@ test("range formatting can remove a base underline and strike without decoration
   expect(segments[0][1]).toContain("text-decoration:none");
   expect(segments[1][1]).toContain("text-decoration:underline line-through");
 });
+
+test("image border radius and shadow render identically in canvas styles and portable CSS", () => {
+  let doc = designDocument();
+  const layer = makeLayer("image", {
+    src: "data:image/png;base64,AAAA",
+    borderRadius: 12,
+    border: { width: 3, color: "#123456", style: "dotted" },
+    shadow: { x: 2, y: 6, blur: 18, spread: -1, color: "#00000040" },
+  });
+  doc = applyCommand(doc, {
+    type: "block.create",
+    sectionId: "content",
+    block: { id: "photo", kind: "image", text: "", design: layer },
+  });
+  expect(layerStyle(layer)).toMatchObject({
+    border: "3px dotted #123456",
+    borderRadius: 12,
+    boxShadow: "2px 6px 18px -1px #00000040",
+    boxSizing: "border-box",
+  });
+  const html = renderHtml(doc);
+  expect(html).toContain("border-radius:12px");
+  expect(html).toContain("border:3px dotted #123456");
+  expect(html).toContain("box-shadow:2px 6px 18px -1px #00000040");
+});

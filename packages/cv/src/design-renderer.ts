@@ -31,6 +31,22 @@ export function layerStyle(layer: Layer): Record<string, string | number> {
     transform: `rotate(${layer.rotation}deg)`,
     opacity: layer.opacity,
     mixBlendMode: layer.blendMode,
+    ...(layer.type !== "text" && layer.shadow
+      ? {
+          boxShadow: `${layer.shadow.x}px ${layer.shadow.y}px ${layer.shadow.blur}px ${layer.shadow.spread}px ${layer.shadow.color}`,
+        }
+      : {}),
+    ...(layer.type === "image"
+      ? {
+          borderRadius: layer.borderRadius,
+          ...(layer.border
+            ? {
+                border: `${layer.border.width}px ${layer.border.style} ${layer.border.color}`,
+                boxSizing: "border-box",
+              }
+            : {}),
+        }
+      : {}),
   };
   return frame;
 }
@@ -41,7 +57,7 @@ function css(style: Record<string, string | number>) {
   return Object.entries(style)
     .map(
       ([key, value]) =>
-        `${key.replace(/[A-Z]/g, (c) => `-${c.toLowerCase()}`)}:${typeof value === "number" && ["left", "top", "width", "height"].includes(key) ? `${value}px` : escape(String(value))}`,
+        `${key.replace(/[A-Z]/g, (c) => `-${c.toLowerCase()}`)}:${typeof value === "number" && ["left", "top", "width", "height", "borderRadius"].includes(key) ? `${value}px` : escape(String(value))}`,
     )
     .join(";");
 }

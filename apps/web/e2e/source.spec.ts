@@ -1,5 +1,6 @@
 import { test, expect } from "@playwright/test";
 import { readFile, mkdir } from "node:fs/promises";
+import { openSource, closeDialog } from "./helpers/editor";
 
 test("HTML and React sources share validated history, sandbox preview and portable export", async ({
   page,
@@ -9,9 +10,9 @@ test("HTML and React sources share validated history, sandbox preview and portab
   await expect(
     page.getByRole("article", { name: "Resume canvas" }),
   ).toBeVisible();
-  await page.getByRole("button", { name: "Code", exact: true }).click();
+  await openSource(page);
   await expect(
-    page.getByRole("heading", { name: "Your layout, your code." }),
+    page.getByRole("heading", { name: "HTML or React" }),
   ).toBeVisible();
   await page
     .getByRole("button", { name: "Start with HTML", exact: true })
@@ -26,19 +27,29 @@ test("HTML and React sources share validated history, sandbox preview and portab
   await page
     .getByRole("button", { name: "Apply & preview", exact: true })
     .click();
+  const sourceDialog = page.getByRole("dialog", {
+    name: "Source",
+    exact: true,
+  });
   await expect(
-    page
+    sourceDialog
       .frameLocator('iframe[title="HTML resume preview"]')
       .getByRole("heading", { name: "HTML resume", exact: true }),
   ).toBeVisible();
   expect(
     await page.locator("body").getAttribute("data-source-escaped"),
   ).toBeNull();
+  await closeDialog(page, "Source");
   await expect(
     page.getByRole("status", { name: "Save status", exact: true }),
   ).toHaveText("Saved");
   await page.reload();
+  await expect(
+    page.getByRole("region", { name: "Source canvas" }),
+  ).toBeVisible();
+  await openSource(page);
   await expect(html).toHaveValue(/HTML resume/);
+  await closeDialog(page, "Source");
   await page.getByRole("button", { name: "Visual", exact: true }).click();
   await expect(
     page.getByRole("article", { name: "Resume canvas" }),
@@ -50,7 +61,7 @@ test("HTML and React sources share validated history, sandbox preview and portab
   await expect(
     page.getByRole("article", { name: "Resume canvas" }),
   ).toBeVisible();
-  await page.getByRole("button", { name: "Code", exact: true }).click();
+  await openSource(page);
   await expect(html).toHaveValue(/HTML resume/);
   await page
     .getByRole("button", { name: "New React source", exact: true })
@@ -65,7 +76,9 @@ test("HTML and React sources share validated history, sandbox preview and portab
   await page
     .getByRole("button", { name: "Apply & preview", exact: true })
     .click();
-  const frame = page.frameLocator('iframe[title="React resume preview"]');
+  const frame = sourceDialog.frameLocator(
+    'iframe[title="React resume preview"]',
+  );
   await expect(
     frame.getByRole("heading", { name: "React resume", exact: true }),
   ).toBeVisible();
@@ -120,13 +133,21 @@ test("React template opens as editable TSX and compiler errors preserve the save
   await page
     .getByRole("link", { name: "Use React Studio", exact: true })
     .click();
+  await expect(
+    page.getByRole("region", { name: "Source canvas" }),
+  ).toBeVisible();
+  await openSource(page);
+  const sourceDialog = page.getByRole("dialog", {
+    name: "Source",
+    exact: true,
+  });
   const input = page.getByRole("textbox", {
     name: "React resume source",
     exact: true,
   });
   await expect(input).toHaveValue(/export default function Resume/);
   await expect(
-    page
+    sourceDialog
       .frameLocator('iframe[title="React resume preview"]')
       .getByRole("heading", { name: "Alex Morgan", exact: true }),
   ).toBeVisible();
@@ -138,10 +159,14 @@ test("React template opens as editable TSX and compiler errors preserve the save
     /Resume.tsx|Unexpected token|expected/i,
   );
   await expect(
-    page
+    sourceDialog
       .frameLocator('iframe[title="React resume preview"]')
       .getByRole("heading", { name: "Alex Morgan", exact: true }),
   ).toBeVisible();
   await page.reload();
+  await expect(
+    page.getByRole("region", { name: "Source canvas" }),
+  ).toBeVisible();
+  await openSource(page);
   await expect(input).toHaveValue(/export default function Resume/);
 });

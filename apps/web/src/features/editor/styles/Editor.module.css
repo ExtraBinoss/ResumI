@@ -1,0 +1,249 @@
+.editor {
+  font-family: var(--font-ui);
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  background: var(--workspace);
+  overflow: hidden;
+  position: relative;
+}
+.toolbar {
+  position: absolute;
+  z-index: 15;
+  top: 12px;
+  left: 252px;
+  right: 276px;
+  height: 48px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  background: var(--panel);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
+  padding: 0 7px;
+  gap: 8px;
+  box-shadow: var(--shadow-panel);
+  backdrop-filter: blur(20px) saturate(1.2);
+}
+.toolbarLeft,
+.toolbarRight,
+.historyActions {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  min-width: 0;
+}
+.toolbarRight {
+  justify-content: flex-end;
+}
+.projectTitle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  min-width: 0;
+  max-width: 320px;
+}
+.nameButton {
+  background: none;
+  border: 1px solid transparent;
+  border-radius: 7px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+  padding: 7px;
+  min-width: 0;
+}
+.nameButton:hover {
+  background: var(--segment-bg);
+}
+.nameButton span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.nameButton svg {
+  color: var(--faint);
+  flex-shrink: 0;
+}
+.saveStatus {
+  display: flex;
+  color: var(--faint);
+  flex-shrink: 0;
+}
+.saveStatus[data-status="error"] {
+  color: var(--destructive);
+}
+.saving {
+  animation: spin 1s linear infinite;
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.shortcutLabel {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  font-size: 12px;
+}
+.projectMenu {
+  font-family: var(--font-ui);
+  padding: 14px;
+}
+.projectMenu form {
+  display: grid;
+  gap: 8px;
+}
+.projectMenu form > button {
+  justify-self: end;
+}
+.projectMenu > button {
+  justify-content: flex-start;
+}
+.projectFacts {
+  display: flex;
+  justify-content: space-between;
+  color: var(--faint);
+  font-size: 12px;
+  padding: 12px 0;
+  margin: 0 0 6px;
+  border-bottom: 1px solid var(--line);
+}
+.workspace {
+  flex: 1;
+  display: flex;
+  min-height: 0;
+  position: relative;
+}
+.saveAlert {
+  position: absolute;
+  z-index: 20;
+  top: 70px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(620px, calc(100% - 40px));
+  box-shadow: var(--shadow-sm);
+}
+.saveAlert p {
+  margin: 0;
+}
+.codeLoading {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: auto;
+  color: var(--faint);
+  font-size: 12px;
+}
+.sourceCanvas {
+  position: absolute;
+  inset: 80px 278px 78px 254px;
+  overflow: hidden;
+  border-radius: 6px;
+}
+.sourceCanvas > div {
+  height: 100%;
+}
+.projectDialog {
+  font-family: var(--font-ui);
+  width: min(1180px, calc(100vw - 32px));
+  max-width: none;
+  height: min(900px, calc(100dvh - 32px));
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: 14px;
+  padding: 18px;
+}
+.projectDialog [aria-label="Resume code editor"] {
+  position: relative;
+  inset: auto;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  min-height: 0;
+  gap: 14px;
+}
+.projectDialog [aria-label="Agent command review"] {
+  position: relative;
+  inset: auto;
+  width: auto;
+  max-width: none;
+  min-height: 0;
+  overflow: auto;
+  border: none;
+  box-shadow: none;
+  background: var(--surface-solid);
+}
+.projectDialog [aria-label="Agent command review"] > :first-child {
+  display: none;
+}
+.proposalDialog {
+  width: min(620px, calc(100vw - 32px));
+}
+@media (max-width: 1200px) {
+  .toolbar {
+    grid-template-columns: 32px minmax(0, 1fr) auto;
+  }
+  .historyActions {
+    display: none;
+  }
+}
+@media (max-width: 1040px) {
+  .toolbar {
+    left: 222px;
+    right: 246px;
+  }
+  .sourceCanvas {
+    left: 222px;
+    right: 246px;
+  }
+  .nameButton {
+    max-width: 180px;
+  }
+}
+@media (max-width: 700px) {
+  .toolbar {
+    top: 12px;
+    left: 12px;
+    right: 12px;
+    height: 46px;
+    gap: 3px;
+  }
+  .nameButton {
+    max-width: none;
+    font-size: 12px;
+  }
+  .sourceCanvas {
+    inset: 78px 14px calc(40vh + 78px);
+  }
+  .saveStatus {
+    display: none;
+  }
+  .projectDialog {
+    font-family: var(--font-ui);
+    padding: 14px;
+  }
+  .projectDialog [aria-label="Resume code editor"] {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .exportButton {
+    width: 31px;
+    padding: 0;
+  }
+  .exportButton > span:last-child,
+  .exportButton > span:nth-child(2) {
+    display: none;
+  }
+}
+
+.modeSurface {
+  position: relative;
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+}

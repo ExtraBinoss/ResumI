@@ -5,6 +5,7 @@ import babel from "vite-plugin-babel";
 import tailwindcss from "@tailwindcss/vite";
 const browserDependencies = [
   "react/compiler-runtime",
+  "motion/react",
   ...[
     "button",
     "dialog",

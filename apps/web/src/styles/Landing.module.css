@@ -1,29 +1,27 @@
 .hero {
   max-width: 1280px;
   margin: auto;
-  padding: 88px 44px 86px;
+  padding: 92px 44px 112px;
   display: grid;
-  grid-template-columns: 1.02fr 1fr;
-  gap: 45px;
+  grid-template-columns: 0.9fr 1.1fr;
+  gap: 68px;
   align-items: center;
-  overflow: hidden;
 }
 .copy h1 {
-  font-size: clamp(44px, 4.7vw, 66px);
-  font-weight: 560;
-  line-height: 1.085;
-  letter-spacing: -3.5px;
-  margin: 0 0 28px;
+  font-size: clamp(46px, 5vw, 70px);
+  font-weight: 550;
+  line-height: 1.07;
+  letter-spacing: -3.7px;
+  margin: 0 0 24px;
 }
 .copy h1 span {
-  color: var(--blue);
+  color: var(--muted-foreground);
 }
 .copy > p {
   color: var(--muted-foreground);
-  font-size: 15px;
+  font-size: 14px;
   line-height: 1.8;
   margin-bottom: 30px;
-  letter-spacing: -0.15px;
 }
 .cta {
   display: flex;
@@ -32,281 +30,139 @@
 }
 .cta > a:last-child {
   font-size: 12px;
-  font-weight: 500;
-}
-.reassurance {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  font-size: 10px;
-  color: var(--muted-foreground);
-  margin-top: 16px;
-}
-.reassurance span {
-  padding: 0 2px;
 }
 .product {
-  height: 482px;
-  background: #f0f2f5;
-  border: 1px solid #dfe3ea;
-  border-radius: 10px;
+  height: 540px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
   position: relative;
-  box-shadow: 0 15px 45px #18202e0b;
-  transform: rotate(-1deg);
-  margin-top: 4px;
+  overflow: hidden;
+  box-shadow: 0 12px 46px #18202e09;
 }
 .previewToolbar {
-  height: 39px;
-  border-bottom: 1px solid #e1e4eb;
-  background: #fbfbfc;
-  border-radius: 10px 10px 0 0;
+  width: max-content;
+  max-width: 80%;
+  margin: 14px auto;
+  min-height: 31px;
+  border: 1px solid var(--line);
+  background: var(--background);
+  border-radius: 7px;
   display: flex;
-  gap: 18px;
+  gap: 22px;
   align-items: center;
   font-size: 9px;
-  color: #626b7b;
-  padding: 0 13px;
-}
-.dots {
-  display: flex;
-  gap: 4px;
-}
-.dots i {
-  width: 6px;
-  height: 6px;
-  background: #d8dce3;
-  border-radius: 50%;
-}
-.saved {
-  margin-left: auto;
-  display: flex;
-  align-items: center;
-  gap: 4px;
+  color: var(--muted-foreground);
+  padding: 0 12px;
 }
 .previewWorkspace {
   display: flex;
-  height: calc(100% - 39px);
+  gap: 20px;
+  height: calc(100% - 59px);
   overflow: hidden;
-  border-radius: 0 0 10px 10px;
 }
 .previewWorkspace aside {
-  width: 38px;
+  width: 108px;
   flex-shrink: 0;
-  background: #fbfbfc;
-  border-right: 1px solid #e1e4eb;
-  display: flex;
-  align-items: center;
-  flex-direction: column;
-  gap: 20px;
-  padding-top: 20px;
-  color: #8992a0;
-}
-.previewWorkspace aside div {
-  height: 1px;
-  background: #e1e4eb;
-  width: 17px;
-}
-.previewPaper {
-  width: 365px;
-  height: 517px;
-  flex-shrink: 0;
-  background: white;
-  box-shadow: 0 3px 14px #18202e0c;
-  margin: 24px auto;
-}
-.cursor {
-  position: absolute;
-  right: 35px;
-  top: 202px;
-  color: var(--blue);
-  display: flex;
-  align-items: flex-start;
-  gap: 2px;
-}
-.cursor span {
-  font-size: 9px;
-  padding: 5px 7px;
-  color: white;
-  background: var(--blue);
-  border-radius: 3px;
-  margin-top: 15px;
-}
-.commandCard {
-  position: absolute;
-  bottom: 23px;
-  left: 61px;
-  right: 18px;
-  background: white;
-  border: 1px solid #dde3ed;
-  border-radius: 7px;
-  box-shadow: 0 4px 16px #1b274416;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 14px;
-  color: var(--blue);
-  transform: rotate(1deg);
-}
-.commandCard div {
+  align-self: flex-start;
+  margin-left: 12px;
+  padding: 12px 9px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--background);
+  color: var(--muted-foreground);
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  flex: 1;
+  gap: 15px;
+  font-size: 8px;
 }
-.commandCard strong {
-  font-size: 10px;
-  color: var(--ink);
+.previewWorkspace aside > svg {
+  display: none;
+}
+.previewWorkspace aside > span {
+  color: var(--foreground);
   font-weight: 550;
-}
-.commandCard span {
   font-size: 9px;
-  color: var(--muted-foreground);
 }
-.compatible {
-  max-width: 1192px;
-  margin: auto;
-  padding: 35px 0 24px;
-  border-top: 1px solid var(--line);
-  border-bottom: 1px solid var(--line);
-  display: grid;
-  grid-template-columns: 1fr 1.35fr;
-  align-items: center;
-  gap: 20px;
-}
-.compatible > div:first-child {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-.compatible > div:first-child > span {
-  font-size: 11px;
-  color: var(--muted-foreground);
-}
-.compatible strong {
-  font-size: 15px;
-  font-weight: 500;
-  letter-spacing: -0.3px;
-}
-.providers {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 25px;
-}
-.providers > span {
+.previewWorkspace aside > div {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 14px;
-  font-weight: 550;
-  white-space: nowrap;
 }
-.providers img {
-  width: 24px;
-  height: 24px;
-  object-fit: contain;
-  filter: grayscale(1);
+.previewPaper {
+  width: 340px;
+  height: 481px;
+  flex-shrink: 0;
+  background: #fff;
+  box-shadow: 0 3px 14px #18202e0c;
+  margin: 8px auto 0 0;
 }
-.providers .anyAgent {
-  font-size: 11px;
-  color: var(--muted-foreground);
-  font-weight: 400;
-}
-.compatible > p {
-  grid-column: 1/-1;
-  margin: 3px 0 0;
+.previewDock {
+  position: absolute;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 1px solid var(--line);
+  background: color-mix(in srgb, var(--background) 90%, transparent);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 3px 14px #18202e0c;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 15px;
   font-size: 10px;
   color: var(--muted-foreground);
-  text-align: right;
 }
-.principles {
+.previewDock span {
+  height: 16px;
+  width: 1px;
+  background: var(--line);
+}
+.templateCta {
   max-width: 1192px;
-  margin: 68px auto;
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 70px;
-}
-.principles svg {
-  color: #7b8597;
-  margin-bottom: 19px;
-  stroke-width: 1.5;
-}
-.principles h2 {
-  font-size: 17px;
-  font-weight: 550;
-  letter-spacing: -0.4px;
-  margin-bottom: 12px;
-}
-.principles p {
-  font-size: 12px;
-  color: var(--muted-foreground);
-  line-height: 1.85;
-  max-width: 310px;
-}
-.finalCta {
-  max-width: 1192px;
-  margin: auto;
-  padding: 35px 0 0;
+  margin: 0 auto;
+  padding: 34px 0;
   display: flex;
   justify-content: space-between;
   align-items: center;
   border-top: 1px solid var(--line);
 }
-.finalCta h2 {
-  font-size: 23px;
+.templateCta h2 {
+  font-size: 22px;
   font-weight: 500;
-  letter-spacing: -0.8px;
+  letter-spacing: -0.7px;
+  margin: 0 0 8px;
+}
+.templateCta p {
+  font-size: 12px;
+  color: var(--muted-foreground);
   margin: 0;
 }
-@media (min-width: 1450px) {
+@media (max-width: 1100px) {
   .hero {
-    padding-top: 104px;
-    padding-bottom: 104px;
-  }
-}
-@media (max-width: 1000px) {
-  .hero {
-    gap: 22px;
-    padding: 65px 30px;
+    gap: 30px;
+    padding: 68px 30px 78px;
   }
   .copy h1 {
-    font-size: 49px;
-    letter-spacing: -2.7px;
-  }
-  .copy > p {
-    font-size: 13px;
-  }
-  .cta {
-    gap: 14px;
-  }
-  .compatible,
-  .principles,
-  .finalCta {
-    margin-left: 30px;
-    margin-right: 30px;
-  }
-  .providers {
-    gap: 14px;
-  }
-  .providers > span {
-    font-size: 12px;
-  }
-  .providers .anyAgent {
-    display: none;
+    font-size: 54px;
+    letter-spacing: -2.8px;
   }
   .product {
-    height: 430px;
+    height: 470px;
+  }
+  .previewWorkspace {
+    gap: 12px;
+  }
+  .previewWorkspace aside {
+    width: 78px;
   }
   .previewPaper {
-    width: 310px;
+    width: 290px;
+    height: 410px;
   }
-  .commandCard {
-    left: 45px;
-    padding: 10px;
-    gap: 7px;
-  }
-  .principles {
-    gap: 32px;
+  .templateCta {
+    margin: 0 30px;
   }
 }
 @media (max-width: 760px) {
@@ -314,101 +170,50 @@
     display: flex;
     flex-direction: column;
     align-items: stretch;
-    padding: 50px 22px 38px;
-    gap: 40px;
+    padding: 52px 22px 46px;
+    gap: 38px;
   }
   .copy h1 {
-    font-size: 53px;
-    letter-spacing: -2.8px;
-    line-height: 1.06;
-    margin-bottom: 23px;
+    font-size: 57px;
+    letter-spacing: -3px;
   }
   .copy > p {
-    font-size: 14px;
-    line-height: 1.7;
+    font-size: 13px;
+    max-width: 250px;
   }
   .cta {
-    gap: 23px;
+    gap: 22px;
   }
   .product {
-    margin: 0;
     height: 420px;
-    transform: none;
+  }
+  .previewWorkspace aside {
+    width: 32px;
+    align-items: center;
+    padding: 11px 4px;
+    margin-left: 9px;
+  }
+  .previewWorkspace aside > svg {
+    display: block;
+  }
+  .previewWorkspace aside > span,
+  .previewWorkspace aside > div {
+    display: none;
   }
   .previewPaper {
-    width: 310px;
-    height: 439px;
+    width: 270px;
+    height: 382px;
+    margin-left: auto;
+    margin-right: auto;
   }
-  .commandCard {
-    bottom: 16px;
-    left: 49px;
-    right: 11px;
-    transform: none;
-  }
-  .cursor {
-    right: 13px;
-    top: 187px;
-  }
-  .compatible {
+  .templateCta {
     margin: 0 22px;
-    padding: 26px 0;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 23px;
-  }
-  .compatible strong {
-    font-size: 14px;
-  }
-  .providers {
-    width: 100%;
-    justify-content: space-between;
-  }
-  .providers > span {
-    font-size: 12px;
-  }
-  .providers img {
-    width: 21px;
-    height: 21px;
-  }
-  .compatible > p {
-    text-align: left;
-    font-size: 10px;
-    line-height: 1.6;
-    max-width: 320px;
-  }
-  .principles {
-    margin: 38px 22px;
-    grid-template-columns: 1fr;
-    gap: 27px;
-  }
-  .principles > div {
-    position: relative;
-    padding-left: 37px;
-  }
-  .principles svg {
-    position: absolute;
-    left: 0;
-    top: 2px;
-  }
-  .principles h2 {
-    margin-bottom: 7px;
-  }
-  .principles p {
-    max-width: none;
-    margin-bottom: 0;
-  }
-  .finalCta {
-    margin: 0 22px;
-    gap: 15px;
+    gap: 22px;
     align-items: flex-start;
     flex-direction: column;
-    padding-top: 27px;
+    padding: 28px 0;
   }
-  .finalCta h2 {
+  .templateCta h2 {
     font-size: 21px;
-  }
-  .desktopBreak {
-    display: none;
   }
 }

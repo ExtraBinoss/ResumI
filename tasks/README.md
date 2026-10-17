@@ -19,3 +19,6 @@ The source of progress truth is [check-list.md](check-list.md). Tasks execute in
 - [11 — V1 creative workspace parity](11-v1-workspace-parity.md)
 - [12 — shadcn controls with Base UI](12-shadcn-base-ui.md)
 - [13 — React templates and HTML/React source](13-react-and-html-source.md)
+- [14 — Vue interface and polish](14-vue-interface-and-polish.md)
+- [15 — Feature organization](15-feature-organization.md)
+- [16 — macOS design](16-macos-design.md)

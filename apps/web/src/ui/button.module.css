@@ -6,12 +6,13 @@
   height: 34px;
   padding: 0 13px;
   border: 1px solid transparent;
-  border-radius: var(--radius, 8px);
-  background: var(--blue, #2563eb);
-  color: #fff;
-  font-size: 12px;
+  border-radius: var(--radius);
+  background: var(--primary);
+  color: var(--primary-foreground);
+  font-size: 13px;
   font-weight: 550;
   line-height: 1;
+  box-shadow: none;
   white-space: nowrap;
   user-select: none;
   text-decoration: none;
@@ -21,7 +22,7 @@
     box-shadow 0.12s;
 }
 .button:hover {
-  background: #1d4ed8;
+  background: color-mix(in srgb, var(--primary) 85%, var(--foreground));
 }
 .button > span {
   display: inline-flex;
@@ -36,7 +37,7 @@
 .button[data-size="xs"] {
   height: 28px;
   padding: 0 9px;
-  font-size: 11px;
+  font-size: 12px;
   gap: 6px;
 }
 .button[data-size="md"] {
@@ -52,47 +53,48 @@
 .button[data-size^="compact"] {
   height: 22px;
   padding: 0 5px;
-  font-size: 10px;
+  font-size: 12px;
   gap: 4px;
 }
 .button[data-variant="default"],
 .button[data-variant="outline"] {
-  border-color: #e2e5eb;
-  background: #fff;
-  color: #3e4756;
-  box-shadow: 0 1px 2px #18203306;
+  border-color: var(--line);
+  background: var(--control-bg);
+  color: var(--ink);
+  border-color: var(--control-border);
+  box-shadow: var(--control-shadow);
 }
 .button[data-variant="default"]:hover,
 .button[data-variant="outline"]:hover {
-  background: #f8f9fb;
-  border-color: #cbd1da;
+  background: var(--control-hover);
+  border-color: var(--line-strong);
 }
 .button[data-variant="subtle"],
 .button[data-variant="transparent"] {
   background: transparent;
-  color: #586273;
+  color: var(--muted-foreground);
 }
 .button[data-variant="subtle"]:hover {
-  background: #f0f3f8;
-  color: #243247;
+  background: var(--muted);
+  color: var(--ink);
 }
 .button[data-variant="light"] {
-  color: #2359d4;
-  background: #edf3ff;
+  color: var(--blue);
+  background: var(--accent-soft);
 }
 .button[data-variant="light"]:hover {
-  background: #e0eafe;
+  background: color-mix(in srgb, var(--blue) 18%, transparent);
 }
 .button[data-color="red"] {
   color: #d02c3d;
 }
 .button[data-color="red"][data-variant="filled"] {
-  color: #fff;
+  color: var(--primary-foreground);
   background: #d33542;
 }
 .button[data-color="gray"][data-variant="filled"] {
-  color: #3d4859;
-  background: #edf0f4;
+  color: var(--ink);
+  background: var(--muted);
 }
 .button > [data-ui="button-section"] {
   display: inline-flex;
