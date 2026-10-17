@@ -14,7 +14,8 @@
 .page > footer {
   max-width: 1152px;
   margin-top: 0;
-  padding-block: 30px;
+  padding-top: 36px;
+  padding-bottom: 0;
   font-size: 13px;
 }
 .hero {
@@ -377,7 +378,8 @@
   }
   .page > footer {
     margin-inline: 24px;
-    padding-block: 25px;
+    padding-top: 25px;
+    padding-bottom: 0;
   }
   .hero {
     padding-top: 42px;

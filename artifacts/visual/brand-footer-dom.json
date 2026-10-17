@@ -1,0 +1,226 @@
+[
+  {
+    "theme": "light",
+    "size": {
+      "width": 1440,
+      "height": 1000
+    },
+    "viewportWidth": 1440,
+    "documentWidth": 1440,
+    "footerWidth": 1152,
+    "scrollY": 2015,
+    "wordmark": {
+      "text": "Resumi",
+      "href": "#top",
+      "width": 1152,
+      "left": 144,
+      "right": 1296,
+      "font": "650 316.8px / 285.12px \"Space Grotesk Variable\", sans-serif",
+      "fontReady": true,
+      "color": "color(srgb 0.113725 0.113725 0.121569 / 0.35)"
+    },
+    "attribution": {
+      "href": "https://plinka.eu/",
+      "text": "By Plinka"
+    },
+    "logo": {
+      "src": "http://127.0.0.1:4187/favicon-64.png",
+      "complete": true,
+      "naturalWidth": 36,
+      "width": 36,
+      "height": 36
+    },
+    "icons": [
+      {
+        "rel": "icon",
+        "href": "http://127.0.0.1:4187/favicon.ico",
+        "sizes": "any"
+      },
+      {
+        "rel": "icon",
+        "href": "http://127.0.0.1:4187/favicon-32.png",
+        "sizes": "32x32"
+      },
+      {
+        "rel": "icon",
+        "href": "http://127.0.0.1:4187/favicon-64.png",
+        "sizes": "64x64"
+      },
+      {
+        "rel": "apple-touch-icon",
+        "href": "http://127.0.0.1:4187/apple-touch-icon.png",
+        "sizes": "180x180"
+      }
+    ],
+    "afterClickScrollY": 0,
+    "errors": []
+  },
+  {
+    "theme": "light",
+    "size": {
+      "width": 390,
+      "height": 844
+    },
+    "viewportWidth": 390,
+    "documentWidth": 390,
+    "footerWidth": 342,
+    "scrollY": 1745,
+    "wordmark": {
+      "text": "Resumi",
+      "href": "#top",
+      "width": 342,
+      "left": 24,
+      "right": 366,
+      "font": "650 85.8px / 77.22px \"Space Grotesk Variable\", sans-serif",
+      "fontReady": true,
+      "color": "color(srgb 0.113725 0.113725 0.121569 / 0.35)"
+    },
+    "attribution": {
+      "href": "https://plinka.eu/",
+      "text": "By Plinka"
+    },
+    "logo": {
+      "src": "http://127.0.0.1:4187/favicon-64.png",
+      "complete": true,
+      "naturalWidth": 36,
+      "width": 36,
+      "height": 36
+    },
+    "icons": [
+      {
+        "rel": "icon",
+        "href": "http://127.0.0.1:4187/favicon.ico",
+        "sizes": "any"
+      },
+      {
+        "rel": "icon",
+        "href": "http://127.0.0.1:4187/favicon-32.png",
+        "sizes": "32x32"
+      },
+      {
+        "rel": "icon",
+        "href": "http://127.0.0.1:4187/favicon-64.png",
+        "sizes": "64x64"
+      },
+      {
+        "rel": "apple-touch-icon",
+        "href": "http://127.0.0.1:4187/apple-touch-icon.png",
+        "sizes": "180x180"
+      }
+    ],
+    "afterClickScrollY": 0,
+    "errors": []
+  },
+  {
+    "theme": "dark",
+    "size": {
+      "width": 1440,
+      "height": 1000
+    },
+    "viewportWidth": 1440,
+    "documentWidth": 1440,
+    "footerWidth": 1152,
+    "scrollY": 2015,
+    "wordmark": {
+      "text": "Resumi",
+      "href": "#top",
+      "width": 1152,
+      "left": 144,
+      "right": 1296,
+      "font": "650 316.8px / 285.12px \"Space Grotesk Variable\", sans-serif",
+      "fontReady": true,
+      "color": "color(srgb 0.960784 0.960784 0.968627 / 0.35)"
+    },
+    "attribution": {
+      "href": "https://plinka.eu/",
+      "text": "By Plinka"
+    },
+    "logo": {
+      "src": "http://127.0.0.1:4187/favicon-64.png",
+      "complete": true,
+      "naturalWidth": 36,
+      "width": 36,
+      "height": 36
+    },
+    "icons": [
+      {
+        "rel": "icon",
+        "href": "http://127.0.0.1:4187/favicon.ico",
+        "sizes": "any"
+      },
+      {
+        "rel": "icon",
+        "href": "http://127.0.0.1:4187/favicon-32.png",
+        "sizes": "32x32"
+      },
+      {
+        "rel": "icon",
+        "href": "http://127.0.0.1:4187/favicon-64.png",
+        "sizes": "64x64"
+      },
+      {
+        "rel": "apple-touch-icon",
+        "href": "http://127.0.0.1:4187/apple-touch-icon.png",
+        "sizes": "180x180"
+      }
+    ],
+    "afterClickScrollY": 0,
+    "errors": []
+  },
+  {
+    "theme": "dark",
+    "size": {
+      "width": 390,
+      "height": 844
+    },
+    "viewportWidth": 390,
+    "documentWidth": 390,
+    "footerWidth": 342,
+    "scrollY": 1745,
+    "wordmark": {
+      "text": "Resumi",
+      "href": "#top",
+      "width": 342,
+      "left": 24,
+      "right": 366,
+      "font": "650 85.8px / 77.22px \"Space Grotesk Variable\", sans-serif",
+      "fontReady": true,
+      "color": "color(srgb 0.960784 0.960784 0.968627 / 0.35)"
+    },
+    "attribution": {
+      "href": "https://plinka.eu/",
+      "text": "By Plinka"
+    },
+    "logo": {
+      "src": "http://127.0.0.1:4187/favicon-64.png",
+      "complete": true,
+      "naturalWidth": 36,
+      "width": 36,
+      "height": 36
+    },
+    "icons": [
+      {
+        "rel": "icon",
+        "href": "http://127.0.0.1:4187/favicon.ico",
+        "sizes": "any"
+      },
+      {
+        "rel": "icon",
+        "href": "http://127.0.0.1:4187/favicon-32.png",
+        "sizes": "32x32"
+      },
+      {
+        "rel": "icon",
+        "href": "http://127.0.0.1:4187/favicon-64.png",
+        "sizes": "64x64"
+      },
+      {
+        "rel": "apple-touch-icon",
+        "href": "http://127.0.0.1:4187/apple-touch-icon.png",
+        "sizes": "180x180"
+      }
+    ],
+    "afterClickScrollY": 0,
+    "errors": []
+  }
+]

@@ -100,7 +100,7 @@ test("portrait template preserves its photo and icons in saved editable TSX and 
 }) => {
   await page.goto("/templates");
   await page
-    .getByRole("textbox", { name: "Search templates", exact: true })
+    .getByRole("searchbox", { name: "Search templates", exact: true })
     .fill("Profile");
   const choose = page.getByRole("link", { name: "Use Profile", exact: true });
   await expect(choose).toHaveCount(1);

@@ -248,3 +248,18 @@
   min-height: 0;
   overflow: hidden;
 }
+
+.exportGroup {
+  display: flex;
+  align-items: stretch;
+}
+.exportGroup .exportPdf {
+  border-radius: 6px 0 0 6px;
+  padding-inline: 10px;
+}
+.exportGroup .exportButton {
+  width: 26px;
+  padding: 0;
+  border-radius: 0 6px 6px 0;
+  border-left: 1px solid rgb(255 255 255 / 24%);
+}

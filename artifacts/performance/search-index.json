@@ -1,0 +1,256 @@
+{
+  "measuredAt": "2026-10-17T10:12:31.120Z",
+  "runtime": "1.4.2",
+  "cpu": "Intel(R) Core(TM) Ultra 5 125H",
+  "methodology": "Bun in-process, 3 cold index builds; new final index, timed first queries; 5 untimed warm rounds; 30 timed rounds of 10 distinct queries, limit 100. Queries are not cached. Includes 1/2-character broad matches and misses. CPU search only; excludes rendering, DOM, I/O and network.",
+  "results": [
+    {
+      "name": "templates",
+      "count": 4,
+      "limit": 100,
+      "buildMedianMs": 0.02205699999999844,
+      "firstQueries": [
+        {
+          "query": "s",
+          "milliseconds": 0.22549399999999942,
+          "results": 4
+        },
+        {
+          "query": "st",
+          "milliseconds": 0.025951000000000946,
+          "results": 1
+        },
+        {
+          "query": "studio",
+          "milliseconds": 0.01543599999999934,
+          "results": 1
+        },
+        {
+          "query": "editorial",
+          "milliseconds": 0.006237999999999744,
+          "results": 1
+        },
+        {
+          "query": "serif",
+          "milliseconds": 0.0048200000000004906,
+          "results": 2
+        },
+        {
+          "query": "classic",
+          "milliseconds": 0.003312999999998567,
+          "results": 1
+        },
+        {
+          "query": "profile",
+          "milliseconds": 0.0035760000000006897,
+          "results": 1
+        },
+        {
+          "query": "sans",
+          "milliseconds": 0.0039410000000010825,
+          "results": 2
+        },
+        {
+          "query": "edit",
+          "milliseconds": 0.0020900000000008134,
+          "results": 1
+        },
+        {
+          "query": "zzmissing",
+          "milliseconds": 0.0070110000000003225,
+          "results": 0
+        }
+      ],
+      "queryMedianMs": 0.0015599999999995617,
+      "queryP95Ms": 0.004533000000000342,
+      "queryMaximumMs": 0.025120999999998617,
+      "samples": 300
+    },
+    {
+      "name": "google-fonts",
+      "count": 1950,
+      "limit": 100,
+      "buildMedianMs": 5.045957999999999,
+      "firstQueries": [
+        {
+          "query": "r",
+          "milliseconds": 0.6097209999999968,
+          "results": 100
+        },
+        {
+          "query": "ro",
+          "milliseconds": 0.23616900000000385,
+          "results": 100
+        },
+        {
+          "query": "roboto",
+          "milliseconds": 0.009179000000003157,
+          "results": 6
+        },
+        {
+          "query": "noto sans",
+          "milliseconds": 0.052438000000002205,
+          "results": 100
+        },
+        {
+          "query": "mono",
+          "milliseconds": 0.027916000000004715,
+          "results": 59
+        },
+        {
+          "query": "serif",
+          "milliseconds": 0.35957000000000505,
+          "results": 100
+        },
+        {
+          "query": "playfair",
+          "milliseconds": 0.00500600000000162,
+          "results": 3
+        },
+        {
+          "query": "space",
+          "milliseconds": 0.02617000000000047,
+          "results": 53
+        },
+        {
+          "query": "école",
+          "milliseconds": 0.29921600000000126,
+          "results": 0
+        },
+        {
+          "query": "zzmissing",
+          "milliseconds": 0.0021820000000047912,
+          "results": 0
+        }
+      ],
+      "queryMedianMs": 0.01994699999999483,
+      "queryP95Ms": 0.4205609999999993,
+      "queryMaximumMs": 1.3862769999999998,
+      "samples": 300
+    },
+    {
+      "name": "icons-shapes-brands",
+      "count": 1970,
+      "limit": 100,
+      "buildMedianMs": 3.6346850000000046,
+      "firstQueries": [
+        {
+          "query": "m",
+          "milliseconds": 0.3560619999999943,
+          "results": 100
+        },
+        {
+          "query": "me",
+          "milliseconds": 0.22314599999999984,
+          "results": 100
+        },
+        {
+          "query": "message",
+          "milliseconds": 0.0297300000000007,
+          "results": 33
+        },
+        {
+          "query": "arrow left",
+          "milliseconds": 0.012432000000003995,
+          "results": 20
+        },
+        {
+          "query": "circle",
+          "milliseconds": 0.02020599999998751,
+          "results": 64
+        },
+        {
+          "query": "figma",
+          "milliseconds": 0.01336700000000235,
+          "results": 1
+        },
+        {
+          "query": "microsoft",
+          "milliseconds": 0.004604000000000497,
+          "results": 1
+        },
+        {
+          "query": "box",
+          "milliseconds": 0.005758999999997627,
+          "results": 8
+        },
+        {
+          "query": "heart",
+          "milliseconds": 0.010176000000001295,
+          "results": 17
+        },
+        {
+          "query": "zzmissing",
+          "milliseconds": 0.0009199999999935926,
+          "results": 0
+        }
+      ],
+      "queryMedianMs": 0.006081000000008885,
+      "queryP95Ms": 0.1774899999999917,
+      "queryMaximumMs": 0.9610669999999999,
+      "samples": 300
+    },
+    {
+      "name": "synthetic-files-50000",
+      "count": 50000,
+      "limit": 100,
+      "buildMedianMs": 162.17595799999998,
+      "firstQueries": [
+        {
+          "query": "a",
+          "milliseconds": 3.872716000000082,
+          "results": 100
+        },
+        {
+          "query": "al",
+          "milliseconds": 3.7142359999999144,
+          "results": 100
+        },
+        {
+          "query": "alex morgan",
+          "milliseconds": 1.3763790000000427,
+          "results": 100
+        },
+        {
+          "query": "studio",
+          "milliseconds": 1.1653179999999566,
+          "results": 100
+        },
+        {
+          "query": "2025",
+          "milliseconds": 1.896839,
+          "results": 100
+        },
+        {
+          "query": "design portfolio",
+          "milliseconds": 1.5090410000000247,
+          "results": 100
+        },
+        {
+          "query": "resume",
+          "milliseconds": 8.98406,
+          "results": 100
+        },
+        {
+          "query": "morgan 123",
+          "milliseconds": 0.05595200000004752,
+          "results": 30
+        },
+        {
+          "query": "edit 2023",
+          "milliseconds": 1.1679729999999608,
+          "results": 100
+        },
+        {
+          "query": "zzmissing",
+          "milliseconds": 0.0056230000000141445,
+          "results": 0
+        }
+      ],
+      "queryMedianMs": 1.0225860000000466,
+      "queryP95Ms": 3.6543870000000425,
+      "queryMaximumMs": 4.100495000000137,
+      "samples": 300
+    }
+  ]
+}

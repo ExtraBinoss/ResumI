@@ -139,9 +139,9 @@ test("font import failures use the same warning and clipboard action in an edito
   const toast = page.getByRole("alert").filter({
     has: page.getByRole("button", { name: "Dismiss error", exact: true }),
   });
-  await expect(toast).toContainText("Unable to edit");
+  await expect(toast).toContainText("Action failed");
   await toast
-    .getByRole("button", { name: "Unable to edit", exact: true })
+    .getByRole("button", { name: "Action failed", exact: true })
     .hover();
   const details = page.getByRole("alert").filter({ has: page.locator("pre") });
   await expect(details).toContainText("Choose a TTF, OTF, WOFF or WOFF2 font.");

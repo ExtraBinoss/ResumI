@@ -1,5 +1,8 @@
 import { Settings2, Sun, Moon, Monitor, Check } from "lucide-react";
-import { ActionIcon, Popover } from "../ui";
+import { useTranslation } from "react-i18next";
+import { uiLanguages } from "../i18n/resources";
+import { setInterfaceLanguage } from "../i18n/InterfaceLanguage";
+import { ActionIcon, Popover, Select } from "../ui";
 import { useTheme } from "../state/theme";
 import { Button } from "./ui/button";
 import styles from "../styles/Settings.module.css";
@@ -12,6 +15,7 @@ export function SettingsMenu({
   fullWidth?: boolean;
 }) {
   const [theme, setTheme] = useTheme();
+  const { t, i18n } = useTranslation();
   return (
     <Popover
       position={trigger === "sidebar" ? "top-start" : "bottom-end"}
@@ -21,11 +25,11 @@ export function SettingsMenu({
         {fullWidth ? (
           <Button
             variant="ghost"
-            aria-label="Settings"
+            aria-label={t("common.settings")}
             className={styles.sidebarTrigger}
           >
             <Settings2 size={17} aria-hidden />
-            <span>Settings</span>
+            <span>{t("common.settings")}</span>
           </Button>
         ) : (
           <ActionIcon
@@ -33,21 +37,25 @@ export function SettingsMenu({
             h={32}
             variant="subtle"
             color="gray"
-            aria-label="Settings"
-            title="Settings"
+            aria-label={t("common.settings")}
+            title={t("common.settings")}
           >
             <Settings2 size={17} aria-hidden />
           </ActionIcon>
         )}
       </Popover.Target>
       <Popover.Dropdown className={styles.panel}>
-        <h2>Appearance</h2>
-        <div className={styles.themes} role="group" aria-label="Appearance">
+        <h2>{t("settings.appearance")}</h2>
+        <div
+          className={styles.themes}
+          role="group"
+          aria-label={t("settings.appearance")}
+        >
           {(
             [
-              { value: "light", label: "Light", icon: Sun },
-              { value: "dark", label: "Dark", icon: Moon },
-              { value: "system", label: "System", icon: Monitor },
+              { value: "light", label: t("settings.light"), icon: Sun },
+              { value: "dark", label: t("settings.dark"), icon: Moon },
+              { value: "system", label: t("settings.system"), icon: Monitor },
             ] as const
           ).map(({ value, label, icon: Icon }) => (
             <Button
@@ -61,6 +69,20 @@ export function SettingsMenu({
               {theme === value && <Check size={15} aria-hidden />}
             </Button>
           ))}
+        </div>
+        <div className={styles.language}>
+          <Select
+            label={t("settings.language")}
+            aria-label={t("settings.language")}
+            value={i18n.language}
+            data={uiLanguages.map(({ code, name }) => ({
+              value: code,
+              label: name,
+            }))}
+            onChange={(locale) => {
+              if (locale) setInterfaceLanguage(i18n, locale);
+            }}
+          />
         </div>
       </Popover.Dropdown>
     </Popover>

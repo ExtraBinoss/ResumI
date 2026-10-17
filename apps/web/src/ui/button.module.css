@@ -123,20 +123,6 @@
   justify-content: center;
 }
 
-.spinner {
-  display: inline-block;
-  width: 13px;
-  height: 13px;
-  border: 2px solid #ffffff45;
-  border-top-color: currentColor;
-  border-radius: 50%;
-  animation: spin 0.7s linear infinite;
-}
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
 @media (prefers-reduced-motion: reduce) {
   .button {
     transition: none;

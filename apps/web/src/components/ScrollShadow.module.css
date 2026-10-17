@@ -83,3 +83,26 @@
     transition: none;
   }
 }
+
+.root[data-fade-orientation="horizontal"]::before,
+.root[data-fade-orientation="horizontal"]::after {
+  top: 0;
+  bottom: 0;
+  width: 12px;
+  height: auto;
+  opacity: 0;
+}
+.root[data-fade-orientation="horizontal"]::before {
+  left: 0;
+  right: auto;
+  background: linear-gradient(to right, var(--scroll-fade-color), transparent);
+}
+.root[data-fade-orientation="horizontal"]::after {
+  left: auto;
+  right: 0;
+  background: linear-gradient(to left, var(--scroll-fade-color), transparent);
+}
+.root[data-fade-orientation="horizontal"][data-overflow-x-start]::before,
+.root[data-fade-orientation="horizontal"][data-overflow-x-end]::after {
+  opacity: 1;
+}

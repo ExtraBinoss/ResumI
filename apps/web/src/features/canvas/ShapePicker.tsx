@@ -1,13 +1,17 @@
-import { useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
-import { Popover, ActionIcon, TextInput, Loader } from "../../ui";
-import { Shapes, Smile, Search, Upload } from "lucide-react";
+import { Popover, ActionIcon, Loader } from "../../ui";
+import { Shapes, Smile, Upload } from "lucide-react";
 import { SHAPE_CATALOG, type LayerPatch } from "@resumi/engine";
 import { useSetAtom, useAtomValue, useStore } from "jotai";
 import { shapeToolAtom, toolAtom } from "../../state/design";
 import { sessionAtom } from "../../state/editor";
 import { Button } from "../../components/ui/button";
-import { Tabs, TabsList, TabsTrigger } from "../../components/ui/tabs";
+import { AnimatedSegments } from "../../components/AnimatedSegments";
+import { SearchInput } from "../../components/SearchInput";
+import { createSearchIndex } from "../../lib/search-index";
+import { PaletteVector } from "./PaletteVector";
 import {
   Tooltip,
   TooltipContent,
@@ -51,6 +55,8 @@ function vectorKey(item: Item) {
   ]);
 }
 export function ShapePicker({ icon = false }: { icon?: boolean }) {
+  const { t } = useTranslation();
+  const title = t(icon ? "assets.icons" : "assets.shapes");
   const [open, setOpen] = useState(false),
     [tooltipOpen, setTooltipOpen] = useState(false),
     [items, setItems] = useState<Item[]>(icon ? [] : SHAPE_CATALOG),
@@ -58,6 +64,8 @@ export function ShapePicker({ icon = false }: { icon?: boolean }) {
     [imported, setImported] = useState<Item[]>([]),
     [category, setCategory] = useState<Category>("icons"),
     [query, setQuery] = useState(""),
+    [scrollTop, setScrollTop] = useState(0),
+    scroll = useRef<HTMLDivElement>(null),
     [error, setError] = useState(""),
     [loading, setLoading] = useState(false),
     loadRequest = useRef(0),
@@ -171,11 +179,24 @@ export function ShapePicker({ icon = false }: { icon?: boolean }) {
       : category === "brands"
         ? brandItems
         : imported;
-  const filtered = collection.filter((item) =>
-    `${item.name} ${item.category ?? ""}`
-      .toLowerCase()
-      .includes(query.toLowerCase()),
+  const index = useMemo(
+    () =>
+      createSearchIndex(collection, {
+        text: (item) => item.name,
+        keywords: (item) => item.category ?? "",
+      }),
+    [collection],
   );
+  const filtered = index.search(query, { limit: collection.length });
+  const firstRow = Math.max(0, Math.floor(scrollTop / 51) - 1);
+  const visible = filtered.slice(firstRow * 5, (firstRow + 8) * 5);
+  function resetScroll() {
+    setScrollTop(0);
+    const viewport = scroll.current?.querySelector<HTMLElement>(
+      '[data-slot="scroll-shadow-viewport"]',
+    );
+    if (viewport) viewport.scrollTop = 0;
+  }
   return (
     <Popover opened={open} onChange={openPalette} position="top" width={320}>
       <Tooltip open={!open && tooltipOpen} onOpenChange={setTooltipOpen}>
@@ -185,7 +206,7 @@ export function ShapePicker({ icon = false }: { icon?: boolean }) {
               <ActionIcon
                 variant={tool === "shape" && open ? "light" : "subtle"}
                 color="gray"
-                aria-label={icon ? "Icons" : "Shapes"}
+                aria-label={title}
                 onPointerEnter={prefetch}
                 onFocus={prefetch}
                 onClick={() => openPalette(!open)}
@@ -199,51 +220,67 @@ export function ShapePicker({ icon = false }: { icon?: boolean }) {
             }
           />
         </Popover.Target>
-        <TooltipContent side="top">{icon ? "Icons" : "Shapes"}</TooltipContent>
+        <TooltipContent side="top">{title}</TooltipContent>
       </Tooltip>
       <Popover.Dropdown className={styles.picker}>
         <header>
-          <strong>{icon ? "Icons" : "Shapes"}</strong>
+          <strong>{title}</strong>
           {icon && (
             <Button
-              variant="ghost"
+              variant={
+                category === "imported" && imported.length ? "default" : "ghost"
+              }
               size="xs"
               onClick={() => fileInput.current?.click()}
             >
               <Upload size={14} aria-hidden />
-              Import SVG
+              {t("assets.import")}
             </Button>
           )}
         </header>
         {icon && (
-          <Tabs
+          <AnimatedSegments
             value={category}
-            onValueChange={(value) => {
+            aria-label="Icon categories"
+            className={styles.categories}
+            items={[
+              { value: "icons", label: t("assets.icons") },
+              { value: "brands", label: t("assets.brands") },
+              { value: "imported", label: t("assets.imported") },
+            ]}
+            onChange={(value) => {
               const next = value as Category;
               setCategory(next);
               setQuery("");
               setError("");
+              resetScroll();
               void load(next);
             }}
-          >
-            <TabsList
-              className={styles.categories}
-              aria-label="Icon categories"
-            >
-              <TabsTrigger value="icons">Icons</TabsTrigger>
-              <TabsTrigger value="brands">Brands</TabsTrigger>
-              <TabsTrigger value="imported">Imported</TabsTrigger>
-            </TabsList>
-          </Tabs>
+          />
         )}
         <div className={styles.search}>
-          <TextInput
+          <SearchInput
             size="xs"
-            placeholder={icon ? "Search icons…" : "Search shapes…"}
+            prefix={t("assets.search")}
+            autoFocus
+            captureTyping={open}
+            focusKey={category}
             aria-label={icon ? "Search icons" : "Search shapes"}
-            leftSection={<Search size={14} aria-hidden />}
+            hints={collection.slice(0, 6).map((item) => ({
+              label: item.name,
+              preview: <PaletteVector item={item} />,
+            }))}
             value={query}
-            onChange={(event) => setQuery(event.currentTarget.value)}
+            onKeyDown={(event) => {
+              if (event.key === "Enter" && filtered[0]) {
+                event.preventDefault();
+                choose(filtered[0]);
+              }
+            }}
+            onChange={(event) => {
+              setQuery(event.currentTarget.value);
+              resetScroll();
+            }}
           />
         </div>
         <input
@@ -271,72 +308,55 @@ export function ShapePicker({ icon = false }: { icon?: boolean }) {
             transition={{ duration: reduced ? 0 : 0.12 }}
           >
             <ScrollShadow
+              ref={scroll}
               className={styles.scroller}
+              onScrollCapture={(event) =>
+                setScrollTop((event.target as HTMLElement).scrollTop)
+              }
               role="region"
               aria-label={icon ? "Icon library" : "Shape library"}
             >
               {loading ? (
                 <div className={styles.empty}>
-                  <Loader size="xs" />
+                  <Loader size="xs" label={t("loading.library")} text />
                 </div>
               ) : (
                 <>
-                  <div className={styles.shapeGrid}>
-                    {filtered.slice(0, 150).map((item) => (
-                      <button
-                        key={item.id}
-                        title={item.name}
-                        aria-label={`Use ${item.name}`}
-                        onClick={() => choose(item)}
-                      >
-                        <svg
-                          viewBox={item.viewBox}
-                          data-preserve-paint={
-                            item.parts?.length ? true : undefined
-                          }
-                          aria-hidden
-                          fill={item.strokeOnly ? "none" : "currentColor"}
-                          stroke={item.strokeOnly ? "currentColor" : "none"}
-                          strokeWidth="1.5"
-                          strokeLinejoin="round"
-                          strokeLinecap="round"
+                  <div
+                    className={styles.shapeSpace}
+                    style={{ height: Math.ceil(filtered.length / 5) * 51 + 15 }}
+                  >
+                    <div
+                      className={styles.shapeGrid}
+                      style={{ top: firstRow * 51 }}
+                    >
+                      {visible.map((item) => (
+                        <button
+                          key={item.id}
+                          title={item.name}
+                          aria-label={`Use ${item.name}`}
+                          onClick={() => choose(item)}
                         >
-                          {item.parts?.length ? (
-                            item.parts.map((part, index) => (
-                              <path
-                                key={index}
-                                d={part.path}
-                                fill={part.fill}
-                                stroke={part.stroke ?? "none"}
-                                strokeWidth={part.strokeWidth}
-                                opacity={part.opacity}
-                                fillRule={part.fillRule}
-                                transform={
-                                  part.matrix
-                                    ? `matrix(${part.matrix.join(" ")})`
-                                    : undefined
-                                }
-                                strokeLinecap={part.linecap}
-                                strokeLinejoin={part.linejoin}
-                              />
-                            ))
-                          ) : (
-                            <path d={item.path} />
-                          )}
-                        </svg>
-                      </button>
-                    ))}
+                          <PaletteVector item={item} />
+                        </button>
+                      ))}
+                    </div>
                   </div>
                   {filtered.length === 0 && (
-                    <p className={styles.empty}>
-                      {category === "imported" && !query
-                        ? "Import an SVG to start."
-                        : "No matches."}
-                    </p>
+                    <div className={styles.empty}>
+                      {icon && category === "imported" && !query ? (
+                        <Button onClick={() => fileInput.current?.click()}>
+                          <Upload size={15} aria-hidden />
+                          {t("assets.import")}
+                        </Button>
+                      ) : (
+                        "No matches."
+                      )}
+                    </div>
                   )}
-                  {filtered.length > 150 && (
+                  {filtered.length > 40 && (
                     <small className={styles.count}>
-                      {filtered.length} results · Refine your search
+                      {filtered.length} results
                     </small>
                   )}
                 </>

@@ -7,6 +7,7 @@ import {
 } from "../components/ui/popover";
 import { Field, type FieldProps } from "./input";
 import styles from "./color-input.module.css";
+import { SharedLoading } from "../components/SharedLoading";
 const loadPicker = () =>
   import("./color-picker-panel").then((module) => ({
     default: module.PickerPanel,
@@ -92,11 +93,10 @@ export function ColorInput({
         >
           <Suspense
             fallback={
-              <span
-                style={{ backgroundColor: draft }}
+              <SharedLoading
+                messageKey="loading.colors"
+                variant="working"
                 className={styles.loading}
-                role="status"
-                aria-label="Loading colors"
               />
             }
           >

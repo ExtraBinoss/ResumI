@@ -1,4 +1,5 @@
 import { useRef } from "react";
+import { useTranslation } from "react-i18next";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { Button } from "../../../components/ui/button";
 import { Input } from "../../../components/ui/input";
@@ -14,7 +15,7 @@ import {
   Minus,
   Plus,
 } from "lucide-react";
-import { zoomAtom } from "../../../state/editor";
+import { zoomControlAtom } from "../../../state/canvas-view";
 import {
   modeAtom,
   toolAtom,
@@ -26,14 +27,15 @@ import {
 import { ShapePicker } from "../../canvas/ShapePicker";
 import styles from "../styles/Dock.module.css";
 export function EditorDock() {
+  const { t } = useTranslation();
   const source = useAtomValue(sourceAtom),
     reduced = useReducedMotion();
   const mode = useAtomValue(modeAtom),
     setMode = useSetAtom(modeAtom),
     tool = useAtomValue(toolAtom),
     setTool = useSetAtom(toolAtom),
-    zoom = useAtomValue(zoomAtom),
-    setZoom = useSetAtom(zoomAtom),
+    zoom = useAtomValue(zoomControlAtom),
+    setZoom = useSetAtom(zoomControlAtom),
     enable = useSetAtom(enableVisualAtom),
     add = useSetAtom(addLayerAtom),
     setError = useSetAtom(designErrorAtom),
@@ -188,7 +190,7 @@ export function EditorDock() {
               />
             )}
             <LayoutTemplate size={14} aria-hidden />
-            Visual
+            {t("editor.visual")}
           </Button>
           <Button
             variant="ghost"
@@ -207,11 +209,11 @@ export function EditorDock() {
               />
             )}
             <FilePenLine size={14} aria-hidden />
-            Text
+            {t("editor.text")}
           </Button>
         </motion.div>
         <AnimatePresence initial={false}>
-          {visual && (
+          {!sourceActive && (
             <motion.div
               key="zoom"
               className={styles.dockSection}
@@ -230,7 +232,7 @@ export function EditorDock() {
                   variant="subtle"
                   color="gray"
                   disabled={zoom <= 15}
-                  onClick={() => setZoom(Math.max(15, zoom - 10))}
+                  onClick={() => setZoom((current) => current - 10)}
                 >
                   <Minus size={16} aria-hidden />
                 </ActionIcon>
@@ -240,6 +242,7 @@ export function EditorDock() {
                   aria-label="Canvas zoom"
                   type="number"
                   value={zoom}
+                  style={{ width: `${String(zoom).length}ch` }}
                   min={15}
                   max={250}
                   step={1}
@@ -257,7 +260,7 @@ export function EditorDock() {
                   variant="subtle"
                   color="gray"
                   disabled={zoom >= 250}
-                  onClick={() => setZoom(Math.min(250, zoom + 10))}
+                  onClick={() => setZoom((current) => current + 10)}
                 >
                   <Plus size={16} aria-hidden />
                 </ActionIcon>

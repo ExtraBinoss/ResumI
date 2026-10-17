@@ -1,6 +1,7 @@
 import { useEffect, useLayoutEffect, useRef, type CSSProperties } from "react";
 import {
   richTextSegments,
+  localizedBlock,
   textStyleAcrossRange,
   type Block,
   type TextMarkStyle,
@@ -63,7 +64,7 @@ export function CanvasText({
   useEffect(() => {
     const node = input.current;
     if (!node) return;
-    node.focus();
+    node.focus({ preventScroll: true });
     const selection = window.getSelection(),
       range = document.createRange();
     range.selectNodeContents(node);
@@ -98,7 +99,11 @@ export function CanvasText({
       node.textContent = block.text;
       return;
     }
-    if (value !== store.get(sessionAtom)?.document.blocks[block.id]?.text) {
+    const snapshot = store.get(sessionAtom)?.document;
+    if (
+      snapshot?.blocks[block.id] &&
+      value !== localizedBlock(snapshot, block.id).text
+    ) {
       pending.current = value;
       dispatch({ type: "block.update", id: block.id, patch: { text: value } });
     }

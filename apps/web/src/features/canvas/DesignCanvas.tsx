@@ -1,4 +1,5 @@
 import { useRef, useState, type CSSProperties, type PointerEvent } from "react";
+import { createPortal } from "react-dom";
 import { useAtomValue, useSetAtom, useStore } from "jotai";
 import {
   isLocked,
@@ -19,6 +20,7 @@ import {
   sessionAtom,
   styleAtom,
   zoomAtom,
+  localeAtom,
 } from "../../state/editor";
 import {
   canvasAtom,
@@ -45,9 +47,11 @@ import viewportStyles from "./styles/Viewport.module.css";
 function DesignLayer({
   id,
   groupLocked = false,
+  overlay,
 }: {
   id: string;
   groupLocked?: boolean;
+  overlay: HTMLDivElement | null;
 }) {
   const block = useAtomValue(blockAtom(id)),
     selected = useAtomValue(selectedIdsAtom),
@@ -57,6 +61,7 @@ function DesignLayer({
     dispatch = useSetAtom(designCommandAtom),
     tool = useAtomValue(toolAtom);
   const [editing, setEditing] = useState(false),
+    [hovered, setHovered] = useState(false),
     gesture = useRef<{
       x: number;
       y: number;
@@ -102,13 +107,13 @@ function DesignLayer({
     if (event.shiftKey) return;
     event.preventDefault();
     event.currentTarget.setPointerCapture(event.pointerId);
-    const nodes = ids
-      .map((id) =>
-        event.currentTarget
-          .closest("article")
-          ?.querySelector<HTMLElement>(`[data-layer-id="${id}"]`),
-      )
-      .filter((node): node is HTMLElement => !!node);
+    const nodes = ids.flatMap((id) => [
+      ...(event.currentTarget
+        .closest("article")
+        ?.querySelectorAll<HTMLElement>(
+          `[data-layer-id="${id}"], [data-layer-frame="${id}"]`,
+        ) ?? []),
+    ]);
     const canvas = doc.canvas!,
       other = canvas.order
         .filter((id) => !ids.includes(id))
@@ -167,11 +172,12 @@ function DesignLayer({
         drag.resize.aspectLocked || event.shiftKey,
       );
       drag.nextFrame = frame;
-      const node = drag.nodes[0];
-      node.style.left = `${frame.x}px`;
-      node.style.top = `${frame.y}px`;
-      node.style.width = `${frame.width}px`;
-      node.style.height = `${frame.height}px`;
+      for (const node of drag.nodes) {
+        node.style.left = `${frame.x}px`;
+        node.style.top = `${frame.y}px`;
+        node.style.width = `${frame.width}px`;
+        node.style.height = `${frame.height}px`;
+      }
     } else {
       if (event.shiftKey) {
         if (Math.abs(drag.dx) > Math.abs(drag.dy)) drag.dy = 0;
@@ -235,7 +241,9 @@ function DesignLayer({
       data-layer-id={id}
       data-layer-name={layer.name}
       data-edit-block={id}
-      className={`${styles.layer} ${active ? styles.selected : ""} ${locked ? styles.locked : ""}`}
+      className={`${styles.layer} ${locked ? styles.locked : ""}`}
+      onPointerEnter={() => setHovered(true)}
+      onPointerLeave={() => setHovered(false)}
       style={layerStyle(layer) as CSSProperties}
       onPointerDown={(e) => start(e)}
       onPointerMove={move}
@@ -243,7 +251,7 @@ function DesignLayer({
       onPointerCancel={(e) => finish(e, true)}
       onLostPointerCapture={(e) => finish(e, true)}
       onDoubleClick={() => {
-        if (!locked && layer.type === "text") {
+        if (!editing && !locked && layer.type === "text") {
           select({ ids: [id] });
           setEditing(true);
         }
@@ -267,37 +275,56 @@ function DesignLayer({
           dangerouslySetInnerHTML={{ __html: renderLayerContent(block) }}
         />
       )}
-      {active && !locked && !editing && selected.length === 1 && (
-        <>
-          {resizeHandles.map((handle) => (
-            <button
-              key={handle}
-              className={controls.handle}
-              data-handle={handle}
-              aria-label={
-                handle === "se"
-                  ? `Resize ${layer.name}`
-                  : `Resize ${layer.name} ${handle}`
-              }
-              onPointerDown={(e) => {
-                e.stopPropagation();
-                start(e, handle);
-              }}
-              onPointerMove={move}
-              onPointerUp={finish}
-              onPointerCancel={(e) => finish(e, true)}
-            />
-          ))}
-        </>
-      )}
+      {overlay &&
+        (active || hovered) &&
+        createPortal(
+          <div
+            data-layer-frame={id}
+            className={`${styles.interactionFrame} ${active ? styles.selected : ""}`}
+            style={{
+              left: layer.x,
+              top: layer.y,
+              width: layer.width,
+              height: layer.height,
+              transform: `rotate(${layer.rotation}deg)`,
+            }}
+          >
+            {active && !locked && !editing && selected.length === 1 && (
+              <>
+                {resizeHandles.map((handle) => (
+                  <button
+                    key={handle}
+                    className={controls.handle}
+                    data-handle={handle}
+                    aria-label={
+                      handle === "se"
+                        ? `Resize ${layer.name}`
+                        : `Resize ${layer.name} ${handle}`
+                    }
+                    onPointerDown={(e) => {
+                      e.stopPropagation();
+                      start(e, handle);
+                    }}
+                    onPointerMove={move}
+                    onPointerUp={finish}
+                    onPointerCancel={(e) => finish(e, true)}
+                  />
+                ))}
+              </>
+            )}
+          </div>,
+          overlay,
+        )}
     </div>
   );
 }
 export function DesignCanvas() {
   const pan = useCanvasPan();
+  const [overlay, setOverlay] = useState<HTMLDivElement | null>(null);
   const canvas = useAtomValue(canvasAtom),
     zoom = useAtomValue(zoomAtom),
     style = useAtomValue(styleAtom),
+    locale = useAtomValue(localeAtom),
     tool = useAtomValue(toolAtom),
     shape = useAtomValue(shapeToolAtom),
     store = useStore(),
@@ -421,6 +448,8 @@ export function DesignCanvas() {
           <article
             className={`resume freeform ${styles.paper}`}
             aria-label="Resume canvas"
+            data-zoom-surface
+            lang={locale}
             style={{
               ...resumeStyle({ style } as Parameters<typeof resumeStyle>[0]),
               width: canvas.width,
@@ -443,7 +472,8 @@ export function DesignCanvas() {
               const group = canvas.groups.find((g) =>
                 g.elementIds.includes(id),
               );
-              if (!group) return <DesignLayer key={id} id={id} />;
+              if (!group)
+                return <DesignLayer key={id} id={id} overlay={overlay} />;
               if (seen.has(group.id) || group.hidden) return null;
               seen.add(group.id);
               return (
@@ -460,11 +490,13 @@ export function DesignCanvas() {
                         key={id}
                         id={id}
                         groupLocked={group.locked}
+                        overlay={overlay}
                       />
                     ))}
                 </div>
               );
             })}
+            <div className={styles.interactionPlane} ref={setOverlay} />
             <SelectionMeasurements />
             <div ref={marquee} className={styles.marquee} />
             <div data-guide="x" className={styles.guideX} />

@@ -1,3 +1,4 @@
+import { localizedBlock, writeLocalizedText } from "../localization/document";
 import type { Document } from "../document/schema";
 import { EngineError } from "../validation";
 import type { CanvasCommand } from "./commands";
@@ -221,7 +222,7 @@ export function applyCanvas(doc: Document, command: CanvasCommand): Document {
     case "text.range.format":
     case "text.mark.remove": {
       requireUnlocked(doc, [command.id]);
-      const block = doc.blocks[command.id],
+      const block = localizedBlock(doc, command.id),
         layer = block.design!;
       if (layer.type !== "text")
         throw new EngineError(
@@ -241,13 +242,7 @@ export function applyCanvas(doc: Document, command: CanvasCommand): Document {
           end: command.end,
           ...command.style,
         });
-      return {
-        ...doc,
-        blocks: {
-          ...doc.blocks,
-          [block.id]: { ...block, design: { ...layer, marks } },
-        },
-      };
+      return writeLocalizedText(doc, block.id, block.text, marks);
     }
   }
 }

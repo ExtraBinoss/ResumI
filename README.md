@@ -1,6 +1,6 @@
 # ResumI
 
-ResumI is a resume editor with a shared TypeScript command engine. Edit on the canvas or apply reviewed agent commands. Documents are stored locally and export as JSON or standalone HTML.
+ResumI is a resume editor with a shared TypeScript command engine. Edit on the canvas or apply reviewed agent commands. Documents are stored locally and export as JSON, standalone HTML or PDF through the browser print dialog.
 
 ## What works today
 
@@ -17,7 +17,8 @@ ResumI is a resume editor with a shared TypeScript command engine. Edit on the c
 - Runtime-validated human/agent commands, atomic batches, attributed undo/redo, CLI and **Mod+Alt+Enter** with preview before applying. Agents can rename the project with `document.update`.
 - Shared scroll shadows, keyboard hints, Motion transitions and light/dark/system appearance settings.
 - A macOS-inspired control system: coherent light/dark materials, centered document title, segmented controls, label/input/unit fields with scrubbing and snapping, live layer/outline reordering and restrained menus. Successful saving stays silent; errors offer shared details and copy controls.
-- JSON backups, real HTML export and browser printing for canvas documents; source documents export HTML for printing from the standalone file.
+- JSON backups, portable HTML and primary PDF preparation for both visual and HTML/React documents.
+- Shared, locally copied Thinking Orbs with shimmer labels and static reduced-motion output; supplied favicon/brand artwork and a Plinka-linked landing footer.
 
 Shortcuts: ⌘/Ctrl Z / Shift Z / Ctrl Y, ⌘/Ctrl G / Shift G to group/ungroup, ⌘/Ctrl D to duplicate, arrows to nudge (Shift = 10px), V / T for tools. Double-click or Enter edits text in place; ⌘/Ctrl Enter, Escape or blur commits. Space + drag or the middle mouse button pans; ⌘/Ctrl + wheel zooms around the pointer.
 
@@ -57,6 +58,7 @@ apps/web/
     reui/                  CLI-imported Base UI color picker
   src/ui/                  Small adapters over generated UI components
   src/state/               Canonical session, selectors, interaction state/theme
+  src/i18n/                Synchronous isolated interface dictionaries/provider
   src/lib/                 IndexedDB repository, files and shared utilities
   src/styles/              Global tokens and public-page CSS Modules
   test/                    Mirrored browser-adapter unit tests
@@ -106,7 +108,7 @@ External agents cannot access private browser IndexedDB. Export JSON, let a CLI-
 
 ## Local storage and privacy
 
-Projects live in IndexedDB in **this browser, on this device and origin**. There is no account or cloud sync. The typed repository upgrades v1 → v2, sorts by recency, and uses transactional revision checks to prevent stale-tab overwrites. Copies/imports allocate independent document, section and block IDs. Autosave coalesces frequent writes; saved/saving/error states and JSON export remain visible. Deletion requires confirmation. Undo restores section/block edits during a session.
+Projects live in IndexedDB in **this browser, on this device and origin**. There is no account or cloud sync. The typed repository upgrades v1 → v2, sorts by recency, and uses transactional revision checks to prevent stale-tab overwrites. Copies/imports allocate independent document, section and block IDs. Autosave coalesces frequent writes and stays quiet on success; failures show copyable details. JSON export remains available. Deletion requires confirmation. Undo restores section/block edits during a session.
 
 Browser storage can be cleared, evicted, denied in private mode or exhausted. Export backups. Already-open editing and saving work offline; full offline navigation/reload is not guaranteed because no service worker is installed. Closing the process before a pending save completes can lose recent changes. Undo history resets on reload. Failed/stale saves keep in-memory content and offer retry/export; a conflicting tab should export, then reload to reconcile.
 
@@ -135,12 +137,16 @@ Playwright starts the built Worker preview automatically; rebuild after applicat
 
 See [verification results](docs/verification.md), [task index](tasks/README.md) and the [master completion checklist](tasks/check-list.md). [AGENTS.md](AGENTS.md) enforces engine ownership, React performance rules, genuine external-system effects, stable atoms and visual review. GitHub Actions runs `bun run check` and retains evidence; remote CI results must be read from the PR separately.
 
+Search shares one indexed implementation across projects, templates, fonts and icons, with virtual catalogs and guarded type-anywhere focus. Run `bun run benchmark:search` for reproducible CPU timings; [method and measured results](docs/search.md).
+
+Text mode manages independent CV language variants through validated human/agent commands, while Settings controls the EN/FR interface separately. [Language editing and extension](docs/localization.md). The primary toolbar PDF action uses the browser’s Save as PDF dialog and optimizes a print copy of raster images. [Export behavior](docs/pdf-export.md).
+
 ## Current boundaries
 
-- Freeform layout uses one A4 page and flat groups. Automatic multipage pagination and nested groups are not implemented. Structured documents can grow vertically; freeform elements retain explicitly editable frames.
-- PDF uses the browser print dialog and the real HTML renderer; dedicated/pixel-perfect PDF export and preview sharing are future work.
+- Freeform layout uses one explicitly sized page (A4 by default) and flat groups. Automatic multipage pagination and nested groups are not implemented. Structured documents can grow vertically; freeform elements retain explicitly editable frames.
+- PDF uses an isolated prepared print page and the browser’s native Save as PDF dialog. A background PDF-download service and preview sharing are outside this delivery.
 - Browser local storage only; no cross-device sync, auth, live CLI bridge, model inference, remote MCP or WebMCP.
-- UI copy is English for this milestone; localization is future work.
+- EN/FR resources cover the main interface controls; detailed inspector labels remain English. CV language variants are independently editable by humans and agents.
 - Browser E2E is Chromium on the available Linux environment; Firefox/WebKit, real-device/mobile editing and broader assistive-technology review remain release follow-ups.
 - Production deployment, credentials, DNS and provider connections were deliberately not configured.
 

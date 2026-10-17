@@ -4,6 +4,7 @@ import {
   Links,
   Meta,
   useOutlet,
+  useRouteLoaderData,
   useNavigationType,
   useLocation,
   Scripts,
@@ -15,26 +16,56 @@ import type { ReactNode } from "react";
 import { MotionConfig, motion } from "motion/react";
 import { ThemeSync, themeBootstrap } from "../src/state/theme";
 import { PageRecovery } from "../src/components/PageRecovery";
+import { InterfaceLanguage } from "../src/i18n/InterfaceLanguage";
+import { interfaceLocale } from "../src/i18n/resources";
 import styles from "../src/styles/RouteTransition.module.css";
+export function loader({ request }: { request: Request }) {
+  const cookie = request.headers
+    .get("Cookie")
+    ?.match(/(?:^|;\s*)resumi-ui-language=([^;]+)/)?.[1];
+  return { uiLocale: interfaceLocale(cookie) };
+}
 export function Layout({ children }: { children: ReactNode }) {
+  const data = useRouteLoaderData<typeof loader>("root");
+  const locale = data?.uiLocale ?? "en";
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang={locale} suppressHydrationWarning>
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width,initial-scale=1" />
         <meta name="theme-color" content="#ffffff" />
+        <link rel="icon" href="/favicon.ico" sizes="any" />
+        <link
+          rel="icon"
+          href="/favicon-32.png"
+          type="image/png"
+          sizes="32x32"
+        />
+        <link
+          rel="icon"
+          href="/favicon-64.png"
+          type="image/png"
+          sizes="64x64"
+        />
+        <link
+          rel="apple-touch-icon"
+          href="/apple-touch-icon.png"
+          sizes="180x180"
+        />
         <script dangerouslySetInnerHTML={{ __html: themeBootstrap }} />
         <Meta />
         <Links />
       </head>
       <body>
         <div id="app">
-          <MotionConfig reducedMotion="user">
-            <TooltipProvider delay={450}>
-              <ThemeSync />
-              {children}
-            </TooltipProvider>
-          </MotionConfig>
+          <InterfaceLanguage locale={locale}>
+            <MotionConfig reducedMotion="user">
+              <TooltipProvider delay={450}>
+                <ThemeSync />
+                {children}
+              </TooltipProvider>
+            </MotionConfig>
+          </InterfaceLanguage>
         </div>
         <ScrollRestoration />
         <Scripts />
@@ -56,8 +87,8 @@ export default function App() {
     <motion.div
       key={page}
       className={styles.page}
-      initial={navigation === "POP" ? false : { opacity: 0, y: 6 }}
-      animate={{ opacity: 1, y: 0 }}
+      initial={navigation === "POP" ? false : { opacity: 0 }}
+      animate={{ opacity: 1 }}
       transition={{ duration: 0.16, ease: [0.2, 0.8, 0.2, 1] }}
     >
       {outlet}

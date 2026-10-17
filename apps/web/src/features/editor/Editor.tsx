@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { ErrorToast } from "../../components/ErrorNotice";
@@ -39,6 +40,7 @@ import { EditorToolbar } from "./components/EditorToolbar";
 import { EditorDock } from "./components/EditorDock";
 import styles from "./styles/Editor.module.css";
 function EditorWorkspace({ controller }: { controller: EditorController }) {
+  const { t } = useTranslation();
   const [dialog, setDialog] = useState<EditorDialog>(null),
     selection = useAtomValue(selectionAtom),
     canvas = useAtomValue(canvasAtom),
@@ -142,7 +144,7 @@ function EditorWorkspace({ controller }: { controller: EditorController }) {
       <EditorToolbar controller={controller} />
       <ErrorToast
         error={designError}
-        label="Unable to edit"
+        label={t("editor.actionFailed")}
         onDismiss={() => store.set(designErrorAtom, "")}
       />
       <div className={styles.workspace}>
@@ -151,9 +153,9 @@ function EditorWorkspace({ controller }: { controller: EditorController }) {
           <motion.div
             key={view}
             className={styles.modeSurface}
-            initial={{ opacity: 0, y: reduced ? 0 : 4 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: reduced ? 0 : -3 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
             transition={{
               duration: reduced ? 0 : 0.14,
               ease: [0.2, 0.8, 0.2, 1],

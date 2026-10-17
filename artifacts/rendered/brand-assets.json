@@ -1,0 +1,34 @@
+{
+  "files": [
+    {
+      "path": "/favicon.ico",
+      "status": 200,
+      "type": "image/vnd.microsoft.icon",
+      "bytes": 4766
+    },
+    {
+      "path": "/favicon-32.png",
+      "status": 200,
+      "type": "image/png",
+      "bytes": 1484
+    },
+    {
+      "path": "/favicon-64.png",
+      "status": 200,
+      "type": "image/png",
+      "bytes": 4058
+    },
+    {
+      "path": "/apple-touch-icon.png",
+      "status": 200,
+      "type": "image/png",
+      "bytes": 20913
+    },
+    {
+      "path": "/brand/resumi-icon-192.png",
+      "status": 200,
+      "type": "image/png",
+      "bytes": 23301
+    }
+  ]
+}

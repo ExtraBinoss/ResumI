@@ -20,14 +20,12 @@
 }
 .picker header button {
   gap: 5px;
-  color: var(--muted-foreground);
   border-radius: 5px;
 }
 .categories {
   width: calc(100% - 24px);
   margin: 0 12px 4px;
   border-radius: 6px;
-  background: var(--segment-bg);
 }
 .categories button {
   border-radius: 4px;
@@ -39,7 +37,13 @@
 .scroller {
   height: 280px;
 }
+.shapeSpace {
+  position: relative;
+}
 .shapeGrid {
+  position: absolute;
+  left: 0;
+  right: 0;
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 5px;
@@ -73,6 +77,8 @@
 }
 .empty {
   display: flex;
+  flex-direction: column;
+  gap: 12px;
   align-items: center;
   justify-content: center;
   min-height: 100px;

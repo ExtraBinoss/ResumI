@@ -25,7 +25,20 @@ export function visualCommands(doc: Document): Command[] {
       commands.push({
         type: "block.create",
         sectionId,
-        block: { id, kind: "text", text: section.title },
+        block: {
+          id,
+          kind: "text",
+          text: section.title,
+          ...(section.titleTranslations
+            ? {
+                translations: Object.fromEntries(
+                  Object.entries(section.titleTranslations).map(
+                    ([locale, text]) => [locale, { text, marks: [] }],
+                  ),
+                ),
+              }
+            : {}),
+        },
         index: 0,
       });
       layers[id] = makeLayer("text", {

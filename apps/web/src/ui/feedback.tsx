@@ -7,7 +7,7 @@ import {
   AlertTitle,
   AlertDescription,
 } from "../components/ui/alert";
-import { Spinner } from "../components/ui/spinner";
+import { SharedLoading } from "../components/SharedLoading";
 import { ScrollArea as ShadcnScrollArea } from "../components/ui/scroll-area";
 
 function textDetails(node: ReactNode): string {
@@ -57,17 +57,31 @@ export function Alert({
 export function Loader({
   size = "sm",
   className,
+  label,
+  text = false,
 }: {
   size?: Size;
   className?: string;
+  label?: string;
+  text?: boolean;
 }) {
+  const pixels =
+    typeof size === "number"
+      ? size
+      : size === "xs" || size === "compact-xs"
+        ? 13
+        : size === "lg" || size === "xl"
+          ? 24
+          : 18;
   return (
-    <Spinner
-      aria-hidden="true"
-      role={undefined}
-      aria-label={undefined}
-      data-size={size}
-      className={classes(styles.loaderIcon, className)}
+    <SharedLoading
+      compact
+      variant="working"
+      iconOnly={!text}
+      label={label}
+      iconSize={pixels}
+      className={className}
+      style={text ? undefined : { minHeight: pixels, height: pixels }}
     />
   );
 }

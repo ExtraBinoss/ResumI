@@ -1,0 +1,160 @@
+[
+  {
+    "theme": "light",
+    "route": "projects",
+    "overflow": 0,
+    "settings": {
+      "width": 191,
+      "height": 36
+    },
+    "cards": [
+      {
+        "title": "Open Alex Morgan — Resume",
+        "shadow": "rgba(0, 0, 0, 0.03) 0px 1px 3px 0px",
+        "materials": [
+          {
+            "backgroundImage": "none",
+            "shadow": "rgba(0, 0, 0, 0.04) 0px 1px 3px 0px",
+            "blur": "blur(12px) saturate(1.1)"
+          }
+        ]
+      }
+    ],
+    "errors": []
+  },
+  {
+    "theme": "light",
+    "route": "templates",
+    "overflow": 0,
+    "settings": {
+      "width": 191,
+      "height": 36
+    },
+    "cards": [
+      {
+        "title": "Use React Studio",
+        "shadow": "rgba(0, 0, 0, 0.03) 0px 1px 3px 0px",
+        "materials": [
+          {
+            "backgroundImage": "none",
+            "shadow": "rgba(0, 0, 0, 0.04) 0px 1px 3px 0px",
+            "blur": "blur(12px) saturate(1.1)"
+          }
+        ]
+      },
+      {
+        "title": "Use React Editorial",
+        "shadow": "rgba(0, 0, 0, 0.03) 0px 1px 3px 0px",
+        "materials": [
+          {
+            "backgroundImage": "none",
+            "shadow": "rgba(0, 0, 0, 0.04) 0px 1px 3px 0px",
+            "blur": "blur(12px) saturate(1.1)"
+          }
+        ]
+      },
+      {
+        "title": "Use Classic",
+        "shadow": "rgba(0, 0, 0, 0.03) 0px 1px 3px 0px",
+        "materials": [
+          {
+            "backgroundImage": "none",
+            "shadow": "rgba(0, 0, 0, 0.04) 0px 1px 3px 0px",
+            "blur": "blur(12px) saturate(1.1)"
+          }
+        ]
+      },
+      {
+        "title": "Use Profile",
+        "shadow": "rgba(0, 0, 0, 0.03) 0px 1px 3px 0px",
+        "materials": [
+          {
+            "backgroundImage": "none",
+            "shadow": "rgba(0, 0, 0, 0.04) 0px 1px 3px 0px",
+            "blur": "blur(12px) saturate(1.1)"
+          }
+        ]
+      }
+    ],
+    "errors": []
+  },
+  {
+    "theme": "dark",
+    "route": "projects",
+    "overflow": 0,
+    "settings": {
+      "width": 191,
+      "height": 36
+    },
+    "cards": [
+      {
+        "title": "Open Alex Morgan — Resume",
+        "shadow": "rgba(0, 0, 0, 0.03) 0px 1px 3px 0px",
+        "materials": [
+          {
+            "backgroundImage": "none",
+            "shadow": "rgba(0, 0, 0, 0.04) 0px 1px 3px 0px",
+            "blur": "blur(12px) saturate(1.1)"
+          }
+        ]
+      }
+    ],
+    "errors": []
+  },
+  {
+    "theme": "dark",
+    "route": "templates",
+    "overflow": 0,
+    "settings": {
+      "width": 191,
+      "height": 36
+    },
+    "cards": [
+      {
+        "title": "Use React Studio",
+        "shadow": "rgba(0, 0, 0, 0.03) 0px 1px 3px 0px",
+        "materials": [
+          {
+            "backgroundImage": "none",
+            "shadow": "rgba(0, 0, 0, 0.04) 0px 1px 3px 0px",
+            "blur": "blur(12px) saturate(1.1)"
+          }
+        ]
+      },
+      {
+        "title": "Use React Editorial",
+        "shadow": "rgba(0, 0, 0, 0.03) 0px 1px 3px 0px",
+        "materials": [
+          {
+            "backgroundImage": "none",
+            "shadow": "rgba(0, 0, 0, 0.04) 0px 1px 3px 0px",
+            "blur": "blur(12px) saturate(1.1)"
+          }
+        ]
+      },
+      {
+        "title": "Use Classic",
+        "shadow": "rgba(0, 0, 0, 0.03) 0px 1px 3px 0px",
+        "materials": [
+          {
+            "backgroundImage": "none",
+            "shadow": "rgba(0, 0, 0, 0.04) 0px 1px 3px 0px",
+            "blur": "blur(12px) saturate(1.1)"
+          }
+        ]
+      },
+      {
+        "title": "Use Profile",
+        "shadow": "rgba(0, 0, 0, 0.03) 0px 1px 3px 0px",
+        "materials": [
+          {
+            "backgroundImage": "none",
+            "shadow": "rgba(0, 0, 0, 0.04) 0px 1px 3px 0px",
+            "blur": "blur(12px) saturate(1.1)"
+          }
+        ]
+      }
+    ],
+    "errors": []
+  }
+]

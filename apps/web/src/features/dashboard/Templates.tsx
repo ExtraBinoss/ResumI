@@ -1,8 +1,11 @@
-import { useState } from "react";
+import { useTranslation } from "react-i18next";
+import { useMemo, useState } from "react";
 import { Link } from "react-router";
 import { motion, useReducedMotion } from "motion/react";
-import { ArrowRight, Eye, Search, LayoutTemplate } from "lucide-react";
-import { Button, Modal, TextInput } from "../../ui";
+import { ArrowRight, Eye, LayoutTemplate } from "lucide-react";
+import { Button, Modal } from "../../ui";
+import { SearchInput } from "../../components/SearchInput";
+import { createSearchIndex } from "../../lib/search-index";
 import { ResumePreview } from "../../components/ResumePreview";
 import { preloadEditor } from "../../lib/preload-editor";
 import shell from "./styles/Dashboard.module.css";
@@ -24,24 +27,33 @@ export function Templates({
   templates: TemplatePreview[];
   css: string;
 }) {
+  const { t } = useTranslation();
   const reducedMotion = useReducedMotion();
   const [search, setSearch] = useState("");
   const [preview, setPreview] = useState<TemplatePreview | null>(null);
-  const filtered = templates.filter((template) =>
-    template.name.toLowerCase().includes(search.toLowerCase()),
+  const index = useMemo(
+    () =>
+      createSearchIndex(templates, {
+        text: (template) => displayName(template.name),
+      }),
+    [templates],
   );
+  const filtered = index.search(search);
   return (
     <>
       <main className={shell.main}>
         <header className={`${shell.heading} ${styles.heading}`}>
           <div className={shell.collectionTitle}>
-            <h1>Templates</h1>
+            <h1>{t("dashboard.templates")}</h1>
             <span className={shell.count}>{templates.length}</span>
           </div>
-          <TextInput
-            aria-label="Search templates"
-            placeholder="Search templates…"
-            leftSection={<Search size={15} aria-hidden />}
+          <SearchInput
+            aria-label={t("dashboard.searchTemplates")}
+            prefix={t("common.search")}
+            captureTyping
+            hints={templates.map((template) => ({
+              label: displayName(template.name),
+            }))}
             value={search}
             onChange={(event) => setSearch(event.currentTarget.value)}
             size="xs"

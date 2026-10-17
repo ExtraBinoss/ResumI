@@ -1,15 +1,16 @@
 import { useEffect, useLayoutEffect, useRef, type PointerEvent } from "react";
 import { useAtomValue, useStore } from "jotai";
 import { zoomAtom } from "../../state/editor";
+import { zoomRequestAtom } from "../../state/canvas-view";
+
+type Anchor = { x: number; y: number; clientX: number; clientY: number };
+const surfaceSelector = "[data-zoom-surface]";
+
+/** Both workspaces share one pointer-anchored, compositor-only zoom gesture. */
 export function useCanvasPan() {
   const store = useStore(),
     zoom = useAtomValue(zoomAtom);
-  const zoomAnchor = useRef<{
-    x: number;
-    y: number;
-    clientX: number;
-    clientY: number;
-  } | null>(null);
+  const zoomAnchor = useRef<Anchor | null>(null);
   const settleZoom = useRef<(() => void) | null>(null);
   const viewport = useRef<HTMLDivElement>(null),
     space = useRef(false),
@@ -17,24 +18,22 @@ export function useCanvasPan() {
       null,
     );
   useEffect(() => {
-    function keydown(event: KeyboardEvent) {
-      if (
-        event.code === "Space" &&
-        !(
-          event.target instanceof HTMLElement &&
-          (event.target.matches("input,textarea,select,button") ||
-            event.target.isContentEditable)
-        )
-      ) {
-        event.preventDefault();
-        space.current = true;
-        if (viewport.current) viewport.current.style.cursor = "grab";
-      }
-    }
     function reset() {
       space.current = false;
       pan.current = null;
       if (viewport.current) viewport.current.style.cursor = "";
+    }
+    function keydown(event: KeyboardEvent) {
+      if (
+        event.code !== "Space" ||
+        (event.target instanceof HTMLElement &&
+          (event.target.matches("input,textarea,select,button") ||
+            event.target.isContentEditable))
+      )
+        return;
+      event.preventDefault();
+      space.current = true;
+      if (viewport.current) viewport.current.style.cursor = "grab";
     }
     function keyup(event: KeyboardEvent) {
       if (event.code === "Space") reset();
@@ -46,27 +45,25 @@ export function useCanvasPan() {
     const usableHeight = () =>
       (node?.clientHeight ?? 0) *
       (window.matchMedia("(max-width: 700px)").matches ? 0.6 : 1);
-    let previous = {
-      width: node?.clientWidth ?? 0,
-      height: usableHeight(),
-    };
+    let previous = { width: node?.clientWidth ?? 0, height: usableHeight() };
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
     let zoomFrame = 0,
       targetZoom = store.get(zoomAtom),
       visualZoom = targetZoom,
       previousTime = 0;
-    let anchor: typeof zoomAnchor.current = null;
-    let paper: HTMLElement | null = null;
+    let anchor: Anchor | null = null,
+      paper: HTMLElement | null = null;
     function settle() {
       cancelAnimationFrame(zoomFrame);
       zoomFrame = 0;
       if (!paper || !anchor) return;
-      const finalZoom = Math.round(visualZoom * 100) / 100;
-      // Keep the last composited position while React commits the final bounds once.
+      // Never remove the translated preview before the bounds and scroll offset commit.
+      // That would expose one frame at the old scroll position with the new scale.
       zoomAnchor.current = anchor;
-      paper.style.transform = `scale(${finalZoom / 100})`;
       paper.style.willChange = "";
+      const finalZoom = Math.round(visualZoom * 100) / 100;
       store.set(zoomAtom, finalZoom);
+      store.set(zoomRequestAtom, null);
       paper = null;
       anchor = null;
     }
@@ -90,37 +87,26 @@ export function useCanvasPan() {
         zoomFrame = requestAnimationFrame(stepZoom);
       else settle();
     }
-    function wheel(event: WheelEvent) {
-      if (!node || (!event.ctrlKey && !event.metaKey)) return;
-      event.preventDefault();
-      const currentPaper = node.querySelector<HTMLElement>(
-        'article[aria-label="Resume canvas"]',
-      );
-      if (!currentPaper) return;
+    function request() {
+      const next = store.get(zoomRequestAtom);
+      const currentPaper = node?.querySelector<HTMLElement>(surfaceSelector);
+      if (!next || !node || !currentPaper) return;
       const rect = currentPaper.getBoundingClientRect(),
-        scale = zoomFrame ? visualZoom / 100 : store.get(zoomAtom) / 100;
-      const unit =
-        event.deltaMode === 1
-          ? 16
-          : event.deltaMode === 2
-            ? node.clientHeight
-            : 1;
-      if (!zoomFrame) {
-        visualZoom = targetZoom = scale * 100;
+        scale = paper ? visualZoom / 100 : store.get(zoomAtom) / 100;
+      const viewportBounds = node.getBoundingClientRect();
+      const clientX =
+          next.clientX ?? viewportBounds.left + node.clientWidth / 2,
+        clientY = next.clientY ?? viewportBounds.top + usableHeight() / 2;
+      if (!paper) {
+        visualZoom = scale * 100;
         paper = currentPaper;
       }
-      targetZoom =
-        Math.round(
-          Math.min(
-            250,
-            Math.max(15, targetZoom * Math.exp(-event.deltaY * unit * 0.002)),
-          ) * 10,
-        ) / 10;
+      targetZoom = next.value;
       anchor = {
-        x: (event.clientX - rect.left) / scale,
-        y: (event.clientY - rect.top) / scale,
-        clientX: event.clientX,
-        clientY: event.clientY,
+        x: (clientX - rect.left) / scale,
+        y: (clientY - rect.top) / scale,
+        clientX,
+        clientY,
       };
       currentPaper.style.willChange = "transform";
       if (!zoomFrame) {
@@ -128,15 +114,29 @@ export function useCanvasPan() {
         zoomFrame = requestAnimationFrame(stepZoom);
       }
     }
-    const unsubscribeZoom = store.sub(zoomAtom, () => {
-      if (paper) {
-        cancelAnimationFrame(zoomFrame);
-        zoomFrame = 0;
-        paper.style.willChange = "";
-        paper = null;
-        anchor = null;
-      }
-    });
+    function wheel(event: WheelEvent) {
+      if (!node || (!event.ctrlKey && !event.metaKey)) return;
+      event.preventDefault();
+      const unit =
+        event.deltaMode === 1
+          ? 16
+          : event.deltaMode === 2
+            ? node.clientHeight
+            : 1;
+      const current = store.get(zoomRequestAtom)?.value ?? store.get(zoomAtom);
+      store.set(zoomRequestAtom, {
+        value:
+          Math.round(
+            Math.min(
+              250,
+              Math.max(15, current * Math.exp(-event.deltaY * unit * 0.002)),
+            ) * 10,
+          ) / 10,
+        clientX: event.clientX,
+        clientY: event.clientY,
+      });
+    }
+    const unsubscribeRequest = store.sub(zoomRequestAtom, request);
     node?.addEventListener("wheel", wheel, { passive: false });
     if (node) {
       node.scrollLeft = (node.scrollWidth - node.clientWidth) / 2;
@@ -153,11 +153,12 @@ export function useCanvasPan() {
       observer.disconnect();
       cancelAnimationFrame(zoomFrame);
       settleZoom.current = null;
-      unsubscribeZoom();
+      unsubscribeRequest();
       if (paper) {
         paper.style.transform = `scale(${store.get(zoomAtom) / 100})`;
         paper.style.willChange = "";
       }
+      store.set(zoomRequestAtom, null);
       node?.removeEventListener("wheel", wheel);
       window.removeEventListener("keydown", keydown);
       window.removeEventListener("keyup", keyup);
@@ -168,10 +169,9 @@ export function useCanvasPan() {
     const node = viewport.current,
       anchor = zoomAnchor.current;
     if (!node || !anchor) return;
-    const paper = node.querySelector<HTMLElement>(
-      'article[aria-label="Resume canvas"]',
-    );
+    const paper = node.querySelector<HTMLElement>(surfaceSelector);
     if (!paper) return;
+    paper.style.transform = `scale(${zoom / 100})`;
     const rect = paper.getBoundingClientRect();
     node.scrollLeft += rect.left + anchor.x * (zoom / 100) - anchor.clientX;
     node.scrollTop += rect.top + anchor.y * (zoom / 100) - anchor.clientY;

@@ -1,6 +1,10 @@
 import { atom, createStore } from "jotai";
 import {
   createSession,
+  localizedBlock,
+  localizedSection,
+  defaultLocalization,
+  documentLocale,
   execute,
   redo,
   undo,
@@ -21,6 +25,13 @@ export const selectionAtom = atom<{
 export const saveStatusAtom = atom<"saved" | "saving" | "error">("saved");
 export const saveErrorAtom = atom("");
 export const zoomAtom = atom(75);
+export const documentLanguagesAtom = atom(
+  (get) => get(sessionAtom)?.document.localization ?? defaultLocalization,
+);
+export const localeAtom = atom((get) => {
+  const doc = get(sessionAtom)?.document;
+  return doc ? documentLocale(doc) : "en";
+});
 export const sectionIdsAtom = atom(
   (get) => get(sessionAtom)?.document.sectionIds ?? [],
 );
@@ -35,10 +46,16 @@ export const historyAtom = atom((get) => {
 const sections = new Map<string, ReturnType<typeof makeSectionAtom>>();
 const blocks = new Map<string, ReturnType<typeof makeBlockAtom>>();
 function makeSectionAtom(id: string) {
-  return atom((get) => get(sessionAtom)?.document.sections[id]);
+  return atom((get) => {
+    const doc = get(sessionAtom)?.document;
+    return doc?.sections[id] ? localizedSection(doc, id) : undefined;
+  });
 }
 function makeBlockAtom(id: string) {
-  return atom((get) => get(sessionAtom)?.document.blocks[id]);
+  return atom((get) => {
+    const doc = get(sessionAtom)?.document;
+    return doc?.blocks[id] ? localizedBlock(doc, id) : undefined;
+  });
 }
 // Atom caches live for one editor mount, and are released by the controller on dispose.
 export function sectionAtom(id: string) {

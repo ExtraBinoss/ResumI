@@ -16,3 +16,15 @@ export * from "./canvas/shapes";
 export * from "./source/schema";
 
 export * from "./canvas/contrast";
+
+export * from "./localization/schema";
+export {
+  defaultLocalization,
+  documentLocale,
+  localizedBlock,
+} from "./localization/document";
+
+export {
+  localizedSection,
+  localizedSectionTitle,
+} from "./localization/sections";

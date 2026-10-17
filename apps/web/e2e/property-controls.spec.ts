@@ -74,14 +74,15 @@ test("font search, categories and hover preview preserve the saved font until se
     .getByRole("combobox", { name: "Font family", exact: true })
     .click();
   await page
-    .getByRole("combobox", { name: "Font category", exact: true })
-    .click();
-  await page
-    .getByRole("option", { name: "This computer", exact: true })
+    .getByRole("group", { name: "Font categories", exact: true })
+    .getByRole("button", { name: "Serif", exact: true })
     .click();
   const serif = page
     .getByRole("listbox", { name: "Font families", exact: true })
     .getByRole("option", { name: "Serif", exact: true });
+  await page
+    .getByRole("searchbox", { name: "Search fonts", exact: true })
+    .fill("Serif");
   await serif.hover();
   await expect(heading).toHaveCSS("font-family", "ui-serif, serif");
   await page.keyboard.press("Escape");
@@ -192,7 +193,11 @@ test("a Google font selection embeds the downloaded face and restores it after r
     exact: true,
   });
   await option.hover();
-  await expect.poll(() => requests.length).toBe(1);
+  await expect
+    .poll(
+      () => requests.filter((url) => url.includes("Space%20Grotesk")).length,
+    )
+    .toBe(1);
   await option.click();
   await expect(heading).toHaveCSS("font-family", '"Space Grotesk", sans-serif');
   await expect(

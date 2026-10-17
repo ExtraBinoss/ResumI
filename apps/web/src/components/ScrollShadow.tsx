@@ -10,9 +10,11 @@ export function ScrollShadow({
   className,
   viewportClassName,
   contentClassName,
+  orientation = "vertical",
   ...props
 }: Omit<ComponentProps<typeof ScrollArea.Root>, "children"> & {
   children: ReactNode;
+  orientation?: "vertical" | "horizontal";
   viewportClassName?: string;
   contentClassName?: string;
 }) {
@@ -21,6 +23,7 @@ export function ScrollShadow({
       {...props}
       className={cn(styles.root, className)}
       data-slot="scroll-shadow"
+      data-fade-orientation={orientation}
     >
       <ScrollArea.Viewport
         className={cn(styles.viewport, viewportClassName)}

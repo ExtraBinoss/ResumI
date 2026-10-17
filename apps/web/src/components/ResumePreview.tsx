@@ -1,6 +1,7 @@
 import styles from "./Preview.module.css";
 import type { Document } from "@resumi/engine";
 import { lazy, Suspense } from "react";
+import { SharedLoading } from "./SharedLoading";
 const CodePreview = lazy(() =>
   import("./CodePreview").then((module) => ({ default: module.CodePreview })),
 );
@@ -17,9 +18,11 @@ export function ResumePreview({
     return (
       <Suspense
         fallback={
-          <div className={styles.sourcePlaceholder} aria-hidden>
-            Preparing preview…
-          </div>
+          <SharedLoading
+            messageKey="loading.preview"
+            variant="working"
+            className={styles.sourcePlaceholder}
+          />
         }
       >
         <CodePreview document={document} />

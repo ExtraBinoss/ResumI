@@ -1,52 +1,59 @@
-import { motion, useReducedMotion } from "motion/react";
+import type { CSSProperties, ReactNode } from "react";
+import { useTranslation } from "react-i18next";
+import { ThinkingOrb, type OrbVariant } from "./ThinkingOrb";
 import styles from "./SharedLoading.module.css";
 
+/** One visible, accessible loading treatment for routes, previews and compact controls. */
 export function SharedLoading({
-  label = "Loading…",
+  label,
+  messageKey = "loading.generic",
   page = false,
+  compact = false,
+  iconOnly = false,
+  variant = "breathing",
+  className = "",
+  iconSize,
+  style,
 }: {
   label?: string;
+  messageKey?: string;
   page?: boolean;
+  compact?: boolean;
+  iconOnly?: boolean;
+  variant?: OrbVariant;
+  className?: string;
+  iconSize?: number;
+  style?: CSSProperties;
 }) {
-  const reduced = useReducedMotion();
+  const { t } = useTranslation();
+  const text = label ?? t(messageKey);
   return (
     <div
-      className={`${styles.loading} ${page ? styles.page : ""}`}
+      className={`${styles.loading} ${page ? styles.page : ""} ${compact ? styles.compact : ""} ${className}`}
+      style={style}
       role="status"
       aria-live="polite"
       aria-busy="true"
+      data-loading-state={variant}
     >
+      <ThinkingOrb
+        variant={variant}
+        size={compact ? 20 : 64}
+        speed={variant === "breathing" ? 0.6 : 0.8}
+        style={iconSize ? { width: iconSize, height: iconSize } : undefined}
+      />
       {page ? (
-        <h1 className="srOnly">{label}</h1>
+        <h1 className={styles.label}>{text}</h1>
       ) : (
-        <span className="srOnly">{label}</span>
+        <span className={iconOnly ? "srOnly" : styles.label}>{text}</span>
       )}
-      <span className={styles.orb} aria-hidden="true">
-        <motion.span
-          className={styles.glow}
-          initial={{ scale: 1, opacity: 0.55 }}
-          animate={
-            reduced
-              ? { scale: 1, opacity: 0.55 }
-              : { scale: [1, 1.12, 1], opacity: [0.55, 0.9, 0.55] }
-          }
-          transition={
-            reduced
-              ? { duration: 0 }
-              : { duration: 1.8, repeat: Infinity, ease: "easeInOut" }
-          }
-        />
-        <motion.span
-          className={styles.core}
-          initial={{ scale: 1 }}
-          animate={reduced ? { scale: 1 } : { scale: [1, 0.94, 1] }}
-          transition={
-            reduced
-              ? { duration: 0 }
-              : { duration: 1.8, repeat: Infinity, ease: "easeInOut" }
-          }
-        />
-      </span>
     </div>
+  );
+}
+
+/** Same shimmer for a genuinely busy control whose label already names the action. */
+export function LoadingLabel({ children }: { children: ReactNode }) {
+  return (
+    <span className={`${styles.label} ${styles.controlLabel}`}>{children}</span>
   );
 }

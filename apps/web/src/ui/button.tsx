@@ -5,6 +5,8 @@ import {
 import type { ButtonHTMLAttributes, ElementType, ReactNode, Ref } from "react";
 import { classes, layoutStyle, type LayoutProps, type Size } from "./shared";
 import styles from "./button.module.css";
+import { ThinkingOrb } from "../components/ThinkingOrb";
+import { LoadingLabel } from "../components/SharedLoading";
 
 export type ButtonProps = Omit<
   ButtonHTMLAttributes<HTMLButtonElement>,
@@ -56,7 +58,7 @@ export function Button({
   const content = (
     <>
       {loading ? (
-        <span aria-hidden className={styles.spinner} />
+        <ThinkingOrb variant="working" size={20} speed={0.8} />
       ) : (
         leftSection && (
           <span data-ui="button-section" aria-hidden>
@@ -64,7 +66,11 @@ export function Button({
           </span>
         )
       )}
-      <span>{children}</span>
+      {loading ? (
+        <LoadingLabel>{children}</LoadingLabel>
+      ) : (
+        <span>{children}</span>
+      )}
       {rightSection && (
         <span data-ui="button-section" aria-hidden>
           {rightSection}

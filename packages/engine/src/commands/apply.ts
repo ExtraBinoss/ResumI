@@ -1,3 +1,6 @@
+import { writeLocalizedSectionTitle } from "../localization/sections";
+import { applyLocale } from "../localization/apply";
+import { documentLocale, writeLocalizedText } from "../localization/document";
 import { applySource } from "../source/apply";
 import { applyCanvas } from "../canvas/apply";
 import { makeLayer } from "../canvas/defaults";
@@ -50,6 +53,15 @@ function inserted(current: string[], id: string, index = current.length) {
 }
 function apply(doc: Document, command: Command): Document {
   switch (command.type) {
+    case "section.translation.set":
+    case "section.translation.remove":
+    case "locale.add":
+    case "locale.update":
+    case "locale.remove":
+    case "locale.activate":
+    case "translation.set":
+    case "translation.remove":
+      return applyLocale(doc, command);
     case "source.set":
     case "source.clear":
     case "source.activate":
@@ -67,14 +79,8 @@ function apply(doc: Document, command: Command): Document {
       };
     }
     case "section.update": {
-      const section = requireSection(doc, command.id);
-      return {
-        ...doc,
-        sections: {
-          ...doc.sections,
-          [command.id]: { ...section, title: command.title },
-        },
-      };
+      requireSection(doc, command.id);
+      return writeLocalizedSectionTitle(doc, command.id, command.title);
     }
     case "section.delete": {
       const section = requireSection(doc, command.id);
@@ -152,6 +158,22 @@ function apply(doc: Document, command: Command): Document {
       const block = requireBlock(doc, command.id);
       requireUnlocked(doc, [command.id]);
       const patch = command.patch;
+      if (
+        patch.text !== undefined &&
+        doc.localization &&
+        documentLocale(doc) !== doc.localization.baseLocale
+      ) {
+        const translated = writeLocalizedText(doc, command.id, patch.text);
+        const rest = { ...patch };
+        delete rest.text;
+        return {
+          ...translated,
+          blocks: {
+            ...translated.blocks,
+            [block.id]: { ...translated.blocks[block.id], ...rest },
+          },
+        };
+      }
       const design = patch.design ?? block.design;
       const updatedDesign =
         design?.type === "text" && patch.text !== undefined

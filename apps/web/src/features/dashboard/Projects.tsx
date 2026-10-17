@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useTranslation } from "react-i18next";
+import { useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router";
-import { motion, useReducedMotion } from "motion/react";
+import { motion } from "motion/react";
 import {
   Button,
   TextInput,
@@ -14,12 +15,13 @@ import {
 import {
   Plus,
   Upload,
-  Search,
   FileText,
   ArrowUpRight,
   Grid2X2,
   Rows3,
 } from "lucide-react";
+import { SearchInput } from "../../components/SearchInput";
+import { createSearchIndex } from "../../lib/search-index";
 import { ProjectCard } from "./components/ProjectCard";
 import { ProjectPreview } from "./components/ProjectPreview";
 import { useDashboardProjects } from "./state/projects";
@@ -28,6 +30,7 @@ import { readDocumentFile } from "../../lib/files";
 import { preloadEditor } from "../../lib/preload-editor";
 import styles from "./styles/Dashboard.module.css";
 export function Projects() {
+  const { t } = useTranslation();
   const { records, error, setError, refresh } = useDashboardProjects();
   const [search, setSearch] = useState(""),
     [busy, setBusy] = useState(false);
@@ -37,7 +40,6 @@ export function Projects() {
   const [sort, setSort] = useState("recent"),
     [view, setView] = useState("grid");
   const [preview, setPreview] = useState<Project | null>(null);
-  const reducedMotion = useReducedMotion();
   const navigate = useNavigate();
   async function run(action: () => Promise<void>) {
     setBusy(true);
@@ -55,21 +57,29 @@ export function Projects() {
       setBusy(false);
     }
   }
+  // The immutable repository snapshot is the index identity; keypresses query it.
+  const index = useMemo(
+    () =>
+      createSearchIndex(records ?? [], {
+        text: (project) => project.document.name,
+      }),
+    [records],
+  );
   const filtered = records
-    ?.filter((project) =>
-      project.document.name.toLowerCase().includes(search.toLowerCase()),
-    )
-    .sort((a, b) =>
-      sort === "name"
-        ? a.document.name.localeCompare(b.document.name)
-        : b.updatedAt.localeCompare(a.updatedAt),
-    );
+    ? index
+        .search(search, { limit: 500 })
+        .sort((a, b) =>
+          sort === "name"
+            ? a.document.name.localeCompare(b.document.name)
+            : b.updatedAt.localeCompare(a.updatedAt),
+        )
+    : null;
   return (
     <>
       <main className={styles.main}>
         <header className={styles.heading}>
           <div className={styles.collectionTitle}>
-            <h1>Your resumes</h1>
+            <h1>{t("dashboard.yourResumes")}</h1>
             {records && <span className={styles.count}>{records.length}</span>}
           </div>
           <div className={styles.actions}>
@@ -109,7 +119,7 @@ export function Projects() {
                 })
               }
             >
-              New resume
+              {t("dashboard.newResume")}
             </Button>
           </div>
         </header>
@@ -120,10 +130,13 @@ export function Projects() {
         )}
         <div className={styles.listHeader}>
           <div className={styles.search}>
-            <TextInput
-              aria-label="Search resumes"
-              placeholder="Search…"
-              leftSection={<Search size={15} aria-hidden />}
+            <SearchInput
+              aria-label={t("dashboard.searchResumes")}
+              prefix={t("common.search")}
+              captureTyping
+              hints={(records ?? [])
+                .slice(0, 6)
+                .map((project) => ({ label: project.document.name }))}
               value={search}
               onChange={(e) => setSearch(e.currentTarget.value)}
               size="xs"
@@ -138,7 +151,7 @@ export function Projects() {
               }}
               allowDeselect={false}
               data={[
-                { value: "recent", label: "Last edited" },
+                { value: "recent", label: t("dashboard.lastEdited") },
                 { value: "name", label: "Name A–Z" },
               ]}
               size="xs"
@@ -173,7 +186,7 @@ export function Projects() {
         <section className={styles.collection} aria-label="Resume library">
           {!records && !error && (
             <div className={styles.empty}>
-              <Loader size="sm" />
+              <Loader size="sm" label={t("loading.projects")} text />
             </div>
           )}
           {filtered?.length === 0 && (
@@ -190,7 +203,6 @@ export function Projects() {
             </div>
           )}
           <motion.div
-            layout={!reducedMotion}
             className={`${styles.grid} ${view === "list" ? styles.listView : ""}`}
             transition={{ duration: 0.24, ease: "easeOut" }}
           >

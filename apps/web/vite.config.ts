@@ -6,6 +6,8 @@ import tailwindcss from "@tailwindcss/vite";
 const browserDependencies = [
   "react/compiler-runtime",
   "motion/react",
+  "i18next",
+  "react-i18next",
   ...[
     "button",
     "dialog",

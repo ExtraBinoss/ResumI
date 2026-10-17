@@ -1,5 +1,7 @@
 # 18 — Refine editor controls and interactions
 
+Historical task 18 verification snapshot. Tasks 19–21 and the [current verification record](../docs/verification.md) supersede these gate counts and refresh overlapping screenshots/gesture artifacts; the versioned `create-ui-*` profiles remain task 18 measurements.
+
 ## Scope
 
 Apply the user's detailed screenshot review while retaining the Mac-inspired materials, Base UI primitives, Motion, one canonical Jotai session and validated engine commands. Reclicking the active Visual/Text button toggles to the other mode, as explicitly clarified by the user.

@@ -1,4 +1,8 @@
-import type { Document } from "@resumi/engine";
+import {
+  localizedBlock,
+  localizedSectionTitle,
+  type Document,
+} from "@resumi/engine";
 import type { ResumeData, ResumeLayout } from "../templates/CodeResume";
 import assets from "../templates/assets.generated.json" with { type: "json" };
 import template from "./template.generated.json" with { type: "json" };
@@ -98,7 +102,7 @@ export function resumeData(
     ...(layout === "profile" && portrait ? { portrait } : {}),
     sections: document.sectionIds.map((id) => ({
       id,
-      title: document.sections[id].title,
+      title: localizedSectionTitle(document, id),
       blocks: document.sections[id].blockIds
         .filter((blockId) => {
           const block = document.blocks[blockId],
@@ -113,7 +117,7 @@ export function resumeData(
         .map((blockId) => ({
           id: blockId,
           kind: document.blocks[blockId].kind,
-          text: document.blocks[blockId].text,
+          text: localizedBlock(document, blockId).text,
         })),
     })),
   };

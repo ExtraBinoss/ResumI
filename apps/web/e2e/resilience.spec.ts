@@ -166,7 +166,7 @@ test("mobile editor keeps the canvas and both composition and properties availab
   await expect(
     page.getByRole("button", { name: /^Toggle (outline|properties)$/ }),
   ).toHaveCount(0);
-  await page.getByRole("button", { name: "Outline", exact: true }).click();
+  await page.getByRole("radio", { name: "Structure", exact: true }).click();
   await expect(
     page.getByRole("complementary", { name: "Document structure" }),
   ).toBeVisible();
@@ -208,8 +208,13 @@ test("two browser tabs cannot overwrite a newer save and can still export the un
   await expect(
     page.locator('.resume[aria-label="Resume canvas"]'),
   ).toBeVisible();
+  // Creation renders the canvas before the route synchronizes its project ID.
+  // Both tabs must open that canonical URL to exercise a real revision conflict.
+  await expect(page).toHaveURL(/\/editor\/[^/?#]+$/);
+  const canonicalUrl = page.url();
   const other = await context.newPage();
-  await other.goto(page.url());
+  await other.goto(canonicalUrl);
+  await expect(other).toHaveURL(canonicalUrl);
   await expect(
     other.locator('.resume[aria-label="Resume canvas"]'),
   ).toBeVisible();
@@ -416,9 +421,9 @@ test("dashboard centers previews, opens an eye preview and supports search, sort
     .getByRole("combobox", { name: "Sort resumes", exact: true })
     .click();
   await page.getByRole("option", { name: "Name A–Z", exact: true }).click();
-  await page.getByRole("textbox", { name: "Search resumes" }).fill("(copy)");
+  await page.getByRole("searchbox", { name: "Search resumes" }).fill("(copy)");
   await expect(page.getByRole("link", { name: /^Open / })).toHaveCount(1);
-  await page.getByRole("textbox", { name: "Search resumes" }).fill("");
+  await page.getByRole("searchbox", { name: "Search resumes" }).fill("");
   await page
     .getByRole("link", {
       name: "Open Alex Morgan — Resume (copy)",

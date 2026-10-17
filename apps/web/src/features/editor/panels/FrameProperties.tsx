@@ -98,24 +98,26 @@ export function FrameProperties({ id }: { id: string }) {
     if (value === null) return;
     for (const selectedId of ids) {
       const current = document.blocks[selectedId]?.design;
-      const node = window.document.querySelector<HTMLElement>(
-        `[data-layer-id="${selectedId}"]`,
+      if (!current) continue;
+      const nodes = window.document.querySelectorAll<HTMLElement>(
+        `[data-layer-id="${selectedId}"], [data-layer-frame="${selectedId}"]`,
       );
-      if (!node || !current) continue;
-      previews.current.push({ node, css: node.style.cssText });
-      if (key === "rotation") node.style.transform = `rotate(${value}deg)`;
-      else if (key === "x" || key === "y")
-        node.style[key === "x" ? "left" : "top"] =
-          `${current[key] + value - (multi ? bounds![key] : layer[key])}px`;
-      else {
-        const scale = value / (multi ? bounds![key] : layer[key]);
-        node.style[key] = `${current[key] * scale}px`;
-        if (multi)
-          node.style[key === "width" ? "left" : "top"] =
-            `${key === "width" ? bounds!.x + (current.x - bounds!.x) * scale : bounds!.y + (current.y - bounds!.y) * scale}px`;
-        else if (layer.aspectLocked)
-          node.style[key === "width" ? "height" : "width"] =
-            `${current[key === "width" ? "height" : "width"] * scale}px`;
+      for (const node of nodes) {
+        previews.current.push({ node, css: node.style.cssText });
+        if (key === "rotation") node.style.transform = `rotate(${value}deg)`;
+        else if (key === "x" || key === "y")
+          node.style[key === "x" ? "left" : "top"] =
+            `${current[key] + value - (multi ? bounds![key] : layer[key])}px`;
+        else {
+          const scale = value / (multi ? bounds![key] : layer[key]);
+          node.style[key] = `${current[key] * scale}px`;
+          if (multi)
+            node.style[key === "width" ? "left" : "top"] =
+              `${key === "width" ? bounds!.x + (current.x - bounds!.x) * scale : bounds!.y + (current.y - bounds!.y) * scale}px`;
+          else if (layer.aspectLocked)
+            node.style[key === "width" ? "height" : "width"] =
+              `${current[key === "width" ? "height" : "width"] * scale}px`;
+        }
       }
     }
   }

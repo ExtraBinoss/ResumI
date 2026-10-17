@@ -7,11 +7,11 @@ import {
   sectionIdsAtom,
   selectionAtom,
   styleAtom,
-  zoomAtom,
+  localeAtom,
 } from "../../state/editor";
 import type { Document } from "@resumi/engine";
 import styles from "./styles/Legacy.module.css";
-import viewportStyles from "./styles/Viewport.module.css";
+import { ZoomViewport } from "./ZoomViewport";
 import { CanvasText } from "./CanvasText";
 
 function CanvasBlock({ id, sectionId }: { id: string; sectionId: string }) {
@@ -66,32 +66,23 @@ function CanvasSection({ id }: { id: string }) {
 export function Canvas() {
   const ids = useAtomValue(sectionIdsAtom),
     style = useAtomValue(styleAtom),
-    zoom = useAtomValue(zoomAtom),
+    locale = useAtomValue(localeAtom),
     select = useSetAtom(selectionAtom);
   return (
-    <div
-      className={`${styles.canvasArea} ${viewportStyles.scroll}`}
-      onClick={(e) => {
-        if (e.currentTarget === e.target) select(null);
-      }}
-    >
+    <ZoomViewport height={1123} onBlankClick={() => select(null)}>
       <style>{resumeCss}</style>
-      <div
-        className={styles.pageBounds}
-        style={{ width: (794 * zoom) / 100, minHeight: (1123 * zoom) / 100 }}
+      <article
+        aria-label="Resume canvas"
+        lang={locale}
+        className={`resume ${styles.canvasPaper}`}
+        style={resumeStyle({ style } as Document)}
       >
-        <article
-          aria-label="Resume canvas"
-          className={`resume ${styles.canvasPaper}`}
-          style={{ ...resumeStyle({ style } as Document), zoom: zoom / 100 }}
-        >
-          {ids.length ? (
-            ids.map((id) => <CanvasSection key={id} id={id} />)
-          ) : (
-            <p className={styles.emptyCanvas}>Add a section.</p>
-          )}
-        </article>
-      </div>
-    </div>
+        {ids.length ? (
+          ids.map((id) => <CanvasSection key={id} id={id} />)
+        ) : (
+          <p className={styles.emptyCanvas}>Add a section.</p>
+        )}
+      </article>
+    </ZoomViewport>
   );
 }

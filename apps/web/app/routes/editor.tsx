@@ -32,7 +32,7 @@ clientLoader.hydrate = true as const;
 export function HydrateFallback() {
   return (
     <main>
-      <SharedLoading page label="Opening your resume…" />
+      <SharedLoading page messageKey="loading.openingResume" />
     </main>
   );
 }

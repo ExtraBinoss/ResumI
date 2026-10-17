@@ -1,5 +1,6 @@
 import {
   richTextSegments,
+  localizedBlock,
   safeTextHref,
   shapeDefinition,
   svgGradientVector,
@@ -140,7 +141,7 @@ export function renderVisual(doc: Document): string {
   const canvas = doc.canvas!,
     seen = new Set<string>();
   function element(id: string) {
-    const block = doc.blocks[id],
+    const block = localizedBlock(doc, id),
       layer = block.design!;
     return layer.hidden
       ? ""

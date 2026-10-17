@@ -1,52 +1,75 @@
 .loading {
+  --loading-ink: var(--muted-foreground);
+  --loading-highlight: var(--foreground);
   display: grid;
-  place-content: center;
+  justify-items: center;
+  align-content: center;
+  gap: 13px;
   width: 100%;
+  min-height: 160px;
   height: 100%;
-  min-height: 180px;
+  color: var(--loading-ink);
 }
 .page {
   min-height: 100dvh;
   background: var(--background);
 }
-.orb {
-  position: relative;
-  display: block;
-  width: 48px;
-  height: 48px;
-  isolation: isolate;
+.compact {
+  display: inline-flex;
+  width: auto;
+  height: auto;
+  min-height: 20px;
+  gap: 7px;
+  vertical-align: middle;
 }
-.glow {
-  position: absolute;
-  inset: -12px;
-  border-radius: 50%;
-  background: radial-gradient(
-    circle,
-    color-mix(in srgb, var(--primary) 35%, transparent),
-    transparent 68%
+.label {
+  margin: 0;
+  font: 500 13px/1.5 var(--font-ui);
+  color: var(--loading-ink);
+  text-align: center;
+  background: linear-gradient(
+    105deg,
+    var(--loading-ink) 30%,
+    var(--loading-highlight) 47%,
+    var(--loading-ink) 65%
   );
-  filter: blur(8px);
+  background-size: 240% 100%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmer 2.6s ease-in-out infinite;
 }
-.core {
-  position: absolute;
-  inset: 9px;
-  border-radius: 50%;
-  background: radial-gradient(
-    circle at 32% 25%,
-    color-mix(in srgb, var(--primary) 20%, white),
-    var(--primary) 54%,
-    color-mix(in srgb, var(--primary) 72%, black)
-  );
-  box-shadow:
-    inset 0 1px 2px rgb(255 255 255 / 40%),
-    0 0 18px color-mix(in srgb, var(--primary) 15%, transparent);
+.compact .label {
+  font-size: 12px;
+}
+:global([aria-busy="true"]):has(canvas[data-running="false"]) .label {
+  animation-play-state: paused;
+}
+@keyframes shimmer {
+  from {
+    background-position: 140% 0;
+  }
+  to {
+    background-position: -140% 0;
+  }
 }
 @media (prefers-reduced-motion: reduce) {
-  .glow,
-  .core {
-    transform: none !important;
+  .label {
+    animation: none;
+    background: none;
+    -webkit-text-fill-color: currentColor;
   }
-  .glow {
-    opacity: 0.55 !important;
+}
+@media (forced-colors: active) {
+  .label {
+    background: none;
+    -webkit-text-fill-color: currentColor;
   }
+}
+
+.controlLabel {
+  --loading-ink: color-mix(in srgb, currentColor 76%, transparent);
+  --loading-highlight: currentColor;
+  color: inherit;
+  font: inherit;
 }

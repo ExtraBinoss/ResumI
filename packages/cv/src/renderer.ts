@@ -1,7 +1,14 @@
 import { designCss, renderVisual, canvasFontCss } from "./design-renderer";
 import { escapeHtml } from "./escape";
 export { escapeHtml } from "./escape";
-import { validateDocument, type Block, type Document } from "@resumi/engine";
+import {
+  localizedBlock,
+  localizedSectionTitle,
+  documentLocale,
+  validateDocument,
+  type Block,
+  type Document,
+} from "@resumi/engine";
 
 export const resumeCss =
   designCss +
@@ -39,8 +46,9 @@ export function renderBlock(block: Block): string {
   return `<${tag} class="resume-block resume-${block.kind}" data-block-id="${escapeHtml(block.id)}">${escapeHtml(block.text)}</${tag}>`;
 }
 export function renderSection(doc: Document, id: string): string {
-  const section = doc.sections[id];
-  return `<section class="resume-section" data-section-id="${escapeHtml(id)}">${section.title ? `<h2 class="resume-title">${escapeHtml(section.title)}</h2>` : ""}${section.blockIds.map((id) => renderBlock(doc.blocks[id])).join("")}</section>`;
+  const section = doc.sections[id],
+    title = localizedSectionTitle(doc, id);
+  return `<section class="resume-section" data-section-id="${escapeHtml(id)}">${title ? `<h2 class="resume-title">${escapeHtml(title)}</h2>` : ""}${section.blockIds.map((id) => renderBlock(localizedBlock(doc, id))).join("")}</section>`;
 }
 export function renderResume(doc: Document): string {
   validateDocument(doc);
@@ -50,5 +58,5 @@ export function renderResume(doc: Document): string {
   return `<article class="resume${doc.canvas ? " freeform" : ""}" aria-label="Resume" style="${style}${doc.canvas ? `;width:${doc.canvas.width}px;height:${doc.canvas.height}px;background:${doc.canvas.background}` : ""}">${doc.canvas ? `<style>${canvasFontCss(doc)}</style>${renderVisual(doc)}` : doc.sectionIds.map((id) => renderSection(doc, id)).join("")}</article>`;
 }
 export function renderHtml(document: Document): string {
-  return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${escapeHtml(document.name)}</title><style>${resumeCss}\nbody{margin:0;background:#eceef2}.resume{margin:auto}</style></head><body>${renderResume(document)}</body></html>`;
+  return `<!doctype html><html lang="${escapeHtml(documentLocale(document))}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${escapeHtml(document.name)}</title><style>${resumeCss}\nbody{margin:0;background:#eceef2}.resume{margin:auto}</style></head><body>${renderResume(document)}</body></html>`;
 }

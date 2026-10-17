@@ -39,6 +39,17 @@ test("landing showcase and writing tabs work with reduced motion and hydrate cle
   expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(
     390,
   );
+  const footer = page.locator("footer");
+  await expect(footer.getByRole("link", { name: "By Plinka" })).toHaveAttribute(
+    "href",
+    "https://plinka.eu",
+  );
+  const backToTop = footer.getByRole("link", { name: "Resumi — Back to top" });
+  await backToTop.scrollIntoViewIfNeeded();
+  expect(await page.evaluate(() => window.scrollY)).toBeGreaterThan(100);
+  await backToTop.click();
+  await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(0);
+  await expect(page.locator("header#top")).toBeFocused();
   await useTemplate.click();
   await expect(
     page.getByRole("region", { name: "Source canvas" }),

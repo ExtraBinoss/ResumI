@@ -135,3 +135,39 @@ test("editor persistence reconnects after StrictMode cleanup", async () => {
   expect(saved).toEqual(["Saved after reconnect"]);
   controller.dispose();
 });
+
+test("localized block atoms preserve unrelated block identity and translate through the canonical session", () => {
+  const store = createStore();
+  store.set(
+    sessionAtom,
+    createSession(createResume("localization-subscriptions")),
+  );
+  let translated = 0,
+    unrelated = 0;
+  const subscriptions = [
+    store.sub(blockAtom("identity-0"), () => translated++),
+    store.sub(blockAtom("profile-0"), () => unrelated++),
+  ];
+  store.set(commandAtom, { type: "locale.add", code: "fr", name: "Français" });
+  store.set(commandAtom, {
+    type: "translation.set",
+    id: "identity-0",
+    locale: "fr",
+    text: "Camille Martin",
+  });
+  expect(translated).toBe(1);
+  store.set(commandAtom, { type: "locale.activate", code: "fr" });
+  expect(store.get(blockAtom("identity-0"))?.text).toBe("Camille Martin");
+  expect(translated).toBe(2);
+  expect(unrelated).toBe(0);
+  store.set(commandAtom, {
+    type: "block.update",
+    id: "identity-0",
+    patch: { text: "Camille Durand" },
+  });
+  expect(store.get(sessionAtom)?.document.blocks["identity-0"].text).toBe(
+    "Alex Morgan",
+  );
+  expect(unrelated).toBe(0);
+  subscriptions.forEach((unsubscribe) => unsubscribe());
+});

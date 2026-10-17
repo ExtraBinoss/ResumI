@@ -2026,6 +2026,271 @@
             "properties": {
               "type": {
                 "type": "string",
+                "const": "section.translation.set"
+              },
+              "id": {
+                "type": "string",
+                "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_-]{0,99}$"
+              },
+              "locale": {
+                "type": "string",
+                "maxLength": 35,
+                "pattern": "^[a-z]{2,3}(?:-[A-Za-z0-9]{2,8}){0,3}$"
+              },
+              "title": {
+                "type": "string",
+                "maxLength": 200
+              }
+            },
+            "required": [
+              "type",
+              "id",
+              "locale",
+              "title"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "const": "section.translation.remove"
+              },
+              "id": {
+                "type": "string",
+                "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_-]{0,99}$"
+              },
+              "locale": {
+                "type": "string",
+                "maxLength": 35,
+                "pattern": "^[a-z]{2,3}(?:-[A-Za-z0-9]{2,8}){0,3}$"
+              }
+            },
+            "required": [
+              "type",
+              "id",
+              "locale"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "const": "locale.add"
+              },
+              "code": {
+                "type": "string",
+                "maxLength": 35,
+                "pattern": "^[a-z]{2,3}(?:-[A-Za-z0-9]{2,8}){0,3}$"
+              },
+              "name": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 60
+              }
+            },
+            "required": [
+              "type",
+              "code",
+              "name"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "const": "locale.update"
+              },
+              "code": {
+                "type": "string",
+                "maxLength": 35,
+                "pattern": "^[a-z]{2,3}(?:-[A-Za-z0-9]{2,8}){0,3}$"
+              },
+              "name": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 60
+              },
+              "nextCode": {
+                "type": "string",
+                "maxLength": 35,
+                "pattern": "^[a-z]{2,3}(?:-[A-Za-z0-9]{2,8}){0,3}$"
+              }
+            },
+            "required": [
+              "type",
+              "code",
+              "name"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "const": "locale.remove"
+              },
+              "code": {
+                "type": "string",
+                "maxLength": 35,
+                "pattern": "^[a-z]{2,3}(?:-[A-Za-z0-9]{2,8}){0,3}$"
+              }
+            },
+            "required": [
+              "type",
+              "code"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "const": "locale.activate"
+              },
+              "code": {
+                "type": "string",
+                "maxLength": 35,
+                "pattern": "^[a-z]{2,3}(?:-[A-Za-z0-9]{2,8}){0,3}$"
+              }
+            },
+            "required": [
+              "type",
+              "code"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "const": "translation.set"
+              },
+              "id": {
+                "type": "string",
+                "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_-]{0,99}$"
+              },
+              "locale": {
+                "type": "string",
+                "maxLength": 35,
+                "pattern": "^[a-z]{2,3}(?:-[A-Za-z0-9]{2,8}){0,3}$"
+              },
+              "text": {
+                "type": "string",
+                "maxLength": 20000
+              },
+              "marks": {
+                "maxItems": 200,
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "href": {
+                      "type": "string",
+                      "maxLength": 2000,
+                      "pattern": "^(https?:|mailto:|tel:)"
+                    },
+                    "color": {
+                      "type": "string",
+                      "pattern": "^(#[0-9a-fA-F]{6}([0-9a-fA-F]{2})?|transparent)$"
+                    },
+                    "fontFamily": {
+                      "type": "string",
+                      "maxLength": 160,
+                      "pattern": "^[a-zA-Z0-9 '\",._-]+$"
+                    },
+                    "fontSize": {
+                      "type": "number",
+                      "minimum": 4,
+                      "maximum": 240
+                    },
+                    "fontWeight": {
+                      "type": "number",
+                      "minimum": 100,
+                      "maximum": 1000
+                    },
+                    "fontStyle": {
+                      "type": "string",
+                      "enum": [
+                        "normal",
+                        "italic"
+                      ]
+                    },
+                    "underline": {
+                      "type": "boolean"
+                    },
+                    "strike": {
+                      "type": "boolean"
+                    },
+                    "id": {
+                      "type": "string",
+                      "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_-]{0,99}$"
+                    },
+                    "start": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 9007199254740991
+                    },
+                    "end": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 9007199254740991
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "start",
+                    "end"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": [
+              "type",
+              "id",
+              "locale",
+              "text"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "const": "translation.remove"
+              },
+              "id": {
+                "type": "string",
+                "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_-]{0,99}$"
+              },
+              "locale": {
+                "type": "string",
+                "maxLength": 35,
+                "pattern": "^[a-z]{2,3}(?:-[A-Za-z0-9]{2,8}){0,3}$"
+              }
+            },
+            "required": [
+              "type",
+              "id",
+              "locale"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
                 "const": "document.update"
               },
               "name": {
@@ -2098,6 +2363,18 @@
                   "title": {
                     "type": "string",
                     "maxLength": 200
+                  },
+                  "titleTranslations": {
+                    "type": "object",
+                    "propertyNames": {
+                      "type": "string",
+                      "maxLength": 35,
+                      "pattern": "^[a-z]{2,3}(?:-[A-Za-z0-9]{2,8}){0,3}$"
+                    },
+                    "additionalProperties": {
+                      "type": "string",
+                      "maxLength": 200
+                    }
                   },
                   "blockIds": {
                     "minItems": 0,
@@ -3104,6 +3381,94 @@
                         "additionalProperties": false
                       }
                     ]
+                  },
+                  "translations": {
+                    "type": "object",
+                    "propertyNames": {
+                      "type": "string",
+                      "maxLength": 35,
+                      "pattern": "^[a-z]{2,3}(?:-[A-Za-z0-9]{2,8}){0,3}$"
+                    },
+                    "additionalProperties": {
+                      "type": "object",
+                      "properties": {
+                        "text": {
+                          "type": "string",
+                          "maxLength": 20000
+                        },
+                        "marks": {
+                          "maxItems": 200,
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "href": {
+                                "type": "string",
+                                "maxLength": 2000,
+                                "pattern": "^(https?:|mailto:|tel:)"
+                              },
+                              "color": {
+                                "type": "string",
+                                "pattern": "^(#[0-9a-fA-F]{6}([0-9a-fA-F]{2})?|transparent)$"
+                              },
+                              "fontFamily": {
+                                "type": "string",
+                                "maxLength": 160,
+                                "pattern": "^[a-zA-Z0-9 '\",._-]+$"
+                              },
+                              "fontSize": {
+                                "type": "number",
+                                "minimum": 4,
+                                "maximum": 240
+                              },
+                              "fontWeight": {
+                                "type": "number",
+                                "minimum": 100,
+                                "maximum": 1000
+                              },
+                              "fontStyle": {
+                                "type": "string",
+                                "enum": [
+                                  "normal",
+                                  "italic"
+                                ]
+                              },
+                              "underline": {
+                                "type": "boolean"
+                              },
+                              "strike": {
+                                "type": "boolean"
+                              },
+                              "id": {
+                                "type": "string",
+                                "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_-]{0,99}$"
+                              },
+                              "start": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 9007199254740991
+                              },
+                              "end": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 9007199254740991
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "start",
+                              "end"
+                            ],
+                            "additionalProperties": false
+                          }
+                        }
+                      },
+                      "required": [
+                        "text",
+                        "marks"
+                      ],
+                      "additionalProperties": false
+                    }
                   }
                 },
                 "required": [
@@ -4035,6 +4400,94 @@
                         "additionalProperties": false
                       }
                     ]
+                  },
+                  "translations": {
+                    "type": "object",
+                    "propertyNames": {
+                      "type": "string",
+                      "maxLength": 35,
+                      "pattern": "^[a-z]{2,3}(?:-[A-Za-z0-9]{2,8}){0,3}$"
+                    },
+                    "additionalProperties": {
+                      "type": "object",
+                      "properties": {
+                        "text": {
+                          "type": "string",
+                          "maxLength": 20000
+                        },
+                        "marks": {
+                          "maxItems": 200,
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "href": {
+                                "type": "string",
+                                "maxLength": 2000,
+                                "pattern": "^(https?:|mailto:|tel:)"
+                              },
+                              "color": {
+                                "type": "string",
+                                "pattern": "^(#[0-9a-fA-F]{6}([0-9a-fA-F]{2})?|transparent)$"
+                              },
+                              "fontFamily": {
+                                "type": "string",
+                                "maxLength": 160,
+                                "pattern": "^[a-zA-Z0-9 '\",._-]+$"
+                              },
+                              "fontSize": {
+                                "type": "number",
+                                "minimum": 4,
+                                "maximum": 240
+                              },
+                              "fontWeight": {
+                                "type": "number",
+                                "minimum": 100,
+                                "maximum": 1000
+                              },
+                              "fontStyle": {
+                                "type": "string",
+                                "enum": [
+                                  "normal",
+                                  "italic"
+                                ]
+                              },
+                              "underline": {
+                                "type": "boolean"
+                              },
+                              "strike": {
+                                "type": "boolean"
+                              },
+                              "id": {
+                                "type": "string",
+                                "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_-]{0,99}$"
+                              },
+                              "start": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 9007199254740991
+                              },
+                              "end": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 9007199254740991
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "start",
+                              "end"
+                            ],
+                            "additionalProperties": false
+                          }
+                        }
+                      },
+                      "required": [
+                        "text",
+                        "marks"
+                      ],
+                      "additionalProperties": false
+                    }
                   }
                 },
                 "additionalProperties": false

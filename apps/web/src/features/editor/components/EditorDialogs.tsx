@@ -41,11 +41,19 @@ export function EditorDialogs({
           </DialogTitle>
         </DialogHeader>
         {dialog === "source" ? (
-          <Suspense fallback={<SharedLoading label="Opening source…" />}>
+          <Suspense
+            fallback={
+              <SharedLoading messageKey="loading.source" variant="working" />
+            }
+          >
             <CodeEditor />
           </Suspense>
         ) : dialog === "proposal" ? (
-          <Suspense fallback={<SharedLoading label="Opening commands…" />}>
+          <Suspense
+            fallback={
+              <SharedLoading messageKey="loading.commands" variant="working" />
+            }
+          >
             <AgentPanel close={close} />
           </Suspense>
         ) : null}

@@ -43,33 +43,8 @@
   padding: 0;
 }
 .tabs {
-  height: 49px;
-  min-height: 49px;
-  display: flex;
-  align-items: center;
-  gap: 2px;
-  padding: 8px;
-  border-bottom: 1px solid var(--line);
-}
-.tabs > button {
-  display: flex;
-  flex: 1;
-  justify-content: center;
-  align-items: center;
-  gap: 6px;
-  min-height: 30px;
-  padding: 5px 6px;
-  border: 0;
-  border-radius: 6px;
-  background: transparent;
-  color: var(--muted-foreground);
-  font-size: 12px;
-  font-weight: 500;
-}
-.tabs > button[aria-pressed="true"] {
-  background: var(--segment-selected);
-  box-shadow: var(--segment-shadow);
-  color: var(--ink);
+  margin: 8px;
+  flex-shrink: 0;
 }
 .blendRow {
   padding: 11px 12px;
@@ -84,7 +59,7 @@
 .blendRow > :last-child {
   order: 1;
 }
-.layers .blendRow :global([data-ui="input"]) {
+.layers .blendRow :global([data-ui="input"]:not([data-number])) {
   min-height: 34px;
   border-radius: 6px;
   font-size: 12px;
@@ -173,15 +148,7 @@
     padding: 0 10px;
   }
   .tabs {
-    height: 44px;
-    min-height: 44px;
-    padding: 4px;
-    gap: 2px;
-  }
-  .tabs > button {
-    min-height: 34px;
-    padding: 5px 3px;
-    gap: 4px;
+    margin: 4px;
   }
   .blendRow {
     grid-template-columns: minmax(0, 1fr);

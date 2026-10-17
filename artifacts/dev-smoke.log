@@ -1,5 +1,5 @@
 
-  VITE v8.3.4  ready in 2944 ms
+  VITE v8.3.4  ready in 3068 ms
 
   ➜  Local:   http://127.0.0.1:5189/
   ➜  Debug:   http://127.0.0.1:5189/__debug
@@ -22,8 +22,3 @@ If the routes above don't cover what you need, fetch the full OpenAPI schema (la
 
 
 Default inspector port 9229 not available, using 9231 instead
-
-11:20:26 AM [vite] (client) [console.error] Failed to fetch manifest patches TypeError: Failed to fetch
-    at fetchAndApplyManifestPatches (http://127.0.0.1:5189/node_modules/.vite-smoke-r12IMH/deps/development-CPAU2smE.js?v=5338585f:8825:19)
-    at fetchPatches (http://127.0.0.1:5189/node_modules/.vite-smoke-r12IMH/deps/development-CPAU2smE.js?v=5338585f:8735:11)
-    at http://127.0.0.1:5189/node_modules/.vite-smoke-r12IMH/deps/development-CPAU2smE.js?v=5338585f:8858:39

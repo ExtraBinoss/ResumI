@@ -155,6 +155,9 @@ for (const viewport of [
     await expect(
       page.getByRole("spinbutton", { name: "Canvas zoom", exact: true }),
     ).toHaveValue(String(target));
+    await expect
+      .poll(async () => (await paper.boundingBox())!.width)
+      .toBeCloseTo((before.width * target) / initialZoom, 1);
     const after = (await paper.boundingBox())!;
     expect(
       Math.abs(

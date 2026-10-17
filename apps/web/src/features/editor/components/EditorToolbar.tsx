@@ -1,5 +1,6 @@
 import { useAtomValue, useSetAtom, useStore } from "jotai";
 import { useNavigate } from "react-router";
+import { useTranslation } from "react-i18next";
 import { ActionIcon, Button, Menu, Tooltip } from "../../../ui";
 import {
   ArrowLeft,
@@ -9,11 +10,12 @@ import {
   ChevronDown,
   FileJson,
   FileCode,
-  Printer,
+  FileText,
 } from "lucide-react";
 import { serializeDocument } from "@resumi/engine";
-import { renderHtml, renderDocumentHtml } from "@resumi/cv";
+import { renderDocumentHtml } from "@resumi/cv";
 import { downloadFile, fileName } from "../../../lib/files";
+import { exportPdf } from "../../../lib/pdf-export";
 import {
   historyAtom,
   saveStatusAtom,
@@ -35,6 +37,7 @@ export function EditorToolbar({
 }: {
   controller: EditorController;
 }) {
+  const { t } = useTranslation();
   const source = useAtomValue(sourceAtom),
     history = useAtomValue(historyAtom),
     status = useAtomValue(saveStatusAtom),
@@ -67,37 +70,21 @@ export function EditorToolbar({
       );
     }
   }
-  function print() {
-    const doc = store.get(sessionAtom)!.document;
-    if (doc.source && doc.source.enabled !== false) {
-      void exportFile("html");
-      return;
-    }
-    const popup = window.open("", "_blank");
-    if (!popup) {
-      void exportFile("html");
-      return;
-    }
-    popup.document.open();
-    popup.document.write(renderHtml(doc));
-    popup.document.close();
-    popup.addEventListener(
-      "load",
-      () => {
-        popup.focus();
-        popup.print();
-      },
-      { once: true },
+  function pdf() {
+    exportPdf(
+      store.get(sessionAtom)!.document,
+      (message) => setError(message),
+      t("loading.pdf"),
     );
   }
   return (
     <header className={styles.toolbar}>
       <div className={styles.toolbarLeft}>
-        <Tooltip label="Back to projects">
+        <Tooltip label={t("editor.backToProjects")}>
           <ActionIcon
             variant="subtle"
             color="gray"
-            aria-label="Back to projects"
+            aria-label={t("editor.backToProjects")}
             onClick={back}
           >
             <ArrowLeft size={17} aria-hidden />
@@ -107,12 +94,12 @@ export function EditorToolbar({
           <Tooltip
             label={
               <span className={styles.shortcutLabel}>
-                Undo <Shortcut keys={["Mod", "Z"]} />
+                {t("editor.undo")} <Shortcut keys={["Mod", "Z"]} />
               </span>
             }
           >
             <ActionIcon
-              aria-label="Undo"
+              aria-label={t("editor.undo")}
               variant="subtle"
               color="gray"
               disabled={!history.undo}
@@ -124,12 +111,12 @@ export function EditorToolbar({
           <Tooltip
             label={
               <span className={styles.shortcutLabel}>
-                Redo <Shortcut keys={["Mod", "Shift", "Z"]} />
+                {t("editor.redo")} <Shortcut keys={["Mod", "Shift", "Z"]} />
               </span>
             }
           >
             <ActionIcon
-              aria-label="Redo"
+              aria-label={t("editor.redo")}
               variant="subtle"
               color="gray"
               disabled={!history.redo}
@@ -156,7 +143,7 @@ export function EditorToolbar({
         </span>
         <ErrorNotice
           error={error || null}
-          label="Changes are not saved"
+          label={t("editor.changesNotSaved")}
           compact
         >
           <Button
@@ -164,64 +151,76 @@ export function EditorToolbar({
             size="xs"
             onClick={() => void controller.flush()}
           >
-            Retry save
+            {t("editor.retrySave")}
           </Button>
         </ErrorNotice>
       </div>
       <div className={styles.toolbarRight}>
         <SettingsMenu />
-        <Menu position="bottom-end">
-          <Menu.Target>
-            <Button
-              size="xs"
-              variant="filled"
-              aria-label="Export"
-              leftSection={<Download size={14} />}
-              rightSection={<ChevronDown size={12} />}
-              className={styles.exportButton}
-            >
-              <span>Export</span>
-            </Button>
-          </Menu.Target>
-          <Menu.Dropdown>
-            <Menu.Item
-              leftSection={<FileJson size={14} />}
-              onClick={() => void exportFile("json")}
-            >
-              JSON document
-            </Menu.Item>
-            <Menu.Item
-              leftSection={<FileCode size={14} />}
-              onClick={() => void exportFile("html")}
-            >
-              Portable HTML
-            </Menu.Item>
-            {source && (
+        <div className={styles.exportGroup}>
+          <Button
+            size="xs"
+            variant="filled"
+            aria-label={t("editor.exportPdf")}
+            leftSection={<Download size={14} aria-hidden />}
+            onClick={pdf}
+            className={styles.exportPdf}
+          >
+            PDF
+          </Button>
+          <Menu position="bottom-end">
+            <Menu.Target>
+              <Button
+                size="xs"
+                variant="filled"
+                aria-label={t("editor.export")}
+                className={styles.exportButton}
+                title={t("editor.exportFormats")}
+              >
+                <ChevronDown size={14} aria-hidden />
+              </Button>
+            </Menu.Target>
+            <Menu.Dropdown>
+              <Menu.Item
+                leftSection={<FileText size={16} aria-hidden />}
+                onClick={pdf}
+              >
+                PDF
+              </Menu.Item>
+              <Menu.Divider />
+              <Menu.Item
+                leftSection={<FileJson size={14} />}
+                onClick={() => void exportFile("json")}
+              >
+                {t("editor.jsonDocument")}
+              </Menu.Item>
               <Menu.Item
                 leftSection={<FileCode size={14} />}
-                onClick={() =>
-                  downloadFile(
-                    fileName(
-                      store.get(sessionAtom)!.document.name,
-                      source.format === "react" ? "tsx" : "html",
-                    ),
-                    source.code,
-                    "text/plain",
-                  )
-                }
+                onClick={() => void exportFile("html")}
               >
-                Original {source.format === "react" ? "React / TSX" : "HTML"}{" "}
-                source
+                {t("editor.portableHtml")}
               </Menu.Item>
-            )}
-            <Menu.Divider />
-            <Menu.Item leftSection={<Printer size={14} />} onClick={print}>
-              {source && source.enabled !== false
-                ? "HTML for printing"
-                : "Print / Save as PDF"}
-            </Menu.Item>
-          </Menu.Dropdown>
-        </Menu>
+              {source && (
+                <Menu.Item
+                  leftSection={<FileCode size={14} />}
+                  onClick={() =>
+                    downloadFile(
+                      fileName(
+                        store.get(sessionAtom)!.document.name,
+                        source.format === "react" ? "tsx" : "html",
+                      ),
+                      source.code,
+                      "text/plain",
+                    )
+                  }
+                >
+                  Original {source.format === "react" ? "React / TSX" : "HTML"}{" "}
+                  source
+                </Menu.Item>
+              )}
+            </Menu.Dropdown>
+          </Menu>
+        </div>
       </div>
     </header>
   );

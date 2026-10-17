@@ -383,3 +383,8 @@
     gap: 10px;
   }
 }
+
+/* Opacity-only navigation keeps text on its final pixel grid throughout. */
+.routeContent {
+  min-width: 0;
+}

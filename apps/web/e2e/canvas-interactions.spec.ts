@@ -72,7 +72,7 @@ test("outline sections and their blocks reorder live and undo independently", as
   page,
 }) => {
   await open(page);
-  await page.getByRole("button", { name: "Outline", exact: true }).click();
+  await page.getByRole("radio", { name: "Structure", exact: true }).click();
   const rows = page.locator("[data-outline-section]");
   await expect(rows.first()).toBeVisible();
   expect(
@@ -240,6 +240,13 @@ test("wheel zoom animates by transform while the document layout commits once", 
   await expect(
     page.getByRole("spinbutton", { name: "Canvas zoom", exact: true }),
   ).toHaveValue("101.2");
+  await expect
+    .poll(() => paper.evaluate((node) => node.style.willChange))
+    .toBe("");
+  // Include layout commit and several subsequent paints, not just the animation frames.
+  await page.evaluate(
+    () => new Promise<void>((resolve) => setTimeout(resolve, 180)),
+  );
   const samples = await page.evaluate(
     () =>
       (

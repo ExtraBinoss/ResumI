@@ -1,0 +1,1198 @@
+[
+  {
+    "theme": "light",
+    "font": {
+      "width": 300,
+      "height": 426,
+      "background": "color(srgb 1 1 1 / 0.96)",
+      "rowCount": 11,
+      "categoryWidth": 298,
+      "categoryScrollWidth": 419,
+      "viewportWidth": 1440,
+      "right": 1413,
+      "left": 1113,
+      "names": [
+        "Arial",
+        "System",
+        "Sans serif",
+        "Serif",
+        "Monospace",
+        "Calibri",
+        "Cambria",
+        "Courier New",
+        "Helvetica",
+        "Liberation Sans",
+        "Liberation Serif"
+      ]
+    },
+    "palette": {
+      "renderedItems": 40,
+      "total": "50",
+      "focusedSearch": "Search icons"
+    },
+    "importedHint": {
+      "placeholder": "Search Preview glyph…",
+      "fill": "#000000",
+      "background": "rgb(255, 255, 255)",
+      "inputBackground": "rgb(255, 255, 255)",
+      "width": 22,
+      "height": 22
+    },
+    "canvas": {
+      "fontCanvas": {
+        "fontStatus": "loaded",
+        "layers": [
+          {
+            "name": "Name",
+            "opacity": 1,
+            "text": "Alex Morgan",
+            "font": "650 38px / 43.7px Arial, sans-serif",
+            "fontReady": true,
+            "color": "rgb(32, 37, 45)",
+            "width": 499.5,
+            "height": 36
+          },
+          {
+            "name": "Product Designer",
+            "opacity": 1,
+            "text": "Product Designer",
+            "font": "650 15px / 24.75px Arial, sans-serif",
+            "fontReady": true,
+            "color": "rgb(37, 99, 235)",
+            "width": 499.5,
+            "height": 18.5625
+          },
+          {
+            "name": "Paris, France   ·   alex@example.com   ·   al",
+            "opacity": 1,
+            "text": "Paris, France   ·   alex@example.com   ·   alexmorgan.design",
+            "font": "10.44px / 17.226px Arial, sans-serif",
+            "fontReady": true,
+            "color": "rgb(96, 106, 121)",
+            "width": 499.5,
+            "height": 15
+          },
+          {
+            "name": "Profile",
+            "opacity": 1,
+            "text": "Profile",
+            "font": "700 10px / 12.5px Arial, sans-serif",
+            "fontReady": true,
+            "color": "rgb(37, 99, 235)",
+            "width": 499.5,
+            "height": 16.5
+          },
+          {
+            "name": "I turn complex problems into clear, thoughtfu",
+            "opacity": 1,
+            "text": "I turn complex problems into clear, thoughtful digital experiences. A ",
+            "font": "12px / 19.8px Arial, sans-serif",
+            "fontReady": true,
+            "color": "rgb(32, 37, 45)",
+            "width": 499.5,
+            "height": 29.6953125
+          },
+          {
+            "name": "Experience",
+            "opacity": 1,
+            "text": "Experience",
+            "font": "700 10px / 12.5px Arial, sans-serif",
+            "fontReady": true,
+            "color": "rgb(37, 99, 235)",
+            "width": 499.5,
+            "height": 16.5
+          },
+          {
+            "name": "Senior Product Designer · Forma",
+            "opacity": 1,
+            "text": "Senior Product Designer · Forma",
+            "font": "650 13.2px / 21.78px Arial, sans-serif",
+            "fontReady": true,
+            "color": "rgb(32, 37, 45)",
+            "width": 499.5,
+            "height": 16.32421875
+          },
+          {
+            "name": "2022 — Present  /  Paris, France",
+            "opacity": 1,
+            "text": "2022 — Present  /  Paris, France",
+            "font": "10.44px / 17.226px Arial, sans-serif",
+            "fontReady": true,
+            "color": "rgb(96, 106, 121)",
+            "width": 499.5,
+            "height": 15
+          },
+          {
+            "name": "Led the redesign of a workspace used by 40,00",
+            "opacity": 1,
+            "text": "•Led the redesign of a workspace used by 40,000 teams, making everyday",
+            "font": "12px / 19.8px Arial, sans-serif",
+            "fontReady": true,
+            "color": "rgb(32, 37, 45)",
+            "width": 499.5,
+            "height": 15
+          },
+          {
+            "name": "Built a design system with engineering that r",
+            "opacity": 1,
+            "text": "•Built a design system with engineering that reduced delivery time by ",
+            "font": "12px / 19.8px Arial, sans-serif",
+            "fontReady": true,
+            "color": "rgb(32, 37, 45)",
+            "width": 499.5,
+            "height": 15
+          },
+          {
+            "name": "Product Designer · Northstar",
+            "opacity": 1,
+            "text": "Product Designer · Northstar",
+            "font": "650 13.2px / 21.78px Arial, sans-serif",
+            "fontReady": true,
+            "color": "rgb(32, 37, 45)",
+            "width": 499.5,
+            "height": 16.32421875
+          },
+          {
+            "name": "2020 — 2022  /  Remote",
+            "opacity": 1,
+            "text": "2020 — 2022  /  Remote",
+            "font": "10.44px / 17.226px Arial, sans-serif",
+            "fontReady": true,
+            "color": "rgb(96, 106, 121)",
+            "width": 499.5,
+            "height": 15
+          },
+          {
+            "name": "Shaped the onboarding experience from researc",
+            "opacity": 1,
+            "text": "•Shaped the onboarding experience from research to release, improving ",
+            "font": "12px / 19.8px Arial, sans-serif",
+            "fontReady": true,
+            "color": "rgb(32, 37, 45)",
+            "width": 499.5,
+            "height": 15
+          },
+          {
+            "name": "Education",
+            "opacity": 1,
+            "text": "Education",
+            "font": "700 10px / 12.5px Arial, sans-serif",
+            "fontReady": true,
+            "color": "rgb(37, 99, 235)",
+            "width": 499.5,
+            "height": 16.5
+          },
+          {
+            "name": "MA, Interaction Design",
+            "opacity": 1,
+            "text": "MA, Interaction Design",
+            "font": "650 13.2px / 21.78px Arial, sans-serif",
+            "fontReady": true,
+            "color": "rgb(32, 37, 45)",
+            "width": 499.5,
+            "height": 16.32421875
+          },
+          {
+            "name": "École des Gobelins  ·  2018 — 2020",
+            "opacity": 1,
+            "text": "École des Gobelins  ·  2018 — 2020",
+            "font": "10.44px / 17.226px Arial, sans-serif",
+            "fontReady": true,
+            "color": "rgb(96, 106, 121)",
+            "width": 499.5,
+            "height": 15
+          },
+          {
+            "name": "Selected skills",
+            "opacity": 1,
+            "text": "Selected skills",
+            "font": "700 10px / 12.5px Arial, sans-serif",
+            "fontReady": true,
+            "color": "rgb(37, 99, 235)",
+            "width": 499.5,
+            "height": 16.5
+          },
+          {
+            "name": "Product strategy   /   User research   /   In",
+            "opacity": 1,
+            "text": "Product strategy   /   User research   /   Interaction design\nDesign s",
+            "font": "12px / 19.8px Arial, sans-serif",
+            "fontReady": true,
+            "color": "rgb(32, 37, 45)",
+            "width": 499.5,
+            "height": 29.6953125
+          }
+        ]
+      },
+      "brandCanvas": {
+        "fontStatus": "loaded",
+        "layers": [
+          {
+            "name": "Name",
+            "opacity": 1,
+            "text": "Alex Morgan",
+            "font": "650 38px / 43.7px Arial, sans-serif",
+            "fontReady": true,
+            "color": "rgb(32, 37, 45)",
+            "width": 499.5,
+            "height": 36
+          },
+          {
+            "name": "Product Designer",
+            "opacity": 1,
+            "text": "Product Designer",
+            "font": "650 15px / 24.75px Arial, sans-serif",
+            "fontReady": true,
+            "color": "rgb(37, 99, 235)",
+            "width": 499.5,
+            "height": 18.5625
+          },
+          {
+            "name": "Paris, France   ·   alex@example.com   ·   al",
+            "opacity": 1,
+            "text": "Paris, France   ·   alex@example.com   ·   alexmorgan.design",
+            "font": "10.44px / 17.226px Arial, sans-serif",
+            "fontReady": true,
+            "color": "rgb(96, 106, 121)",
+            "width": 499.5,
+            "height": 15
+          },
+          {
+            "name": "Profile",
+            "opacity": 1,
+            "text": "Profile",
+            "font": "700 10px / 12.5px Arial, sans-serif",
+            "fontReady": true,
+            "color": "rgb(37, 99, 235)",
+            "width": 499.5,
+            "height": 16.5
+          },
+          {
+            "name": "I turn complex problems into clear, thoughtfu",
+            "opacity": 1,
+            "text": "I turn complex problems into clear, thoughtful digital experiences. A ",
+            "font": "12px / 19.8px Arial, sans-serif",
+            "fontReady": true,
+            "color": "rgb(32, 37, 45)",
+            "width": 499.5,
+            "height": 29.6953125
+          },
+          {
+            "name": "Experience",
+            "opacity": 1,
+            "text": "Experience",
+            "font": "700 10px / 12.5px Arial, sans-serif",
+            "fontReady": true,
+            "color": "rgb(37, 99, 235)",
+            "width": 499.5,
+            "height": 16.5
+          },
+          {
+            "name": "Senior Product Designer · Forma",
+            "opacity": 1,
+            "text": "Senior Product Designer · Forma",
+            "font": "650 13.2px / 21.78px Arial, sans-serif",
+            "fontReady": true,
+            "color": "rgb(32, 37, 45)",
+            "width": 499.5,
+            "height": 16.32421875
+          },
+          {
+            "name": "2022 — Present  /  Paris, France",
+            "opacity": 1,
+            "text": "2022 — Present  /  Paris, France",
+            "font": "10.44px / 17.226px Arial, sans-serif",
+            "fontReady": true,
+            "color": "rgb(96, 106, 121)",
+            "width": 499.5,
+            "height": 15
+          },
+          {
+            "name": "Led the redesign of a workspace used by 40,00",
+            "opacity": 1,
+            "text": "•Led the redesign of a workspace used by 40,000 teams, making everyday",
+            "font": "12px / 19.8px Arial, sans-serif",
+            "fontReady": true,
+            "color": "rgb(32, 37, 45)",
+            "width": 499.5,
+            "height": 15
+          },
+          {
+            "name": "Built a design system with engineering that r",
+            "opacity": 1,
+            "text": "•Built a design system with engineering that reduced delivery time by ",
+            "font": "12px / 19.8px Arial, sans-serif",
+            "fontReady": true,
+            "color": "rgb(32, 37, 45)",
+            "width": 499.5,
+            "height": 15
+          },
+          {
+            "name": "Product Designer · Northstar",
+            "opacity": 1,
+            "text": "Product Designer · Northstar",
+            "font": "650 13.2px / 21.78px Arial, sans-serif",
+            "fontReady": true,
+            "color": "rgb(32, 37, 45)",
+            "width": 499.5,
+            "height": 16.32421875
+          },
+          {
+            "name": "2020 — 2022  /  Remote",
+            "opacity": 1,
+            "text": "2020 — 2022  /  Remote",
+            "font": "10.44px / 17.226px Arial, sans-serif",
+            "fontReady": true,
+            "color": "rgb(96, 106, 121)",
+            "width": 499.5,
+            "height": 15
+          },
+          {
+            "name": "Shaped the onboarding experience from researc",
+            "opacity": 1,
+            "text": "•Shaped the onboarding experience from research to release, improving ",
+            "font": "12px / 19.8px Arial, sans-serif",
+            "fontReady": true,
+            "color": "rgb(32, 37, 45)",
+            "width": 499.5,
+            "height": 15
+          },
+          {
+            "name": "Education",
+            "opacity": 1,
+            "text": "Education",
+            "font": "700 10px / 12.5px Arial, sans-serif",
+            "fontReady": true,
+            "color": "rgb(37, 99, 235)",
+            "width": 499.5,
+            "height": 16.5
+          },
+          {
+            "name": "MA, Interaction Design",
+            "opacity": 1,
+            "text": "MA, Interaction Design",
+            "font": "650 13.2px / 21.78px Arial, sans-serif",
+            "fontReady": true,
+            "color": "rgb(32, 37, 45)",
+            "width": 499.5,
+            "height": 16.32421875
+          },
+          {
+            "name": "École des Gobelins  ·  2018 — 2020",
+            "opacity": 1,
+            "text": "École des Gobelins  ·  2018 — 2020",
+            "font": "10.44px / 17.226px Arial, sans-serif",
+            "fontReady": true,
+            "color": "rgb(96, 106, 121)",
+            "width": 499.5,
+            "height": 15
+          },
+          {
+            "name": "Selected skills",
+            "opacity": 1,
+            "text": "Selected skills",
+            "font": "700 10px / 12.5px Arial, sans-serif",
+            "fontReady": true,
+            "color": "rgb(37, 99, 235)",
+            "width": 499.5,
+            "height": 16.5
+          },
+          {
+            "name": "Product strategy   /   User research   /   In",
+            "opacity": 1,
+            "text": "Product strategy   /   User research   /   Interaction design\nDesign s",
+            "font": "12px / 19.8px Arial, sans-serif",
+            "fontReady": true,
+            "color": "rgb(32, 37, 45)",
+            "width": 499.5,
+            "height": 29.6953125
+          }
+        ]
+      },
+      "importedCanvas": {
+        "fontStatus": "loaded",
+        "layers": [
+          {
+            "name": "Name",
+            "opacity": 1,
+            "text": "Alex Morgan",
+            "font": "650 38px / 43.7px Arial, sans-serif",
+            "fontReady": true,
+            "color": "rgb(32, 37, 45)",
+            "width": 499.5,
+            "height": 36
+          },
+          {
+            "name": "Product Designer",
+            "opacity": 1,
+            "text": "Product Designer",
+            "font": "650 15px / 24.75px Arial, sans-serif",
+            "fontReady": true,
+            "color": "rgb(37, 99, 235)",
+            "width": 499.5,
+            "height": 18.5625
+          },
+          {
+            "name": "Paris, France   ·   alex@example.com   ·   al",
+            "opacity": 1,
+            "text": "Paris, France   ·   alex@example.com   ·   alexmorgan.design",
+            "font": "10.44px / 17.226px Arial, sans-serif",
+            "fontReady": true,
+            "color": "rgb(96, 106, 121)",
+            "width": 499.5,
+            "height": 15
+          },
+          {
+            "name": "Profile",
+            "opacity": 1,
+            "text": "Profile",
+            "font": "700 10px / 12.5px Arial, sans-serif",
+            "fontReady": true,
+            "color": "rgb(37, 99, 235)",
+            "width": 499.5,
+            "height": 16.5
+          },
+          {
+            "name": "I turn complex problems into clear, thoughtfu",
+            "opacity": 1,
+            "text": "I turn complex problems into clear, thoughtful digital experiences. A ",
+            "font": "12px / 19.8px Arial, sans-serif",
+            "fontReady": true,
+            "color": "rgb(32, 37, 45)",
+            "width": 499.5,
+            "height": 29.6953125
+          },
+          {
+            "name": "Experience",
+            "opacity": 1,
+            "text": "Experience",
+            "font": "700 10px / 12.5px Arial, sans-serif",
+            "fontReady": true,
+            "color": "rgb(37, 99, 235)",
+            "width": 499.5,
+            "height": 16.5
+          },
+          {
+            "name": "Senior Product Designer · Forma",
+            "opacity": 1,
+            "text": "Senior Product Designer · Forma",
+            "font": "650 13.2px / 21.78px Arial, sans-serif",
+            "fontReady": true,
+            "color": "rgb(32, 37, 45)",
+            "width": 499.5,
+            "height": 16.32421875
+          },
+          {
+            "name": "2022 — Present  /  Paris, France",
+            "opacity": 1,
+            "text": "2022 — Present  /  Paris, France",
+            "font": "10.44px / 17.226px Arial, sans-serif",
+            "fontReady": true,
+            "color": "rgb(96, 106, 121)",
+            "width": 499.5,
+            "height": 15
+          },
+          {
+            "name": "Led the redesign of a workspace used by 40,00",
+            "opacity": 1,
+            "text": "•Led the redesign of a workspace used by 40,000 teams, making everyday",
+            "font": "12px / 19.8px Arial, sans-serif",
+            "fontReady": true,
+            "color": "rgb(32, 37, 45)",
+            "width": 499.5,
+            "height": 15
+          },
+          {
+            "name": "Built a design system with engineering that r",
+            "opacity": 1,
+            "text": "•Built a design system with engineering that reduced delivery time by ",
+            "font": "12px / 19.8px Arial, sans-serif",
+            "fontReady": true,
+            "color": "rgb(32, 37, 45)",
+            "width": 499.5,
+            "height": 15
+          },
+          {
+            "name": "Product Designer · Northstar",
+            "opacity": 1,
+            "text": "Product Designer · Northstar",
+            "font": "650 13.2px / 21.78px Arial, sans-serif",
+            "fontReady": true,
+            "color": "rgb(32, 37, 45)",
+            "width": 499.5,
+            "height": 16.32421875
+          },
+          {
+            "name": "2020 — 2022  /  Remote",
+            "opacity": 1,
+            "text": "2020 — 2022  /  Remote",
+            "font": "10.44px / 17.226px Arial, sans-serif",
+            "fontReady": true,
+            "color": "rgb(96, 106, 121)",
+            "width": 499.5,
+            "height": 15
+          },
+          {
+            "name": "Shaped the onboarding experience from researc",
+            "opacity": 1,
+            "text": "•Shaped the onboarding experience from research to release, improving ",
+            "font": "12px / 19.8px Arial, sans-serif",
+            "fontReady": true,
+            "color": "rgb(32, 37, 45)",
+            "width": 499.5,
+            "height": 15
+          },
+          {
+            "name": "Education",
+            "opacity": 1,
+            "text": "Education",
+            "font": "700 10px / 12.5px Arial, sans-serif",
+            "fontReady": true,
+            "color": "rgb(37, 99, 235)",
+            "width": 499.5,
+            "height": 16.5
+          },
+          {
+            "name": "MA, Interaction Design",
+            "opacity": 1,
+            "text": "MA, Interaction Design",
+            "font": "650 13.2px / 21.78px Arial, sans-serif",
+            "fontReady": true,
+            "color": "rgb(32, 37, 45)",
+            "width": 499.5,
+            "height": 16.32421875
+          },
+          {
+            "name": "École des Gobelins  ·  2018 — 2020",
+            "opacity": 1,
+            "text": "École des Gobelins  ·  2018 — 2020",
+            "font": "10.44px / 17.226px Arial, sans-serif",
+            "fontReady": true,
+            "color": "rgb(96, 106, 121)",
+            "width": 499.5,
+            "height": 15
+          },
+          {
+            "name": "Selected skills",
+            "opacity": 1,
+            "text": "Selected skills",
+            "font": "700 10px / 12.5px Arial, sans-serif",
+            "fontReady": true,
+            "color": "rgb(37, 99, 235)",
+            "width": 499.5,
+            "height": 16.5
+          },
+          {
+            "name": "Product strategy   /   User research   /   In",
+            "opacity": 1,
+            "text": "Product strategy   /   User research   /   Interaction design\nDesign s",
+            "font": "12px / 19.8px Arial, sans-serif",
+            "fontReady": true,
+            "color": "rgb(32, 37, 45)",
+            "width": 499.5,
+            "height": 29.6953125
+          }
+        ]
+      }
+    },
+    "errors": []
+  },
+  {
+    "theme": "dark",
+    "font": {
+      "width": 300,
+      "height": 426,
+      "background": "color(srgb 0.168627 0.168627 0.180392 / 0.96)",
+      "rowCount": 11,
+      "categoryWidth": 298,
+      "categoryScrollWidth": 419,
+      "viewportWidth": 1440,
+      "right": 1413,
+      "left": 1113,
+      "names": [
+        "Arial",
+        "System",
+        "Sans serif",
+        "Serif",
+        "Monospace",
+        "Calibri",
+        "Cambria",
+        "Courier New",
+        "Helvetica",
+        "Liberation Sans",
+        "Liberation Serif"
+      ]
+    },
+    "palette": {
+      "renderedItems": 40,
+      "total": "50",
+      "focusedSearch": "Search icons"
+    },
+    "importedHint": {
+      "placeholder": "Search Preview glyph…",
+      "fill": "#000000",
+      "background": "rgb(255, 255, 255)",
+      "inputBackground": "rgb(53, 53, 55)",
+      "width": 22,
+      "height": 22
+    },
+    "canvas": {
+      "fontCanvas": {
+        "fontStatus": "loaded",
+        "layers": [
+          {
+            "name": "Name",
+            "opacity": 1,
+            "text": "Alex Morgan",
+            "font": "650 38px / 43.7px Arial, sans-serif",
+            "fontReady": true,
+            "color": "rgb(32, 37, 45)",
+            "width": 499.5,
+            "height": 36
+          },
+          {
+            "name": "Product Designer",
+            "opacity": 1,
+            "text": "Product Designer",
+            "font": "650 15px / 24.75px Arial, sans-serif",
+            "fontReady": true,
+            "color": "rgb(37, 99, 235)",
+            "width": 499.5,
+            "height": 18.5625
+          },
+          {
+            "name": "Paris, France   ·   alex@example.com   ·   al",
+            "opacity": 1,
+            "text": "Paris, France   ·   alex@example.com   ·   alexmorgan.design",
+            "font": "10.44px / 17.226px Arial, sans-serif",
+            "fontReady": true,
+            "color": "rgb(96, 106, 121)",
+            "width": 499.5,
+            "height": 15
+          },
+          {
+            "name": "Profile",
+            "opacity": 1,
+            "text": "Profile",
+            "font": "700 10px / 12.5px Arial, sans-serif",
+            "fontReady": true,
+            "color": "rgb(37, 99, 235)",
+            "width": 499.5,
+            "height": 16.5
+          },
+          {
+            "name": "I turn complex problems into clear, thoughtfu",
+            "opacity": 1,
+            "text": "I turn complex problems into clear, thoughtful digital experiences. A ",
+            "font": "12px / 19.8px Arial, sans-serif",
+            "fontReady": true,
+            "color": "rgb(32, 37, 45)",
+            "width": 499.5,
+            "height": 29.6953125
+          },
+          {
+            "name": "Experience",
+            "opacity": 1,
+            "text": "Experience",
+            "font": "700 10px / 12.5px Arial, sans-serif",
+            "fontReady": true,
+            "color": "rgb(37, 99, 235)",
+            "width": 499.5,
+            "height": 16.5
+          },
+          {
+            "name": "Senior Product Designer · Forma",
+            "opacity": 1,
+            "text": "Senior Product Designer · Forma",
+            "font": "650 13.2px / 21.78px Arial, sans-serif",
+            "fontReady": true,
+            "color": "rgb(32, 37, 45)",
+            "width": 499.5,
+            "height": 16.32421875
+          },
+          {
+            "name": "2022 — Present  /  Paris, France",
+            "opacity": 1,
+            "text": "2022 — Present  /  Paris, France",
+            "font": "10.44px / 17.226px Arial, sans-serif",
+            "fontReady": true,
+            "color": "rgb(96, 106, 121)",
+            "width": 499.5,
+            "height": 15
+          },
+          {
+            "name": "Led the redesign of a workspace used by 40,00",
+            "opacity": 1,
+            "text": "•Led the redesign of a workspace used by 40,000 teams, making everyday",
+            "font": "12px / 19.8px Arial, sans-serif",
+            "fontReady": true,
+            "color": "rgb(32, 37, 45)",
+            "width": 499.5,
+            "height": 15
+          },
+          {
+            "name": "Built a design system with engineering that r",
+            "opacity": 1,
+            "text": "•Built a design system with engineering that reduced delivery time by ",
+            "font": "12px / 19.8px Arial, sans-serif",
+            "fontReady": true,
+            "color": "rgb(32, 37, 45)",
+            "width": 499.5,
+            "height": 15
+          },
+          {
+            "name": "Product Designer · Northstar",
+            "opacity": 1,
+            "text": "Product Designer · Northstar",
+            "font": "650 13.2px / 21.78px Arial, sans-serif",
+            "fontReady": true,
+            "color": "rgb(32, 37, 45)",
+            "width": 499.5,
+            "height": 16.32421875
+          },
+          {
+            "name": "2020 — 2022  /  Remote",
+            "opacity": 1,
+            "text": "2020 — 2022  /  Remote",
+            "font": "10.44px / 17.226px Arial, sans-serif",
+            "fontReady": true,
+            "color": "rgb(96, 106, 121)",
+            "width": 499.5,
+            "height": 15
+          },
+          {
+            "name": "Shaped the onboarding experience from researc",
+            "opacity": 1,
+            "text": "•Shaped the onboarding experience from research to release, improving ",
+            "font": "12px / 19.8px Arial, sans-serif",
+            "fontReady": true,
+            "color": "rgb(32, 37, 45)",
+            "width": 499.5,
+            "height": 15
+          },
+          {
+            "name": "Education",
+            "opacity": 1,
+            "text": "Education",
+            "font": "700 10px / 12.5px Arial, sans-serif",
+            "fontReady": true,
+            "color": "rgb(37, 99, 235)",
+            "width": 499.5,
+            "height": 16.5
+          },
+          {
+            "name": "MA, Interaction Design",
+            "opacity": 1,
+            "text": "MA, Interaction Design",
+            "font": "650 13.2px / 21.78px Arial, sans-serif",
+            "fontReady": true,
+            "color": "rgb(32, 37, 45)",
+            "width": 499.5,
+            "height": 16.32421875
+          },
+          {
+            "name": "École des Gobelins  ·  2018 — 2020",
+            "opacity": 1,
+            "text": "École des Gobelins  ·  2018 — 2020",
+            "font": "10.44px / 17.226px Arial, sans-serif",
+            "fontReady": true,
+            "color": "rgb(96, 106, 121)",
+            "width": 499.5,
+            "height": 15
+          },
+          {
+            "name": "Selected skills",
+            "opacity": 1,
+            "text": "Selected skills",
+            "font": "700 10px / 12.5px Arial, sans-serif",
+            "fontReady": true,
+            "color": "rgb(37, 99, 235)",
+            "width": 499.5,
+            "height": 16.5
+          },
+          {
+            "name": "Product strategy   /   User research   /   In",
+            "opacity": 1,
+            "text": "Product strategy   /   User research   /   Interaction design\nDesign s",
+            "font": "12px / 19.8px Arial, sans-serif",
+            "fontReady": true,
+            "color": "rgb(32, 37, 45)",
+            "width": 499.5,
+            "height": 29.6953125
+          }
+        ]
+      },
+      "brandCanvas": {
+        "fontStatus": "loaded",
+        "layers": [
+          {
+            "name": "Name",
+            "opacity": 1,
+            "text": "Alex Morgan",
+            "font": "650 38px / 43.7px Arial, sans-serif",
+            "fontReady": true,
+            "color": "rgb(32, 37, 45)",
+            "width": 499.5,
+            "height": 36
+          },
+          {
+            "name": "Product Designer",
+            "opacity": 1,
+            "text": "Product Designer",
+            "font": "650 15px / 24.75px Arial, sans-serif",
+            "fontReady": true,
+            "color": "rgb(37, 99, 235)",
+            "width": 499.5,
+            "height": 18.5625
+          },
+          {
+            "name": "Paris, France   ·   alex@example.com   ·   al",
+            "opacity": 1,
+            "text": "Paris, France   ·   alex@example.com   ·   alexmorgan.design",
+            "font": "10.44px / 17.226px Arial, sans-serif",
+            "fontReady": true,
+            "color": "rgb(96, 106, 121)",
+            "width": 499.5,
+            "height": 15
+          },
+          {
+            "name": "Profile",
+            "opacity": 1,
+            "text": "Profile",
+            "font": "700 10px / 12.5px Arial, sans-serif",
+            "fontReady": true,
+            "color": "rgb(37, 99, 235)",
+            "width": 499.5,
+            "height": 16.5
+          },
+          {
+            "name": "I turn complex problems into clear, thoughtfu",
+            "opacity": 1,
+            "text": "I turn complex problems into clear, thoughtful digital experiences. A ",
+            "font": "12px / 19.8px Arial, sans-serif",
+            "fontReady": true,
+            "color": "rgb(32, 37, 45)",
+            "width": 499.5,
+            "height": 29.6953125
+          },
+          {
+            "name": "Experience",
+            "opacity": 1,
+            "text": "Experience",
+            "font": "700 10px / 12.5px Arial, sans-serif",
+            "fontReady": true,
+            "color": "rgb(37, 99, 235)",
+            "width": 499.5,
+            "height": 16.5
+          },
+          {
+            "name": "Senior Product Designer · Forma",
+            "opacity": 1,
+            "text": "Senior Product Designer · Forma",
+            "font": "650 13.2px / 21.78px Arial, sans-serif",
+            "fontReady": true,
+            "color": "rgb(32, 37, 45)",
+            "width": 499.5,
+            "height": 16.32421875
+          },
+          {
+            "name": "2022 — Present  /  Paris, France",
+            "opacity": 1,
+            "text": "2022 — Present  /  Paris, France",
+            "font": "10.44px / 17.226px Arial, sans-serif",
+            "fontReady": true,
+            "color": "rgb(96, 106, 121)",
+            "width": 499.5,
+            "height": 15
+          },
+          {
+            "name": "Led the redesign of a workspace used by 40,00",
+            "opacity": 1,
+            "text": "•Led the redesign of a workspace used by 40,000 teams, making everyday",
+            "font": "12px / 19.8px Arial, sans-serif",
+            "fontReady": true,
+            "color": "rgb(32, 37, 45)",
+            "width": 499.5,
+            "height": 15
+          },
+          {
+            "name": "Built a design system with engineering that r",
+            "opacity": 1,
+            "text": "•Built a design system with engineering that reduced delivery time by ",
+            "font": "12px / 19.8px Arial, sans-serif",
+            "fontReady": true,
+            "color": "rgb(32, 37, 45)",
+            "width": 499.5,
+            "height": 15
+          },
+          {
+            "name": "Product Designer · Northstar",
+            "opacity": 1,
+            "text": "Product Designer · Northstar",
+            "font": "650 13.2px / 21.78px Arial, sans-serif",
+            "fontReady": true,
+            "color": "rgb(32, 37, 45)",
+            "width": 499.5,
+            "height": 16.32421875
+          },
+          {
+            "name": "2020 — 2022  /  Remote",
+            "opacity": 1,
+            "text": "2020 — 2022  /  Remote",
+            "font": "10.44px / 17.226px Arial, sans-serif",
+            "fontReady": true,
+            "color": "rgb(96, 106, 121)",
+            "width": 499.5,
+            "height": 15
+          },
+          {
+            "name": "Shaped the onboarding experience from researc",
+            "opacity": 1,
+            "text": "•Shaped the onboarding experience from research to release, improving ",
+            "font": "12px / 19.8px Arial, sans-serif",
+            "fontReady": true,
+            "color": "rgb(32, 37, 45)",
+            "width": 499.5,
+            "height": 15
+          },
+          {
+            "name": "Education",
+            "opacity": 1,
+            "text": "Education",
+            "font": "700 10px / 12.5px Arial, sans-serif",
+            "fontReady": true,
+            "color": "rgb(37, 99, 235)",
+            "width": 499.5,
+            "height": 16.5
+          },
+          {
+            "name": "MA, Interaction Design",
+            "opacity": 1,
+            "text": "MA, Interaction Design",
+            "font": "650 13.2px / 21.78px Arial, sans-serif",
+            "fontReady": true,
+            "color": "rgb(32, 37, 45)",
+            "width": 499.5,
+            "height": 16.32421875
+          },
+          {
+            "name": "École des Gobelins  ·  2018 — 2020",
+            "opacity": 1,
+            "text": "École des Gobelins  ·  2018 — 2020",
+            "font": "10.44px / 17.226px Arial, sans-serif",
+            "fontReady": true,
+            "color": "rgb(96, 106, 121)",
+            "width": 499.5,
+            "height": 15
+          },
+          {
+            "name": "Selected skills",
+            "opacity": 1,
+            "text": "Selected skills",
+            "font": "700 10px / 12.5px Arial, sans-serif",
+            "fontReady": true,
+            "color": "rgb(37, 99, 235)",
+            "width": 499.5,
+            "height": 16.5
+          },
+          {
+            "name": "Product strategy   /   User research   /   In",
+            "opacity": 1,
+            "text": "Product strategy   /   User research   /   Interaction design\nDesign s",
+            "font": "12px / 19.8px Arial, sans-serif",
+            "fontReady": true,
+            "color": "rgb(32, 37, 45)",
+            "width": 499.5,
+            "height": 29.6953125
+          }
+        ]
+      },
+      "importedCanvas": {
+        "fontStatus": "loaded",
+        "layers": [
+          {
+            "name": "Name",
+            "opacity": 1,
+            "text": "Alex Morgan",
+            "font": "650 38px / 43.7px Arial, sans-serif",
+            "fontReady": true,
+            "color": "rgb(32, 37, 45)",
+            "width": 499.5,
+            "height": 36
+          },
+          {
+            "name": "Product Designer",
+            "opacity": 1,
+            "text": "Product Designer",
+            "font": "650 15px / 24.75px Arial, sans-serif",
+            "fontReady": true,
+            "color": "rgb(37, 99, 235)",
+            "width": 499.5,
+            "height": 18.5625
+          },
+          {
+            "name": "Paris, France   ·   alex@example.com   ·   al",
+            "opacity": 1,
+            "text": "Paris, France   ·   alex@example.com   ·   alexmorgan.design",
+            "font": "10.44px / 17.226px Arial, sans-serif",
+            "fontReady": true,
+            "color": "rgb(96, 106, 121)",
+            "width": 499.5,
+            "height": 15
+          },
+          {
+            "name": "Profile",
+            "opacity": 1,
+            "text": "Profile",
+            "font": "700 10px / 12.5px Arial, sans-serif",
+            "fontReady": true,
+            "color": "rgb(37, 99, 235)",
+            "width": 499.5,
+            "height": 16.5
+          },
+          {
+            "name": "I turn complex problems into clear, thoughtfu",
+            "opacity": 1,
+            "text": "I turn complex problems into clear, thoughtful digital experiences. A ",
+            "font": "12px / 19.8px Arial, sans-serif",
+            "fontReady": true,
+            "color": "rgb(32, 37, 45)",
+            "width": 499.5,
+            "height": 29.6953125
+          },
+          {
+            "name": "Experience",
+            "opacity": 1,
+            "text": "Experience",
+            "font": "700 10px / 12.5px Arial, sans-serif",
+            "fontReady": true,
+            "color": "rgb(37, 99, 235)",
+            "width": 499.5,
+            "height": 16.5
+          },
+          {
+            "name": "Senior Product Designer · Forma",
+            "opacity": 1,
+            "text": "Senior Product Designer · Forma",
+            "font": "650 13.2px / 21.78px Arial, sans-serif",
+            "fontReady": true,
+            "color": "rgb(32, 37, 45)",
+            "width": 499.5,
+            "height": 16.32421875
+          },
+          {
+            "name": "2022 — Present  /  Paris, France",
+            "opacity": 1,
+            "text": "2022 — Present  /  Paris, France",
+            "font": "10.44px / 17.226px Arial, sans-serif",
+            "fontReady": true,
+            "color": "rgb(96, 106, 121)",
+            "width": 499.5,
+            "height": 15
+          },
+          {
+            "name": "Led the redesign of a workspace used by 40,00",
+            "opacity": 1,
+            "text": "•Led the redesign of a workspace used by 40,000 teams, making everyday",
+            "font": "12px / 19.8px Arial, sans-serif",
+            "fontReady": true,
+            "color": "rgb(32, 37, 45)",
+            "width": 499.5,
+            "height": 15
+          },
+          {
+            "name": "Built a design system with engineering that r",
+            "opacity": 1,
+            "text": "•Built a design system with engineering that reduced delivery time by ",
+            "font": "12px / 19.8px Arial, sans-serif",
+            "fontReady": true,
+            "color": "rgb(32, 37, 45)",
+            "width": 499.5,
+            "height": 15
+          },
+          {
+            "name": "Product Designer · Northstar",
+            "opacity": 1,
+            "text": "Product Designer · Northstar",
+            "font": "650 13.2px / 21.78px Arial, sans-serif",
+            "fontReady": true,
+            "color": "rgb(32, 37, 45)",
+            "width": 499.5,
+            "height": 16.32421875
+          },
+          {
+            "name": "2020 — 2022  /  Remote",
+            "opacity": 1,
+            "text": "2020 — 2022  /  Remote",
+            "font": "10.44px / 17.226px Arial, sans-serif",
+            "fontReady": true,
+            "color": "rgb(96, 106, 121)",
+            "width": 499.5,
+            "height": 15
+          },
+          {
+            "name": "Shaped the onboarding experience from researc",
+            "opacity": 1,
+            "text": "•Shaped the onboarding experience from research to release, improving ",
+            "font": "12px / 19.8px Arial, sans-serif",
+            "fontReady": true,
+            "color": "rgb(32, 37, 45)",
+            "width": 499.5,
+            "height": 15
+          },
+          {
+            "name": "Education",
+            "opacity": 1,
+            "text": "Education",
+            "font": "700 10px / 12.5px Arial, sans-serif",
+            "fontReady": true,
+            "color": "rgb(37, 99, 235)",
+            "width": 499.5,
+            "height": 16.5
+          },
+          {
+            "name": "MA, Interaction Design",
+            "opacity": 1,
+            "text": "MA, Interaction Design",
+            "font": "650 13.2px / 21.78px Arial, sans-serif",
+            "fontReady": true,
+            "color": "rgb(32, 37, 45)",
+            "width": 499.5,
+            "height": 16.32421875
+          },
+          {
+            "name": "École des Gobelins  ·  2018 — 2020",
+            "opacity": 1,
+            "text": "École des Gobelins  ·  2018 — 2020",
+            "font": "10.44px / 17.226px Arial, sans-serif",
+            "fontReady": true,
+            "color": "rgb(96, 106, 121)",
+            "width": 499.5,
+            "height": 15
+          },
+          {
+            "name": "Selected skills",
+            "opacity": 1,
+            "text": "Selected skills",
+            "font": "700 10px / 12.5px Arial, sans-serif",
+            "fontReady": true,
+            "color": "rgb(37, 99, 235)",
+            "width": 499.5,
+            "height": 16.5
+          },
+          {
+            "name": "Product strategy   /   User research   /   In",
+            "opacity": 1,
+            "text": "Product strategy   /   User research   /   Interaction design\nDesign s",
+            "font": "12px / 19.8px Arial, sans-serif",
+            "fontReady": true,
+            "color": "rgb(32, 37, 45)",
+            "width": 499.5,
+            "height": 29.6953125
+          }
+        ]
+      }
+    },
+    "errors": []
+  }
+]

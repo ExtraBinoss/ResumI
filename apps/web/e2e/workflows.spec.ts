@@ -41,7 +41,7 @@ async function readableDashboardControls(
   page: Page,
   minimumSearchWidth: number,
 ) {
-  const search = page.getByRole("textbox", { name: "Search resumes" });
+  const search = page.getByRole("searchbox", { name: "Search resumes" });
   await expect(search).toBeVisible();
   const searchBounds = await search.evaluate((input) => {
     const bounds = input.getBoundingClientRect();
@@ -153,7 +153,7 @@ test("human editor → save/reload → agent preview/undo → project lifecycle 
   await expect(
     page.getByRole("article", { name: "Resume canvas" }),
   ).toContainText("Product designer focused on accessible software.");
-  await page.getByRole("button", { name: "Outline", exact: true }).click();
+  await page.getByRole("radio", { name: "Structure", exact: true }).click();
   await page.getByRole("button", { name: "Add section", exact: true }).click();
   await page
     .getByRole("textbox", { name: "Section title", exact: true })

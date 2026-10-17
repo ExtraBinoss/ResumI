@@ -27,6 +27,21 @@ export const googleCatalog: FontOption[] = googleFonts.map(
     source: "google",
   }),
 );
+const categories = new Map(
+  googleCatalog.map((font) => [font.label.toLowerCase(), font.category]),
+);
+export function fontCategory(family: string) {
+  return (
+    categories.get(family.toLowerCase()) ??
+    (/mono|consolas|courier|menlo/i.test(family)
+      ? "Monospace"
+      : /serif|georgia|times|baskerville|cambria|charter|didot|hoefler|palatino/i.test(
+            family,
+          ) && !/sans/i.test(family)
+        ? "Serif"
+        : "Sans Serif")
+  );
+}
 const commonFonts = [
   "Arial",
   "Arial Narrow",
@@ -110,7 +125,7 @@ export function detectedFonts(): FontOption[] {
 }
 
 const googleRequests = new Map<string, Promise<Blob>>();
-/** The CSS API is contacted on font hover/selection, never while opening a project. */
+/** Visible font-picker samples, hover and selection share one request/cache per family. */
 export function googleFontBlob(family: string) {
   const existing = googleRequests.get(family);
   if (existing) return existing;

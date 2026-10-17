@@ -48,3 +48,9 @@
   background: var(--accent);
   color: var(--foreground);
 }
+
+.language {
+  padding: 8px 8px 6px;
+  border-top: 1px solid var(--line);
+  margin-top: 5px;
+}

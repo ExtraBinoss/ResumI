@@ -35,6 +35,10 @@ Images and shapes also share bounded blur, grain, grain size, dither, brightness
 
 The renderer uses the same layer geometry, rich segments, groups, gradients and effect definitions for previews and portable HTML. It validates the document before interpolation. The engine itself imports no renderer, framework, browser database or provider.
 
+## Languages
+
+Optional `document.localization` records the original and active CV language; per-block variants contain independent text and range marks. `locale.add/update/remove/activate`, `translation.set/remove` and `section.translation.set/remove` share normal validation, history, budgets and agent batches. Ordinary text/range/section-title edits target the active variant. Missing translations use the original content, and stable localized projections preserve unrelated identities. [Full representation, section-title behavior, commands and boundaries](localization.md).
+
 ## Contrast inspection
 
 `auditTextContrast(document, id, range?)` inspects a text layer without modifying it. It returns a ratio, AA/AAA grade, resolved colors and reliability. It considers text marks, their font sizes/weights, alpha and group opacity; the worst marked range determines the overall grade. The calculation only accepts a uniform background over the text frame. Images, gradients, effects, blends, nonuniform or overlapping content return `Unknown` rather than an estimated passing grade. This is a selected-text inspection, not a whole-document accessibility certification. `contrastRatio` and `relativeLuminance` are also framework-free exports.

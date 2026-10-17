@@ -6,12 +6,14 @@ import {
   styleSchema,
 } from "../document/schema";
 
+import { localeCommands } from "../localization/schema";
 import { sourceCommands } from "../source/schema";
 import { canvasCommands } from "../canvas/commands";
 
 export const commandSchema = z.discriminatedUnion("type", [
   ...canvasCommands,
   ...sourceCommands,
+  ...localeCommands,
   z.strictObject({
     type: z.literal("document.update"),
     name: z.string().check(z.trim(), z.minLength(1), z.maxLength(120)),

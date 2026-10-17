@@ -26,7 +26,7 @@
 }
 .popup {
   z-index: 150;
-  width: 340px;
+  width: 300px;
   max-width: calc(100vw - 24px);
   padding: 0;
   gap: 0;
@@ -46,20 +46,43 @@
 .tools > div:first-child {
   flex: 1;
 }
+.categories {
+  height: 36px;
+  border-bottom: 1px solid var(--line);
+}
+.categoryTrack {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  width: max-content;
+  min-width: 100%;
+  padding: 0 9px 8px;
+}
+.categoryTrack button {
+  flex: 0 0 auto;
+  height: 25px;
+  padding: 2px 8px;
+  border: 1px solid transparent;
+  border-radius: 5px;
+  background: transparent;
+  color: var(--muted-foreground);
+  font-size: 12px;
+  cursor: pointer;
+}
+.categoryTrack button:hover,
+.categoryTrack button[aria-pressed="true"] {
+  color: var(--foreground);
+  border-color: var(--line);
+  background: var(--accent);
+}
 .filters {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 0 10px 9px;
-  border-bottom: 1px solid var(--line);
-}
-.filters > div {
-  width: 185px;
-}
-.filters > span {
-  margin-left: auto;
+  justify-content: space-between;
+  min-height: 27px;
+  padding: 3px 12px;
   color: var(--muted-foreground);
-  font-size: 12px;
+  font-size: 11px;
 }
 .list {
   width: 100%;
@@ -96,25 +119,62 @@
   display: grid;
   min-width: 0;
   gap: 4px;
+  flex: 1;
 }
 .name {
   display: flex;
   gap: 12px;
   justify-content: space-between;
-  font-size: 12px;
+  align-items: center;
+  font-size: 13px;
   font-weight: 500;
 }
 .name small {
+  flex: 0 0 auto;
+  margin-left: auto;
   color: var(--muted-foreground);
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 400;
 }
+.nameClip {
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.nameClip > span {
+  display: inline-block;
+}
+.option:hover .nameClip > span {
+  animation: marquee 3s ease-in-out 0.6s alternate infinite;
+}
+@keyframes marquee {
+  to {
+    transform: translateX(var(--name-overflow, 0));
+  }
+}
 .sample {
+  display: block;
+  position: relative;
+  min-height: 23px;
   overflow: hidden;
   color: var(--muted-foreground);
   font-size: 17px;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+.sample:not([data-font-ready="true"]) > span {
+  visibility: hidden;
+}
+.sample:not([data-font-ready="true"])::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 6px;
+  width: 70%;
+  height: 10px;
+  border-radius: 3px;
+  background: var(--muted);
 }
 .option > svg {
   margin-left: 10px;
@@ -127,16 +187,16 @@
   font-size: 13px;
   color: var(--muted-foreground);
 }
-.spinner {
-  animation: spin 1s linear infinite;
-}
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
 @media (prefers-reduced-motion: reduce) {
-  .spinner {
+  .option:hover .nameClip > span {
     animation: none;
   }
+}
+
+.sample[data-font-ready="error"]::after {
+  content: "—";
+  top: 0;
+  height: auto;
+  background: transparent;
+  font-family: var(--font-ui);
 }

@@ -1,6 +1,7 @@
-import { useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { useMemo, useRef, useState } from "react";
 import { useSetAtom } from "jotai";
-import { Check, ChevronDown, Laptop, LoaderCircle, Search } from "lucide-react";
+import { Check, ChevronDown, Laptop } from "lucide-react";
 import { Button } from "../../../components/ui/button";
 import {
   Popover,
@@ -8,7 +9,10 @@ import {
   PopoverTrigger,
 } from "../../../components/ui/popover";
 import { ScrollShadow } from "../../../components/ScrollShadow";
-import { TextInput, Select, Tooltip } from "../../../ui";
+import { Tooltip, Loader } from "../../../ui";
+import { SearchInput } from "../../../components/SearchInput";
+import { createSearchIndex } from "../../../lib/search-index";
+import { FontSample } from "./FontSample";
 import { designErrorAtom } from "../../../state/design";
 import { FontImportButton, useFontImport } from "./FontAssets";
 import {
@@ -17,11 +21,20 @@ import {
   fontStack,
   googleCatalog,
   googleFontBlob,
+  fontCategory,
   type FontOption,
   type LocalFont,
 } from "./font-catalog";
 import styles from "../styles/FontPicker.module.css";
 
+const categoryKeys: Record<string, string> = {
+  all: "all",
+  "Sans Serif": "sans",
+  Serif: "serif",
+  Monospace: "monospace",
+  Display: "display",
+  Handwriting: "handwriting",
+};
 const ROW = 62,
   HEIGHT = 310;
 export function FontPicker({
@@ -37,6 +50,7 @@ export function FontPicker({
   onChange: (value: string) => void;
   onPreview: (value: string | null) => void;
 }) {
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState("all");
@@ -48,35 +62,47 @@ export function FontPicker({
   const scroll = useRef<HTMLDivElement>(null);
   const { importBlob } = useFontImport();
   const setError = useSetAtom(designErrorAtom);
-  const options = [
-    ...fonts.map((name): FontOption => ({
-      label: name,
-      value: fontStack(name),
-      category: "Document",
-      source: "document",
-    })),
-    ...computer,
-    ...googleCatalog,
-  ];
-  if (!options.some((option) => option.value === value))
-    options.unshift({
+  const fontNames = JSON.stringify(fonts);
+  // Names/source snapshots define index identity; neither scroll nor typing rebuilds it.
+  const options = useMemo(() => {
+    const catalog = new Map<string, FontOption>();
+    const documentFonts = JSON.parse(fontNames) as string[];
+    const current: FontOption = {
       label: fontName(value),
       value,
-      category: "Current",
+      category: fontCategory(fontName(value)),
       source: "document",
-    });
-  const seen = new Set<string>();
-  const needle = query.trim().toLocaleLowerCase();
-  const filtered = options.filter((option) => {
-    const duplicate = seen.has(`${option.source}:${option.label}`);
-    seen.add(`${option.source}:${option.label}`);
-    return (
-      !duplicate &&
-      (category === "all" ||
-        option.source === category ||
-        option.category === category) &&
-      `${option.label} ${option.category}`.toLocaleLowerCase().includes(needle)
-    );
+    };
+    for (const option of [
+      current,
+      ...documentFonts.map((name): FontOption => ({
+        label: name,
+        value: fontStack(name, fontCategory(name)),
+        category: fontCategory(name),
+        source: "document",
+      })),
+      ...computer.map((option) => ({
+        ...option,
+        category: fontCategory(option.label),
+      })),
+      ...googleCatalog,
+    ])
+      if (!catalog.has(option.label.toLowerCase()))
+        catalog.set(option.label.toLowerCase(), option);
+    return [...catalog.values()];
+  }, [fontNames, computer, value]);
+  const index = useMemo(
+    () =>
+      createSearchIndex(options, {
+        text: (option) => option.label,
+        keywords: (option) => option.category,
+      }),
+    [options],
+  );
+  const filtered = index.search(query, {
+    limit: options.length,
+    filter:
+      category === "all" ? undefined : (option) => option.category === category,
   });
   const start = Math.max(0, Math.floor(scrollTop / ROW) - 3);
   const visible = filtered.slice(start, start + Math.ceil(HEIGHT / ROW) + 6);
@@ -188,7 +214,7 @@ export function FontPicker({
           source: "computer",
         })),
       );
-      setCategory("computer");
+      setCategory("all");
       resetScroll();
     } catch {
       setError(
@@ -216,7 +242,7 @@ export function FontPicker({
           <Button
             variant="outline"
             role="combobox"
-            aria-label="Font family"
+            aria-label={t("fonts.family")}
             className={styles.trigger}
             data-ui="input"
           />
@@ -231,16 +257,22 @@ export function FontPicker({
         className={styles.popup}
         align="end"
         sideOffset={6}
-        aria-label="Choose font"
+        aria-label={t("fonts.choose")}
       >
         <div className={styles.tools}>
-          <TextInput
-            type="search"
-            aria-label="Search fonts"
-            placeholder="Search fonts"
-            leftSection={<Search size={15} aria-hidden />}
+          <SearchInput
+            autoFocus
+            prefix={t("common.search")}
+            captureTyping={open}
+            aria-label={t("fonts.search")}
+            hints={[
+              { label: "Inter" },
+              { label: "Playfair Display" },
+              { label: "Space Mono" },
+            ]}
             value={query}
             onChange={(event) => {
+              leave();
               setQuery(event.currentTarget.value);
               resetScroll();
             }}
@@ -248,14 +280,17 @@ export function FontPicker({
               if (event.key === "ArrowDown") {
                 event.preventDefault();
                 reveal(0);
+              } else if (event.key === "Enter" && filtered[0]) {
+                event.preventDefault();
+                void choose(filtered[0]);
               }
             }}
           />
-          <Tooltip label="Fonts on this computer">
+          <Tooltip label={t("fonts.computer")}>
             <Button
               variant="ghost"
               size="icon-sm"
-              aria-label="Fonts on this computer"
+              aria-label={t("fonts.computer")}
               disabled={!!busy}
               onClick={() => void discover()}
             >
@@ -270,39 +305,40 @@ export function FontPicker({
             }}
           />
         </div>
-        <div className={styles.filters}>
-          <Select
-            aria-label="Font category"
-            value={category}
-            onChange={(next) => {
-              setCategory(next ?? "all");
-              resetScroll();
-            }}
-            data={[
-              { value: "all", label: "All fonts" },
-              { value: "document", label: "In this document" },
-              { value: "computer", label: "This computer" },
-              { value: "google", label: "Google Fonts" },
-              ...[
-                "Sans Serif",
-                "Serif",
-                "Monospace",
-                "Display",
-                "Handwriting",
-              ].map((name) => ({ value: name, label: name })),
-            ]}
-          />
-          <span>
-            {busy ? (
-              <LoaderCircle
-                size={14}
-                aria-label={`Loading ${busy}`}
-                className={styles.spinner}
-              />
-            ) : (
-              `${filtered.length} ${filtered.length === 1 ? "font" : "fonts"}`
-            )}
-          </span>
+        <ScrollShadow orientation="horizontal" className={styles.categories}>
+          <div
+            className={styles.categoryTrack}
+            role="group"
+            aria-label={t("fonts.categories")}
+          >
+            {[
+              "all",
+              "Sans Serif",
+              "Serif",
+              "Monospace",
+              "Display",
+              "Handwriting",
+            ].map((name) => (
+              <button
+                key={name}
+                type="button"
+                aria-pressed={category === name}
+                onClick={() => {
+                  leave();
+                  setCategory(name);
+                  resetScroll();
+                }}
+              >
+                {t("fonts." + categoryKeys[name])}
+              </button>
+            ))}
+          </div>
+        </ScrollShadow>
+        <div className={styles.filters} aria-live="polite">
+          <span>{t("fonts.count", { count: filtered.length })}</span>
+          {busy && (
+            <Loader size="xs" label={t("loading.font", { name: busy })} />
+          )}
         </div>
         <ScrollShadow
           ref={scroll}
@@ -310,9 +346,10 @@ export function FontPicker({
           style={{
             height: Math.min(HEIGHT, Math.max(92, filtered.length * ROW)),
           }}
-          onScrollCapture={(event) =>
-            setScrollTop((event.target as HTMLElement).scrollTop)
-          }
+          onScrollCapture={(event) => {
+            leave();
+            setScrollTop((event.target as HTMLElement).scrollTop);
+          }}
         >
           <div
             role="listbox"
@@ -334,7 +371,18 @@ export function FontPicker({
                 disabled={!!busy}
                 className={styles.option}
                 style={{ top: (start + offset) * ROW }}
-                onPointerEnter={() => void preview(option)}
+                onPointerEnter={(event) => {
+                  const name =
+                    event.currentTarget.querySelector<HTMLElement>(
+                      "[data-font-name]",
+                    );
+                  if (name)
+                    name.style.setProperty(
+                      "--name-overflow",
+                      Math.min(0, name.clientWidth - name.scrollWidth) + "px",
+                    );
+                  void preview(option);
+                }}
                 onFocus={() => void preview(option)}
                 onBlur={leave}
                 onKeyDown={(event) => {
@@ -352,21 +400,16 @@ export function FontPicker({
               >
                 <span className={styles.copy}>
                   <span className={styles.name}>
-                    {option.label}
-                    <small>
-                      {option.source === "google"
-                        ? option.category
-                        : option.source === "document"
-                          ? "Document"
-                          : "Computer"}
-                    </small>
+                    <span
+                      className={styles.nameClip}
+                      data-font-name
+                      title={option.label}
+                    >
+                      <span>{option.label}</span>
+                    </span>
+                    <small>{option.category}</small>
                   </span>
-                  <span
-                    className={styles.sample}
-                    style={{ fontFamily: option.value }}
-                  >
-                    Aa · The quick brown fox
-                  </span>
+                  <FontSample option={option} />
                 </span>
                 {(option.value === value ||
                   option.label === fontName(value)) && (

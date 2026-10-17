@@ -4,6 +4,7 @@ import type { Document, DocumentSource } from "@resumi/engine";
 import styles from "./Preview.module.css";
 import { Button } from "./ui/button";
 import { Minus, Plus } from "lucide-react";
+import { SharedLoading } from "./SharedLoading";
 
 const previews = new WeakMap<DocumentSource, Promise<string>>();
 function previewFor(document: Document): Promise<string> {
@@ -117,7 +118,11 @@ function InteractivePreview({ document }: { document: Document }) {
       >
         <Suspense
           fallback={
-            <div className={styles.sourcePlaceholder}>Preparing preview…</div>
+            <SharedLoading
+              messageKey="loading.preview"
+              variant="working"
+              className={styles.sourcePlaceholder}
+            />
           }
         >
           <Frame document={document} interactive scale={scale} />
@@ -138,14 +143,11 @@ export function CodePreview({
     <div className={styles.viewport} aria-hidden="true">
       <Suspense
         fallback={
-          <div className={styles.sourcePlaceholder}>
-            <strong>{document.name}</strong>
-            <span>
-              {document.source?.format === "react"
-                ? "React component"
-                : "HTML document"}
-            </span>
-          </div>
+          <SharedLoading
+            messageKey="loading.preview"
+            variant="working"
+            className={styles.sourcePlaceholder}
+          />
         }
       >
         <Frame document={document} interactive={interactive} />

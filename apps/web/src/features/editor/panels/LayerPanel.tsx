@@ -1,12 +1,14 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useAtomValue, useSetAtom, useStore } from "jotai";
 import { ActionIcon, Select, NumberInput, Menu, TextInput } from "../../../ui";
-import { Button } from "../../../components/ui/button";
+import { AnimatedSegments } from "../../../components/AnimatedSegments";
 import { ScrollShadow } from "../../../components/ScrollShadow";
 import { Shortcut } from "../../../components/Shortcut";
 import {
   Layers3,
+  Sun,
   ListTree,
   Type,
   Image,
@@ -252,6 +254,7 @@ function Row({
   );
 }
 export function LayerPanel() {
+  const { t } = useTranslation();
   const [tab, setTab] = useState<"layers" | "outline">("layers"),
     canonicalCanvas = useAtomValue(canvasAtom),
     reorder = useLayerReorder(),
@@ -290,30 +293,35 @@ export function LayerPanel() {
   }
   return (
     <aside className={styles.layers} aria-label="Layers panel">
-      <div className={styles.tabs} role="group" aria-label="Composition view">
-        <Button
-          variant="ghost"
-          aria-pressed={tab === "layers"}
-          onClick={() => {
-            reorder.clear();
-            setTab("layers");
-          }}
-        >
-          <Layers3 size={14} />
-          Layers
-        </Button>
-        <Button
-          variant="ghost"
-          aria-pressed={tab === "outline"}
-          onClick={() => {
-            reorder.clear();
-            setTab("outline");
-          }}
-        >
-          <ListTree size={14} />
-          Outline
-        </Button>
-      </div>
+      <AnimatedSegments
+        className={styles.tabs}
+        aria-label="Composition view"
+        value={tab}
+        onChange={(next) => {
+          reorder.clear();
+          setTab(next as "layers" | "outline");
+        }}
+        items={[
+          {
+            value: "layers",
+            label: (
+              <>
+                <Layers3 size={14} aria-hidden />
+                {t("editor.layers")}
+              </>
+            ),
+          },
+          {
+            value: "outline",
+            label: (
+              <>
+                <ListTree size={14} aria-hidden />
+                {t("editor.outline")}
+              </>
+            ),
+          },
+        ]}
+      />
       <AnimatePresence initial={false} mode="wait">
         <motion.div
           key={tab}
@@ -348,7 +356,7 @@ export function LayerPanel() {
                 />
                 <NumberInput
                   aria-label="Selection opacity"
-                  scrubLabel="Opacity"
+                  scrubLabel={<Sun size={16} aria-hidden />}
                   unit="%"
                   onPreview={previewOpacity}
                   size="xs"

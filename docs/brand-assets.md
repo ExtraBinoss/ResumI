@@ -8,4 +8,8 @@ Product action icons use named `lucide-react` imports (ISC license) only. Small 
 
 Marks are unchanged in geometry, small, monochrome, supplied with accessible alt text and clear product names. Catalog asset licenses do not grant rights to the underlying trademarks. Brand approval and current brand-policy review should be repeated before a public commercial release.
 
-Inter Variable is self-hosted through `@fontsource-variable/inter`, under [SIL Open Font License](https://github.com/rsms/inter/blob/master/LICENSE.txt). The application bundles the Latin WOFF2 face; system fallback handles characters outside that face. CV exports intentionally use installed Arial/Georgia fonts for self-contained HTML without remote asset dependencies.
+The interface self-hosts Source Sans 3 and Space Grotesk through their Fontsource packages, each under the SIL Open Font License retained in that package. Inter Variable remains available for CV templates through `@fontsource-variable/inter`, under its [SIL Open Font License](https://github.com/rsms/inter/blob/master/LICENSE.txt). Templates embed their font assets and licenses; ordinary document text may use system Arial/Georgia or an explicitly imported/embedded face. [Template assets](../packages/cv/assets/README.md) and [font selection boundaries](../apps/web/src/features/editor/panels/fonts.md) record the details.
+
+The owner-supplied ResumI icon and unused desktop tray original are preserved with [regeneration instructions](../apps/web/public/brand/README.md). The shared Brand component renders the actual supplied icon, rather than reconstructing its mark in text. Browser favicon/touch sizes are generated locally.
+
+Loading indicators copy only two selected variants from thinking-orbs, with [pinned provenance and the full MIT license](../apps/web/src/components/thinking-orb/SOURCE.md). The license also ships in the public assets; no thinking-orbs runtime package is installed.

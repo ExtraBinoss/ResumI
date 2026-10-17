@@ -24,6 +24,59 @@ export function ResumeDiff({
   return (
     <div>
       <ul className={styles.diffList}>
+        {[
+          ...new Set([
+            ...Object.keys(before.sections),
+            ...Object.keys(after.sections),
+          ]),
+        ]
+          .filter(
+            (id) =>
+              JSON.stringify(before.sections[id]?.title) !==
+                JSON.stringify(after.sections[id]?.title) ||
+              JSON.stringify(before.sections[id]?.titleTranslations) !==
+                JSON.stringify(after.sections[id]?.titleTranslations),
+          )
+          .map((id) => {
+            const old = before.sections[id],
+              next = after.sections[id];
+            return (
+              <li key={`section-${id}`}>
+                <strong>
+                  {next?.title || old?.title || "Section heading"}
+                </strong>
+                {old?.title !== next?.title && (
+                  <span className={styles.propertyDiff}>
+                    <del>{old?.title ?? "(new section)"}</del>
+                    <ins>{next?.title ?? "(removed)"}</ins>
+                  </span>
+                )}
+                {[
+                  ...new Set([
+                    ...Object.keys(old?.titleTranslations ?? {}),
+                    ...Object.keys(next?.titleTranslations ?? {}),
+                  ]),
+                ]
+                  .filter(
+                    (locale) =>
+                      old?.titleTranslations?.[locale] !==
+                      next?.titleTranslations?.[locale],
+                  )
+                  .map((locale) => (
+                    <span key={locale} className={styles.propertyDiff}>
+                      {locale}:{" "}
+                      <del>
+                        {old?.titleTranslations?.[locale] ?? "Original heading"}
+                      </del>
+                      <ins>
+                        {next?.titleTranslations?.[locale] ??
+                          "Original heading"}
+                      </ins>
+                    </span>
+                  ))}
+              </li>
+            );
+          })}
         {changes.map((id) => {
           const old = before.blocks[id],
             next = after.blocks[id],
@@ -49,6 +102,32 @@ export function ResumeDiff({
                       <ins>{next.text || "(empty)"}</ins>
                     </>
                   )}
+                  {[
+                    ...new Set([
+                      ...Object.keys(old.translations ?? {}),
+                      ...Object.keys(next.translations ?? {}),
+                    ]),
+                  ]
+                    .filter(
+                      (locale) =>
+                        JSON.stringify(old.translations?.[locale]) !==
+                        JSON.stringify(next.translations?.[locale]),
+                    )
+                    .map((locale) => (
+                      <span key={locale} className={styles.propertyDiff}>
+                        {locale}:{" "}
+                        <del>
+                          {old.translations?.[locale]?.text ?? "Original text"}
+                        </del>
+                        <ins>
+                          {next.translations?.[locale]?.text ?? "Original text"}
+                        </ins>
+                        {JSON.stringify(old.translations?.[locale]?.marks) !==
+                          JSON.stringify(
+                            next.translations?.[locale]?.marks,
+                          ) && <small>Text styling changed</small>}
+                      </span>
+                    ))}
                   {keys
                     .filter(
                       (key) =>
@@ -73,6 +152,18 @@ export function ResumeDiff({
         )}
         {JSON.stringify(before.style) !== JSON.stringify(after.style) && (
           <li>Document typography / style changed.</li>
+        )}
+        {JSON.stringify(before.localization) !==
+          JSON.stringify(after.localization) && (
+          <li>
+            CV language: <del>{before.localization?.activeLocale ?? "en"}</del>
+            <ins>{after.localization?.activeLocale ?? "en"}</ins>
+            <span>
+              {after.localization?.locales
+                .map((locale) => `${locale.name} (${locale.code})`)
+                .join(", ") ?? "English (en)"}
+            </span>
+          </li>
         )}
         {JSON.stringify(before.canvas) !== JSON.stringify(after.canvas) && (
           <li>

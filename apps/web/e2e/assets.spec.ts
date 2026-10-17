@@ -4,7 +4,7 @@ import { expect, test, type Page } from "@playwright/test";
 async function icons(page: Page) {
   await page.getByRole("button", { name: "Icons", exact: true }).click();
   await expect(
-    page.getByRole("textbox", { name: "Search icons", exact: true }),
+    page.getByRole("searchbox", { name: "Search icons", exact: true }),
   ).toBeVisible();
 }
 async function draw(page: Page, horizontal = 0.45) {
@@ -36,12 +36,19 @@ test("brand icons preserve original Figma and Microsoft colors through drawing, 
     page.getByRole("article", { name: "Resume canvas" }),
   ).toBeVisible();
   await icons(page);
-  await page.getByRole("tab", { name: "Brands", exact: true }).click();
+  await page.getByRole("radio", { name: "Brands", exact: true }).click();
   const library = page.getByRole("region", {
     name: "Icon library",
     exact: true,
   });
-  await expect(library.getByRole("button", { name: /^Use / })).toHaveCount(50);
+  const renderedBrands = await library
+    .getByRole("button", { name: /^Use / })
+    .count();
+  expect(renderedBrands).toBeGreaterThan(0);
+  expect(renderedBrands).toBeLessThanOrEqual(40);
+  await page
+    .getByRole("searchbox", { name: "Search icons", exact: true })
+    .fill("Figma");
   const figma = page.getByRole("button", { name: "Use Figma", exact: true });
   await expect(figma.locator("path")).toHaveCount(5);
   const figmaColors = ["#0acf83", "#1abcfe", "#a259ff", "#f24e1e", "#ff7262"];
@@ -79,7 +86,7 @@ test("brand icons preserve original Figma and Microsoft colors through drawing, 
   );
   await icons(page);
   await page
-    .getByRole("textbox", { name: "Search icons", exact: true })
+    .getByRole("searchbox", { name: "Search icons", exact: true })
     .fill("Microsoft");
   await page
     .getByRole("button", { name: "Use Microsoft", exact: true })
@@ -173,7 +180,7 @@ test("local SVG import keeps component paint and transforms, rejects active cont
     }),
   ).toBeVisible();
   await icons(page);
-  await page.getByRole("tab", { name: "Imported", exact: true }).click();
+  await page.getByRole("radio", { name: "Imported", exact: true }).click();
   await expect(imported).toBeVisible();
   const requests: string[] = [];
   page.on("request", (request) => {
