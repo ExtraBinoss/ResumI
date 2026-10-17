@@ -1,0 +1,11 @@
+$ playwright test --grep "React collection|portrait template|React template opens"
+
+Running 3 tests using 1 worker
+
+(node:44695) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 apps/web/e2e/source.spec.ts:129:1 › React template opens as editable TSX and compiler errors preserve the saved preview (5.2s)
+  ✓  2 apps/web/e2e/templates.spec.ts:5:1 › React collection renders four distinct professional A4 layouts without clipping (7.8s)
+  ✓  3 apps/web/e2e/templates.spec.ts:97:1 › portrait template preserves its photo and icons in saved editable TSX and offline export (6.0s)
+
+  3 passed (19.7s)

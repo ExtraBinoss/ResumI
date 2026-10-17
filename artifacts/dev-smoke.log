@@ -1,5 +1,5 @@
 
-  VITE v8.3.4  ready in 2564 ms
+  VITE v8.3.4  ready in 2781 ms
 
   ➜  Local:   http://127.0.0.1:5189/
   ➜  Debug:   http://127.0.0.1:5189/__debug
@@ -23,7 +23,7 @@ If the routes above don't cover what you need, fetch the full OpenAPI schema (la
 
 Default inspector port 9229 not available, using 9230 instead
 
-10:19:59 AM [vite] (client) [console.error] Failed to fetch manifest patches TypeError: Failed to fetch
-    at fetchAndApplyManifestPatches (http://127.0.0.1:5189/node_modules/.vite-smoke-u3hUvZ/deps/development-CPAU2smE.js?v=e6006c50:8825:19)
-    at fetchPatches (http://127.0.0.1:5189/node_modules/.vite-smoke-u3hUvZ/deps/development-CPAU2smE.js?v=e6006c50:8735:11)
-    at http://127.0.0.1:5189/node_modules/.vite-smoke-u3hUvZ/deps/development-CPAU2smE.js?v=e6006c50:8858:39
+10:27:32 AM [vite] (client) [console.error] Failed to fetch manifest patches TypeError: Failed to fetch
+    at fetchAndApplyManifestPatches (http://127.0.0.1:5189/node_modules/.vite-smoke-g2ijSj/deps/development-CPAU2smE.js?v=5718fda8:8825:19)
+    at fetchPatches (http://127.0.0.1:5189/node_modules/.vite-smoke-g2ijSj/deps/development-CPAU2smE.js?v=5718fda8:8735:11)
+    at http://127.0.0.1:5189/node_modules/.vite-smoke-g2ijSj/deps/development-CPAU2smE.js?v=5718fda8:8858:39

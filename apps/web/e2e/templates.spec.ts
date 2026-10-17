@@ -38,6 +38,57 @@ test("React collection renders four distinct professional A4 layouts without cli
     expect(dimensions.scrollWidth).toBeLessThanOrEqual(795);
     expect(dimensions.scrollHeight).toBeLessThanOrEqual(1124);
     expect(dimensions.imagesReady).toBe(true);
+    if (layout === "classic") {
+      const region = page.getByRole("region", { name: "Source canvas" });
+      const iframe = region.locator('iframe[title="React resume preview"]');
+      const controls = page.getByRole("group", { name: "Source preview zoom" });
+      for (const size of [
+        { width: 1440, height: 1000 },
+        { width: 390, height: 844 },
+      ]) {
+        await page.setViewportSize(size);
+        await expect
+          .poll(async () => {
+            const bounds = await region.boundingBox();
+            const paper = await iframe.boundingBox();
+            return (
+              !!bounds &&
+              !!paper &&
+              paper.x >= bounds.x &&
+              paper.x + paper.width <= bounds.x + bounds.width + 1 &&
+              paper.y + paper.height <= bounds.y + bounds.height + 1
+            );
+          })
+          .toBe(true);
+      }
+      const fittedHeight = (await iframe.boundingBox())!.height;
+      await controls
+        .getByRole("button", { name: "Zoom source preview out", exact: true })
+        .click();
+      await expect
+        .poll(async () => (await iframe.boundingBox())?.height ?? fittedHeight)
+        .toBeLessThan(fittedHeight);
+      await controls
+        .getByRole("button", { name: "Fit page", exact: true })
+        .click();
+      await expect
+        .poll(async () =>
+          Math.abs(((await iframe.boundingBox())?.height ?? 0) - fittedHeight),
+        )
+        .toBeLessThan(1);
+      await page.setViewportSize({ width: 1440, height: 1000 });
+      await controls.getByRole("button", { name: "100%", exact: true }).click();
+      await expect
+        .poll(async () => (await iframe.boundingBox())?.height)
+        .toBe(1123);
+      await controls
+        .getByRole("button", { name: "Fit page", exact: true })
+        .click();
+      await expect
+        .poll(async () => (await iframe.boundingBox())?.height ?? 1123)
+        .toBeLessThan(900);
+      await page.setViewportSize({ width: 1440, height: 1440 });
+    }
     await sheet.screenshot({ path: `artifacts/visual/template-${layout}.png` });
   }
   expect(errors).toEqual([]);

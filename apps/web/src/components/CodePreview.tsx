@@ -3,6 +3,7 @@ import { renderDocumentHtml } from "@resumi/cv";
 import type { Document, DocumentSource } from "@resumi/engine";
 import styles from "./Preview.module.css";
 import { Button } from "./ui/button";
+import { Minus, Plus } from "lucide-react";
 
 const previews = new WeakMap<DocumentSource, Promise<string>>();
 function previewFor(document: Document): Promise<string> {
@@ -41,23 +42,37 @@ function Frame({
 }
 function InteractivePreview({ document }: { document: Document }) {
   const viewport = useRef<HTMLDivElement>(null);
+  const controls = useRef<HTMLDivElement>(null);
   const [available, setAvailable] = useState(1),
     [zoom, setZoom] = useState<"fit" | number>("fit");
   useEffect(() => {
     const element = viewport.current;
     if (!element) return;
-    const observer = new ResizeObserver((entries) => {
-      const width = entries[0].contentRect.width;
-      if (width > 0)
-        setAvailable(Math.max(0.1, Math.min(1, (width - 32) / 794)));
+    const observer = new ResizeObserver(() => {
+      const width = element.clientWidth;
+      const height = element.clientHeight;
+      const toolbarHeight = controls.current?.offsetHeight ?? 0;
+      if (width > 0 && height > 0)
+        setAvailable(
+          Math.max(
+            0.1,
+            Math.min(
+              1,
+              (width - 32) / 794,
+              (height - toolbarHeight - 34) / 1123,
+            ),
+          ),
+        );
     });
     observer.observe(element);
+    if (controls.current) observer.observe(controls.current);
     return () => observer.disconnect();
   }, []);
   const scale = zoom === "fit" ? available : zoom;
   return (
     <div ref={viewport} className={styles.interactiveViewport}>
       <div
+        ref={controls}
         className={styles.previewControls}
         role="group"
         aria-label="Source preview zoom"
@@ -82,9 +97,9 @@ function InteractivePreview({ document }: { document: Document }) {
           variant="ghost"
           size="icon-xs"
           aria-label="Zoom source preview out"
-          onClick={() => setZoom(Math.max(0.25, scale - 0.1))}
+          onClick={() => setZoom(Math.max(0.1, scale - 0.1))}
         >
-          −
+          <Minus size={16} aria-hidden />
         </Button>
         <span>{Math.round(scale * 100)}%</span>
         <Button
@@ -93,7 +108,7 @@ function InteractivePreview({ document }: { document: Document }) {
           aria-label="Zoom source preview in"
           onClick={() => setZoom(Math.min(2, scale + 0.1))}
         >
-          +
+          <Plus size={16} aria-hidden />
         </Button>
       </div>
       <div

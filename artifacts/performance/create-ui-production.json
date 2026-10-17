@@ -19,20 +19,20 @@
     "context": "Fresh browser context and empty local storage per sample",
     "landing": "DOMContentLoaded, document.fonts.ready, CTA hover, then 250ms intent",
     "hydration": "No React-internal hydration check; native full navigation is allowed",
-    "server": "Warmed built Worker after the final product/template redesign; one unmeasured create; no concurrent browser runners",
+    "server": "Warmed built Worker after the final source-fit follow-up; one unmeasured create; no concurrent browser runners",
     "throttling": "No CPU or network throttling",
     "instrumentation": "Injected main-document DOM/resource probe; CDP trace on first sample",
     "resources": "All completed resource timings per main document, including landing/intent traffic; start times are document-relative"
   },
-  "medianClickToCanvasMs": 296.021522,
+  "medianClickToCanvasMs": 379.76415799999995,
   "samples": [
     {
       "run": 1,
-      "clickToCanvasMs": 332.74561000000017,
-      "inputDispatchMs": 7.768545000000017,
+      "clickToCanvasMs": 463.0182319999999,
+      "inputDispatchMs": 7.217100000000073,
       "navigation": "same-document",
-      "clickDocumentId": 1792225356454.1,
-      "readyDocumentId": 1792225356454.1,
+      "clickDocumentId": 1792225800317.1,
+      "readyDocumentId": 1792225800317.1,
       "canvas": {
         "x": 422.25,
         "y": 78.875,
@@ -40,125 +40,125 @@
         "height": 842.25,
         "textLength": 843
       },
-      "finalURL": "http://127.0.0.1:4187/editor/6fa588bf-b7c9-4ac8-b37f-9e33c24e3a5c",
+      "finalURL": "http://127.0.0.1:4187/editor/adcb2223-9f58-4331-9af6-b78ab852b669",
       "mainDocumentCount": 1,
       "phases": [
         {
-          "documentId": 1792225356454.1,
+          "documentId": 1792225800317.1,
           "url": "http://127.0.0.1:4187/",
-          "browserNowMs": 33.699999999953434,
+          "browserNowMs": 48,
           "phase": "document-start",
           "navigation": {
             "type": "navigate",
-            "responseStartMs": 22,
+            "responseStartMs": 28.5,
             "responseEndMs": 0,
             "domContentLoadedMs": 0,
             "loadMs": 0
           },
-          "observedAtMs": -512.954393
+          "observedAtMs": -581.4571450000001
         },
         {
-          "documentId": 1792225356454.1,
+          "documentId": 1792225800317.1,
           "url": "http://127.0.0.1:4187/",
-          "browserNowMs": 34,
+          "browserNowMs": 48.89999999990687,
           "phase": "landing",
           "navigation": {
             "type": "navigate",
-            "responseStartMs": 22,
+            "responseStartMs": 28.5,
             "responseEndMs": 0,
             "domContentLoadedMs": 0,
             "loadMs": 0
           },
-          "observedAtMs": -512.4782839999999
+          "observedAtMs": -581.0373510000001
         },
         {
-          "documentId": 1792225356454.1,
+          "documentId": 1792225800317.1,
           "url": "http://127.0.0.1:4187/",
-          "browserNowMs": 153.69999999995343,
+          "browserNowMs": 231.09999999962747,
           "phase": "dom-content-loaded",
           "navigation": {
             "type": "navigate",
-            "responseStartMs": 22,
-            "responseEndMs": 23.5,
+            "responseStartMs": 28.5,
+            "responseEndMs": 31.699999999720603,
             "domContentLoadedMs": 0,
             "loadMs": 0
           },
-          "observedAtMs": -394.5166699999999
+          "observedAtMs": -399.276893
         },
         {
-          "documentId": 1792225356454.1,
+          "documentId": 1792225800317.1,
           "url": "http://127.0.0.1:4187/",
-          "browserNowMs": 183.39999999990687,
+          "browserNowMs": 264.29999999981374,
           "phase": "load",
           "navigation": {
             "type": "navigate",
-            "responseStartMs": 22,
-            "responseEndMs": 23.5,
-            "domContentLoadedMs": 154,
+            "responseStartMs": 28.5,
+            "responseEndMs": 31.699999999720603,
+            "domContentLoadedMs": 231.79999999981374,
             "loadMs": 0
           },
-          "observedAtMs": -361.86470399999996
+          "observedAtMs": -361.97691299999997
         },
         {
-          "documentId": 1792225356454.1,
+          "documentId": 1792225800317.1,
           "url": "http://127.0.0.1:4187/editor",
-          "browserNowMs": 584.3000000000466,
+          "browserNowMs": 670.6999999997206,
           "phase": "editor-shell",
           "navigation": {
             "type": "navigate",
-            "responseStartMs": 22,
-            "responseEndMs": 23.5,
-            "domContentLoadedMs": 154,
-            "loadMs": 183.60000000009313
+            "responseStartMs": 28.5,
+            "responseEndMs": 31.699999999720603,
+            "domContentLoadedMs": 231.79999999981374,
+            "loadMs": 264.39999999990687
           },
-          "observedAtMs": 35.650776000000064
+          "observedAtMs": 39.366763999999876
         },
         {
-          "documentId": 1792225356454.1,
+          "documentId": 1792225800317.1,
           "url": "http://127.0.0.1:4187/editor",
-          "browserNowMs": 660.3999999999069,
+          "browserNowMs": 898,
           "phase": "canvas-attached",
           "navigation": {
             "type": "navigate",
-            "responseStartMs": 22,
-            "responseEndMs": 23.5,
-            "domContentLoadedMs": 154,
-            "loadMs": 183.60000000009313
+            "responseStartMs": 28.5,
+            "responseEndMs": 31.699999999720603,
+            "domContentLoadedMs": 231.79999999981374,
+            "loadMs": 264.39999999990687
           },
-          "observedAtMs": 112.85365200000001
+          "observedAtMs": 268.121568
         },
         {
-          "documentId": 1792225356454.1,
+          "documentId": 1792225800317.1,
           "url": "http://127.0.0.1:4187/editor",
-          "browserNowMs": 665.8000000000466,
+          "browserNowMs": 914.7999999998137,
           "phase": "canvas-visible",
           "navigation": {
             "type": "navigate",
-            "responseStartMs": 22,
-            "responseEndMs": 23.5,
-            "domContentLoadedMs": 154,
-            "loadMs": 183.60000000009313
+            "responseStartMs": 28.5,
+            "responseEndMs": 31.699999999720603,
+            "domContentLoadedMs": 231.79999999981374,
+            "loadMs": 264.39999999990687
           },
           "canvas": {
             "x": 422.25,
-            "y": 81.30732727050781,
+            "y": 79.27890014648438,
             "width": 595.5,
             "height": 842.25,
             "textLength": 843
           },
-          "observedAtMs": 117.62560500000006
+          "observedAtMs": 284.332318
         },
         {
-          "documentId": 1792225356454.1,
-          "url": "http://127.0.0.1:4187/editor/6fa588bf-b7c9-4ac8-b37f-9e33c24e3a5c",
-          "browserNowMs": 873.1999999999534,
+          "documentId": 1792225800317.1,
+          "url": "http://127.0.0.1:4187/editor/adcb2223-9f58-4331-9af6-b78ab852b669",
+          "browserNowMs": 1093.7999999998137,
           "phase": "canvas-painted",
           "navigation": {
             "type": "navigate",
-            "responseStartMs": 22,
-            "responseEndMs": 23.5,
-            "domContentLoadedMs": 154,
-            "loadMs": 183.60000000009313
+            "responseStartMs": 28.5,
+            "responseEndMs": 31.699999999720603,
+            "domContentLoadedMs": 231.79999999981374,
+            "loadMs": 264.39999999990687
           },
           "canvas": {
             "x": 422.25,
@@ -167,367 +167,375 @@
             "height": 842.25,
             "textLength": 843
           },
-          "observedAtMs": 332.74561000000017
+          "observedAtMs": 463.0182319999999
         }
       ],
       "documents": [
         {
-          "id": 1792225356454.1,
+          "id": 1792225800317.1,
           "urls": [
             "http://127.0.0.1:4187/",
             "http://127.0.0.1:4187/editor",
-            "http://127.0.0.1:4187/editor/6fa588bf-b7c9-4ac8-b37f-9e33c24e3a5c"
+            "http://127.0.0.1:4187/editor/adcb2223-9f58-4331-9af6-b78ab852b669"
           ],
           "resources": [
             {
               "name": "/assets/entry.client-Cj4zAsHf.js",
               "initiatorType": "other",
-              "startInDocumentMs": 31.800000000046566,
-              "durationMs": 11.300000000046566,
+              "startInDocumentMs": 41.799999999813735,
+              "durationMs": 30.200000000186265,
               "transferBytes": 211203,
               "encodedBytes": 210903
             },
             {
-              "name": "/assets/jsx-runtime-BERqWRS_.js",
-              "initiatorType": "other",
-              "startInDocumentMs": 32,
-              "durationMs": 14.199999999953434,
-              "transferBytes": 125203,
-              "encodedBytes": 124903
-            },
-            {
-              "name": "/assets/theme-brMEywb8.js",
-              "initiatorType": "other",
-              "startInDocumentMs": 32.10000000009313,
-              "durationMs": 16,
-              "transferBytes": 2075,
-              "encodedBytes": 1775
-            },
-            {
               "name": "/assets/root-DIIbYPHN.js",
               "initiatorType": "other",
-              "startInDocumentMs": 32,
-              "durationMs": 16.800000000046566,
+              "startInDocumentMs": 42.39999999990687,
+              "durationMs": 36,
               "transferBytes": 2952,
               "encodedBytes": 2652
             },
             {
-              "name": "/assets/home-BPX13ltn.js",
+              "name": "/assets/theme-brMEywb8.js",
               "initiatorType": "other",
-              "startInDocumentMs": 32.10000000009313,
-              "durationMs": 16.299999999813735,
-              "transferBytes": 20196,
-              "encodedBytes": 19896
+              "startInDocumentMs": 42.6999999997206,
+              "durationMs": 36.8000000002794,
+              "transferBytes": 2075,
+              "encodedBytes": 1775
             },
             {
-              "name": "/assets/root-DNTS8sN0.css",
-              "initiatorType": "link",
-              "startInDocumentMs": 32.300000000046566,
-              "durationMs": 22.5,
-              "transferBytes": 87877,
-              "encodedBytes": 87577
-            },
-            {
-              "name": "/assets/home-Bd8PmLR2.css",
-              "initiatorType": "link",
-              "startInDocumentMs": 32.39999999990687,
-              "durationMs": 24,
-              "transferBytes": 8315,
-              "encodedBytes": 8015
+              "name": "/assets/jsx-runtime-BERqWRS_.js",
+              "initiatorType": "other",
+              "startInDocumentMs": 42.1999999997206,
+              "durationMs": 38.700000000186265,
+              "transferBytes": 125203,
+              "encodedBytes": 124903
             },
             {
               "name": "/assets/react-Bzm3kswG.js",
               "initiatorType": "other",
-              "startInDocumentMs": 32,
-              "durationMs": 17.800000000046566,
+              "startInDocumentMs": 42.5,
+              "durationMs": 41.09999999962747,
               "transferBytes": 262889,
               "encodedBytes": 262589
             },
             {
-              "name": "/assets/ui-CCt3IgvL.css#",
-              "initiatorType": "link",
-              "startInDocumentMs": 32.5,
-              "durationMs": 29.800000000046566,
-              "transferBytes": 13117,
-              "encodedBytes": 12817
-            },
-            {
-              "name": "/assets/Brand-sREiYMmH.css",
-              "initiatorType": "link",
-              "startInDocumentMs": 32.5,
-              "durationMs": 33.5,
-              "transferBytes": 1685,
-              "encodedBytes": 1385
-            },
-            {
-              "name": "/assets/Preview-C0E6gntp.css#",
-              "initiatorType": "link",
-              "startInDocumentMs": 32.5,
-              "durationMs": 34.5,
-              "transferBytes": 2026,
-              "encodedBytes": 1726
-            },
-            {
               "name": "/assets/arrow-right-DuSHnf_8.js",
               "initiatorType": "other",
-              "startInDocumentMs": 32.10000000009313,
-              "durationMs": 44.799999999813735,
+              "startInDocumentMs": 43,
+              "durationMs": 47.5,
               "transferBytes": 492,
               "encodedBytes": 192
             },
             {
+              "name": "/assets/home-B8WbQOQ8.js",
+              "initiatorType": "other",
+              "startInDocumentMs": 42.799999999813735,
+              "durationMs": 48.10000000009313,
+              "transferBytes": 20196,
+              "encodedBytes": 19896
+            },
+            {
               "name": "/assets/ui-E-oW90XE.js",
               "initiatorType": "other",
-              "startInDocumentMs": 32.10000000009313,
-              "durationMs": 43.89999999990687,
+              "startInDocumentMs": 42.89999999990687,
+              "durationMs": 50.10000000009313,
               "transferBytes": 191070,
               "encodedBytes": 190770
             },
             {
               "name": "/assets/arrow-up-right-QZuQvKZ_.js",
               "initiatorType": "other",
-              "startInDocumentMs": 32.199999999953434,
-              "durationMs": 46.199999999953434,
+              "startInDocumentMs": 43,
+              "durationMs": 56.799999999813735,
               "transferBytes": 494,
               "encodedBytes": 194
             },
             {
               "name": "/assets/layout-template-B4PU_Er0.js",
               "initiatorType": "other",
-              "startInDocumentMs": 32.199999999953434,
-              "durationMs": 49.300000000046566,
+              "startInDocumentMs": 43.09999999962747,
+              "durationMs": 57.10000000009313,
               "transferBytes": 613,
               "encodedBytes": 313
             },
             {
               "name": "/assets/text-align-start-JKSupu_d.js",
               "initiatorType": "other",
-              "startInDocumentMs": 32.199999999953434,
-              "durationMs": 51.60000000009313,
+              "startInDocumentMs": 43.1999999997206,
+              "durationMs": 57.39999999990687,
               "transferBytes": 558,
               "encodedBytes": 258
             },
             {
+              "name": "/assets/root-DNTS8sN0.css",
+              "initiatorType": "link",
+              "startInDocumentMs": 43.6999999997206,
+              "durationMs": 61.39999999990687,
+              "transferBytes": 87877,
+              "encodedBytes": 87577
+            },
+            {
+              "name": "/assets/home-Bd8PmLR2.css",
+              "initiatorType": "link",
+              "startInDocumentMs": 43.89999999990687,
+              "durationMs": 60.89999999990687,
+              "transferBytes": 8315,
+              "encodedBytes": 8015
+            },
+            {
+              "name": "/assets/ui-CCt3IgvL.css#",
+              "initiatorType": "link",
+              "startInDocumentMs": 44.09999999962747,
+              "durationMs": 62.200000000186265,
+              "transferBytes": 13117,
+              "encodedBytes": 12817
+            },
+            {
               "name": "/assets/Brand-Duu9K6xz.js",
               "initiatorType": "other",
-              "startInDocumentMs": 32.199999999953434,
-              "durationMs": 52.5,
+              "startInDocumentMs": 43.299999999813735,
+              "durationMs": 62,
               "transferBytes": 1889,
               "encodedBytes": 1589
             },
             {
-              "name": "/assets/ResumePreview-B_WqK1Eh.js",
-              "initiatorType": "other",
-              "startInDocumentMs": 32.199999999953434,
-              "durationMs": 57.4000000001397,
-              "transferBytes": 1677,
-              "encodedBytes": 1377
+              "name": "/assets/Brand-sREiYMmH.css",
+              "initiatorType": "link",
+              "startInDocumentMs": 44.1999999997206,
+              "durationMs": 63.700000000186265,
+              "transferBytes": 1685,
+              "encodedBytes": 1385
             },
             {
-              "name": "/assets/preload-editor-MkTGLBWp.js",
-              "initiatorType": "other",
-              "startInDocumentMs": 32.300000000046566,
-              "durationMs": 58.699999999953434,
-              "transferBytes": 1182,
-              "encodedBytes": 882
+              "name": "/assets/Preview-IoN8o2EP.css#",
+              "initiatorType": "link",
+              "startInDocumentMs": 44.39999999990687,
+              "durationMs": 63.799999999813735,
+              "transferBytes": 2289,
+              "encodedBytes": 1989
             },
             {
-              "name": "/assets/Preview.module-B39cVF2Q.js",
+              "name": "/assets/ResumePreview-DyBzI2Sp.js",
               "initiatorType": "other",
-              "startInDocumentMs": 32.300000000046566,
-              "durationMs": 59.39999999990687,
+              "startInDocumentMs": 43.39999999990687,
+              "durationMs": 66.39999999990687,
+              "transferBytes": 1705,
+              "encodedBytes": 1405
+            },
+            {
+              "name": "/assets/preload-editor-CLtgMcz4.js",
+              "initiatorType": "other",
+              "startInDocumentMs": 43.5,
+              "durationMs": 69.5,
+              "transferBytes": 1211,
+              "encodedBytes": 911
+            },
+            {
+              "name": "/assets/Preview.module-CCtSUl46.js",
+              "initiatorType": "other",
+              "startInDocumentMs": 43.59999999962747,
+              "durationMs": 71.40000000037253,
               "transferBytes": 637,
               "encodedBytes": 337
             },
             {
               "name": "/assets/source-sans-3-latin-wght-normal-Bo_j9asI.woff2",
               "initiatorType": "css",
-              "startInDocumentMs": 73.80000000004657,
-              "durationMs": 70.89999999990687,
+              "startInDocumentMs": 116,
+              "durationMs": 93,
               "transferBytes": 29172,
               "encodedBytes": 28872
             },
             {
               "name": "/assets/space-grotesk-latin-wght-normal-BhU9QXUp.woff2",
               "initiatorType": "css",
-              "startInDocumentMs": 73.89999999990687,
-              "durationMs": 73.10000000009313,
+              "startInDocumentMs": 116.09999999962747,
+              "durationMs": 93.90000000037253,
               "transferBytes": 22588,
               "encodedBytes": 22288
             },
             {
-              "name": "/__manifest?paths=%2F%2C%2Feditor%2C%2Fprojects%2C%2Ftemplates&version=1549e4f8",
+              "name": "/__manifest?paths=%2F%2C%2Feditor%2C%2Fprojects%2C%2Ftemplates&version=e95a9e4e",
               "initiatorType": "fetch",
-              "startInDocumentMs": 233.19999999995343,
-              "durationMs": 5.600000000093132,
-              "transferBytes": 4785,
-              "encodedBytes": 4485
-            },
-            {
-              "name": "/assets/editor-Bp42GIXu.js",
-              "initiatorType": "script",
-              "startInDocumentMs": 269.80000000004657,
-              "durationMs": 8,
-              "transferBytes": 158613,
-              "encodedBytes": 158313
-            },
-            {
-              "name": "/assets/search-Dvm_NMLZ.js",
-              "initiatorType": "script",
-              "startInDocumentMs": 270.30000000004657,
-              "durationMs": 13.199999999953434,
-              "transferBytes": 729,
-              "encodedBytes": 429
-            },
-            {
-              "name": "/assets/copy-t6-hqx1g.js",
-              "initiatorType": "script",
-              "startInDocumentMs": 270,
-              "durationMs": 14,
-              "transferBytes": 563,
-              "encodedBytes": 263
-            },
-            {
-              "name": "/assets/files-BCm5joFo.js",
-              "initiatorType": "script",
-              "startInDocumentMs": 270.19999999995343,
-              "durationMs": 14.100000000093132,
-              "transferBytes": 1885,
-              "encodedBytes": 1585
+              "startInDocumentMs": 324.6999999997206,
+              "durationMs": 5,
+              "transferBytes": 4839,
+              "encodedBytes": 4539
             },
             {
               "name": "/assets/ui-CCt3IgvL.css",
               "initiatorType": "link",
-              "startInDocumentMs": 270,
-              "durationMs": 15.699999999953434,
+              "startInDocumentMs": 355.89999999990687,
+              "durationMs": 13.399999999906868,
               "transferBytes": 300,
               "encodedBytes": 12817
             },
             {
-              "name": "/assets/SettingsMenu-OQgOuNXs.css",
-              "initiatorType": "link",
-              "startInDocumentMs": 270.39999999990687,
-              "durationMs": 16.100000000093132,
-              "transferBytes": 905,
-              "encodedBytes": 605
+              "name": "/assets/editor-CRhZBvTE.js",
+              "initiatorType": "script",
+              "startInDocumentMs": 355.79999999981374,
+              "durationMs": 8.399999999906868,
+              "transferBytes": 158677,
+              "encodedBytes": 158377
+            },
+            {
+              "name": "/assets/copy-t6-hqx1g.js",
+              "initiatorType": "script",
+              "startInDocumentMs": 356,
+              "durationMs": 16.799999999813735,
+              "transferBytes": 563,
+              "encodedBytes": 263
+            },
+            {
+              "name": "/assets/files-DW0_7x8X.js",
+              "initiatorType": "script",
+              "startInDocumentMs": 356.09999999962747,
+              "durationMs": 20.300000000279397,
+              "transferBytes": 1755,
+              "encodedBytes": 1455
             },
             {
               "name": "/assets/src-BnoOKtiV.js",
               "initiatorType": "script",
-              "startInDocumentMs": 270.19999999995343,
-              "durationMs": 15.100000000093132,
+              "startInDocumentMs": 356.1999999997206,
+              "durationMs": 33.3000000002794,
               "transferBytes": 215099,
               "encodedBytes": 214799
             },
             {
-              "name": "/assets/Preview-C0E6gntp.css",
+              "name": "/assets/search-Dvm_NMLZ.js",
+              "initiatorType": "script",
+              "startInDocumentMs": 356.1999999997206,
+              "durationMs": 39.3000000002794,
+              "transferBytes": 729,
+              "encodedBytes": 429
+            },
+            {
+              "name": "/assets/SettingsMenu-OQgOuNXs.css",
               "initiatorType": "link",
-              "startInDocumentMs": 270.60000000009313,
-              "durationMs": 19.0999999998603,
+              "startInDocumentMs": 356.59999999962747,
+              "durationMs": 44.8000000002794,
+              "transferBytes": 905,
+              "encodedBytes": 605
+            },
+            {
+              "name": "/assets/Preview-IoN8o2EP.css",
+              "initiatorType": "link",
+              "startInDocumentMs": 356.39999999990687,
+              "durationMs": 48.6999999997206,
               "transferBytes": 300,
-              "encodedBytes": 1726
-            },
-            {
-              "name": "/assets/projects-Hk8TnUzl.js",
-              "initiatorType": "script",
-              "startInDocumentMs": 270.5,
-              "durationMs": 22.399999999906868,
-              "transferBytes": 5840,
-              "encodedBytes": 5540
-            },
-            {
-              "name": "/assets/CodePreview-DhzmBh8N.js",
-              "initiatorType": "script",
-              "startInDocumentMs": 270.60000000009313,
-              "durationMs": 23.399999999906868,
-              "transferBytes": 4408,
-              "encodedBytes": 4108
+              "encodedBytes": 1989
             },
             {
               "name": "/assets/editor-_ERz2w9B.css",
               "initiatorType": "link",
-              "startInDocumentMs": 270.69999999995343,
-              "durationMs": 24.4000000001397,
+              "startInDocumentMs": 356.59999999962747,
+              "durationMs": 54.200000000186265,
               "transferBytes": 32749,
               "encodedBytes": 32449
             },
             {
+              "name": "/assets/CodePreview-CaXcfAu3.js",
+              "initiatorType": "script",
+              "startInDocumentMs": 356.29999999981374,
+              "durationMs": 62.39999999990687,
+              "transferBytes": 4994,
+              "encodedBytes": 4694
+            },
+            {
+              "name": "/assets/plus-CxtEvbXN.js",
+              "initiatorType": "script",
+              "startInDocumentMs": 356.29999999981374,
+              "durationMs": 69.20000000018626,
+              "transferBytes": 480,
+              "encodedBytes": 180
+            },
+            {
               "name": "/assets/SettingsMenu-OP1BiWwv.js",
               "initiatorType": "script",
-              "startInDocumentMs": 270.30000000004657,
-              "durationMs": 25.899999999906868,
+              "startInDocumentMs": 356.39999999990687,
+              "durationMs": 72.79999999981374,
               "transferBytes": 3027,
               "encodedBytes": 2727
             },
             {
+              "name": "/assets/projects-Hk8TnUzl.js",
+              "initiatorType": "script",
+              "startInDocumentMs": 356.59999999962747,
+              "durationMs": 76.5,
+              "transferBytes": 5840,
+              "encodedBytes": 5540
+            },
+            {
               "name": "/assets/editor-_ERz2w9B.css#",
               "initiatorType": "link",
-              "startInDocumentMs": 554.5,
-              "durationMs": 5.600000000093132,
+              "startInDocumentMs": 637.3999999999069,
+              "durationMs": 5,
               "transferBytes": 300,
               "encodedBytes": 32449
             },
             {
-              "name": "/assets/editor-3psQ5fgb.js",
+              "name": "/assets/editor-d-ApR7eK.js",
               "initiatorType": "script",
-              "startInDocumentMs": 555.6999999999534,
-              "durationMs": 7.300000000046566,
+              "startInDocumentMs": 638.5,
+              "durationMs": 7.699999999720603,
               "transferBytes": 396,
               "encodedBytes": 96
             },
             {
               "name": "/assets/SettingsMenu-OQgOuNXs.css#",
               "initiatorType": "link",
-              "startInDocumentMs": 554.6999999999534,
-              "durationMs": 9.300000000046566,
+              "startInDocumentMs": 637.5,
+              "durationMs": 9.899999999906868,
               "transferBytes": 300,
               "encodedBytes": 605
             },
             {
               "name": "/assets/editor-_ERz2w9B.css#",
               "initiatorType": "link",
-              "startInDocumentMs": 563.8999999999069,
-              "durationMs": 3.6000000000931323,
+              "startInDocumentMs": 647.0999999996275,
+              "durationMs": 4.800000000279397,
               "transferBytes": 300,
               "encodedBytes": 0
             },
             {
               "name": "/assets/SettingsMenu-OQgOuNXs.css#",
               "initiatorType": "link",
-              "startInDocumentMs": 624.8999999999069,
-              "durationMs": 6.7000000001862645,
+              "startInDocumentMs": 799.5999999996275,
+              "durationMs": 6.5,
               "transferBytes": 300,
               "encodedBytes": 0
             },
             {
-              "name": "/__manifest?paths=%2Feditor%2C%2Feditor%2F6fa588bf-b7c9-4ac8-b37f-9e33c24e3a5c&version=1549e4f8",
+              "name": "/__manifest?paths=%2Feditor%2C%2Feditor%2Fadcb2223-9f58-4331-9af6-b78ab852b669&version=e95a9e4e",
               "initiatorType": "fetch",
-              "startInDocumentMs": 658.1999999999534,
-              "durationMs": 6,
-              "transferBytes": 1565,
-              "encodedBytes": 1265
+              "startInDocumentMs": 892.1999999997206,
+              "durationMs": 5.899999999906868,
+              "transferBytes": 1592,
+              "encodedBytes": 1292
             }
           ],
           "navigation": {
             "type": "navigate",
-            "responseStartMs": 22,
-            "responseEndMs": 23.5,
-            "domContentLoadedMs": 154,
-            "loadMs": 183.60000000009313
+            "responseStartMs": 28.5,
+            "responseEndMs": 31.699999999720603,
+            "domContentLoadedMs": 231.79999999981374,
+            "loadMs": 264.39999999990687
           },
-          "firstObservedAtMs": -512.954393,
-          "lastObservedAtMs": 332.74561000000017
+          "firstObservedAtMs": -581.4571450000001,
+          "lastObservedAtMs": 463.0182319999999
         }
       ],
       "pageErrors": []
     },
     {
       "run": 2,
-      "clickToCanvasMs": 296.021522,
-      "inputDispatchMs": 9.763877999999977,
+      "clickToCanvasMs": 379.76415799999995,
+      "inputDispatchMs": 9.36020600000029,
       "navigation": "same-document",
-      "clickDocumentId": 1792225357535.6,
-      "readyDocumentId": 1792225357535.6,
+      "clickDocumentId": 1792225801663.6,
+      "readyDocumentId": 1792225801663.6,
       "canvas": {
         "x": 422.25,
         "y": 78.875,
@@ -535,125 +543,125 @@
         "height": 842.25,
         "textLength": 843
       },
-      "finalURL": "http://127.0.0.1:4187/editor/57cb9783-f37c-45f9-9f93-55b490ae4cc4",
+      "finalURL": "http://127.0.0.1:4187/editor/0b9444c6-6d8b-4242-bcbf-070a151eba83",
       "mainDocumentCount": 1,
       "phases": [
         {
-          "documentId": 1792225357535.6,
+          "documentId": 1792225801663.6,
           "url": "http://127.0.0.1:4187/",
-          "browserNowMs": 30.199999999953434,
+          "browserNowMs": 27.09999999962747,
           "phase": "document-start",
           "navigation": {
             "type": "navigate",
-            "responseStartMs": 16.799999999813735,
+            "responseStartMs": 17.199999999720603,
             "responseEndMs": 0,
             "domContentLoadedMs": 0,
             "loadMs": 0
           },
-          "observedAtMs": -485.552993
+          "observedAtMs": -540.9829989999998
         },
         {
-          "documentId": 1792225357535.6,
+          "documentId": 1792225801663.6,
           "url": "http://127.0.0.1:4187/",
-          "browserNowMs": 30.5999999998603,
+          "browserNowMs": 27.5,
           "phase": "landing",
           "navigation": {
             "type": "navigate",
-            "responseStartMs": 16.799999999813735,
+            "responseStartMs": 17.199999999720603,
             "responseEndMs": 0,
             "domContentLoadedMs": 0,
             "loadMs": 0
           },
-          "observedAtMs": -485.21536000000015
+          "observedAtMs": -540.8050129999997
         },
         {
-          "documentId": 1792225357535.6,
+          "documentId": 1792225801663.6,
           "url": "http://127.0.0.1:4187/",
-          "browserNowMs": 108.29999999981374,
+          "browserNowMs": 152.59999999962747,
           "phase": "dom-content-loaded",
           "navigation": {
             "type": "navigate",
-            "responseStartMs": 16.799999999813735,
-            "responseEndMs": 18.799999999813735,
+            "responseStartMs": 17.199999999720603,
+            "responseEndMs": 20.699999999720603,
             "domContentLoadedMs": 0,
             "loadMs": 0
           },
-          "observedAtMs": -408.76411800000005
+          "observedAtMs": -415.83692699999983
         },
         {
-          "documentId": 1792225357535.6,
+          "documentId": 1792225801663.6,
           "url": "http://127.0.0.1:4187/",
-          "browserNowMs": 155.39999999990687,
+          "browserNowMs": 183.59999999962747,
           "phase": "load",
           "navigation": {
             "type": "navigate",
-            "responseStartMs": 16.799999999813735,
-            "responseEndMs": 18.799999999813735,
-            "domContentLoadedMs": 108.79999999981374,
+            "responseStartMs": 17.199999999720603,
+            "responseEndMs": 20.699999999720603,
+            "domContentLoadedMs": 153.09999999962747,
             "loadMs": 0
           },
-          "observedAtMs": -362.0542990000001
+          "observedAtMs": -384.02771600000005
         },
         {
-          "documentId": 1792225357535.6,
+          "documentId": 1792225801663.6,
           "url": "http://127.0.0.1:4187/editor",
-          "browserNowMs": 555.5999999998603,
+          "browserNowMs": 640.6999999997206,
           "phase": "editor-shell",
           "navigation": {
             "type": "navigate",
-            "responseStartMs": 16.799999999813735,
-            "responseEndMs": 18.799999999813735,
-            "domContentLoadedMs": 108.79999999981374,
-            "loadMs": 155.5
+            "responseStartMs": 17.199999999720603,
+            "responseEndMs": 20.699999999720603,
+            "domContentLoadedMs": 153.09999999962747,
+            "loadMs": 183.6999999997206
           },
-          "observedAtMs": 37.66149999999993
+          "observedAtMs": 72.00889200000029
         },
         {
-          "documentId": 1792225357535.6,
+          "documentId": 1792225801663.6,
           "url": "http://127.0.0.1:4187/editor",
-          "browserNowMs": 625.5,
+          "browserNowMs": 797,
           "phase": "canvas-attached",
           "navigation": {
             "type": "navigate",
-            "responseStartMs": 16.799999999813735,
-            "responseEndMs": 18.799999999813735,
-            "domContentLoadedMs": 108.79999999981374,
-            "loadMs": 155.5
+            "responseStartMs": 17.199999999720603,
+            "responseEndMs": 20.699999999720603,
+            "domContentLoadedMs": 153.09999999962747,
+            "loadMs": 183.6999999997206
           },
-          "observedAtMs": 109.901658
+          "observedAtMs": 228.8986990000003
         },
         {
-          "documentId": 1792225357535.6,
+          "documentId": 1792225801663.6,
           "url": "http://127.0.0.1:4187/editor",
-          "browserNowMs": 630.7999999998137,
+          "browserNowMs": 816.3999999999069,
           "phase": "canvas-visible",
           "navigation": {
             "type": "navigate",
-            "responseStartMs": 16.799999999813735,
-            "responseEndMs": 18.799999999813735,
-            "domContentLoadedMs": 108.79999999981374,
-            "loadMs": 155.5
+            "responseStartMs": 17.199999999720603,
+            "responseEndMs": 20.699999999720603,
+            "domContentLoadedMs": 153.09999999962747,
+            "loadMs": 183.6999999997206
           },
           "canvas": {
             "x": 422.25,
-            "y": 81.51307678222656,
+            "y": 79.2939224243164,
             "width": 595.5,
             "height": 842.25,
             "textLength": 843
           },
-          "observedAtMs": 112.9867569999999
+          "observedAtMs": 247.75296100000014
         },
         {
-          "documentId": 1792225357535.6,
-          "url": "http://127.0.0.1:4187/editor/57cb9783-f37c-45f9-9f93-55b490ae4cc4",
-          "browserNowMs": 813.2999999998137,
+          "documentId": 1792225801663.6,
+          "url": "http://127.0.0.1:4187/editor/0b9444c6-6d8b-4242-bcbf-070a151eba83",
+          "browserNowMs": 948.3999999999069,
           "phase": "canvas-painted",
           "navigation": {
             "type": "navigate",
-            "responseStartMs": 16.799999999813735,
-            "responseEndMs": 18.799999999813735,
-            "domContentLoadedMs": 108.79999999981374,
-            "loadMs": 155.5
+            "responseStartMs": 17.199999999720603,
+            "responseEndMs": 20.699999999720603,
+            "domContentLoadedMs": 153.09999999962747,
+            "loadMs": 183.6999999997206
           },
           "canvas": {
             "x": 422.25,
@@ -662,367 +670,375 @@
             "height": 842.25,
             "textLength": 843
           },
-          "observedAtMs": 296.021522
+          "observedAtMs": 379.76415799999995
         }
       ],
       "documents": [
         {
-          "id": 1792225357535.6,
+          "id": 1792225801663.6,
           "urls": [
             "http://127.0.0.1:4187/",
             "http://127.0.0.1:4187/editor",
-            "http://127.0.0.1:4187/editor/57cb9783-f37c-45f9-9f93-55b490ae4cc4"
+            "http://127.0.0.1:4187/editor/0b9444c6-6d8b-4242-bcbf-070a151eba83"
           ],
           "resources": [
             {
-              "name": "/assets/theme-brMEywb8.js",
-              "initiatorType": "other",
-              "startInDocumentMs": 27.5,
-              "durationMs": 15.899999999906868,
-              "transferBytes": 2075,
-              "encodedBytes": 1775
-            },
-            {
-              "name": "/assets/entry.client-Cj4zAsHf.js",
-              "initiatorType": "other",
-              "startInDocumentMs": 27,
-              "durationMs": 10.299999999813735,
-              "transferBytes": 211203,
-              "encodedBytes": 210903
-            },
-            {
               "name": "/assets/root-DIIbYPHN.js",
               "initiatorType": "other",
-              "startInDocumentMs": 27.399999999906868,
-              "durationMs": 18.199999999953434,
+              "startInDocumentMs": 25.199999999720603,
+              "durationMs": 17.800000000279397,
               "transferBytes": 2952,
               "encodedBytes": 2652
             },
             {
               "name": "/assets/jsx-runtime-BERqWRS_.js",
               "initiatorType": "other",
-              "startInDocumentMs": 27.299999999813735,
-              "durationMs": 17.600000000093132,
+              "startInDocumentMs": 25.199999999720603,
+              "durationMs": 14.300000000279397,
               "transferBytes": 125203,
               "encodedBytes": 124903
             },
             {
-              "name": "/assets/home-BPX13ltn.js",
+              "name": "/assets/entry.client-Cj4zAsHf.js",
               "initiatorType": "other",
-              "startInDocumentMs": 27.5,
-              "durationMs": 23.799999999813735,
+              "startInDocumentMs": 25.09999999962747,
+              "durationMs": 16.600000000093132,
+              "transferBytes": 211203,
+              "encodedBytes": 210903
+            },
+            {
+              "name": "/assets/theme-brMEywb8.js",
+              "initiatorType": "other",
+              "startInDocumentMs": 25.199999999720603,
+              "durationMs": 25.5,
+              "transferBytes": 2075,
+              "encodedBytes": 1775
+            },
+            {
+              "name": "/assets/home-B8WbQOQ8.js",
+              "initiatorType": "other",
+              "startInDocumentMs": 25.299999999813735,
+              "durationMs": 28.200000000186265,
               "transferBytes": 20196,
               "encodedBytes": 19896
             },
             {
               "name": "/assets/root-DNTS8sN0.css",
               "initiatorType": "link",
-              "startInDocumentMs": 28,
-              "durationMs": 24.0999999998603,
+              "startInDocumentMs": 25.59999999962747,
+              "durationMs": 39.3000000002794,
               "transferBytes": 87877,
               "encodedBytes": 87577
             },
             {
               "name": "/assets/react-Bzm3kswG.js",
               "initiatorType": "other",
-              "startInDocumentMs": 27.399999999906868,
-              "durationMs": 26.100000000093132,
+              "startInDocumentMs": 25.199999999720603,
+              "durationMs": 38.3000000002794,
               "transferBytes": 262889,
               "encodedBytes": 262589
             },
             {
               "name": "/assets/home-Bd8PmLR2.css",
               "initiatorType": "link",
-              "startInDocumentMs": 28,
-              "durationMs": 29.799999999813735,
+              "startInDocumentMs": 25.59999999962747,
+              "durationMs": 44.5,
               "transferBytes": 8315,
               "encodedBytes": 8015
             },
             {
-              "name": "/assets/arrow-right-DuSHnf_8.js",
-              "initiatorType": "other",
-              "startInDocumentMs": 27.5999999998603,
-              "durationMs": 36.300000000046566,
-              "transferBytes": 492,
-              "encodedBytes": 192
-            },
-            {
               "name": "/assets/ui-CCt3IgvL.css#",
               "initiatorType": "link",
-              "startInDocumentMs": 28.0999999998603,
-              "durationMs": 36.4000000001397,
+              "startInDocumentMs": 25.699999999720603,
+              "durationMs": 46.60000000009313,
               "transferBytes": 13117,
               "encodedBytes": 12817
             },
             {
               "name": "/assets/Brand-sREiYMmH.css",
               "initiatorType": "link",
-              "startInDocumentMs": 28.199999999953434,
-              "durationMs": 36.800000000046566,
+              "startInDocumentMs": 25.699999999720603,
+              "durationMs": 51.200000000186265,
               "transferBytes": 1685,
               "encodedBytes": 1385
             },
             {
-              "name": "/assets/Preview-C0E6gntp.css#",
+              "name": "/assets/Preview-IoN8o2EP.css#",
               "initiatorType": "link",
-              "startInDocumentMs": 28.299999999813735,
-              "durationMs": 37.10000000009313,
-              "transferBytes": 2026,
-              "encodedBytes": 1726
-            },
-            {
-              "name": "/assets/arrow-up-right-QZuQvKZ_.js",
-              "initiatorType": "other",
-              "startInDocumentMs": 27.699999999953434,
-              "durationMs": 40,
-              "transferBytes": 494,
-              "encodedBytes": 194
+              "startInDocumentMs": 25.799999999813735,
+              "durationMs": 53.39999999990687,
+              "transferBytes": 2289,
+              "encodedBytes": 1989
             },
             {
               "name": "/assets/ui-E-oW90XE.js",
               "initiatorType": "other",
-              "startInDocumentMs": 27.5,
-              "durationMs": 39.299999999813735,
+              "startInDocumentMs": 25.299999999813735,
+              "durationMs": 63.700000000186265,
               "transferBytes": 191070,
               "encodedBytes": 190770
             },
             {
+              "name": "/assets/arrow-right-DuSHnf_8.js",
+              "initiatorType": "other",
+              "startInDocumentMs": 25.399999999906868,
+              "durationMs": 65.39999999990687,
+              "transferBytes": 492,
+              "encodedBytes": 192
+            },
+            {
+              "name": "/assets/arrow-up-right-QZuQvKZ_.js",
+              "initiatorType": "other",
+              "startInDocumentMs": 25.399999999906868,
+              "durationMs": 68.6999999997206,
+              "transferBytes": 494,
+              "encodedBytes": 194
+            },
+            {
               "name": "/assets/layout-template-B4PU_Er0.js",
               "initiatorType": "other",
-              "startInDocumentMs": 27.699999999953434,
-              "durationMs": 46.89999999990687,
+              "startInDocumentMs": 25.399999999906868,
+              "durationMs": 74.1999999997206,
               "transferBytes": 613,
               "encodedBytes": 313
             },
             {
               "name": "/assets/text-align-start-JKSupu_d.js",
               "initiatorType": "other",
-              "startInDocumentMs": 27.699999999953434,
-              "durationMs": 61,
+              "startInDocumentMs": 25.399999999906868,
+              "durationMs": 78,
               "transferBytes": 558,
               "encodedBytes": 258
             },
             {
               "name": "/assets/Brand-Duu9K6xz.js",
               "initiatorType": "other",
-              "startInDocumentMs": 27.799999999813735,
-              "durationMs": 61.200000000186265,
+              "startInDocumentMs": 25.399999999906868,
+              "durationMs": 80.79999999981374,
               "transferBytes": 1889,
               "encodedBytes": 1589
             },
             {
-              "name": "/assets/ResumePreview-B_WqK1Eh.js",
+              "name": "/assets/ResumePreview-DyBzI2Sp.js",
               "initiatorType": "other",
-              "startInDocumentMs": 27.799999999813735,
-              "durationMs": 61.60000000009313,
-              "transferBytes": 1677,
-              "encodedBytes": 1377
+              "startInDocumentMs": 25.5,
+              "durationMs": 86.1999999997206,
+              "transferBytes": 1705,
+              "encodedBytes": 1405
             },
             {
-              "name": "/assets/preload-editor-MkTGLBWp.js",
+              "name": "/assets/preload-editor-CLtgMcz4.js",
               "initiatorType": "other",
-              "startInDocumentMs": 27.899999999906868,
-              "durationMs": 60.300000000046566,
-              "transferBytes": 1182,
-              "encodedBytes": 882
+              "startInDocumentMs": 25.5,
+              "durationMs": 87.79999999981374,
+              "transferBytes": 1211,
+              "encodedBytes": 911
             },
             {
-              "name": "/assets/Preview.module-B39cVF2Q.js",
+              "name": "/assets/Preview.module-CCtSUl46.js",
               "initiatorType": "other",
-              "startInDocumentMs": 28,
-              "durationMs": 60.39999999990687,
+              "startInDocumentMs": 25.59999999962747,
+              "durationMs": 90.10000000009313,
               "transferBytes": 637,
               "encodedBytes": 337
             },
             {
               "name": "/assets/source-sans-3-latin-wght-normal-Bo_j9asI.woff2",
               "initiatorType": "css",
-              "startInDocumentMs": 74.89999999990687,
-              "durationMs": 41.699999999953434,
+              "startInDocumentMs": 85.89999999990687,
+              "durationMs": 45.10000000009313,
               "transferBytes": 29172,
               "encodedBytes": 28872
             },
             {
               "name": "/assets/space-grotesk-latin-wght-normal-BhU9QXUp.woff2",
               "initiatorType": "css",
-              "startInDocumentMs": 75,
-              "durationMs": 43.5999999998603,
+              "startInDocumentMs": 86,
+              "durationMs": 46.5,
               "transferBytes": 22588,
               "encodedBytes": 22288
             },
             {
-              "name": "/__manifest?paths=%2F%2C%2Feditor%2C%2Fprojects%2C%2Ftemplates&version=1549e4f8",
+              "name": "/__manifest?paths=%2F%2C%2Feditor%2C%2Fprojects%2C%2Ftemplates&version=e95a9e4e",
               "initiatorType": "fetch",
-              "startInDocumentMs": 200.79999999981374,
-              "durationMs": 5.600000000093132,
-              "transferBytes": 4785,
-              "encodedBytes": 4485
+              "startInDocumentMs": 276.89999999990687,
+              "durationMs": 6.199999999720603,
+              "transferBytes": 4839,
+              "encodedBytes": 4539
             },
             {
-              "name": "/assets/files-BCm5joFo.js",
+              "name": "/assets/editor-CRhZBvTE.js",
               "initiatorType": "script",
-              "startInDocumentMs": 238.29999999981374,
-              "durationMs": 11.300000000046566,
-              "transferBytes": 1885,
-              "encodedBytes": 1585
-            },
-            {
-              "name": "/assets/editor-Bp42GIXu.js",
-              "initiatorType": "script",
-              "startInDocumentMs": 238.0999999998603,
-              "durationMs": 7,
-              "transferBytes": 158613,
-              "encodedBytes": 158313
-            },
-            {
-              "name": "/assets/copy-t6-hqx1g.js",
-              "initiatorType": "script",
-              "startInDocumentMs": 238.29999999981374,
-              "durationMs": 12.400000000139698,
-              "transferBytes": 563,
-              "encodedBytes": 263
-            },
-            {
-              "name": "/assets/ui-CCt3IgvL.css",
-              "initiatorType": "link",
-              "startInDocumentMs": 238.19999999995343,
-              "durationMs": 15.300000000046566,
-              "transferBytes": 300,
-              "encodedBytes": 12817
+              "startInDocumentMs": 295.29999999981374,
+              "durationMs": 6.7999999998137355,
+              "transferBytes": 158677,
+              "encodedBytes": 158377
             },
             {
               "name": "/assets/search-Dvm_NMLZ.js",
               "initiatorType": "script",
-              "startInDocumentMs": 238.39999999990687,
-              "durationMs": 17,
+              "startInDocumentMs": 296.09999999962747,
+              "durationMs": 18.90000000037253,
               "transferBytes": 729,
               "encodedBytes": 429
             },
             {
+              "name": "/assets/copy-t6-hqx1g.js",
+              "initiatorType": "script",
+              "startInDocumentMs": 295.6999999997206,
+              "durationMs": 20.399999999906868,
+              "transferBytes": 563,
+              "encodedBytes": 263
+            },
+            {
+              "name": "/assets/files-DW0_7x8X.js",
+              "initiatorType": "script",
+              "startInDocumentMs": 295.79999999981374,
+              "durationMs": 20.5,
+              "transferBytes": 1755,
+              "encodedBytes": 1455
+            },
+            {
+              "name": "/assets/ui-CCt3IgvL.css",
+              "initiatorType": "link",
+              "startInDocumentMs": 295.5,
+              "durationMs": 21.799999999813735,
+              "transferBytes": 300,
+              "encodedBytes": 12817
+            },
+            {
               "name": "/assets/SettingsMenu-OQgOuNXs.css",
               "initiatorType": "link",
-              "startInDocumentMs": 238.5,
-              "durationMs": 17.199999999953434,
+              "startInDocumentMs": 296.79999999981374,
+              "durationMs": 23.299999999813735,
               "transferBytes": 905,
               "encodedBytes": 605
             },
             {
               "name": "/assets/src-BnoOKtiV.js",
               "initiatorType": "script",
-              "startInDocumentMs": 238.39999999990687,
-              "durationMs": 13.899999999906868,
+              "startInDocumentMs": 295.89999999990687,
+              "durationMs": 22.699999999720603,
               "transferBytes": 215099,
               "encodedBytes": 214799
             },
             {
               "name": "/assets/editor-_ERz2w9B.css",
               "initiatorType": "link",
-              "startInDocumentMs": 238.79999999981374,
-              "durationMs": 19.800000000046566,
+              "startInDocumentMs": 297.09999999962747,
+              "durationMs": 30.700000000186265,
               "transferBytes": 32749,
               "encodedBytes": 32449
             },
             {
-              "name": "/assets/Preview-C0E6gntp.css",
-              "initiatorType": "link",
-              "startInDocumentMs": 238.69999999995343,
-              "durationMs": 20.399999999906868,
-              "transferBytes": 300,
-              "encodedBytes": 1726
+              "name": "/assets/CodePreview-CaXcfAu3.js",
+              "initiatorType": "script",
+              "startInDocumentMs": 296.1999999997206,
+              "durationMs": 32.3000000002794,
+              "transferBytes": 4994,
+              "encodedBytes": 4694
             },
             {
-              "name": "/assets/projects-Hk8TnUzl.js",
-              "initiatorType": "script",
-              "startInDocumentMs": 238.5999999998603,
-              "durationMs": 22.600000000093132,
-              "transferBytes": 5840,
-              "encodedBytes": 5540
+              "name": "/assets/Preview-IoN8o2EP.css",
+              "initiatorType": "link",
+              "startInDocumentMs": 296.59999999962747,
+              "durationMs": 33.5,
+              "transferBytes": 300,
+              "encodedBytes": 1989
             },
             {
               "name": "/assets/SettingsMenu-OP1BiWwv.js",
               "initiatorType": "script",
-              "startInDocumentMs": 238.5,
-              "durationMs": 23.199999999953434,
+              "startInDocumentMs": 296.59999999962747,
+              "durationMs": 36.90000000037253,
               "transferBytes": 3027,
               "encodedBytes": 2727
             },
             {
-              "name": "/assets/CodePreview-DhzmBh8N.js",
+              "name": "/assets/projects-Hk8TnUzl.js",
               "initiatorType": "script",
-              "startInDocumentMs": 238.69999999995343,
-              "durationMs": 22.800000000046566,
-              "transferBytes": 4408,
-              "encodedBytes": 4108
+              "startInDocumentMs": 297,
+              "durationMs": 37.799999999813735,
+              "transferBytes": 5840,
+              "encodedBytes": 5540
+            },
+            {
+              "name": "/assets/plus-CxtEvbXN.js",
+              "initiatorType": "script",
+              "startInDocumentMs": 296.29999999981374,
+              "durationMs": 39,
+              "transferBytes": 480,
+              "encodedBytes": 180
             },
             {
               "name": "/assets/editor-_ERz2w9B.css#",
               "initiatorType": "link",
-              "startInDocumentMs": 525.5,
-              "durationMs": 6,
+              "startInDocumentMs": 576.2999999998137,
+              "durationMs": 4.899999999906868,
               "transferBytes": 300,
               "encodedBytes": 32449
             },
             {
-              "name": "/assets/editor-3psQ5fgb.js",
+              "name": "/assets/editor-d-ApR7eK.js",
               "initiatorType": "script",
-              "startInDocumentMs": 527.3999999999069,
-              "durationMs": 6.899999999906868,
+              "startInDocumentMs": 578.3999999999069,
+              "durationMs": 4.199999999720603,
               "transferBytes": 396,
               "encodedBytes": 96
             },
             {
               "name": "/assets/SettingsMenu-OQgOuNXs.css#",
               "initiatorType": "link",
-              "startInDocumentMs": 525.7999999998137,
-              "durationMs": 9.5,
+              "startInDocumentMs": 576.5999999996275,
+              "durationMs": 6.800000000279397,
               "transferBytes": 300,
               "encodedBytes": 605
             },
             {
               "name": "/assets/editor-_ERz2w9B.css#",
               "initiatorType": "link",
-              "startInDocumentMs": 535.0999999998603,
-              "durationMs": 4.5,
+              "startInDocumentMs": 587.5999999996275,
+              "durationMs": 7.5,
               "transferBytes": 300,
               "encodedBytes": 0
             },
             {
               "name": "/assets/SettingsMenu-OQgOuNXs.css#",
               "initiatorType": "link",
-              "startInDocumentMs": 592.6999999999534,
-              "durationMs": 5.099999999860302,
+              "startInDocumentMs": 588.5999999996275,
+              "durationMs": 8.200000000186265,
               "transferBytes": 300,
               "encodedBytes": 0
             },
             {
-              "name": "/__manifest?paths=%2Feditor%2C%2Feditor%2F57cb9783-f37c-45f9-9f93-55b490ae4cc4&version=1549e4f8",
+              "name": "/__manifest?paths=%2Feditor%2C%2Feditor%2F0b9444c6-6d8b-4242-bcbf-070a151eba83&version=e95a9e4e",
               "initiatorType": "fetch",
-              "startInDocumentMs": 623.0999999998603,
-              "durationMs": 4.600000000093132,
-              "transferBytes": 1565,
-              "encodedBytes": 1265
+              "startInDocumentMs": 791.0999999996275,
+              "durationMs": 6.300000000279397,
+              "transferBytes": 1592,
+              "encodedBytes": 1292
             }
           ],
           "navigation": {
             "type": "navigate",
-            "responseStartMs": 16.799999999813735,
-            "responseEndMs": 18.799999999813735,
-            "domContentLoadedMs": 108.79999999981374,
-            "loadMs": 155.5
+            "responseStartMs": 17.199999999720603,
+            "responseEndMs": 20.699999999720603,
+            "domContentLoadedMs": 153.09999999962747,
+            "loadMs": 183.6999999997206
           },
-          "firstObservedAtMs": -485.552993,
-          "lastObservedAtMs": 296.021522
+          "firstObservedAtMs": -540.9829989999998,
+          "lastObservedAtMs": 379.76415799999995
         }
       ],
       "pageErrors": []
     },
     {
       "run": 3,
-      "clickToCanvasMs": 283.8695939999998,
-      "inputDispatchMs": 5.910783999999694,
+      "clickToCanvasMs": 339.3005320000002,
+      "inputDispatchMs": 5.9923140000000785,
       "navigation": "same-document",
-      "clickDocumentId": 1792225358375.6,
-      "readyDocumentId": 1792225358375.6,
+      "clickDocumentId": 1792225802652.5,
+      "readyDocumentId": 1792225802652.5,
       "canvas": {
         "x": 422.25,
         "y": 78.875,
@@ -1030,125 +1046,125 @@
         "height": 842.25,
         "textLength": 843
       },
-      "finalURL": "http://127.0.0.1:4187/editor/0c5c91d8-e40b-4336-b84a-5c5b90f78310",
+      "finalURL": "http://127.0.0.1:4187/editor/aa30d53e-f578-4caf-9889-730bf1af2916",
       "mainDocumentCount": 1,
       "phases": [
         {
-          "documentId": 1792225358375.6,
+          "documentId": 1792225802652.5,
           "url": "http://127.0.0.1:4187/",
-          "browserNowMs": 30.600000000093132,
+          "browserNowMs": 32.89999999990687,
           "phase": "document-start",
           "navigation": {
             "type": "navigate",
-            "responseStartMs": 21.100000000093132,
+            "responseStartMs": 18.600000000093132,
             "responseEndMs": 0,
             "domContentLoadedMs": 0,
             "loadMs": 0
           },
-          "observedAtMs": -456.5952520000001
+          "observedAtMs": -514.6059
         },
         {
-          "documentId": 1792225358375.6,
+          "documentId": 1792225802652.5,
           "url": "http://127.0.0.1:4187/",
-          "browserNowMs": 30.899999999906868,
+          "browserNowMs": 33.3000000002794,
           "phase": "landing",
           "navigation": {
             "type": "navigate",
-            "responseStartMs": 21.100000000093132,
+            "responseStartMs": 18.600000000093132,
             "responseEndMs": 0,
             "domContentLoadedMs": 0,
             "loadMs": 0
           },
-          "observedAtMs": -456.45040500000005
+          "observedAtMs": -514.3637939999999
         },
         {
-          "documentId": 1792225358375.6,
+          "documentId": 1792225802652.5,
           "url": "http://127.0.0.1:4187/",
-          "browserNowMs": 113,
+          "browserNowMs": 133,
           "phase": "dom-content-loaded",
           "navigation": {
             "type": "navigate",
-            "responseStartMs": 21.100000000093132,
-            "responseEndMs": 23.5,
+            "responseStartMs": 18.600000000093132,
+            "responseEndMs": 21.800000000279397,
             "domContentLoadedMs": 0,
             "loadMs": 0
           },
-          "observedAtMs": -374.04434600000013
+          "observedAtMs": -414.6794140000002
         },
         {
-          "documentId": 1792225358375.6,
+          "documentId": 1792225802652.5,
           "url": "http://127.0.0.1:4187/",
-          "browserNowMs": 140.19999999995343,
+          "browserNowMs": 153.60000000009313,
           "phase": "load",
           "navigation": {
             "type": "navigate",
-            "responseStartMs": 21.100000000093132,
-            "responseEndMs": 23.5,
-            "domContentLoadedMs": 113.30000000004657,
+            "responseStartMs": 18.600000000093132,
+            "responseEndMs": 21.800000000279397,
+            "domContentLoadedMs": 133.60000000009313,
             "loadMs": 0
           },
-          "observedAtMs": -347.1572329999999
+          "observedAtMs": -394.16095799999994
         },
         {
-          "documentId": 1792225358375.6,
+          "documentId": 1792225802652.5,
           "url": "http://127.0.0.1:4187/editor",
-          "browserNowMs": 531.6999999999534,
+          "browserNowMs": 593.7000000001863,
           "phase": "editor-shell",
           "navigation": {
             "type": "navigate",
-            "responseStartMs": 21.100000000093132,
-            "responseEndMs": 23.5,
-            "domContentLoadedMs": 113.30000000004657,
-            "loadMs": 140.19999999995343
+            "responseStartMs": 18.600000000093132,
+            "responseEndMs": 21.800000000279397,
+            "domContentLoadedMs": 133.60000000009313,
+            "loadMs": 153.70000000018626
           },
-          "observedAtMs": 43.894002
+          "observedAtMs": 45.66235300000017
         },
         {
-          "documentId": 1792225358375.6,
+          "documentId": 1792225802652.5,
           "url": "http://127.0.0.1:4187/editor",
-          "browserNowMs": 598.6999999999534,
+          "browserNowMs": 712.8000000002794,
           "phase": "canvas-attached",
           "navigation": {
             "type": "navigate",
-            "responseStartMs": 21.100000000093132,
-            "responseEndMs": 23.5,
-            "domContentLoadedMs": 113.30000000004657,
-            "loadMs": 140.19999999995343
+            "responseStartMs": 18.600000000093132,
+            "responseEndMs": 21.800000000279397,
+            "domContentLoadedMs": 133.60000000009313,
+            "loadMs": 153.70000000018626
           },
-          "observedAtMs": 111.55313699999988
+          "observedAtMs": 165.024539
         },
         {
-          "documentId": 1792225358375.6,
+          "documentId": 1792225802652.5,
           "url": "http://127.0.0.1:4187/editor",
-          "browserNowMs": 603.5,
+          "browserNowMs": 718.3000000002794,
           "phase": "canvas-visible",
           "navigation": {
             "type": "navigate",
-            "responseStartMs": 21.100000000093132,
-            "responseEndMs": 23.5,
-            "domContentLoadedMs": 113.30000000004657,
-            "loadMs": 140.19999999995343
+            "responseStartMs": 18.600000000093132,
+            "responseEndMs": 21.800000000279397,
+            "domContentLoadedMs": 133.60000000009313,
+            "loadMs": 153.70000000018626
           },
           "canvas": {
             "x": 422.25,
-            "y": 81.73523712158203,
+            "y": 80.78424835205078,
             "width": 595.5,
             "height": 842.25,
             "textLength": 843
           },
-          "observedAtMs": 115.73361599999998
+          "observedAtMs": 169.76863300000014
         },
         {
-          "documentId": 1792225358375.6,
-          "url": "http://127.0.0.1:4187/editor/0c5c91d8-e40b-4336-b84a-5c5b90f78310",
-          "browserNowMs": 771.1999999999534,
+          "documentId": 1792225802652.5,
+          "url": "http://127.0.0.1:4187/editor/aa30d53e-f578-4caf-9889-730bf1af2916",
+          "browserNowMs": 883.8000000002794,
           "phase": "canvas-painted",
           "navigation": {
             "type": "navigate",
-            "responseStartMs": 21.100000000093132,
-            "responseEndMs": 23.5,
-            "domContentLoadedMs": 113.30000000004657,
-            "loadMs": 140.19999999995343
+            "responseStartMs": 18.600000000093132,
+            "responseEndMs": 21.800000000279397,
+            "domContentLoadedMs": 133.60000000009313,
+            "loadMs": 153.70000000018626
           },
           "canvas": {
             "x": 422.25,
@@ -1157,356 +1173,364 @@
             "height": 842.25,
             "textLength": 843
           },
-          "observedAtMs": 283.8695939999998
+          "observedAtMs": 339.3005320000002
         }
       ],
       "documents": [
         {
-          "id": 1792225358375.6,
+          "id": 1792225802652.5,
           "urls": [
             "http://127.0.0.1:4187/",
             "http://127.0.0.1:4187/editor",
-            "http://127.0.0.1:4187/editor/0c5c91d8-e40b-4336-b84a-5c5b90f78310"
+            "http://127.0.0.1:4187/editor/aa30d53e-f578-4caf-9889-730bf1af2916"
           ],
           "resources": [
             {
               "name": "/assets/entry.client-Cj4zAsHf.js",
               "initiatorType": "other",
-              "startInDocumentMs": 28.800000000046566,
-              "durationMs": 10.899999999906868,
+              "startInDocumentMs": 30.399999999906868,
+              "durationMs": 12.700000000186265,
               "transferBytes": 211203,
               "encodedBytes": 210903
             },
             {
               "name": "/assets/theme-brMEywb8.js",
               "initiatorType": "other",
-              "startInDocumentMs": 29.100000000093132,
-              "durationMs": 17.5,
+              "startInDocumentMs": 30.800000000279397,
+              "durationMs": 18.59999999962747,
               "transferBytes": 2075,
               "encodedBytes": 1775
             },
             {
-              "name": "/assets/home-BPX13ltn.js",
+              "name": "/assets/home-B8WbQOQ8.js",
               "initiatorType": "other",
-              "startInDocumentMs": 29.100000000093132,
-              "durationMs": 18.5,
+              "startInDocumentMs": 30.899999999906868,
+              "durationMs": 19.40000000037253,
               "transferBytes": 20196,
               "encodedBytes": 19896
             },
             {
               "name": "/assets/root-DIIbYPHN.js",
               "initiatorType": "other",
-              "startInDocumentMs": 29,
-              "durationMs": 20.100000000093132,
+              "startInDocumentMs": 30.700000000186265,
+              "durationMs": 21.5,
               "transferBytes": 2952,
               "encodedBytes": 2652
             },
             {
-              "name": "/assets/root-DNTS8sN0.css",
-              "initiatorType": "link",
-              "startInDocumentMs": 29.300000000046566,
-              "durationMs": 23.5,
-              "transferBytes": 87877,
-              "encodedBytes": 87577
-            },
-            {
               "name": "/assets/jsx-runtime-BERqWRS_.js",
               "initiatorType": "other",
-              "startInDocumentMs": 29,
-              "durationMs": 19.399999999906868,
+              "startInDocumentMs": 30.600000000093132,
+              "durationMs": 20.799999999813735,
               "transferBytes": 125203,
               "encodedBytes": 124903
             },
             {
+              "name": "/assets/root-DNTS8sN0.css",
+              "initiatorType": "link",
+              "startInDocumentMs": 31.200000000186265,
+              "durationMs": 27,
+              "transferBytes": 87877,
+              "encodedBytes": 87577
+            },
+            {
               "name": "/assets/home-Bd8PmLR2.css",
               "initiatorType": "link",
-              "startInDocumentMs": 29.399999999906868,
-              "durationMs": 26,
+              "startInDocumentMs": 31.200000000186265,
+              "durationMs": 31.600000000093132,
               "transferBytes": 8315,
               "encodedBytes": 8015
             },
             {
+              "name": "/assets/react-Bzm3kswG.js",
+              "initiatorType": "other",
+              "startInDocumentMs": 30.700000000186265,
+              "durationMs": 26,
+              "transferBytes": 262889,
+              "encodedBytes": 262589
+            },
+            {
               "name": "/assets/arrow-right-DuSHnf_8.js",
               "initiatorType": "other",
-              "startInDocumentMs": 29.199999999953434,
-              "durationMs": 30.600000000093132,
+              "startInDocumentMs": 30.899999999906868,
+              "durationMs": 39.90000000037253,
               "transferBytes": 492,
               "encodedBytes": 192
             },
             {
               "name": "/assets/ui-CCt3IgvL.css#",
               "initiatorType": "link",
-              "startInDocumentMs": 29.399999999906868,
-              "durationMs": 31,
+              "startInDocumentMs": 31.200000000186265,
+              "durationMs": 40.10000000009313,
               "transferBytes": 13117,
               "encodedBytes": 12817
             },
             {
               "name": "/assets/Brand-sREiYMmH.css",
               "initiatorType": "link",
-              "startInDocumentMs": 29.399999999906868,
-              "durationMs": 31.4000000001397,
+              "startInDocumentMs": 31.300000000279397,
+              "durationMs": 40.39999999990687,
               "transferBytes": 1685,
               "encodedBytes": 1385
             },
             {
-              "name": "/assets/Preview-C0E6gntp.css#",
+              "name": "/assets/Preview-IoN8o2EP.css#",
               "initiatorType": "link",
-              "startInDocumentMs": 29.399999999906868,
-              "durationMs": 31.700000000186265,
-              "transferBytes": 2026,
-              "encodedBytes": 1726
-            },
-            {
-              "name": "/assets/react-Bzm3kswG.js",
-              "initiatorType": "other",
-              "startInDocumentMs": 29.100000000093132,
-              "durationMs": 24.399999999906868,
-              "transferBytes": 262889,
-              "encodedBytes": 262589
+              "startInDocumentMs": 31.300000000279397,
+              "durationMs": 40.799999999813735,
+              "transferBytes": 2289,
+              "encodedBytes": 1989
             },
             {
               "name": "/assets/ui-E-oW90XE.js",
               "initiatorType": "other",
-              "startInDocumentMs": 29.100000000093132,
-              "durationMs": 30.299999999813735,
+              "startInDocumentMs": 30.899999999906868,
+              "durationMs": 39.3000000002794,
               "transferBytes": 191070,
               "encodedBytes": 190770
             },
             {
               "name": "/assets/arrow-up-right-QZuQvKZ_.js",
               "initiatorType": "other",
-              "startInDocumentMs": 29.199999999953434,
-              "durationMs": 34.699999999953434,
+              "startInDocumentMs": 30.899999999906868,
+              "durationMs": 46.8000000002794,
               "transferBytes": 494,
               "encodedBytes": 194
             },
             {
               "name": "/assets/layout-template-B4PU_Er0.js",
               "initiatorType": "other",
-              "startInDocumentMs": 29.300000000046566,
-              "durationMs": 37.5999999998603,
+              "startInDocumentMs": 31,
+              "durationMs": 47.700000000186265,
               "transferBytes": 613,
               "encodedBytes": 313
             },
             {
               "name": "/assets/text-align-start-JKSupu_d.js",
               "initiatorType": "other",
-              "startInDocumentMs": 29.300000000046566,
-              "durationMs": 38.39999999990687,
+              "startInDocumentMs": 31,
+              "durationMs": 51.10000000009313,
               "transferBytes": 558,
               "encodedBytes": 258
             },
             {
-              "name": "/assets/preload-editor-MkTGLBWp.js",
-              "initiatorType": "other",
-              "startInDocumentMs": 29.300000000046566,
-              "durationMs": 40.699999999953434,
-              "transferBytes": 1182,
-              "encodedBytes": 882
-            },
-            {
-              "name": "/assets/Preview.module-B39cVF2Q.js",
-              "initiatorType": "other",
-              "startInDocumentMs": 29.300000000046566,
-              "durationMs": 41.5,
-              "transferBytes": 637,
-              "encodedBytes": 337
-            },
-            {
               "name": "/assets/Brand-Duu9K6xz.js",
               "initiatorType": "other",
-              "startInDocumentMs": 29.300000000046566,
-              "durationMs": 42.300000000046566,
+              "startInDocumentMs": 31,
+              "durationMs": 51.60000000009313,
               "transferBytes": 1889,
               "encodedBytes": 1589
             },
             {
-              "name": "/assets/ResumePreview-B_WqK1Eh.js",
+              "name": "/assets/ResumePreview-DyBzI2Sp.js",
               "initiatorType": "other",
-              "startInDocumentMs": 29.300000000046566,
-              "durationMs": 43.0999999998603,
-              "transferBytes": 1677,
-              "encodedBytes": 1377
+              "startInDocumentMs": 31,
+              "durationMs": 55.8000000002794,
+              "transferBytes": 1705,
+              "encodedBytes": 1405
+            },
+            {
+              "name": "/assets/preload-editor-CLtgMcz4.js",
+              "initiatorType": "other",
+              "startInDocumentMs": 31.100000000093132,
+              "durationMs": 55,
+              "transferBytes": 1211,
+              "encodedBytes": 911
+            },
+            {
+              "name": "/assets/Preview.module-CCtSUl46.js",
+              "initiatorType": "other",
+              "startInDocumentMs": 31.100000000093132,
+              "durationMs": 55.39999999990687,
+              "transferBytes": 637,
+              "encodedBytes": 337
             },
             {
               "name": "/assets/source-sans-3-latin-wght-normal-Bo_j9asI.woff2",
               "initiatorType": "css",
-              "startInDocumentMs": 69,
-              "durationMs": 32.5,
+              "startInDocumentMs": 79.20000000018626,
+              "durationMs": 32.1999999997206,
               "transferBytes": 29172,
               "encodedBytes": 28872
             },
             {
               "name": "/assets/space-grotesk-latin-wght-normal-BhU9QXUp.woff2",
               "initiatorType": "css",
-              "startInDocumentMs": 69.10000000009313,
-              "durationMs": 35.299999999813735,
+              "startInDocumentMs": 79.3000000002794,
+              "durationMs": 34.89999999990687,
               "transferBytes": 22588,
               "encodedBytes": 22288
             },
             {
-              "name": "/__manifest?paths=%2F%2C%2Feditor%2C%2Fprojects%2C%2Ftemplates&version=1549e4f8",
+              "name": "/__manifest?paths=%2F%2C%2Feditor%2C%2Fprojects%2C%2Ftemplates&version=e95a9e4e",
               "initiatorType": "fetch",
-              "startInDocumentMs": 189.80000000004657,
-              "durationMs": 5,
-              "transferBytes": 4785,
-              "encodedBytes": 4485
+              "startInDocumentMs": 252.3000000002794,
+              "durationMs": 5.399999999906868,
+              "transferBytes": 4839,
+              "encodedBytes": 4539
             },
             {
-              "name": "/assets/editor-Bp42GIXu.js",
+              "name": "/assets/editor-CRhZBvTE.js",
               "initiatorType": "script",
-              "startInDocumentMs": 214.69999999995343,
-              "durationMs": 6.5,
-              "transferBytes": 158613,
-              "encodedBytes": 158313
-            },
-            {
-              "name": "/assets/search-Dvm_NMLZ.js",
-              "initiatorType": "script",
-              "startInDocumentMs": 215.10000000009313,
-              "durationMs": 11.399999999906868,
-              "transferBytes": 729,
-              "encodedBytes": 429
-            },
-            {
-              "name": "/assets/copy-t6-hqx1g.js",
-              "initiatorType": "script",
-              "startInDocumentMs": 215,
-              "durationMs": 12,
-              "transferBytes": 563,
-              "encodedBytes": 263
-            },
-            {
-              "name": "/assets/files-BCm5joFo.js",
-              "initiatorType": "script",
-              "startInDocumentMs": 215.10000000009313,
-              "durationMs": 12.399999999906868,
-              "transferBytes": 1885,
-              "encodedBytes": 1585
+              "startInDocumentMs": 271.60000000009313,
+              "durationMs": 5.600000000093132,
+              "transferBytes": 158677,
+              "encodedBytes": 158377
             },
             {
               "name": "/assets/ui-CCt3IgvL.css",
               "initiatorType": "link",
-              "startInDocumentMs": 214.89999999990687,
-              "durationMs": 15.100000000093132,
+              "startInDocumentMs": 271.89999999990687,
+              "durationMs": 12.600000000093132,
               "transferBytes": 300,
               "encodedBytes": 12817
             },
             {
-              "name": "/assets/src-BnoOKtiV.js",
+              "name": "/assets/copy-t6-hqx1g.js",
               "initiatorType": "script",
-              "startInDocumentMs": 215.10000000009313,
-              "durationMs": 14.199999999953434,
-              "transferBytes": 215099,
-              "encodedBytes": 214799
+              "startInDocumentMs": 272,
+              "durationMs": 11,
+              "transferBytes": 563,
+              "encodedBytes": 263
+            },
+            {
+              "name": "/assets/files-DW0_7x8X.js",
+              "initiatorType": "script",
+              "startInDocumentMs": 272.10000000009313,
+              "durationMs": 11,
+              "transferBytes": 1755,
+              "encodedBytes": 1455
+            },
+            {
+              "name": "/assets/search-Dvm_NMLZ.js",
+              "initiatorType": "script",
+              "startInDocumentMs": 272.39999999990687,
+              "durationMs": 10.5,
+              "transferBytes": 729,
+              "encodedBytes": 429
             },
             {
               "name": "/assets/SettingsMenu-OQgOuNXs.css",
               "initiatorType": "link",
-              "startInDocumentMs": 215.19999999995343,
-              "durationMs": 15.600000000093132,
+              "startInDocumentMs": 272.89999999990687,
+              "durationMs": 11.100000000093132,
               "transferBytes": 905,
               "encodedBytes": 605
             },
             {
-              "name": "/assets/Preview-C0E6gntp.css",
+              "name": "/assets/src-BnoOKtiV.js",
+              "initiatorType": "script",
+              "startInDocumentMs": 272.20000000018626,
+              "durationMs": 12.399999999906868,
+              "transferBytes": 215099,
+              "encodedBytes": 214799
+            },
+            {
+              "name": "/assets/Preview-IoN8o2EP.css",
               "initiatorType": "link",
-              "startInDocumentMs": 215.5,
-              "durationMs": 18.5,
+              "startInDocumentMs": 272.70000000018626,
+              "durationMs": 17.399999999906868,
               "transferBytes": 300,
-              "encodedBytes": 1726
-            },
-            {
-              "name": "/assets/projects-Hk8TnUzl.js",
-              "initiatorType": "script",
-              "startInDocumentMs": 215.30000000004657,
-              "durationMs": 24.5,
-              "transferBytes": 5840,
-              "encodedBytes": 5540
-            },
-            {
-              "name": "/assets/CodePreview-DhzmBh8N.js",
-              "initiatorType": "script",
-              "startInDocumentMs": 215.39999999990687,
-              "durationMs": 25.100000000093132,
-              "transferBytes": 4408,
-              "encodedBytes": 4108
-            },
-            {
-              "name": "/assets/editor-_ERz2w9B.css",
-              "initiatorType": "link",
-              "startInDocumentMs": 215.5,
-              "durationMs": 25.800000000046566,
-              "transferBytes": 32749,
-              "encodedBytes": 32449
+              "encodedBytes": 1989
             },
             {
               "name": "/assets/SettingsMenu-OP1BiWwv.js",
               "initiatorType": "script",
-              "startInDocumentMs": 215.19999999995343,
-              "durationMs": 26.699999999953434,
+              "startInDocumentMs": 272.89999999990687,
+              "durationMs": 24.90000000037253,
               "transferBytes": 3027,
               "encodedBytes": 2727
             },
             {
+              "name": "/assets/projects-Hk8TnUzl.js",
+              "initiatorType": "script",
+              "startInDocumentMs": 273.10000000009313,
+              "durationMs": 25.200000000186265,
+              "transferBytes": 5840,
+              "encodedBytes": 5540
+            },
+            {
+              "name": "/assets/editor-_ERz2w9B.css",
+              "initiatorType": "link",
+              "startInDocumentMs": 273.20000000018626,
+              "durationMs": 25.699999999720603,
+              "transferBytes": 32749,
+              "encodedBytes": 32449
+            },
+            {
+              "name": "/assets/CodePreview-CaXcfAu3.js",
+              "initiatorType": "script",
+              "startInDocumentMs": 272.5,
+              "durationMs": 26.899999999906868,
+              "transferBytes": 4994,
+              "encodedBytes": 4694
+            },
+            {
+              "name": "/assets/plus-CxtEvbXN.js",
+              "initiatorType": "script",
+              "startInDocumentMs": 272.60000000009313,
+              "durationMs": 27.100000000093132,
+              "transferBytes": 480,
+              "encodedBytes": 180
+            },
+            {
               "name": "/assets/editor-_ERz2w9B.css#",
               "initiatorType": "link",
-              "startInDocumentMs": 492.60000000009313,
-              "durationMs": 5.2999999998137355,
+              "startInDocumentMs": 553.6000000000931,
+              "durationMs": 5.5,
               "transferBytes": 300,
               "encodedBytes": 32449
             },
             {
-              "name": "/assets/editor-3psQ5fgb.js",
+              "name": "/assets/editor-d-ApR7eK.js",
               "initiatorType": "script",
-              "startInDocumentMs": 493.69999999995343,
-              "durationMs": 7,
+              "startInDocumentMs": 554.8000000002794,
+              "durationMs": 6.699999999720603,
               "transferBytes": 396,
               "encodedBytes": 96
             },
             {
               "name": "/assets/SettingsMenu-OQgOuNXs.css#",
               "initiatorType": "link",
-              "startInDocumentMs": 492.69999999995343,
-              "durationMs": 8.800000000046566,
+              "startInDocumentMs": 553.8000000002794,
+              "durationMs": 8.5,
               "transferBytes": 300,
               "encodedBytes": 605
             },
             {
               "name": "/assets/editor-_ERz2w9B.css#",
               "initiatorType": "link",
-              "startInDocumentMs": 502.10000000009313,
-              "durationMs": 3.199999999953434,
+              "startInDocumentMs": 562.5,
+              "durationMs": 3.3000000002793968,
               "transferBytes": 300,
               "encodedBytes": 0
             },
             {
               "name": "/assets/SettingsMenu-OQgOuNXs.css#",
               "initiatorType": "link",
-              "startInDocumentMs": 568,
-              "durationMs": 4.699999999953434,
+              "startInDocumentMs": 666,
+              "durationMs": 6.100000000093132,
               "transferBytes": 300,
               "encodedBytes": 0
             },
             {
-              "name": "/__manifest?paths=%2Feditor%2C%2Feditor%2F0c5c91d8-e40b-4336-b84a-5c5b90f78310&version=1549e4f8",
+              "name": "/__manifest?paths=%2Feditor%2C%2Feditor%2Faa30d53e-f578-4caf-9889-730bf1af2916&version=e95a9e4e",
               "initiatorType": "fetch",
-              "startInDocumentMs": 596.6000000000931,
-              "durationMs": 4.5,
-              "transferBytes": 1565,
-              "encodedBytes": 1265
+              "startInDocumentMs": 710.5,
+              "durationMs": 6.100000000093132,
+              "transferBytes": 1592,
+              "encodedBytes": 1292
             }
           ],
           "navigation": {
             "type": "navigate",
-            "responseStartMs": 21.100000000093132,
-            "responseEndMs": 23.5,
-            "domContentLoadedMs": 113.30000000004657,
-            "loadMs": 140.19999999995343
+            "responseStartMs": 18.600000000093132,
+            "responseEndMs": 21.800000000279397,
+            "domContentLoadedMs": 133.60000000009313,
+            "loadMs": 153.70000000018626
           },
-          "firstObservedAtMs": -456.5952520000001,
-          "lastObservedAtMs": 283.8695939999998
+          "firstObservedAtMs": -514.6059,
+          "lastObservedAtMs": 339.3005320000002
         }
       ],
       "pageErrors": []

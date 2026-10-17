@@ -1,16 +1,16 @@
 $ playwright test --grep visual
 [WebServer] $ cd apps/web && vite preview --host 127.0.0.1 --port 4187 --strictPort
-[WebServer] (node:38397) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (node:43116) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
 [WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
 [WebServer] Default inspector port 9229 not available, using 9230 instead
 [WebServer]
 
 Running 3 tests using 1 worker
 
-(node:38470) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(node:43187) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
 (Use `node --trace-warnings ...` to show where the warning was created)
-  ✓  1 apps/web/e2e/layers.spec.ts:8:1 › layers multi-select → group appearance/movement → lock/hide/undo → persisted text/visual editing (4.1s)
-  ✓  2 apps/web/e2e/layers.spec.ts:20:1 › synthetic image upload → crop and pointer resize → persistent visual document (3.5s)
-  ✓  3 apps/web/e2e/workflows.spec.ts:246:1 › visual desktop/mobile screenshots, rendered DOM/CSS and real canvas (2.8s)
+  ✓  1 apps/web/e2e/layers.spec.ts:8:1 › layers multi-select → group appearance/movement → lock/hide/undo → persisted text/visual editing (4.6s)
+  ✓  2 apps/web/e2e/layers.spec.ts:20:1 › synthetic image upload → crop and pointer resize → persistent visual document (4.1s)
+  ✓  3 apps/web/e2e/workflows.spec.ts:246:1 › visual desktop/mobile screenshots, rendered DOM/CSS and real canvas (3.3s)
 
-  3 passed (13.1s)
+  3 passed (15.2s)

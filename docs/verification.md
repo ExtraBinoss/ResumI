@@ -19,6 +19,8 @@ Synthetic resumes only. The original Vue checkout stayed read-only: its pre-exis
 
 Cold-development logs contain no invalid-hook, `useMemoCache` or missing PostCSS `from` regression. Bun reports line/function coverage, not branch coverage. GitHub Actions repeats the combined gate; its actual remote status is recorded on [PR #1](https://github.com/ExtraBinoss/ResumI/pull/1).
 
+The final one-line source zoom-floor correction follows this local combined run. The expanded [source preview check](../artifacts/source-fit-check.log) verifies that zooming out below 25% still reduces the real iframe; current types/lint/source policy also pass. GitHub Actions repeats the entire gate on that final commit before delivery.
+
 The earlier radius follow-up passed a fresh production build and six relevant browser journeys ([log](../artifacts/polish-check.log)). The combined gate above was repeated after task 17 redesigned the public product, library and actual CV layouts, including its final server-HTML correction.
 
 ## Behaviors exercised
@@ -28,6 +30,7 @@ The earlier radius follow-up passed a fresh production build and six relevant br
 - Persistent Dashboard/Templates navigation on desktop/mobile: the navigation DOM survives sibling-route changes, sorting text is centered, Settings is a compact accessible icon, and no horizontal overflow appears.
 - Centered CV thumbnails, larger eye preview, Escape dismissal, search/sorting/list view, project rename/duplicate/delete, and agent-driven project-title persistence.
 - Selectable landing variants, functional Visual/Text demonstration and clean reduced-motion hydration. Four distinct complete A4 layouts load their fonts/images and fit 794×1123px without overflow. Profile preserves its photo/icons through saved TSX, reload and a portable export opened with all network requests blocked.
+- Source preview fitting accounts for both viewport dimensions and its zoom toolbar. The actual transformed iframe stays inside desktop/mobile bounds; 100% restores the full-size page and Fit page returns to the fitted size.
 - Direct server-rendered template cards contain one action link each; their static thumbnail content is inert. Contact links remain functional in the actual CV and standalone export.
 - The final blend option is reachable by wheel, changes the real canvas blend mode and remains undoable.
 - Permanent composition/properties, native styled canvas editing, eight resize handles, grouping/order/lock/visibility, image crop/border/shadow, gradient/effects and faithful portable HTML.
@@ -54,6 +57,7 @@ Final screenshots were opened and checked for readable controls, matching theme 
 - Templates in the same shell: [desktop light](../artifacts/visual/apple-templates-desktop.png), [desktop dark](../artifacts/visual/apple-templates-dark.png), [mobile light](../artifacts/visual/apple-templates-mobile.png) and [mobile dark](../artifacts/visual/apple-templates-mobile-dark.png).
 - Complete actual A4s: [Classic](../artifacts/visual/template-classic.png), [Editorial](../artifacts/visual/template-editorial.png), [Studio](../artifacts/visual/template-studio.png), [Profile](../artifacts/visual/template-profile.png) and [Profile offline export](../artifacts/visual/template-profile-offline.png). Its fictional portrait, exact imagegen prompt and licenses are preserved in [asset notes](../packages/cv/assets/README.md).
 - [Source dialog](../artifacts/visual/source-dialog-light.png) and [restrained loading orb](../artifacts/visual/loading-orb-light.png).
+- Fitted TSX workspace in [light](../artifacts/visual/source-fit-light.png), [dark](../artifacts/visual/source-fit-dark.png) and [mobile dark](../artifacts/visual/source-fit-mobile-dark.png), with themed zoom controls and scrollbars.
 - [Compact appearance menu](../artifacts/visual/dashboard-settings-light.png), with the same material/control treatment as the editor.
 - Blend hover previews and menu treatment in [light](../artifacts/visual/blend-menu-light.png) and [dark](../artifacts/visual/blend-menu-dark.png).
 
@@ -67,12 +71,14 @@ The revised profiler uses a trusted Playwright mouse click and one Node monotoni
 
 With the server already warmed and no concurrent browser runners, three fresh contexts produced:
 
-| Runtime                                                                 | Click → fully painted canvas | Samples           | Navigation        |
-| ----------------------------------------------------------------------- | ---------------------------- | ----------------- | ----------------- |
-| [Built Worker](../artifacts/performance/create-ui-production.json)      | 296ms median                 | 284 / 296 / 333ms | Client navigation |
-| [Vite development](../artifacts/performance/create-ui-development.json) | 513ms median                 | 482 / 513 / 778ms | Client navigation |
+| Runtime                                                                 | Click → fully painted canvas | Samples           | Navigation          |
+| ----------------------------------------------------------------------- | ---------------------------- | ----------------- | ------------------- |
+| [Built Worker](../artifacts/performance/create-ui-production.json)      | 380ms median                 | 339 / 380 / 463ms | Client navigation   |
+| [Vite development](../artifacts/performance/create-ui-development.json) | 702ms median                 | 528 / 702 / 973ms | 2 client / 1 native |
 
-These final samples were collected after the complete task 17 redesign, with one explicit unmeasured creation warming each server and no concurrent browser runners. All six used client navigation; the profiler also follows native navigation if an early click occurs before hydration, rather than failing when the old execution context disappears. These are local samples without CPU/network throttling, not field Core Web Vitals or a controlled comparison with earlier runs. The earlier [611ms](../artifacts/performance/create-before.json) / [366ms](../artifacts/performance/create-final.json) results used an in-page click and different endpoint. They remain historical evidence and must not be directly compared with the revised measurement.
+These final samples were collected after the final source-fitting follow-up to task 17, with one explicit unmeasured creation warming each server and no concurrent browser runners. Five samples used client navigation; one development sample followed a native navigation after an early click. The profiler keeps the same clock when the old execution context disappears. These are local samples without CPU/network throttling, not field Core Web Vitals or a controlled comparison with earlier runs. The earlier [611ms](../artifacts/performance/create-before.json) / [366ms](../artifacts/performance/create-final.json) results used an in-page click and different endpoint. They remain historical evidence and must not be directly compared with the revised measurement.
+
+The timing sample precedes the final source zoom-floor correction. That correction changes the source preview's minus-button limit; this profiler exercises visual document creation.
 
 Creation keeps code prefetch free of storage side effects, canonicalizes the created route without remounting the editor, and defers color-picker editing, command review, source compilation/runtime and large catalogs. The first Vite compilation is distinct from a warmed click-to-canvas measurement. The [production interaction sample](../artifacts/performance/interactions.json) includes Playwright transport/assertion overhead.
 

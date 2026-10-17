@@ -30,21 +30,24 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
-  background: #fff;
-  color: #39455b;
+  background: var(--card);
+  color: var(--foreground);
   font-size: 14px;
 }
 .sourcePlaceholder span {
   font-size: 11px;
-  color: #8b95a5;
+  color: var(--muted-foreground);
 }
 .interactiveViewport {
   flex: 1;
   min-height: 0;
   overflow: auto;
-  background: #eef0f4;
+  background: var(--workspace);
   position: relative;
   padding-bottom: 18px;
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--foreground) 24%, transparent)
+    transparent;
 }
 .interactiveFrame {
   display: block;
@@ -61,7 +64,7 @@
   position: relative;
   margin: 16px auto 0;
   background: white;
-  box-shadow: 0 4px 18px #15274515;
+  box-shadow: var(--shadow-sm);
 }
 .previewControls {
   position: sticky;
@@ -72,33 +75,33 @@
   justify-content: center;
   gap: 5px;
   padding: 8px 12px;
-  background: #eef0f4ed;
-  backdrop-filter: blur(8px);
-  border-bottom: 1px solid #e0e5ee;
+  background: var(--panel);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--line);
 }
 .previewControls button {
   font-family: inherit;
-  font-size: 10px;
-  line-height: 1.5;
+  font-size: 12px;
+  line-height: 1;
   cursor: pointer;
   border: 1px solid transparent;
   background: transparent;
-  color: #607089;
-  padding: 4px 7px;
-  border-radius: 5px;
+  color: var(--muted-foreground);
+  border-radius: var(--radius-md);
 }
 .previewControls button[aria-pressed="true"] {
-  background: #fff;
-  color: #2c5dcc;
-  border-color: #dbe2ee;
-  box-shadow: 0 1px 3px #21395d0d;
+  background: var(--segment-selected);
+  color: var(--foreground);
+  border-color: var(--control-border);
+  box-shadow: var(--segment-shadow);
 }
 .previewControls button:hover {
-  background: white;
+  background: var(--control-hover);
+  color: var(--foreground);
 }
 .previewControls span {
-  font-size: 10px;
-  color: #66758a;
+  font-size: 12px;
+  color: var(--muted-foreground);
   min-width: 29px;
   text-align: center;
 }
