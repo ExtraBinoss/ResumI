@@ -7,62 +7,32 @@ import {
   type TextMarkStyle,
 } from "@resumi/engine";
 import { designCommandAtom, textRangeAtom } from "../../../state/design";
+import {
+  selectionOffsets,
+  restoreSelection,
+} from "../../../lib/text-selection";
 import styles from "../styles/Inspector.module.css";
 
 type TextLayer = Extract<Layer, { type: "text" }>;
-function selectionOffsets(root: HTMLElement) {
-  const selection = window.getSelection();
-  if (!selection?.rangeCount) return null;
-  const range = selection.getRangeAt(0);
-  if (
-    !root.contains(range.startContainer) ||
-    !root.contains(range.endContainer)
-  )
-    return null;
-  const prefix = document.createRange();
-  prefix.selectNodeContents(root);
-  prefix.setEnd(range.startContainer, range.startOffset);
-  const suffix = document.createRange();
-  suffix.selectNodeContents(root);
-  suffix.setEnd(range.endContainer, range.endOffset);
-  return { start: prefix.toString().length, end: suffix.toString().length };
-}
-function restoreSelection(
-  root: HTMLElement,
-  range: { start: number; end: number },
-) {
-  const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
-  const native = document.createRange();
-  let offset = 0,
-    startSet = false,
-    node = walker.nextNode();
-  while (node) {
-    const length = node.textContent?.length ?? 0;
-    if (!startSet && range.start <= offset + length) {
-      native.setStart(node, Math.max(0, range.start - offset));
-      startSet = true;
-    }
-    if (range.end <= offset + length) {
-      if (!startSet) native.setStart(node, 0);
-      native.setEnd(node, Math.max(0, range.end - offset));
-      window.getSelection()?.removeAllRanges();
-      window.getSelection()?.addRange(native);
-      return;
-    }
-    offset += length;
-    node = walker.nextNode();
-  }
-}
-
 /** Reconcile external commands into the DOM without replacing the caret on local keystrokes. */
 export function RichTextField({
   id,
   text,
   layer,
+  ariaLabel = "Content",
+  className,
+  showLabel = true,
+  readOnly = false,
+  onFocus,
 }: {
   id: string;
   text: string;
   layer: TextLayer;
+  ariaLabel?: string;
+  className?: string;
+  showLabel?: boolean;
+  readOnly?: boolean;
+  onFocus?: () => void;
 }) {
   const editor = useRef<HTMLDivElement>(null);
   const pending = useRef<string | null>(null);
@@ -135,15 +105,16 @@ export function RichTextField({
   }
   return (
     <div className={styles.stackedField}>
-      <span>Text</span>
+      {showLabel && <span>Text</span>}
       <div
         ref={editor}
         data-edit-field={id}
-        className={styles.richEditor}
-        contentEditable
+        className={className ?? styles.richEditor}
+        contentEditable={!readOnly}
         suppressContentEditableWarning
         role="textbox"
-        aria-label="Content"
+        aria-label={ariaLabel}
+        aria-readonly={readOnly || undefined}
         aria-multiline
         spellCheck
         style={{
@@ -151,7 +122,10 @@ export function RichTextField({
           fontSize: 14,
           lineHeight: 1.5,
         }}
-        onFocus={capture}
+        onFocus={() => {
+          onFocus?.();
+          capture();
+        }}
         onInput={sync}
         onKeyUp={capture}
         onPointerUp={capture}
@@ -164,6 +138,7 @@ export function RichTextField({
         }}
         onKeyDown={(event) => {
           event.stopPropagation();
+          if (readOnly) return;
           const key = event.key.toLowerCase();
           if (
             (event.ctrlKey || event.metaKey) &&

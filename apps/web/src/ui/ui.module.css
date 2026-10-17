@@ -94,6 +94,10 @@
 }
 .fieldError {
   color: #c33544;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
 }
 .input[aria-invalid="true"] {
   border-color: #df7b86;
@@ -128,6 +132,29 @@
   border: 1px solid var(--line);
   border-radius: var(--radius);
   background: var(--panel);
+  background-image:
+    linear-gradient(var(--popover) 45%, transparent),
+    linear-gradient(transparent, var(--popover) 55%),
+    linear-gradient(
+      color-mix(in srgb, var(--foreground) 8%, transparent),
+      transparent
+    ),
+    linear-gradient(
+      transparent,
+      color-mix(in srgb, var(--foreground) 8%, transparent)
+    );
+  background-position:
+    center top,
+    center bottom,
+    center top,
+    center bottom;
+  background-size:
+    100% 18px,
+    100% 18px,
+    100% 8px,
+    100% 8px;
+  background-repeat: no-repeat;
+  background-attachment: local, local, scroll, scroll;
   padding: 4px;
   box-shadow: var(--shadow-popover);
   backdrop-filter: blur(24px) saturate(1.35);
@@ -137,8 +164,8 @@
   align-items: center;
   justify-content: space-between;
   min-height: 29px;
-  gap: 16px;
-  padding: 6px 9px;
+  gap: 10px;
+  padding: 6px 27px 6px 9px;
   border-radius: 5px;
   font-size: 12px;
   color: var(--ink);
@@ -146,8 +173,11 @@
   outline: none;
 }
 .selectItem[data-highlighted] {
-  background: var(--primary);
-  color: var(--primary-foreground);
+  background: var(--accent);
+  color: var(--foreground);
+}
+.selectItem[data-selected] {
+  font-weight: 600;
 }
 .selectItem[data-disabled] {
   opacity: 0.4;
@@ -239,7 +269,7 @@
 .menuItem {
   display: flex;
   align-items: center;
-  gap: 9px;
+  gap: 10px;
   min-height: 32px;
   padding: 7px 9px;
   border-radius: 5px;
@@ -250,21 +280,23 @@
 }
 .menuItem > span:nth-child(3) {
   margin-left: auto;
+  padding-left: 16px;
+  flex-shrink: 0;
 }
 .menuItem > span {
   display: inline-flex;
   align-items: center;
 }
 .menuItem[data-highlighted] {
-  background: var(--primary);
-  color: var(--primary-foreground);
+  background: var(--accent);
+  color: var(--foreground);
 }
 .menuItem[data-color="red"] {
   color: #cf3a48;
 }
 .menuItem[data-color="red"][data-highlighted] {
-  background: var(--primary);
-  color: var(--primary-foreground);
+  background: color-mix(in srgb, var(--destructive) 12%, transparent);
+  color: var(--destructive);
 }
 .menuItem[data-disabled] {
   opacity: 0.4;

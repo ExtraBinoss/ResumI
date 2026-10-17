@@ -81,9 +81,7 @@ test("permanent panels and native styled text editing preserve content across re
     exact: true,
   });
   const initialSize = Number(await size.inputValue());
-  await inspector
-    .getByRole("button", { name: "Increase Font size", exact: true })
-    .click();
+  await size.press("ArrowUp");
   await expect(size).toHaveValue(String(initialSize + 1));
   await expect(heading).toHaveCSS("font-size", `${initialSize + 1}px`);
   await page.getByRole("button", { name: "Undo", exact: true }).click();
@@ -93,7 +91,7 @@ test("permanent panels and native styled text editing preserve content across re
     name: "Edit text on canvas",
     exact: true,
   });
-  await expect(input).toHaveAttribute("contenteditable", "plaintext-only");
+  await expect(input).toHaveAttribute("contenteditable", "true");
   expect(
     await input.evaluate((node) => {
       const style = getComputedStyle(node);

@@ -29,6 +29,8 @@ All 16 blend modes include multiply, screen, overlay and luminosity. Text layers
 
 Shapes support the engine catalog or constrained SVG paths, solid/linear-gradient fills, stroke and radius. Images support embedded PNG/JPEG/WebP data, crop position, cover/contain, scale, radius and optional `border: { width, color, style }`, where style is `solid`, `dashed` or `dotted`. A zero width disables the image border. Images and shapes accept optional `shadow: { x, y, blur, spread, color }`; `null` removes it. These fields are runtime-validated, serialized and undoable through `layer.update`, including agent batches. Older files without them remain valid.
 
+An optional `vector.parts` stores compound SVG geometry as up to 128 individually painted paths. Each part has constrained path data, solid hex/transparent fill, optional stroke, width, opacity, fill rule, cap/join and a six-number affine matrix. `vector.attribution` preserves up to 12,000 characters of source/license text; the renderer escapes it inside SVG metadata. The required legacy `path` and `viewBox` remain compatible. These fields share command validation, atomic failures, history and the global document budget. No raw SVG markup enters the engine. The browser file adapter has stricter limits (256 KB, 64 paths, 80,000 combined path characters) and rejects unsupported SVG features. [Brand provenance and import boundary](../apps/web/src/data/brands.sources.md).
+
 Images and shapes also share bounded blur, grain, grain size, dither, brightness, contrast and saturation effects. Shape gradient stops have unique IDs and bounded offsets. No design command accepts arbitrary CSS or executable SVG. Fonts accept bounded embedded font data; external asset URLs are rejected.
 
 The renderer uses the same layer geometry, rich segments, groups, gradients and effect definitions for previews and portable HTML. It validates the document before interpolation. The engine itself imports no renderer, framework, browser database or provider.
@@ -59,15 +61,15 @@ The renderer uses the same layer geometry, rich segments, groups, gradients and 
 
 Batches parse and validate before any publication, work on immutable transformations, and validate the complete final document. If any operation fails, nothing publishes. `execute` records one attributed history entry per batch; undo/redo restores exact before/after snapshots, new edits discard the redo branch. Unaffected records retain their identity. Consumers must treat engine snapshots as immutable; use commands rather than mutate object references.
 
-The browser event adapter wraps human actions in the same v1 envelope. **Project menu → Import commands** opens a review dialog that previews a batch against a session copy. A preview that predates a human edit cannot be applied until validated again. Apply revalidates against the current session and records one undo step. Actor names record provenance, not authenticated identity. JSON Schema is available through `bun run resumi document schema`; [generated example](../artifacts/rendered/commands.schema.json).
+The browser event adapter wraps human actions in the same v1 envelope. **Mod+Alt+Enter** opens the advanced command review dialog and previews a batch against a session copy. A preview that predates a human edit cannot be applied until validated again. Apply revalidates against the current session and records one undo step. Actor names record provenance, not authenticated identity. JSON Schema is available through `bun run resumi document schema`; [generated example](../artifacts/rendered/commands.schema.json).
 
-`source.set`, `source.activate` and `source.clear` manage the optional HTML/React representation. They share the same validation and history; the engine never compiles or executes source. The UI opens authoring through **Project menu → Edit source**, while Visual/Text remain the two workspace modes. [Source contract](code-templates.md).
+`source.set`, `source.activate` and `source.clear` manage the optional HTML/React representation. They share the same validation and history; the engine never compiles or executes source. **Mod+Shift+E** opens advanced source authoring, while Visual/Text remain the two workspace modes. [Source contract](code-templates.md).
 
 ## File handoff for CLI agents
 
 1. In Export, save a **JSON document**. The CLI cannot read browser IndexedDB.
 2. `bun run resumi document inspect cv.json` to read IDs, content and styles.
-3. Generate a v1 batch (`patch.json`) using these IDs, or open the project name menu and choose **Import commands** to validate and preview it.
+3. Generate a v1 batch (`patch.json`) using these IDs, or press **Mod+Alt+Enter** to validate and preview it in the command review dialog.
 4. `bun run resumi document apply cv.json patch.json --out edited.json` writes a separate validated file. Without `--out`, inspect the JSON document in stdout; input is not overwritten.
 5. `bun run resumi document validate edited.json` and `bun run resumi document render edited.json --format html --out preview.html`.
 6. Open the standalone HTML to inspect the real rendering. Import `edited.json` from Projects to create an independent local project.

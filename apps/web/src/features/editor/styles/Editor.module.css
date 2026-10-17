@@ -1,4 +1,6 @@
 .editor {
+  --layers-width: 260px;
+  --properties-width: 300px;
   font-family: var(--font-ui);
   height: 100dvh;
   display: flex;
@@ -11,17 +13,18 @@
   position: absolute;
   z-index: 15;
   top: 12px;
-  left: 252px;
-  right: 276px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: max-content;
+  max-width: calc(100% - 24px);
   height: 48px;
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  display: flex;
   align-items: center;
   background: var(--panel);
   border: 1px solid var(--line-strong);
   border-radius: var(--radius);
   padding: 0 7px;
-  gap: 8px;
+  gap: 22px;
   box-shadow: var(--shadow-panel);
   backdrop-filter: blur(20px) saturate(1.2);
 }
@@ -36,13 +39,18 @@
 .toolbarRight {
   justify-content: flex-end;
 }
+.historyActions {
+  margin-left: 11px;
+  padding-left: 11px;
+  border-left: 1px solid var(--line);
+}
 .projectTitle {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 3px;
   min-width: 0;
-  max-width: 320px;
+  max-width: 280px;
 }
 .nameButton {
   background: none;
@@ -69,22 +77,6 @@
   color: var(--faint);
   flex-shrink: 0;
 }
-.saveStatus {
-  display: flex;
-  color: var(--faint);
-  flex-shrink: 0;
-}
-.saveStatus[data-status="error"] {
-  color: var(--destructive);
-}
-.saving {
-  animation: spin 1s linear infinite;
-}
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
 .shortcutLabel {
   display: flex;
   align-items: center;
@@ -94,25 +86,32 @@
 }
 .projectMenu {
   font-family: var(--font-ui);
-  padding: 14px;
+  padding: 8px;
+  gap: 0;
 }
 .projectMenu form {
   display: grid;
-  gap: 8px;
+  padding: 7px 6px 0;
 }
-.projectMenu form > button {
-  justify-self: end;
+.projectMenu form :global([data-ui="input"]) {
+  font-size: 14px;
 }
 .projectMenu > button {
   justify-content: flex-start;
+  height: 36px;
+  font-size: 13px;
+}
+.projectMenu > button > span:last-child {
+  margin-left: auto;
+  color: var(--muted-foreground);
 }
 .projectFacts {
   display: flex;
   justify-content: space-between;
   color: var(--faint);
   font-size: 12px;
-  padding: 12px 0;
-  margin: 0 0 6px;
+  padding: 12px 7px;
+  margin: 0 0 5px;
   border-bottom: 1px solid var(--line);
 }
 .workspace {
@@ -143,7 +142,8 @@
 }
 .sourceCanvas {
   position: absolute;
-  inset: 80px 278px 78px 254px;
+  inset: 80px calc(var(--properties-width) + 24px) 78px
+    calc(var(--layers-width) + 24px);
   overflow: hidden;
   border-radius: 6px;
 }
@@ -185,20 +185,13 @@
 }
 @media (max-width: 1200px) {
   .toolbar {
-    grid-template-columns: 32px minmax(0, 1fr) auto;
-  }
-  .historyActions {
-    display: none;
+    gap: 14px;
   }
 }
 @media (max-width: 1040px) {
-  .toolbar {
-    left: 222px;
-    right: 246px;
-  }
-  .sourceCanvas {
-    left: 222px;
-    right: 246px;
+  .editor {
+    --layers-width: 228px;
+    --properties-width: 270px;
   }
   .nameButton {
     max-width: 180px;
@@ -209,6 +202,8 @@
     top: 12px;
     left: 12px;
     right: 12px;
+    transform: none;
+    width: auto;
     height: 46px;
     gap: 3px;
   }
@@ -216,11 +211,17 @@
     max-width: none;
     font-size: 12px;
   }
+  .projectTitle {
+    flex: 1;
+    max-width: none;
+  }
+  .historyActions {
+    margin-left: 5px;
+    padding-left: 5px;
+    gap: 0;
+  }
   .sourceCanvas {
     inset: 78px 14px calc(40vh + 78px);
-  }
-  .saveStatus {
-    display: none;
   }
   .projectDialog {
     font-family: var(--font-ui);

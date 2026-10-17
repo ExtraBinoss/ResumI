@@ -6,7 +6,7 @@
   left: 12px;
   display: flex;
   flex-direction: column;
-  width: 228px;
+  width: var(--layers-width, 260px);
   min-height: 0;
   overflow: hidden;
   border: 1px solid var(--line-strong);
@@ -74,7 +74,7 @@
 .blendRow {
   padding: 11px 12px;
   display: grid;
-  grid-template-columns: 68px minmax(0, 1fr);
+  grid-template-columns: minmax(100px, 1fr) minmax(105px, 1fr);
   gap: 6px;
   border-bottom: 1px solid var(--line);
 }
@@ -156,7 +156,7 @@
 }
 @media (max-width: 1040px) {
   .layers {
-    width: 198px;
+    width: var(--layers-width, 228px);
   }
 }
 @media (max-width: 700px) {
@@ -184,7 +184,7 @@
     gap: 4px;
   }
   .blendRow {
-    grid-template-columns: 60px minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1fr);
     padding: 8px;
     gap: 5px;
   }
@@ -212,11 +212,11 @@
 
 .blendRow :global([data-slot="select-trigger"]) {
   position: relative;
-  padding-inline: 22px;
+  padding-inline: 10px 26px;
 }
 .blendRow :global([data-slot="select-value"]) {
-  justify-content: center;
-  text-align: center;
+  justify-content: flex-start;
+  text-align: left;
 }
 .blendRow :global([data-slot="select-trigger"]) > svg {
   position: absolute;
@@ -226,4 +226,44 @@
 }
 .blendRow input {
   text-align: center;
+}
+
+.tabContent {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  flex-direction: column;
+}
+.layerRow[data-drop-position="above"]::before,
+.groupRow[data-drop-position="above"]::before,
+.layerRow[data-drop-position="below"]::after,
+.groupRow[data-drop-position="below"]::after {
+  content: "";
+  position: absolute;
+  left: 3px;
+  right: 3px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--primary);
+  pointer-events: none;
+  z-index: 2;
+}
+.layerRow[data-drop-position="above"]::before,
+.groupRow[data-drop-position="above"]::before {
+  top: -2px;
+}
+.layerRow[data-drop-position="below"]::after,
+.groupRow[data-drop-position="below"]::after {
+  bottom: -2px;
+}
+.groupRow[data-drop-position="inside"] {
+  outline: 1px solid var(--primary);
+  outline-offset: -1px;
+  background: var(--accent-soft);
+}
+.layerMenu {
+  min-width: 244px;
+}
+.layerMenu :global([data-slot="dropdown-menu-item"]) {
+  white-space: nowrap;
 }

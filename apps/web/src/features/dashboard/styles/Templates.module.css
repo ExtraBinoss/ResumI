@@ -30,9 +30,7 @@
   border: 1px solid color-mix(in srgb, var(--foreground) 10%, transparent);
   border-radius: 8px;
   background: var(--background);
-  box-shadow:
-    0 2px 4px rgb(0 0 0 / 3%),
-    0 10px 24px rgb(0 0 0 / 5%);
+  box-shadow: 0 1px 3px rgb(0 0 0 / 3%);
   transition:
     border-color 220ms,
     box-shadow 220ms;
@@ -40,9 +38,7 @@
 .template:hover,
 .template:focus-within {
   border-color: color-mix(in srgb, var(--foreground) 20%, transparent);
-  box-shadow:
-    0 4px 10px rgb(0 0 0 / 5%),
-    0 16px 32px rgb(0 0 0 / 9%);
+  box-shadow: 0 2px 5px rgb(0 0 0 / 4%);
 }
 .templateLink {
   position: relative;
@@ -61,11 +57,7 @@
   align-items: center;
   justify-content: center;
   padding: 20px;
-  background: linear-gradient(
-    150deg,
-    color-mix(in srgb, var(--muted) 65%, var(--background)),
-    color-mix(in srgb, var(--foreground) 8%, var(--background))
-  );
+  background: var(--muted);
 }
 .paper {
   width: min(100%, 220px);
@@ -73,24 +65,25 @@
   max-width: 100%;
   flex-shrink: 0;
   background: #fff;
-  box-shadow:
-    0 1px 3px rgb(0 0 0 / 7%),
-    0 6px 14px rgb(0 0 0 / 8%);
+  box-shadow: 0 1px 4px rgb(0 0 0 / 5%);
 }
 .details {
   position: absolute;
-  inset: auto 0 0;
-  padding: 52px 16px 15px;
-  color: #fff;
-  background: linear-gradient(
-    transparent,
-    rgb(0 0 0 / 63%) 62%,
-    rgb(0 0 0 / 77%)
-  );
+  inset: auto 8px 8px;
+  display: flex;
+  align-items: center;
+  height: 48px;
+  padding: 0 72px 0 12px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--card) 90%, transparent);
+  color: var(--foreground);
+  box-shadow: 0 1px 3px rgb(0 0 0 / 4%);
+  backdrop-filter: blur(12px) saturate(1.1);
 }
 .details h2 {
   overflow: hidden;
-  margin: 0 64px 5px 0;
+  margin: 0;
   font-family: var(--font-ui);
   font-size: 14px;
   font-weight: 600;
@@ -98,35 +91,31 @@
   white-space: nowrap;
   text-overflow: ellipsis;
 }
-.details span {
-  display: block;
-  color: rgb(255 255 255 / 70%);
-  font-size: 11px;
-  line-height: 16px;
-}
 .details > svg {
   position: absolute;
-  right: 17px;
-  bottom: 38px;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--muted-foreground);
 }
 .template .previewButton {
   position: absolute;
   z-index: 1;
-  right: 44px;
-  bottom: 32px;
+  right: 45px;
+  bottom: 18px;
   width: 28px;
   height: 28px;
   min-height: 28px;
   padding: 0;
-  border: 1px solid rgb(255 255 255 / 12%);
+  border: 1px solid transparent;
   border-radius: 6px;
-  color: #fff;
-  background: rgb(255 255 255 / 9%);
-  backdrop-filter: blur(8px);
+  color: var(--muted-foreground);
+  background: transparent;
 }
 .template .previewButton:hover {
-  color: #fff;
-  background: rgb(255 255 255 / 24%);
+  border-color: var(--line);
+  color: var(--foreground);
+  background: var(--accent);
 }
 @media (max-width: 1100px) {
   .catalog {

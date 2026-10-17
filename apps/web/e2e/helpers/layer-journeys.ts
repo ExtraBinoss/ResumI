@@ -18,7 +18,9 @@ async function createVisual(page: Page) {
     .getByRole("link", { name: "Create a resume", exact: true })
     .click();
   await expect(canvas(page)).toBeVisible();
-  await page.getByRole("button", { name: "Visual", exact: true }).click();
+  await expect(
+    page.getByRole("button", { name: "Visual", exact: true }),
+  ).toHaveAttribute("aria-pressed", "true");
   await expect(canvas(page).locator("[data-layer-id]").first()).toBeVisible();
 }
 
@@ -312,7 +314,7 @@ export async function imageCropJourney(page: Page) {
       name: "Border style",
       exact: true,
     }),
-    "dashed",
+    "Dashed",
   );
   await inspector(page)
     .getByRole("button", { name: "Add shadow", exact: true })

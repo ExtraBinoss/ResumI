@@ -1,11 +1,10 @@
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
-import { Alert, Button } from "../../ui";
+import { ErrorToast } from "../../components/ErrorNotice";
 import { Provider, useAtomValue, useStore } from "jotai";
 import type { Project } from "../../lib/projects";
 import {
   createEditorController,
-  saveErrorAtom,
   saveStatusAtom,
   undoAtom,
   redoAtom,
@@ -45,7 +44,6 @@ function EditorWorkspace({ controller }: { controller: EditorController }) {
     canvas = useAtomValue(canvasAtom),
     mode = useAtomValue(modeAtom),
     source = useAtomValue(sourceAtom),
-    error = useAtomValue(saveErrorAtom),
     designError = useAtomValue(designErrorAtom),
     store = useStore(),
     reduced = useReducedMotion();
@@ -54,6 +52,17 @@ function EditorWorkspace({ controller }: { controller: EditorController }) {
   useEffect(() => {
     function keydown(event: KeyboardEvent) {
       if (event.defaultPrevented) return;
+      const modifier = event.ctrlKey || event.metaKey;
+      if (modifier && event.shiftKey && event.key.toLowerCase() === "e") {
+        event.preventDefault();
+        setDialog("source");
+        return;
+      }
+      if (modifier && event.altKey && event.key === "Enter") {
+        event.preventDefault();
+        setDialog("proposal");
+        return;
+      }
       const target = event.target;
       if (
         target instanceof HTMLElement &&
@@ -63,8 +72,7 @@ function EditorWorkspace({ controller }: { controller: EditorController }) {
           target.isContentEditable)
       )
         return;
-      const key = event.key.toLowerCase(),
-        modifier = event.ctrlKey || event.metaKey;
+      const key = event.key.toLowerCase();
       if (modifier && (key === "z" || key === "y")) {
         event.preventDefault();
         store.set(key === "y" || event.shiftKey ? redoAtom : undoAtom);
@@ -131,41 +139,12 @@ function EditorWorkspace({ controller }: { controller: EditorController }) {
   }, [store]);
   return (
     <main className={styles.editor}>
-      <EditorToolbar
-        controller={controller}
-        openSource={() => setDialog("source")}
-        openProposal={() => setDialog("proposal")}
+      <EditorToolbar controller={controller} />
+      <ErrorToast
+        error={designError}
+        label="Unable to edit"
+        onDismiss={() => store.set(designErrorAtom, "")}
       />
-      {error ? (
-        <Alert
-          color="red"
-          title="Changes are not saved"
-          className={styles.saveAlert}
-        >
-          {error}
-          <Button
-            size="compact-xs"
-            ml="md"
-            color="red"
-            variant="subtle"
-            onClick={() => void controller.flush()}
-          >
-            Retry save
-          </Button>
-        </Alert>
-      ) : designError ? (
-        <Alert color="red" title="Unable to edit" className={styles.saveAlert}>
-          {designError}
-          <Button
-            size="compact-xs"
-            ml="md"
-            variant="subtle"
-            onClick={() => store.set(designErrorAtom, "")}
-          >
-            Dismiss
-          </Button>
-        </Alert>
-      ) : null}
       <div className={styles.workspace}>
         <LayerPanel />
         <AnimatePresence initial={false} mode="wait">

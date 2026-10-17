@@ -1,15 +1,18 @@
 import { useRef } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { Button } from "../../../components/ui/button";
+import { Input } from "../../../components/ui/input";
 import { Shortcut } from "../../../components/Shortcut";
 import { useAtomValue, useSetAtom } from "jotai";
-import { ActionIcon, NumberInput, Tooltip } from "../../../ui";
+import { ActionIcon, Tooltip } from "../../../ui";
 import {
   MousePointer2,
   Type,
   ImagePlus,
   LayoutTemplate,
   FilePenLine,
+  Minus,
+  Plus,
 } from "lucide-react";
 import { zoomAtom } from "../../../state/editor";
 import {
@@ -37,6 +40,14 @@ export function EditorDock() {
     input = useRef<HTMLInputElement>(null);
   const sourceActive = !!source && source.enabled !== false;
   const visual = !sourceActive && mode !== "text";
+  function chooseMode(next: "visual" | "text") {
+    const active = visual ? "visual" : sourceActive ? null : "text";
+    const target =
+      active === next ? (next === "visual" ? "text" : "visual") : next;
+    enable();
+    setMode(target);
+    setTool("select");
+  }
   async function image(file: File | undefined) {
     if (!file) return;
     if (file.size > 1_000_000) {
@@ -103,13 +114,13 @@ export function EditorDock() {
                     variant={tool === "select" ? "light" : "subtle"}
                     onClick={() => setTool("select")}
                   >
-                    <MousePointer2 size={17} />
+                    <MousePointer2 size={17} aria-hidden />
                   </ActionIcon>
                 </Tooltip>
                 <Tooltip
                   label={
                     <span className={styles.shortcutLabel}>
-                      Text <Shortcut keys={["T"]} />
+                      Text · Click or drag a text box <Shortcut keys={["T"]} />
                     </span>
                   }
                 >
@@ -123,7 +134,7 @@ export function EditorDock() {
                       setTool("text");
                     }}
                   >
-                    <Type size={18} />
+                    <Type size={18} aria-hidden />
                   </ActionIcon>
                 </Tooltip>
                 <Tooltip label="Add image">
@@ -133,7 +144,7 @@ export function EditorDock() {
                     color="gray"
                     onClick={() => input.current?.click()}
                   >
-                    <ImagePlus size={18} />
+                    <ImagePlus size={18} aria-hidden />
                   </ActionIcon>
                 </Tooltip>
                 <ShapePicker />
@@ -163,9 +174,7 @@ export function EditorDock() {
           <Button
             variant="ghost"
             aria-pressed={visual}
-            onClick={() => {
-              enable();
-            }}
+            onClick={() => chooseMode("visual")}
           >
             {visual && (
               <motion.span
@@ -178,17 +187,13 @@ export function EditorDock() {
                 }
               />
             )}
-            <LayoutTemplate size={14} />
+            <LayoutTemplate size={14} aria-hidden />
             Visual
           </Button>
           <Button
             variant="ghost"
             aria-pressed={mode === "text" && !sourceActive}
-            onClick={() => {
-              enable();
-              setMode("text");
-              setTool("select");
-            }}
+            onClick={() => chooseMode("text")}
           >
             {mode === "text" && !sourceActive && (
               <motion.span
@@ -201,7 +206,7 @@ export function EditorDock() {
                 }
               />
             )}
-            <FilePenLine size={14} />
+            <FilePenLine size={14} aria-hidden />
             Text
           </Button>
         </motion.div>
@@ -219,21 +224,44 @@ export function EditorDock() {
               }}
             >
               <span className={styles.rule} />
-              <NumberInput
-                aria-label="Canvas zoom"
-                value={zoom}
-                min={15}
-                max={250}
-                step={1}
-                suffix="%"
-                hideControls
-                size="xs"
-                className={styles.zoom}
-                onChange={(value) => {
-                  if (typeof value === "number")
-                    setZoom(Math.min(250, Math.max(15, value)));
-                }}
-              />
+              <Tooltip label="Zoom out">
+                <ActionIcon
+                  aria-label="Zoom out"
+                  variant="subtle"
+                  color="gray"
+                  disabled={zoom <= 15}
+                  onClick={() => setZoom(Math.max(15, zoom - 10))}
+                >
+                  <Minus size={16} aria-hidden />
+                </ActionIcon>
+              </Tooltip>
+              <div className={styles.zoom}>
+                <Input
+                  aria-label="Canvas zoom"
+                  type="number"
+                  value={zoom}
+                  min={15}
+                  max={250}
+                  step={1}
+                  onChange={(event) => {
+                    const value = event.currentTarget.valueAsNumber;
+                    if (Number.isFinite(value))
+                      setZoom(Math.min(250, Math.max(15, value)));
+                  }}
+                />
+                <span aria-hidden>%</span>
+              </div>
+              <Tooltip label="Zoom in">
+                <ActionIcon
+                  aria-label="Zoom in"
+                  variant="subtle"
+                  color="gray"
+                  disabled={zoom >= 250}
+                  onClick={() => setZoom(Math.min(250, zoom + 10))}
+                >
+                  <Plus size={16} aria-hidden />
+                </ActionIcon>
+              </Tooltip>
             </motion.div>
           )}
         </AnimatePresence>

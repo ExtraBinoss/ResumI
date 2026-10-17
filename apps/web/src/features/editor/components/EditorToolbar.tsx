@@ -7,9 +7,6 @@ import {
   Redo2,
   Download,
   ChevronDown,
-  Check,
-  LoaderCircle,
-  AlertCircle,
   FileJson,
   FileCode,
   Printer,
@@ -20,31 +17,31 @@ import { downloadFile, fileName } from "../../../lib/files";
 import {
   historyAtom,
   saveStatusAtom,
+  saveErrorAtom,
   undoAtom,
   redoAtom,
   sessionAtom,
   type EditorController,
 } from "../../../state/editor";
-import { sourceAtom } from "../../../state/design";
+import { sourceAtom, designErrorAtom } from "../../../state/design";
 import { SettingsMenu } from "../../../components/SettingsMenu";
 import { Shortcut } from "../../../components/Shortcut";
+import { ErrorNotice } from "../../../components/ErrorNotice";
 import { ProjectMenu } from "./ProjectMenu";
 import styles from "../styles/Editor.module.css";
 
 export function EditorToolbar({
   controller,
-  openSource,
-  openProposal,
 }: {
   controller: EditorController;
-  openSource: () => void;
-  openProposal: () => void;
 }) {
   const source = useAtomValue(sourceAtom),
     history = useAtomValue(historyAtom),
-    status = useAtomValue(saveStatusAtom);
+    status = useAtomValue(saveStatusAtom),
+    error = useAtomValue(saveErrorAtom);
   const undo = useSetAtom(undoAtom),
     redo = useSetAtom(redoAtom),
+    setError = useSetAtom(designErrorAtom),
     store = useStore(),
     navigate = useNavigate();
   function back() {
@@ -53,14 +50,22 @@ export function EditorToolbar({
     });
   }
   async function exportFile(format: "json" | "html") {
-    const doc = store.get(sessionAtom)!.document;
-    downloadFile(
-      fileName(doc.name, format),
-      format === "json"
-        ? serializeDocument(doc)
-        : await renderDocumentHtml(doc),
-      format === "json" ? "application/json" : "text/html",
-    );
+    try {
+      const doc = store.get(sessionAtom)!.document;
+      downloadFile(
+        fileName(doc.name, format),
+        format === "json"
+          ? serializeDocument(doc)
+          : await renderDocumentHtml(doc),
+        format === "json" ? "application/json" : "text/html",
+      );
+    } catch (error) {
+      setError(
+        error instanceof Error
+          ? error.message
+          : "The resume could not be exported.",
+      );
+    }
   }
   function print() {
     const doc = store.get(sessionAtom)!.document;
@@ -95,7 +100,7 @@ export function EditorToolbar({
             aria-label="Back to projects"
             onClick={back}
           >
-            <ArrowLeft size={17} />
+            <ArrowLeft size={17} aria-hidden />
           </ActionIcon>
         </Tooltip>
         <div className={styles.historyActions}>
@@ -113,7 +118,7 @@ export function EditorToolbar({
               disabled={!history.undo}
               onClick={() => undo()}
             >
-              <Undo2 size={17} />
+              <Undo2 size={17} aria-hidden />
             </ActionIcon>
           </Tooltip>
           <Tooltip
@@ -130,38 +135,38 @@ export function EditorToolbar({
               disabled={!history.redo}
               onClick={() => redo()}
             >
-              <Redo2 size={17} />
+              <Redo2 size={17} aria-hidden />
             </ActionIcon>
           </Tooltip>
         </div>
       </div>
       <div className={styles.projectTitle}>
-        <ProjectMenu
-          openSource={openSource}
-          openProposal={openProposal}
-          back={back}
-        />
+        <ProjectMenu back={back} />
         <span
-          className={styles.saveStatus}
+          className="srOnly"
           role="status"
           aria-label="Save status"
           data-status={status}
         >
-          {status === "saved" ? (
-            <Check size={11} aria-hidden />
-          ) : status === "saving" ? (
-            <LoaderCircle size={12} aria-hidden className={styles.saving} />
-          ) : (
-            <AlertCircle size={12} aria-hidden />
-          )}
-          <span className="srOnly">
-            {status === "saved"
-              ? "Saved"
-              : status === "saving"
-                ? "Saving…"
-                : "Not saved"}
-          </span>
+          {status === "saved"
+            ? "Saved"
+            : status === "saving"
+              ? "Saving…"
+              : "Not saved"}
         </span>
+        <ErrorNotice
+          error={error || null}
+          label="Changes are not saved"
+          compact
+        >
+          <Button
+            variant="default"
+            size="xs"
+            onClick={() => void controller.flush()}
+          >
+            Retry save
+          </Button>
+        </ErrorNotice>
       </div>
       <div className={styles.toolbarRight}>
         <SettingsMenu />
@@ -169,7 +174,8 @@ export function EditorToolbar({
           <Menu.Target>
             <Button
               size="xs"
-              variant="subtle"
+              variant="filled"
+              aria-label="Export"
               leftSection={<Download size={14} />}
               rightSection={<ChevronDown size={12} />}
               className={styles.exportButton}

@@ -1,67 +1,99 @@
-.number input {
-  appearance: textfield;
-  -moz-appearance: textfield;
-  font-variant-numeric: tabular-nums;
+.field {
+  min-width: 0;
 }
-.number input::-webkit-inner-spin-button,
-.number input::-webkit-outer-spin-button {
-  appearance: none;
-  margin: 0;
+.control {
+  display: flex;
+  align-items: stretch;
+  width: 100%;
+  min-width: 0;
+  height: 34px;
+  border: 1px solid var(--control-border);
+  border-radius: var(--radius-md);
+  background: var(--control-bg);
+  box-shadow: var(--control-shadow);
+  overflow: hidden;
+  transition:
+    border-color 0.12s,
+    box-shadow 0.12s;
 }
-.number input[data-ui="input"] {
-  padding-right: 25px;
+.control:focus-within {
+  border-color: var(--ring);
+  box-shadow: 0 0 0 2px var(--accent-soft);
 }
-.number:has(.suffix):has(.stepper) input[data-ui="input"] {
-  padding-right: 44px;
-}
-.number:has(.suffix):not(:has(.stepper)) input[data-ui="input"] {
-  padding-right: 18px;
-}
-.number:not(:has(.stepper)):not(:has(.suffix)) input[data-ui="input"] {
-  padding-right: 10px;
-}
-.number :global([data-ui="input-right"]) {
-  width: auto;
-  right: 4px;
-}
-.trailing {
+.scrub,
+.unit {
   display: flex;
   align-items: center;
-  gap: 4px;
-}
-.suffix {
+  justify-content: center;
+  flex-shrink: 0;
   color: var(--muted-foreground);
   font-size: 12px;
 }
-.stepper {
-  display: grid;
-  align-content: center;
-  width: 17px;
-  height: 24px;
+.scrub {
+  min-width: 29px;
+  max-width: 50%;
+  padding: 0 7px;
+  border: 0;
+  border-right: 1px solid var(--line);
+  background: color-mix(in srgb, var(--muted) 55%, transparent);
+  font-family: inherit;
+  white-space: nowrap;
   overflow: hidden;
-  border: 1px solid var(--control-border);
-  border-radius: 4px;
-  background: var(--control-bg);
-  box-shadow: var(--control-shadow);
-  pointer-events: auto;
+  text-overflow: ellipsis;
+  cursor: ew-resize;
+  touch-action: none;
+  user-select: none;
 }
-.stepper button {
-  width: 100%;
-  height: 11px;
-  min-height: 0;
-  padding: 0;
+.scrub:hover,
+.control[data-dragging] .scrub {
+  color: var(--foreground);
+  background: var(--accent);
+}
+.input,
+.input[data-ui="input"] {
+  flex: 1;
+  min-width: 0;
+  width: 0;
+  height: 100%;
+  padding: 0 6px;
+  border: 0;
   border-radius: 0;
+  background: transparent;
+  box-shadow: none;
   color: var(--ink);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+  outline: none;
+  appearance: textfield;
+  -moz-appearance: textfield;
 }
-.stepper button + button {
-  border-top: 1px solid var(--line);
+.input:focus,
+.input:focus-visible {
+  border: 0;
+  box-shadow: none;
+  outline: none;
 }
-.stepper button svg {
-  width: 10px;
-  height: 10px;
-  stroke-width: 2;
+.input::-webkit-inner-spin-button,
+.input::-webkit-outer-spin-button {
+  appearance: none;
+  margin: 0;
 }
-.stepper button:hover {
-  background: var(--primary);
-  color: var(--primary-foreground);
+.unit {
+  min-width: 27px;
+  padding: 0 5px;
+  border-left: 1px solid var(--line);
+  font-size: 11px;
+  user-select: none;
+}
+.control[data-disabled] {
+  opacity: 0.5;
+}
+.control[data-disabled] .scrub {
+  cursor: default;
+}
+@media (prefers-reduced-motion: reduce) {
+  .control {
+    transition: none;
+  }
 }

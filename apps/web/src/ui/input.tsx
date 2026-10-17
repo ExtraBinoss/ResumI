@@ -11,6 +11,7 @@ import styles from "./ui.module.css";
 import { Input } from "../components/ui/input";
 import { Textarea as ShadcnTextarea } from "../components/ui/textarea";
 import { Label } from "../components/ui/label";
+import { CopyErrorButton } from "../components/ErrorNotice";
 
 export type FieldProps = LayoutProps & {
   label?: ReactNode;
@@ -43,9 +44,10 @@ export function Field({
       {children}
       {description && <p className={styles.description}>{description}</p>}
       {error && (
-        <p role="alert" className={styles.fieldError}>
-          {error}
-        </p>
+        <div role="alert" className={styles.fieldError}>
+          <span>{error}</span>
+          {typeof error === "string" && <CopyErrorButton details={error} />}
+        </div>
       )}
     </div>
   );

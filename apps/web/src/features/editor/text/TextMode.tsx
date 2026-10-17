@@ -1,14 +1,12 @@
 import { useAtomValue, useSetAtom, useStore, atom } from "jotai";
 import { Lock } from "lucide-react";
-import { Textarea } from "../../../components/ui/textarea";
+import { RichTextField } from "../panels/RichTextField";
 import { ScrollShadow } from "../../../components/ScrollShadow";
 import layout from "../styles/TextFields.module.css";
-import { isLocked, richTextSegments } from "@resumi/engine";
+import { isLocked } from "@resumi/engine";
 import {
   canvasAtom,
-  designCommandAtom,
   selectLayersAtom,
-  textRangeAtom,
   selectedIdsAtom,
 } from "../../../state/design";
 import { sessionAtom, blockAtom } from "../../../state/editor";
@@ -26,9 +24,7 @@ const wordCountAtom = atom((get) =>
 function TextEntry({ id }: { id: string }) {
   const canvas = useAtomValue(canvasAtom);
   const block = useAtomValue(blockAtom(id)),
-    dispatch = useSetAtom(designCommandAtom),
     select = useSetAtom(selectLayersAtom),
-    setRange = useSetAtom(textRangeAtom),
     store = useStore();
   if (!block || block.design?.type !== "text") return null;
   const layer = block.design,
@@ -38,8 +34,8 @@ function TextEntry({ id }: { id: string }) {
         (group) => group.locked && group.elementIds.includes(id),
       );
   return (
-    <label className={styles.copyBlock}>
-      <span className={styles.copyMeta}>
+    <div className={styles.copyBlock}>
+      <span className={styles.copyMeta} title={layer.name}>
         {layer.name}
         <small>
           {locked ? (
@@ -54,84 +50,18 @@ function TextEntry({ id }: { id: string }) {
         </small>
       </span>
       <div>
-        <Textarea
+        <RichTextField
+          id={id}
+          text={block.text}
+          layer={layer}
+          showLabel={false}
           className={styles.copyInput}
-          aria-label={`Text content: ${layer.name}`}
-          value={block.text}
+          ariaLabel={`Text content: ${layer.name}`}
           readOnly={locked}
-          rows={Math.min(
-            9,
-            Math.max(
-              1,
-              block.text.split("\n").length +
-                Math.floor(block.text.length / 50),
-            ),
-          )}
-          maxLength={20000}
-          style={{
-            fontFamily: layer.fontFamily,
-            fontSize: Math.min(layer.fontSize, 28),
-            fontWeight: layer.fontWeight,
-            fontStyle: layer.fontStyle,
-            lineHeight: layer.lineHeight,
-            letterSpacing: layer.letterSpacing,
-            color: "var(--foreground)",
-            textAlign: layer.align,
-            textDecoration: [
-              layer.underline ? "underline" : "",
-              layer.strike ? "line-through" : "",
-            ].join(" "),
-          }}
           onFocus={() => select({ ids: [id] })}
-          onSelect={(e) => {
-            const node = e.currentTarget;
-            setRange({
-              id,
-              start: node.selectionStart,
-              end: node.selectionEnd,
-            });
-          }}
-          onChange={(e) =>
-            dispatch({
-              type: "block.update",
-              id,
-              patch: { text: e.currentTarget.value },
-            })
-          }
         />
-        {layer.marks.length > 0 && (
-          <div
-            style={{
-              fontSize: 11,
-              whiteSpace: "pre-wrap",
-              padding: "4px 7px",
-              color: layer.color,
-              background: canvas?.background ?? "#fff",
-              borderRadius: 6,
-            }}
-            aria-label={`Formatted preview: ${layer.name}`}
-          >
-            {richTextSegments(block.text, layer.marks).map((segment) => (
-              <span
-                key={segment.start}
-                style={{
-                  fontWeight: segment.style.fontWeight,
-                  fontStyle: segment.style.fontStyle,
-                  color: segment.style.color,
-                  textDecoration: segment.style.underline
-                    ? "underline"
-                    : segment.style.strike
-                      ? "line-through"
-                      : undefined,
-                }}
-              >
-                {segment.text}
-              </span>
-            ))}
-          </div>
-        )}
       </div>
-    </label>
+    </div>
   );
 }
 function ActiveFormatting({ id }: { id: string }) {

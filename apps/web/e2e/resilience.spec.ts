@@ -232,9 +232,13 @@ test("two browser tabs cannot overwrite a newer save and can still export the un
   await expect(
     other.getByRole("status", { name: "Save status", exact: true }),
   ).toHaveText("Not saved");
+  await other
+    .getByRole("button", { name: "Changes are not saved", exact: true })
+    .hover();
   await expect(
     other.getByText("This resume changed in another tab.", { exact: false }),
   ).toBeVisible();
+  await other.keyboard.press("Escape");
   await other.getByRole("button", { name: "Export", exact: true }).click();
   const downloaded = other.waitForEvent("download");
   await other.getByRole("menuitem", { name: "JSON document" }).click();

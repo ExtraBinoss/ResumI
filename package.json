@@ -27,7 +27,8 @@
     "test:dev": "bun scripts/dev-smoke.ts",
     "profile:create": "bun scripts/profile-create.ts",
     "source:runtime": "bun scripts/build-source-runtime.ts",
-    "templates:assets": "bun scripts/build-template-assets.ts"
+    "templates:assets": "bun scripts/build-template-assets.ts",
+    "icons:brands": "bun scripts/build-brand-catalog.ts"
   },
   "dependencies": {
     "@fontsource-variable/inter": "^5.2.8",

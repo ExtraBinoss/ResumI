@@ -359,6 +359,110 @@
                             },
                             "strokeOnly": {
                               "type": "boolean"
+                            },
+                            "parts": {
+                              "minItems": 1,
+                              "maxItems": 128,
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "path": {
+                                    "type": "string",
+                                    "minLength": 1,
+                                    "maxLength": 50000,
+                                    "pattern": "^[MmZzLlHhVvCcSsQqTtAaEe0-9.,+\\s-]+$"
+                                  },
+                                  "fill": {
+                                    "type": "string",
+                                    "pattern": "^(#[0-9a-fA-F]{6}([0-9a-fA-F]{2})?|transparent)$"
+                                  },
+                                  "stroke": {
+                                    "type": "string",
+                                    "pattern": "^(#[0-9a-fA-F]{6}([0-9a-fA-F]{2})?|transparent)$"
+                                  },
+                                  "strokeWidth": {
+                                    "type": "number",
+                                    "minimum": 0,
+                                    "maximum": 100
+                                  },
+                                  "opacity": {
+                                    "type": "number",
+                                    "minimum": 0,
+                                    "maximum": 1
+                                  },
+                                  "fillRule": {
+                                    "type": "string",
+                                    "enum": [
+                                      "nonzero",
+                                      "evenodd"
+                                    ]
+                                  },
+                                  "matrix": {
+                                    "type": "array",
+                                    "prefixItems": [
+                                      {
+                                        "type": "number",
+                                        "minimum": -100000,
+                                        "maximum": 100000
+                                      },
+                                      {
+                                        "type": "number",
+                                        "minimum": -100000,
+                                        "maximum": 100000
+                                      },
+                                      {
+                                        "type": "number",
+                                        "minimum": -100000,
+                                        "maximum": 100000
+                                      },
+                                      {
+                                        "type": "number",
+                                        "minimum": -100000,
+                                        "maximum": 100000
+                                      },
+                                      {
+                                        "type": "number",
+                                        "minimum": -100000,
+                                        "maximum": 100000
+                                      },
+                                      {
+                                        "type": "number",
+                                        "minimum": -100000,
+                                        "maximum": 100000
+                                      }
+                                    ],
+                                    "items": false,
+                                    "minItems": 6,
+                                    "maxItems": 6
+                                  },
+                                  "linecap": {
+                                    "type": "string",
+                                    "enum": [
+                                      "butt",
+                                      "round",
+                                      "square"
+                                    ]
+                                  },
+                                  "linejoin": {
+                                    "type": "string",
+                                    "enum": [
+                                      "miter",
+                                      "round",
+                                      "bevel"
+                                    ]
+                                  }
+                                },
+                                "required": [
+                                  "path",
+                                  "fill"
+                                ],
+                                "additionalProperties": false
+                              }
+                            },
+                            "attribution": {
+                              "type": "string",
+                              "maxLength": 12000
                             }
                           },
                           "required": [
@@ -1126,6 +1230,110 @@
                       },
                       "strokeOnly": {
                         "type": "boolean"
+                      },
+                      "parts": {
+                        "minItems": 1,
+                        "maxItems": 128,
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "path": {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 50000,
+                              "pattern": "^[MmZzLlHhVvCcSsQqTtAaEe0-9.,+\\s-]+$"
+                            },
+                            "fill": {
+                              "type": "string",
+                              "pattern": "^(#[0-9a-fA-F]{6}([0-9a-fA-F]{2})?|transparent)$"
+                            },
+                            "stroke": {
+                              "type": "string",
+                              "pattern": "^(#[0-9a-fA-F]{6}([0-9a-fA-F]{2})?|transparent)$"
+                            },
+                            "strokeWidth": {
+                              "type": "number",
+                              "minimum": 0,
+                              "maximum": 100
+                            },
+                            "opacity": {
+                              "type": "number",
+                              "minimum": 0,
+                              "maximum": 1
+                            },
+                            "fillRule": {
+                              "type": "string",
+                              "enum": [
+                                "nonzero",
+                                "evenodd"
+                              ]
+                            },
+                            "matrix": {
+                              "type": "array",
+                              "prefixItems": [
+                                {
+                                  "type": "number",
+                                  "minimum": -100000,
+                                  "maximum": 100000
+                                },
+                                {
+                                  "type": "number",
+                                  "minimum": -100000,
+                                  "maximum": 100000
+                                },
+                                {
+                                  "type": "number",
+                                  "minimum": -100000,
+                                  "maximum": 100000
+                                },
+                                {
+                                  "type": "number",
+                                  "minimum": -100000,
+                                  "maximum": 100000
+                                },
+                                {
+                                  "type": "number",
+                                  "minimum": -100000,
+                                  "maximum": 100000
+                                },
+                                {
+                                  "type": "number",
+                                  "minimum": -100000,
+                                  "maximum": 100000
+                                }
+                              ],
+                              "items": false,
+                              "minItems": 6,
+                              "maxItems": 6
+                            },
+                            "linecap": {
+                              "type": "string",
+                              "enum": [
+                                "butt",
+                                "round",
+                                "square"
+                              ]
+                            },
+                            "linejoin": {
+                              "type": "string",
+                              "enum": [
+                                "miter",
+                                "round",
+                                "bevel"
+                              ]
+                            }
+                          },
+                          "required": [
+                            "path",
+                            "fill"
+                          ],
+                          "additionalProperties": false
+                        }
+                      },
+                      "attribution": {
+                        "type": "string",
+                        "maxLength": 12000
                       }
                     },
                     "required": [
@@ -2329,6 +2537,110 @@
                               },
                               "strokeOnly": {
                                 "type": "boolean"
+                              },
+                              "parts": {
+                                "minItems": 1,
+                                "maxItems": 128,
+                                "type": "array",
+                                "items": {
+                                  "type": "object",
+                                  "properties": {
+                                    "path": {
+                                      "type": "string",
+                                      "minLength": 1,
+                                      "maxLength": 50000,
+                                      "pattern": "^[MmZzLlHhVvCcSsQqTtAaEe0-9.,+\\s-]+$"
+                                    },
+                                    "fill": {
+                                      "type": "string",
+                                      "pattern": "^(#[0-9a-fA-F]{6}([0-9a-fA-F]{2})?|transparent)$"
+                                    },
+                                    "stroke": {
+                                      "type": "string",
+                                      "pattern": "^(#[0-9a-fA-F]{6}([0-9a-fA-F]{2})?|transparent)$"
+                                    },
+                                    "strokeWidth": {
+                                      "type": "number",
+                                      "minimum": 0,
+                                      "maximum": 100
+                                    },
+                                    "opacity": {
+                                      "type": "number",
+                                      "minimum": 0,
+                                      "maximum": 1
+                                    },
+                                    "fillRule": {
+                                      "type": "string",
+                                      "enum": [
+                                        "nonzero",
+                                        "evenodd"
+                                      ]
+                                    },
+                                    "matrix": {
+                                      "type": "array",
+                                      "prefixItems": [
+                                        {
+                                          "type": "number",
+                                          "minimum": -100000,
+                                          "maximum": 100000
+                                        },
+                                        {
+                                          "type": "number",
+                                          "minimum": -100000,
+                                          "maximum": 100000
+                                        },
+                                        {
+                                          "type": "number",
+                                          "minimum": -100000,
+                                          "maximum": 100000
+                                        },
+                                        {
+                                          "type": "number",
+                                          "minimum": -100000,
+                                          "maximum": 100000
+                                        },
+                                        {
+                                          "type": "number",
+                                          "minimum": -100000,
+                                          "maximum": 100000
+                                        },
+                                        {
+                                          "type": "number",
+                                          "minimum": -100000,
+                                          "maximum": 100000
+                                        }
+                                      ],
+                                      "items": false,
+                                      "minItems": 6,
+                                      "maxItems": 6
+                                    },
+                                    "linecap": {
+                                      "type": "string",
+                                      "enum": [
+                                        "butt",
+                                        "round",
+                                        "square"
+                                      ]
+                                    },
+                                    "linejoin": {
+                                      "type": "string",
+                                      "enum": [
+                                        "miter",
+                                        "round",
+                                        "bevel"
+                                      ]
+                                    }
+                                  },
+                                  "required": [
+                                    "path",
+                                    "fill"
+                                  ],
+                                  "additionalProperties": false
+                                }
+                              },
+                              "attribution": {
+                                "type": "string",
+                                "maxLength": 12000
                               }
                             },
                             "required": [
@@ -3156,6 +3468,110 @@
                               },
                               "strokeOnly": {
                                 "type": "boolean"
+                              },
+                              "parts": {
+                                "minItems": 1,
+                                "maxItems": 128,
+                                "type": "array",
+                                "items": {
+                                  "type": "object",
+                                  "properties": {
+                                    "path": {
+                                      "type": "string",
+                                      "minLength": 1,
+                                      "maxLength": 50000,
+                                      "pattern": "^[MmZzLlHhVvCcSsQqTtAaEe0-9.,+\\s-]+$"
+                                    },
+                                    "fill": {
+                                      "type": "string",
+                                      "pattern": "^(#[0-9a-fA-F]{6}([0-9a-fA-F]{2})?|transparent)$"
+                                    },
+                                    "stroke": {
+                                      "type": "string",
+                                      "pattern": "^(#[0-9a-fA-F]{6}([0-9a-fA-F]{2})?|transparent)$"
+                                    },
+                                    "strokeWidth": {
+                                      "type": "number",
+                                      "minimum": 0,
+                                      "maximum": 100
+                                    },
+                                    "opacity": {
+                                      "type": "number",
+                                      "minimum": 0,
+                                      "maximum": 1
+                                    },
+                                    "fillRule": {
+                                      "type": "string",
+                                      "enum": [
+                                        "nonzero",
+                                        "evenodd"
+                                      ]
+                                    },
+                                    "matrix": {
+                                      "type": "array",
+                                      "prefixItems": [
+                                        {
+                                          "type": "number",
+                                          "minimum": -100000,
+                                          "maximum": 100000
+                                        },
+                                        {
+                                          "type": "number",
+                                          "minimum": -100000,
+                                          "maximum": 100000
+                                        },
+                                        {
+                                          "type": "number",
+                                          "minimum": -100000,
+                                          "maximum": 100000
+                                        },
+                                        {
+                                          "type": "number",
+                                          "minimum": -100000,
+                                          "maximum": 100000
+                                        },
+                                        {
+                                          "type": "number",
+                                          "minimum": -100000,
+                                          "maximum": 100000
+                                        },
+                                        {
+                                          "type": "number",
+                                          "minimum": -100000,
+                                          "maximum": 100000
+                                        }
+                                      ],
+                                      "items": false,
+                                      "minItems": 6,
+                                      "maxItems": 6
+                                    },
+                                    "linecap": {
+                                      "type": "string",
+                                      "enum": [
+                                        "butt",
+                                        "round",
+                                        "square"
+                                      ]
+                                    },
+                                    "linejoin": {
+                                      "type": "string",
+                                      "enum": [
+                                        "miter",
+                                        "round",
+                                        "bevel"
+                                      ]
+                                    }
+                                  },
+                                  "required": [
+                                    "path",
+                                    "fill"
+                                  ],
+                                  "additionalProperties": false
+                                }
+                              },
+                              "attribution": {
+                                "type": "string",
+                                "maxLength": 12000
                               }
                             },
                             "required": [

@@ -1,13 +1,12 @@
 import { useEffect } from "react";
 import {
-  Link,
   useLoaderData,
   useNavigate,
   useParams,
   type ClientLoaderFunctionArgs,
 } from "react-router";
-import { Button } from "../../src/ui";
 import { SharedLoading } from "../../src/components/SharedLoading";
+import { PageRecovery } from "../../src/components/PageRecovery";
 import { Editor } from "../../src/features/editor/Editor";
 import { projects, storageMessage } from "../../src/lib/projects";
 export const meta = () => [
@@ -49,14 +48,15 @@ export default function EditorRoute() {
   if (data.project)
     return <Editor key={data.project.id} project={data.project} />;
   return (
-    <main className="recovery">
-      <h1>
-        {data.error ? "Could not open your workspace." : "Resume not found"}
-      </h1>
-      <p>{data.error || "Import a backup or create a resume."}</p>
-      <Button component={Link} to="/projects">
-        Go to projects
-      </Button>
-    </main>
+    <PageRecovery
+      notFound={!data.error}
+      title={data.error ? "Could not open your workspace." : "Resume not found"}
+      description={
+        data.error
+          ? "Try again, or return to your projects."
+          : "Open your library or import a backup."
+      }
+      error={data.error || null}
+    />
   );
 }

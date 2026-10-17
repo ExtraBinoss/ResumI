@@ -40,18 +40,20 @@
   align-items: center;
 }
 .outlineLabel {
-  font-size: 8px;
-  letter-spacing: 1px;
+  font-size: 10px;
+  letter-spacing: 0.6px;
   font-weight: 600;
   color: var(--faint);
-  padding: 25px 18px 13px;
+  padding: 16px 14px 8px;
   display: flex;
   justify-content: space-between;
 }
 .rows {
-  margin: 0 8px 12px;
+  padding: 0 8px 12px;
+  box-sizing: border-box;
 }
 .structureRow {
+  min-width: 0;
   border-radius: 6px;
   margin-bottom: 4px;
   position: relative;
@@ -67,7 +69,8 @@
   width: 100%;
   text-align: left;
   color: var(--muted-foreground);
-  font-size: 11px;
+  font-size: 12px;
+  font-weight: 600;
 }
 .sectionButton span {
   flex: 1;
@@ -292,4 +295,69 @@
   .fieldGroup :global([data-ui="input"]) {
     font-size: 9px;
   }
+}
+
+.outlineScroll {
+  flex: 1;
+  min-height: 0;
+}
+.outlineBlocks {
+  padding: 0 4px 5px 18px;
+}
+.outlineBlock {
+  position: relative;
+}
+.outlineBlock > button {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  padding: 7px 6px;
+  border: 0;
+  border-radius: 5px;
+  background: transparent;
+  color: var(--muted-foreground);
+  font: 12px/1.35 var(--font-ui);
+  text-align: left;
+}
+.outlineBlock > button:hover {
+  background: var(--muted);
+  color: var(--foreground);
+}
+.outlineBlock > button.activeBlock {
+  background: var(--accent-soft);
+  color: var(--foreground);
+}
+.outlineBlock > button svg {
+  flex: 0 0 14px;
+}
+.outlineBlock > button span {
+  min-width: 0;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.structureRow[data-drop-position="above"]::before,
+.outlineBlock[data-drop-position="above"]::before,
+.structureRow[data-drop-position="below"]::after,
+.outlineBlock[data-drop-position="below"]::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  border-radius: 2px;
+  z-index: 2;
+  pointer-events: none;
+  background: var(--primary);
+}
+.structureRow[data-drop-position="above"]::before,
+.outlineBlock[data-drop-position="above"]::before {
+  top: -2px;
+}
+.structureRow[data-drop-position="below"]::after,
+.outlineBlock[data-drop-position="below"]::after {
+  bottom: -2px;
 }

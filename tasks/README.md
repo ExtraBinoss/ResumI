@@ -23,3 +23,4 @@ The source of progress truth is [check-list.md](check-list.md). Tasks execute in
 - [15 — Feature organization](15-feature-organization.md)
 - [16 — macOS design](16-macos-design.md)
 - [17 — Apple product and templates](17-apple-product-and-templates.md)
+- [18 — Editor interaction refinement](18-editor-interaction-refinement.md)

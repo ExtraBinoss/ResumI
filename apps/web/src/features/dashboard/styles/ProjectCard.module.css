@@ -5,9 +5,7 @@
   border: 1px solid color-mix(in srgb, var(--foreground) 10%, transparent);
   border-radius: 8px;
   background: var(--background);
-  box-shadow:
-    0 2px 4px rgb(0 0 0 / 3%),
-    0 10px 24px rgb(0 0 0 / 5%);
+  box-shadow: 0 1px 3px rgb(0 0 0 / 3%);
   transition:
     box-shadow 220ms,
     border-color 220ms;
@@ -15,9 +13,7 @@
 .project:hover,
 .project:focus-within {
   border-color: color-mix(in srgb, var(--foreground) 20%, transparent);
-  box-shadow:
-    0 4px 10px rgb(0 0 0 / 5%),
-    0 16px 32px rgb(0 0 0 / 9%);
+  box-shadow: 0 2px 5px rgb(0 0 0 / 4%);
 }
 .projectLink {
   position: relative;
@@ -36,11 +32,7 @@
   align-items: center;
   justify-content: center;
   padding: 22px;
-  background: linear-gradient(
-    150deg,
-    color-mix(in srgb, var(--muted) 65%, var(--background)),
-    color-mix(in srgb, var(--foreground) 8%, var(--background))
-  );
+  background: var(--muted);
 }
 .miniPaper {
   width: min(100%, 228px);
@@ -49,35 +41,37 @@
   flex-shrink: 0;
   pointer-events: none;
   background: #fff;
-  box-shadow:
-    0 1px 3px rgb(0 0 0 / 7%),
-    0 6px 14px rgb(0 0 0 / 8%);
+  box-shadow: 0 1px 4px rgb(0 0 0 / 5%);
 }
 .projectInfo {
   position: absolute;
   z-index: 1;
-  inset: auto 0 0;
-  padding: 52px 16px 15px;
-  color: #fff;
-  background: linear-gradient(
-    transparent,
-    rgb(0 0 0 / 63%) 62%,
-    rgb(0 0 0 / 77%)
-  );
+  inset: auto 8px 8px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 56px;
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--card) 90%, transparent);
+  color: var(--foreground);
+  box-shadow: 0 1px 3px rgb(0 0 0 / 4%);
+  backdrop-filter: blur(12px) saturate(1.1);
 }
 .projectInfo h3 {
   overflow: hidden;
-  margin: 0 70px 5px 0;
+  margin: 0 68px 2px 0;
   font-family: var(--font-ui);
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
-  line-height: 20px;
+  line-height: 18px;
   white-space: nowrap;
   text-overflow: ellipsis;
 }
 .projectInfo p {
   margin: 0;
-  color: rgb(255 255 255 / 70%);
+  color: var(--muted-foreground);
   font-size: 11px;
   line-height: 16px;
 }
@@ -85,7 +79,7 @@
 .menu {
   position: absolute;
   z-index: 2;
-  bottom: 32px;
+  bottom: 30px;
 }
 .project .previewButton,
 .project .menu button {
@@ -93,22 +87,22 @@
   height: 28px;
   min-height: 28px;
   padding: 0;
-  border: 1px solid rgb(255 255 255 / 12%);
+  border: 1px solid transparent;
   border-radius: 6px;
-  background: rgb(255 255 255 / 9%);
-  color: #fff;
-  backdrop-filter: blur(8px);
+  background: transparent;
+  color: var(--muted-foreground);
 }
 .project .previewButton {
-  right: 45px;
+  right: 50px;
 }
 .menu {
-  right: 12px;
+  right: 16px;
 }
 .project .previewButton:hover,
 .project .menu button:hover {
-  background: rgb(255 255 255 / 24%);
-  color: #fff;
+  border-color: var(--line);
+  background: var(--accent);
+  color: var(--foreground);
 }
 .compact {
   border-color: var(--line);
@@ -128,9 +122,14 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
+  height: auto;
   padding: 0;
+  border: 0;
+  border-radius: 0;
   color: var(--foreground);
   background: none;
+  box-shadow: none;
+  backdrop-filter: none;
 }
 .compact .miniPaper {
   width: auto;
@@ -141,6 +140,12 @@
 }
 .compact .projectInfo p {
   color: var(--muted-foreground);
+}
+.compact .previewButton {
+  right: 45px;
+}
+.compact .menu {
+  right: 12px;
 }
 .compact .previewButton,
 .compact .menu {

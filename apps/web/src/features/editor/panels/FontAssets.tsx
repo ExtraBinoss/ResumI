@@ -1,13 +1,92 @@
 import { useRef } from "react";
 import { useAtomValue, useSetAtom, useStore } from "jotai";
 import { Upload, X } from "lucide-react";
-import { ActionIcon } from "../../../ui";
+import { ActionIcon, Tooltip } from "../../../ui";
 import {
   canvasAtom,
   designCommandAtom,
   designErrorAtom,
 } from "../../../state/design";
 import styles from "../styles/Inspector.module.css";
+
+export function useFontImport() {
+  const store = useStore();
+  const dispatch = useSetAtom(designCommandAtom);
+  const setError = useSetAtom(designErrorAtom);
+  async function importBlob(name: string, blob: Blob, extension = "ttf") {
+    if (blob.size > 1_000_000) throw new Error("Choose a font under 1 MB.");
+    const current = store.get(canvasAtom);
+    if (!current) throw new Error("Open a visual document to import a font.");
+    if (current.fonts.some((font) => font.name === name)) return name;
+    if (current.fonts.length >= 12)
+      throw new Error(
+        "This document already has 12 fonts. Remove one before importing.",
+      );
+    const dataUrl = await new Promise<string>((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () =>
+        resolve(
+          String(reader.result).replace(
+            /^data:[^;]*;/,
+            `data:font/${extension};`,
+          ),
+        );
+      reader.onerror = () =>
+        reject(new Error("This font could not be opened."));
+      reader.readAsDataURL(blob);
+    });
+    const latest = store.get(canvasAtom)!;
+    dispatch({
+      type: "canvas.update",
+      patch: {
+        fonts: [
+          ...latest.fonts,
+          {
+            id: crypto.randomUUID(),
+            name,
+            dataUrl,
+            format:
+              extension === "ttf"
+                ? "truetype"
+                : extension === "otf"
+                  ? "opentype"
+                  : extension === "woff2"
+                    ? "woff2"
+                    : "woff",
+          },
+        ],
+      },
+    });
+    if (!store.get(canvasAtom)?.fonts.some((font) => font.name === name))
+      throw new Error("This font could not be added to the document.");
+    return name;
+  }
+  async function upload(file: File | undefined) {
+    if (!file) return;
+    try {
+      if (!/\.(ttf|otf|woff|woff2)$/i.test(file.name))
+        throw new Error("Choose a TTF, OTF, WOFF or WOFF2 font.");
+      const name =
+        file.name
+          .replace(/\.[^.]+$/, "")
+          .replace(/[^a-zA-Z0-9 _-]/g, "")
+          .slice(0, 80) || "Custom Font";
+      return await importBlob(
+        name,
+        file,
+        file.name.split(".").pop()?.toLowerCase(),
+      );
+    } catch (error) {
+      setError(
+        error instanceof Error
+          ? error.message
+          : "This font could not be opened.",
+      );
+      return undefined;
+    }
+  }
+  return { importBlob, upload };
+}
 
 export function FontImportButton({
   onImported,
@@ -16,61 +95,7 @@ export function FontImportButton({
 }) {
   const input = useRef<HTMLInputElement>(null);
   const canvas = useAtomValue(canvasAtom);
-  const store = useStore();
-  const dispatch = useSetAtom(designCommandAtom);
-  const setError = useSetAtom(designErrorAtom);
-  async function upload(file: File | undefined) {
-    if (!file) return;
-    if (file.size > 1_000_000 || !/\.(ttf|otf|woff|woff2)$/i.test(file.name)) {
-      setError("Choose a font under 1 MB (TTF, OTF, WOFF or WOFF2).");
-      return;
-    }
-    try {
-      const dataUrl = await new Promise<string>((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = () => resolve(String(reader.result));
-        reader.onerror = reject;
-        reader.readAsDataURL(file);
-      });
-      const current = store.get(canvasAtom);
-      if (!current || current.fonts.length >= 12) return;
-      const name =
-        file.name
-          .replace(/\.[^.]+$/, "")
-          .replace(/[^a-zA-Z0-9 _-]/g, "")
-          .slice(0, 80) || "Custom Font";
-      const extension = file.name.split(".").pop()?.toLowerCase();
-      const format =
-        extension === "ttf"
-          ? "truetype"
-          : extension === "otf"
-            ? "opentype"
-            : extension === "woff2"
-              ? "woff2"
-              : "woff";
-      dispatch({
-        type: "canvas.update",
-        patch: {
-          fonts: [
-            ...current.fonts,
-            {
-              id: crypto.randomUUID(),
-              name,
-              dataUrl: dataUrl.replace(
-                /^data:[^;]*;/,
-                `data:font/${extension};`,
-              ),
-              format,
-            },
-          ],
-        },
-      });
-      if (store.get(canvasAtom)?.fonts.some((font) => font.name === name))
-        onImported?.(name);
-    } catch {
-      setError("This font could not be opened.");
-    }
-  }
+  const { upload } = useFontImport();
   return (
     <>
       <input
@@ -80,20 +105,24 @@ export function FontImportButton({
         accept=".ttf,.otf,.woff,.woff2"
         aria-label="Upload font"
         onChange={(event) => {
-          void upload(event.currentTarget.files?.[0]);
+          void upload(event.currentTarget.files?.[0]).then((name) => {
+            if (name) onImported?.(name);
+          });
           event.currentTarget.value = "";
         }}
       />
-      <ActionIcon
-        aria-label="Import font"
-        size="sm"
-        variant="subtle"
-        color="gray"
-        disabled={!canvas || canvas.fonts.length >= 12}
-        onClick={() => input.current?.click()}
-      >
-        <Upload size={14} />
-      </ActionIcon>
+      <Tooltip label="Import font file">
+        <ActionIcon
+          aria-label="Import font"
+          size="sm"
+          variant="subtle"
+          color="gray"
+          disabled={!canvas || canvas.fonts.length >= 12}
+          onClick={() => input.current?.click()}
+        >
+          <Upload size={14} />
+        </ActionIcon>
+      </Tooltip>
     </>
   );
 }

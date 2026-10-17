@@ -1,5 +1,4 @@
 import { lazy, Suspense, useId, useState, type HTMLAttributes } from "react";
-import { ChevronDown } from "lucide-react";
 import { Button } from "../components/ui/button";
 import {
   Popover,
@@ -8,11 +7,11 @@ import {
 } from "../components/ui/popover";
 import { Field, type FieldProps } from "./input";
 import styles from "./color-input.module.css";
-const PickerPanel = lazy(() =>
+const loadPicker = () =>
   import("./color-picker-panel").then((module) => ({
     default: module.PickerPanel,
-  })),
-);
+  }));
+const PickerPanel = lazy(loadPicker);
 type ColorInputProps = Omit<FieldProps, "rightSection"> & {
   value: string;
   onChange?: (value: string) => void;
@@ -70,6 +69,9 @@ export function ColorInput({
               className={styles.trigger}
               aria-label={accessibleLabel}
               data-ui="input"
+              onPointerEnter={() => void loadPicker()}
+              onFocus={() => void loadPicker()}
+              onPointerDown={() => void loadPicker()}
             />
           }
         >
@@ -81,7 +83,6 @@ export function ColorInput({
           <span className={styles.value}>
             {(open ? draft : value).toUpperCase()}
           </span>
-          <ChevronDown size={12} aria-hidden />
         </PopoverTrigger>
         <PopoverContent
           align="end"
@@ -92,25 +93,24 @@ export function ColorInput({
           <Suspense
             fallback={
               <span
+                style={{ backgroundColor: draft }}
                 className={styles.loading}
                 role="status"
                 aria-label="Loading colors"
               />
             }
           >
-            {open && (
-              <PickerPanel
-                label={accessibleLabel}
-                value={draft}
-                alpha={/^#[0-9a-f]{8}$/i.test(value)}
-                swatches={swatches}
-                change={setDraft}
-                commit={(color) => {
-                  onChange?.(color);
-                  onChangeEnd?.(color);
-                }}
-              />
-            )}
+            <PickerPanel
+              label={accessibleLabel}
+              value={draft}
+              alpha={/^#[0-9a-f]{8}$/i.test(value)}
+              swatches={swatches}
+              change={setDraft}
+              commit={(color) => {
+                onChange?.(color);
+                onChangeEnd?.(color);
+              }}
+            />
           </Suspense>
         </PopoverContent>
       </Popover>

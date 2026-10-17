@@ -1,35 +1,73 @@
 .trigger {
   width: 100%;
-  height: 30px;
+  height: 34px;
   min-width: 0;
   justify-content: flex-start;
-  padding: 0 8px;
-  gap: 6px;
+  padding: 3px;
+  gap: 9px;
   font-size: 12px;
   border-radius: var(--radius-md);
 }
 .swatch {
-  width: 16px;
-  height: 16px;
+  width: 30px;
+  height: 26px;
   flex-shrink: 0;
   border: 1px solid var(--border);
-  border-radius: 4px;
+  border-radius: 3px;
 }
 .value {
   flex: 1;
   overflow: hidden;
   text-overflow: ellipsis;
   text-align: left;
+  font-variant-numeric: tabular-nums;
 }
 .popup {
-  background: var(--panel);
+  background: color-mix(in srgb, var(--popover) 96%, transparent);
   backdrop-filter: blur(16px) saturate(1.1);
   width: 288px;
   max-width: calc(100vw - 24px);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-popover);
+  padding: 12px;
+  gap: 0;
 }
 .loading {
   display: block;
-  height: 180px;
+  height: 250px;
   border-radius: 6px;
-  background: var(--muted);
+  background-image:
+    linear-gradient(to top, #000, transparent),
+    linear-gradient(to right, #fff, transparent);
+}
+.popup :global([data-slot="color-picker-fields"]) {
+  border: 1px solid var(--control-border);
+  border-radius: 6px;
+  background: var(--control-bg);
+  box-shadow: none;
+  height: 34px;
+  overflow: hidden;
+}
+.popup :global([data-slot="color-picker-fields"]:focus-within) {
+  border-color: var(--ring);
+  box-shadow: 0 0 0 2px var(--accent-soft);
+}
+.popup :global([data-slot="input-group-control"]),
+.popup :global([data-slot="input-group-control"]:focus-visible) {
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  outline: none;
+  background: transparent;
+  height: 100%;
+  font-size: 13px;
+}
+.popup :global([data-slot="color-picker-format-trigger"]) {
+  border-radius: 3px;
+  color: var(--muted-foreground);
+}
+.popup :global([data-slot="color-picker-format-trigger"]:hover) {
+  color: var(--foreground);
+  background: var(--accent);
 }

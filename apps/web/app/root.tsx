@@ -10,11 +10,11 @@ import {
   ScrollRestoration,
   useRouteError,
   isRouteErrorResponse,
-  Link,
 } from "react-router";
 import type { ReactNode } from "react";
 import { MotionConfig, motion } from "motion/react";
 import { ThemeSync, themeBootstrap } from "../src/state/theme";
+import { PageRecovery } from "../src/components/PageRecovery";
 import styles from "../src/styles/RouteTransition.module.css";
 export function Layout({ children }: { children: ReactNode }) {
   return (
@@ -67,14 +67,9 @@ export default function App() {
 export function ErrorBoundary() {
   const error = useRouteError();
   return (
-    <main className="recovery">
-      <h1>
-        {isRouteErrorResponse(error) && error.status === 404
-          ? "Page not found"
-          : "Something went wrong"}
-      </h1>
-
-      <Link to="/projects">Go to projects →</Link>
-    </main>
+    <PageRecovery
+      notFound={isRouteErrorResponse(error) && error.status === 404}
+      error={error instanceof Error ? error : "The page could not be loaded."}
+    />
   );
 }

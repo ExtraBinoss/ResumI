@@ -45,7 +45,7 @@ export function PickerPanel({
             swatches ?? [
               "#151515",
               "#ffffff",
-              "#2958e8",
+              "#2563eb",
               "#ed6b4c",
               "#78a892",
               "#d7be91",

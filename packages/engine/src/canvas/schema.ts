@@ -61,16 +61,44 @@ export const gradientSchema = z.strictObject({
     )
     .check(z.minLength(2), z.maxLength(16)),
 });
+const vectorPath = z
+  .string()
+  .check(
+    z.minLength(1),
+    z.maxLength(50000),
+    z.regex(/^[MmZzLlHhVvCcSsQqTtAaEe0-9.,+\s-]+$/),
+  );
 export const vectorSchema = z.strictObject({
-  path: z
-    .string()
-    .check(
-      z.minLength(1),
-      z.maxLength(50000),
-      z.regex(/^[MmZzLlHhVvCcSsQqTtAaEe0-9.,+\s-]+$/),
-    ),
+  path: vectorPath,
   viewBox: z.string().check(z.regex(/^-?[\d.]+\s+-?[\d.]+\s+[\d.]+\s+[\d.]+$/)),
   strokeOnly: z.optional(z.boolean()),
+  parts: z.optional(
+    z
+      .array(
+        z.strictObject({
+          path: vectorPath,
+          fill: colorSchema,
+          stroke: z.optional(colorSchema),
+          strokeWidth: z.optional(number(0, 100)),
+          opacity: z.optional(number(0, 1)),
+          fillRule: z.optional(z.enum(["nonzero", "evenodd"])),
+          matrix: z.optional(
+            z.tuple([
+              number(-100000, 100000),
+              number(-100000, 100000),
+              number(-100000, 100000),
+              number(-100000, 100000),
+              number(-100000, 100000),
+              number(-100000, 100000),
+            ]),
+          ),
+          linecap: z.optional(z.enum(["butt", "round", "square"])),
+          linejoin: z.optional(z.enum(["miter", "round", "bevel"])),
+        }),
+      )
+      .check(z.minLength(1), z.maxLength(128)),
+  ),
+  attribution: z.optional(z.string().check(z.maxLength(12000))),
 });
 export const markStyleFields = {
   href: z.optional(

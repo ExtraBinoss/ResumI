@@ -31,7 +31,8 @@ import {
 } from "../../../ui";
 import { Shortcut } from "../../../components/Shortcut";
 import { TextLinkButton } from "./TextLinkButton";
-import { FontImportButton } from "./FontAssets";
+import { FontPicker } from "./FontPicker";
+import { useTextPreview } from "./useTextPreview";
 import styles from "../styles/Inspector.module.css";
 
 type TextLayer = Extract<Layer, { type: "text" }>;
@@ -99,9 +100,10 @@ function TypeSettings({
         },
       ].map(({ key, label, min, max, step }) => (
         <div key={key}>
-          <div className={styles.settingHead}>
-            <span>{label}</span>
+          <div>
             <NumberInput
+              label={label}
+              suffix={key === "lineHeight" ? "×" : "px"}
               aria-label={label}
               size="xs"
               hideControls
@@ -214,8 +216,8 @@ export function TextFormatting({
             aria-pressed={active}
             size="sm"
             variant={active ? "light" : "subtle"}
-            color={active ? "blue" : "gray"}
-            onMouseDown={(event) => event.preventDefault()}
+            color="gray"
+            onPointerDown={(event) => event.preventDefault()}
             onClick={() => format(patch)}
           >
             <Icon size={16} />
@@ -259,41 +261,21 @@ export function TypographyFields({
   fonts?: string[];
 }) {
   const { style, mixed, format } = useFormatting(id, layer);
-  const families = [
-    ...new Set([
-      "Arial, sans-serif",
-      "Georgia, serif",
-      "Inter, sans-serif",
-      "Courier New, monospace",
-      "Times New Roman, serif",
-      ...fonts,
-      layer.fontFamily,
-    ]),
-  ];
+  const preview = useTextPreview(id);
   return (
     <>
-      <div className={styles.fontPicker}>
-        <Select
-          aria-label="Font family"
-          size="xs"
-          value={
-            mixed.includes("fontFamily")
-              ? null
-              : (style.fontFamily ?? layer.fontFamily)
-          }
-          placeholder="Mixed"
-          allowDeselect={false}
-          searchable
-          data={families}
-          onChange={(value) => {
-            if (value) format({ fontFamily: value });
-          }}
-        />
-        <FontImportButton onImported={(fontFamily) => format({ fontFamily })} />
-      </div>
+      <FontPicker
+        value={style.fontFamily ?? layer.fontFamily}
+        fonts={fonts}
+        mixed={mixed.includes("fontFamily")}
+        onPreview={(value) => preview("fontFamily", value)}
+        onChange={(value) => format({ fontFamily: value })}
+      />
       <div className={styles.fontBasics}>
         <NumberInput
           label="Size"
+          suffix="px"
+          onPreview={(value) => preview("fontSize", value)}
           aria-label="Font size"
           size="xs"
           min={4}

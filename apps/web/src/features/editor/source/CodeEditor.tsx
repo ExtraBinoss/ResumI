@@ -7,6 +7,7 @@ import { sessionAtom, commandAtom } from "../../../state/editor";
 import { Button } from "../../../ui";
 import { downloadFile, fileName } from "../../../lib/files";
 import { CodePreview } from "../../../components/CodePreview";
+import { ErrorMessage } from "../../../components/ErrorNotice";
 import styles from "../styles/Source.module.css";
 
 type Draft = { base: DocumentSource | undefined; source: DocumentSource };
@@ -150,11 +151,7 @@ export function CodeEditor() {
                 </button>
               </p>
             )}
-            {error && (
-              <p role="alert" className={styles.warning}>
-                {error}
-              </p>
-            )}
+            <ErrorMessage error={error} label="Could not apply source" />
             <div className={styles.actions}>
               <Button
                 disabled={busy || stale}

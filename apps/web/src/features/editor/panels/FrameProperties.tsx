@@ -1,3 +1,4 @@
+import { useRef, useEffect } from "react";
 import { useAtomValue, useSetAtom } from "jotai";
 import { Link2, Unlink } from "lucide-react";
 import {
@@ -15,6 +16,18 @@ export function FrameProperties({ id }: { id: string }) {
   const block = useAtomValue(blockAtom(id));
   const ids = useAtomValue(selectedIdsAtom);
   const dispatch = useSetAtom(designCommandAtom);
+  const previews = useRef<{ node: HTMLElement; css: string }[]>([]);
+  useEffect(
+    () => () => {
+      for (const { node, css } of previews.current) node.style.cssText = css;
+      previews.current = [];
+    },
+    [id],
+  );
+  function clearPreview() {
+    for (const { node, css } of previews.current) node.style.cssText = css;
+    previews.current = [];
+  }
   if (!block?.design) return null;
   const layer = block.design;
   const multi = ids.length > 1;
@@ -77,16 +90,45 @@ export function FrameProperties({ id }: { id: string }) {
       });
     }
   }
+  function preview(
+    key: "x" | "y" | "width" | "height" | "rotation",
+    value: number | null,
+  ) {
+    clearPreview();
+    if (value === null) return;
+    for (const selectedId of ids) {
+      const current = document.blocks[selectedId]?.design;
+      const node = window.document.querySelector<HTMLElement>(
+        `[data-layer-id="${selectedId}"]`,
+      );
+      if (!node || !current) continue;
+      previews.current.push({ node, css: node.style.cssText });
+      if (key === "rotation") node.style.transform = `rotate(${value}deg)`;
+      else if (key === "x" || key === "y")
+        node.style[key === "x" ? "left" : "top"] =
+          `${current[key] + value - (multi ? bounds![key] : layer[key])}px`;
+      else {
+        const scale = value / (multi ? bounds![key] : layer[key]);
+        node.style[key] = `${current[key] * scale}px`;
+        if (multi)
+          node.style[key === "width" ? "left" : "top"] =
+            `${key === "width" ? bounds!.x + (current.x - bounds!.x) * scale : bounds!.y + (current.y - bounds!.y) * scale}px`;
+        else if (layer.aspectLocked)
+          node.style[key === "width" ? "height" : "width"] =
+            `${current[key === "width" ? "height" : "width"] * scale}px`;
+      }
+    }
+  }
   return (
     <section>
       <h3>Frame</h3>
       <div className={styles.quadGrid}>
         {(["x", "y", "width", "height"] as const).map((key) => (
-          <div key={key} className={styles.frameField}>
-            <span aria-hidden>
-              {{ x: "X", y: "Y", width: "W", height: "H" }[key]}
-            </span>
+          <div key={key}>
             <NumberInput
+              scrubLabel={{ x: "X", y: "Y", width: "W", height: "H" }[key]}
+              suffix="px"
+              onPreview={(value) => preview(key, value)}
               aria-label={`Layer ${key}`}
               hideControls
               size="xs"
@@ -115,9 +157,14 @@ export function FrameProperties({ id }: { id: string }) {
               {layer.aspectLocked ? <Link2 size={14} /> : <Unlink size={14} />}
             </ActionIcon>
           </div>
-          <div className={styles.fieldRow}>
-            <label>Rotation</label>
+          <div className={styles.numberRow}>
             <NumberInput
+              label="Rotation"
+              snapPoints={[
+                -360, -315, -270, -225, -180, -135, -90, -45, 0, 45, 90, 135,
+                180, 225, 270, 315, 360,
+              ]}
+              onPreview={(value) => preview("rotation", value)}
               aria-label="Rotation"
               size="xs"
               suffix="°"

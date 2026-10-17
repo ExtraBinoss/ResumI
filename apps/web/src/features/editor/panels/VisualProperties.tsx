@@ -17,6 +17,7 @@ import {
   type VisualEffects,
 } from "@resumi/engine";
 import { ImageBorderFields } from "./ImageAppearance";
+import { VectorAppearance } from "./VectorAppearance";
 export { ShadowFields } from "./ImageAppearance";
 import { designCommandAtom } from "../../../state/design";
 import styles from "../styles/Inspector.module.css";
@@ -130,9 +131,9 @@ export function EffectsFields({
       </div>
       {controls.map((control) => (
         <div key={control.key} className={styles.effectControl}>
-          <div className={styles.settingHead}>
-            <label>{control.label}</label>
+          <div>
             <NumberInput
+              label={control.label}
               aria-label={control.label}
               size="xs"
               hideControls
@@ -181,6 +182,7 @@ export function ShapeFields({
     dispatch({ type: "layer.update", ids: [id], patch });
   }
   const gradient = layer.gradient;
+  if (layer.vector?.parts) return <VectorAppearance id={id} layer={layer} />;
   return (
     <section>
       <h3>Appearance</h3>
@@ -226,7 +228,9 @@ export function ShapeFields({
           }}
         />
         <NumberInput
-          label="Stroke width"
+          label="Width"
+          aria-label="Stroke width"
+          suffix="px"
           size="xs"
           min={0}
           max={100}
@@ -238,7 +242,9 @@ export function ShapeFields({
         />
       </div>
       <NumberInput
-        label="Corner radius"
+        label="Radius"
+        aria-label="Corner radius"
+        suffix="px"
         size="xs"
         mt="sm"
         min={0}
@@ -280,7 +286,11 @@ export function ShapeFields({
       {gradient && (
         <>
           <NumberInput
-            label="Gradient angle"
+            label="Angle"
+            aria-label="Gradient angle"
+            snapPoints={[
+              -360, -270, -180, -90, 0, 45, 90, 135, 180, 225, 270, 315, 360,
+            ]}
             size="xs"
             min={-360}
             max={360}
@@ -312,6 +322,7 @@ export function ShapeFields({
                 }}
               />
               <NumberInput
+                scrubLabel="Stop"
                 aria-label={`Gradient stop ${index + 1} position`}
                 size="xs"
                 hideControls
@@ -423,11 +434,9 @@ export function ImageFields({
         </div>
         {controls.map((control) => (
           <div className={styles.effectControl} key={control.label}>
-            <div className={styles.settingHead}>
-              <span>
-                {control.label.replace("Image ", "").replace(" crop", "")}
-              </span>
+            <div>
               <NumberInput
+                label={control.label.replace("Image ", "").replace(" crop", "")}
                 aria-label={control.label}
                 size="xs"
                 hideControls
@@ -456,10 +465,11 @@ export function ImageFields({
             />
           </div>
         ))}
-        <div className={styles.fieldRow}>
-          <label>Radius</label>
+        <div className={styles.numberRow}>
           <NumberInput
-            aria-label="Corner radius"
+            label="Radius"
+            suffix="px"
+            aria-label="Radius"
             size="xs"
             min={0}
             max={2500}

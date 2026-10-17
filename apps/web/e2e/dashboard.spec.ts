@@ -68,9 +68,17 @@ for (const viewport of [
       exact: true,
     });
     const settingsBox = await settings.boundingBox();
-    expect(settingsBox!.width).toBeLessThanOrEqual(40);
+    if (viewport.width > 760) {
+      const row = await navigation
+        .getByRole("link", { name: /^Resumes/ })
+        .boundingBox();
+      expect(settingsBox!.width).toBeCloseTo(row!.width, 0);
+      await expect(settings).toHaveText("Settings");
+    } else {
+      expect(settingsBox!.width).toBeLessThanOrEqual(40);
+      await expect(settings).toHaveText("");
+    }
     expect(settingsBox!.height).toBeGreaterThanOrEqual(32);
-    await expect(settings).toHaveText("");
     await settings.click();
     await expect(
       page.getByRole("button", { name: "System", exact: true }),

@@ -1,39 +1,40 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useAtomValue, useSetAtom, useStore } from "jotai";
-import { ChevronDown, Code2, FolderOpen, ListChecks } from "lucide-react";
+import { ArrowUpRight, ChevronDown, FolderOpen } from "lucide-react";
 import { Popover, TextInput, Button } from "../../../ui";
 import { Button as ShadcnButton } from "../../../components/ui/button";
 import { nameAtom, commandAtom } from "../../../state/editor";
-import { sourceAtom, canvasAtom } from "../../../state/design";
+import { canvasAtom } from "../../../state/design";
 import styles from "../styles/Editor.module.css";
 
-export function ProjectMenu({
-  openSource,
-  openProposal,
-  back,
-}: {
-  openSource: () => void;
-  openProposal: () => void;
-  back: () => void;
-}) {
-  const source = useAtomValue(sourceAtom),
-    canvas = useAtomValue(canvasAtom),
+export function ProjectMenu({ back }: { back: () => void }) {
+  const canvas = useAtomValue(canvasAtom),
     name = useAtomValue(nameAtom),
     dispatch = useSetAtom(commandAtom),
     store = useStore();
   const [opened, setOpened] = useState(false),
     [draft, setDraft] = useState(name);
-  function run(action: () => void) {
-    setOpened(false);
-    action();
+  const cancelled = useRef(false);
+  function saveName() {
+    if (cancelled.current) return;
+    const next = draft.trim();
+    if (!next) {
+      setDraft(store.get(nameAtom));
+      return;
+    }
+    if (next !== store.get(nameAtom))
+      dispatch({ type: "document.update", name: next });
   }
   return (
     <Popover
-      position="bottom-start"
-      width={270}
+      position="bottom"
+      width={280}
       opened={opened}
       onChange={(next) => {
-        if (next) setDraft(store.get(nameAtom));
+        if (next) {
+          cancelled.current = false;
+          setDraft(store.get(nameAtom));
+        }
         setOpened(next);
       }}
     >
@@ -51,7 +52,7 @@ export function ProjectMenu({
         <form
           onSubmit={(event) => {
             event.preventDefault();
-            dispatch({ type: "document.update", name: draft.trim() });
+            saveName();
             setOpened(false);
           }}
         >
@@ -59,52 +60,37 @@ export function ProjectMenu({
             label="Project name"
             value={draft}
             onChange={(event) => setDraft(event.currentTarget.value)}
+            onBlur={saveName}
+            onKeyDown={(event) => {
+              if (event.key !== "Escape") return;
+              event.preventDefault();
+              cancelled.current = true;
+              setDraft(store.get(nameAtom));
+              setOpened(false);
+            }}
             maxLength={120}
             required
           />
-          <Button
-            type="submit"
-            variant="subtle"
-            size="xs"
-            disabled={!draft.trim()}
-          >
-            Save name
-          </Button>
         </form>
         <div className={styles.projectFacts}>
+          <span>Page</span>
           <span>
             {!canvas || (canvas.width === 794 && canvas.height === 1123)
-              ? "A4"
-              : `${canvas.width} × ${canvas.height}`}
-          </span>
-          <span>
-            {source?.format === "react" ? "React" : source ? "HTML" : "Resume"}
+              ? "A4 · Portrait"
+              : `${canvas.width} × ${canvas.height} px`}
           </span>
         </div>
         <Button
           variant="subtle"
           size="xs"
           fullWidth
-          leftSection={<Code2 size={15} />}
-          onClick={() => run(openSource)}
-        >
-          Edit source
-        </Button>
-        <Button
-          variant="subtle"
-          size="xs"
-          fullWidth
-          leftSection={<ListChecks size={15} />}
-          onClick={() => run(openProposal)}
-        >
-          Import commands
-        </Button>
-        <Button
-          variant="subtle"
-          size="xs"
-          fullWidth
-          leftSection={<FolderOpen size={15} />}
-          onClick={() => run(back)}
+          leftSection={<FolderOpen size={16} />}
+          rightSection={<ArrowUpRight size={14} />}
+          onClick={() => {
+            saveName();
+            setOpened(false);
+            back();
+          }}
         >
           All projects
         </Button>

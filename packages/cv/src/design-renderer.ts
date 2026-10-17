@@ -111,11 +111,20 @@ export function renderLayerContent(block: Block): string {
       ? `<defs><linearGradient id="${gradientId}" x1="${vector.x1}" y1="${vector.y1}" x2="${vector.x2}" y2="${vector.y2}">${gradient.stops.map((stop) => `<stop offset="${stop.offset}" stop-color="${escape(stop.color)}"/>`).join("")}</linearGradient></defs>`
       : "";
   const strokeOnly = "strokeOnly" in shape && shape.strokeOnly;
-  const path =
-    layer.shape === "rectangle" && !layer.vector
+  const path = layer.vector?.parts
+    ? layer.vector.parts
+        .map(
+          (part) =>
+            `<path d="${escape(part.path)}" fill="${escape(part.fill)}"${part.stroke ? ` stroke="${escape(part.stroke)}"` : ' stroke="none"'}${part.strokeWidth !== undefined ? ` stroke-width="${part.strokeWidth}"` : ""}${part.opacity !== undefined ? ` opacity="${part.opacity}"` : ""}${part.fillRule ? ` fill-rule="${part.fillRule}"` : ""}${part.matrix ? ` transform="matrix(${part.matrix.join(" ")})"` : ""}${part.linecap ? ` stroke-linecap="${part.linecap}"` : ""}${part.linejoin ? ` stroke-linejoin="${part.linejoin}"` : ""}/>`,
+        )
+        .join("")
+    : layer.shape === "rectangle" && !layer.vector
       ? `<rect width="100" height="100" rx="${(layer.borderRadius * 100) / layer.width}" ry="${(layer.borderRadius * 100) / layer.height}"/>`
       : `<path d="${escape(shape.path)}"/>`;
-  return `${effects}<div class="design-content" style="${filter ? `filter:${filter}` : ""}"><svg viewBox="${escape(shape.viewBox)}" preserveAspectRatio="none" fill="${strokeOnly ? "none" : gradient ? `url(#${gradientId})` : escape(layer.fill)}" stroke="${strokeOnly ? escape(layer.fill) : escape(layer.stroke)}" stroke-width="${strokeOnly ? layer.strokeWidth || 2 : layer.strokeWidth}" stroke-linejoin="round" stroke-linecap="round">${defs}${path}</svg></div>`;
+  const attribution = layer.vector?.attribution
+    ? `<metadata>${escape(layer.vector.attribution)}</metadata>`
+    : "";
+  return `${effects}<div class="design-content" style="${filter ? `filter:${filter}` : ""}"><svg viewBox="${escape(shape.viewBox)}" preserveAspectRatio="${layer.vector?.parts ? "xMidYMid meet" : "none"}" fill="${strokeOnly ? "none" : gradient ? `url(#${gradientId})` : escape(layer.fill)}" stroke="${strokeOnly ? escape(layer.fill) : escape(layer.stroke)}" stroke-width="${strokeOnly ? layer.strokeWidth || 2 : layer.strokeWidth}" stroke-linejoin="round" stroke-linecap="round">${attribution}${defs}${path}</svg></div>`;
 }
 export function canvasFontCss(doc: Pick<Document, "canvas">) {
   return (

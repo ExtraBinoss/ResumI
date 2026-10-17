@@ -6,23 +6,29 @@ import {
   ChevronUp,
   ChevronDown,
   Trash2,
+  Type,
 } from "lucide-react";
 import {
   sectionAtom,
+  blockAtom,
   sectionIdsAtom,
   selectionAtom,
   commandAtom,
 } from "../../../state/editor";
 import type { Command } from "@resumi/engine";
+import { ScrollShadow } from "../../../components/ScrollShadow";
+import { useOutlineReorder, type OutlineReorder } from "./useOutlineReorder";
 import styles from "../styles/LegacyPanels.module.css";
 function SectionRow({
   id,
   index,
   count,
+  reorder,
 }: {
   id: string;
   index: number;
   count: number;
+  reorder: OutlineReorder;
 }) {
   const section = useAtomValue(sectionAtom(id)),
     selection = useAtomValue(selectionAtom),
@@ -37,6 +43,8 @@ function SectionRow({
   }
   return (
     <div
+      data-outline-section={id}
+      {...reorder.bind({ kind: "section", id })}
       className={`${styles.structureRow} ${selection?.sectionId === id ? styles.activeRow : ""}`}
     >
       <button
@@ -47,6 +55,19 @@ function SectionRow({
         <span>{section.title || "Personal details"}</span>
         <small>{section.blockIds.length}</small>
       </button>
+      <div className={styles.outlineBlocks}>
+        {(reorder.preview?.sectionId === id
+          ? reorder.preview.blocks!
+          : section.blockIds
+        ).map((blockId) => (
+          <OutlineBlock
+            key={blockId}
+            id={blockId}
+            sectionId={id}
+            reorder={reorder}
+          />
+        ))}
+      </div>
       {selection?.sectionId === id && (
         <div className={styles.rowTools}>
           <Tooltip label="Move section up">
@@ -90,6 +111,35 @@ function SectionRow({
     </div>
   );
 }
+function OutlineBlock({
+  id,
+  sectionId,
+  reorder,
+}: {
+  id: string;
+  sectionId: string;
+  reorder: OutlineReorder;
+}) {
+  const block = useAtomValue(blockAtom(id)),
+    selection = useAtomValue(selectionAtom),
+    select = useSetAtom(selectionAtom);
+  if (!block) return null;
+  return (
+    <div
+      data-outline-block={id}
+      className={styles.outlineBlock}
+      {...reorder.bind({ kind: "block", id, sectionId })}
+    >
+      <button
+        className={selection?.blockId === id ? styles.activeBlock : undefined}
+        onClick={() => select({ sectionId, blockId: id })}
+      >
+        <Type size={14} aria-hidden />{" "}
+        <span>{block.design?.name || block.text || "Empty text"}</span>
+      </button>
+    </div>
+  );
+}
 export function Structure({
   embedded = false,
   openSettings,
@@ -97,9 +147,11 @@ export function Structure({
   embedded?: boolean;
   openSettings: () => void;
 }) {
-  const ids = useAtomValue(sectionIdsAtom),
+  const canonicalIds = useAtomValue(sectionIdsAtom),
+    reorder = useOutlineReorder(),
     dispatch = useSetAtom(commandAtom),
     select = useSetAtom(selectionAtom);
+  const ids = reorder.preview?.sections ?? canonicalIds;
   function add() {
     const id = crypto.randomUUID(),
       blockId = crypto.randomUUID();
@@ -132,11 +184,20 @@ export function Structure({
       <div className={styles.outlineLabel}>
         RESUME SECTIONS <span>{ids.length}</span>
       </div>
-      <div className={styles.rows}>
+      <ScrollShadow
+        className={styles.outlineScroll}
+        contentClassName={styles.rows}
+      >
         {ids.map((id, i) => (
-          <SectionRow key={id} id={id} index={i} count={ids.length} />
+          <SectionRow
+            key={id}
+            id={id}
+            index={i}
+            count={ids.length}
+            reorder={reorder}
+          />
         ))}
-      </div>
+      </ScrollShadow>
       <Button
         variant="subtle"
         color="gray"

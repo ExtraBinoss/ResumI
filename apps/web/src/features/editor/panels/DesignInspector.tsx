@@ -1,14 +1,6 @@
 import { useAtomValue, useSetAtom } from "jotai";
 import { motion } from "motion/react";
-import {
-  ChevronDown,
-  ChevronUp,
-  Eye,
-  EyeOff,
-  Lock,
-  Unlock,
-  Ungroup,
-} from "lucide-react";
+import { Eye, EyeOff, Lock, Unlock, Ungroup } from "lucide-react";
 import { isLocked } from "@resumi/engine";
 import { sessionAtom, selectionAtom, blockAtom } from "../../../state/editor";
 import {
@@ -144,30 +136,6 @@ export function DesignInspector() {
       dispatch({ type: "group.update", id: (group ?? parentGroup)!.id, patch });
     else dispatch({ type: "layer.update", ids, patch });
   }
-  function move(forward: boolean) {
-    if (!canvas || locked) return;
-    const selected = new Set(group?.elementIds ?? ids);
-    const positions = canvas.order
-      .map((id, index) => (selected.has(id) ? index : -1))
-      .filter((index) => index >= 0);
-    const index = forward
-      ? Math.max(...positions) + 1
-      : Math.min(...positions) - 1;
-    const targetId = canvas.order[index];
-    if (!targetId) return;
-    const targetGroup = canvas.groups.find((item) =>
-      item.elementIds.includes(targetId),
-    );
-    dispatch({
-      type: "layer.relocate",
-      source: { kind: group ? "group" : "element", id: group?.id ?? ids[0] },
-      target: {
-        kind: targetGroup ? "group" : "element",
-        id: targetGroup?.id ?? targetId,
-      },
-      placement: forward ? "above" : "below",
-    });
-  }
   return (
     <aside className={styles.inspector} aria-label="Properties inspector">
       <header className={styles.header}>
@@ -203,30 +171,6 @@ export function DesignInspector() {
         </div>
         {ids.length > 0 && (
           <div className={styles.actions}>
-            {!group && ids.length === 1 && (
-              <>
-                <ActionIcon
-                  aria-label="Move layer backward"
-                  size="xs"
-                  variant="subtle"
-                  color="gray"
-                  disabled={locked}
-                  onClick={() => move(false)}
-                >
-                  <ChevronDown size={15} />
-                </ActionIcon>
-                <ActionIcon
-                  aria-label="Move layer forward"
-                  size="xs"
-                  variant="subtle"
-                  color="gray"
-                  disabled={locked}
-                  onClick={() => move(true)}
-                >
-                  <ChevronUp size={15} />
-                </ActionIcon>
-              </>
-            )}
             <ActionIcon
               aria-label={hidden ? "Show selection" : "Hide selection"}
               size="xs"

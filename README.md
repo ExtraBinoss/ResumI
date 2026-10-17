@@ -10,11 +10,13 @@ ResumI is a resume editor with a shared TypeScript command engine. Edit on the c
 - Permanent composition and properties panels, a compact project menu and a bottom dock with selection, text, image, shapes/icons, Visual / Text and zoom.
 - Freeform A4 layers: drag, resize, snapping guides, Space to pan, Shift multiselection, flat groups, z-order, visibility, locks, opacity and blend modes.
 - Detailed typography and inline ranges/links; embedded fonts; shape gradients and strokes; image cropping and borders; image/shape shadows, blur, grain, dither, brightness, contrast and saturation. Selected text also has a conservative AA/AAA contrast inspection.
+- Searchable Google/local font picker with categories and hover previews; selected regular Latin Google faces embed for offline export. [Font details](apps/web/src/features/editor/panels/fonts.md).
+- Fifty original-color brand marks and safe basic SVG import, with editable vector colors and retained [sources/licenses](apps/web/src/data/brands.sources.md).
 - A synchronized Text workspace for the same canonical layer text. Structured resumes saved by the first version still open and remain editable.
-- HTML / React authoring through **project menu → Edit source**, with isolated preview, source import/export and offline self-contained HTML. [Source contract](docs/code-templates.md).
-- Runtime-validated human/agent commands, atomic batches, attributed undo/redo, CLI and **project menu → Import commands** with preview before applying. Agents can rename the project with `document.update`.
+- HTML / React authoring through **Mod+Shift+E**, with isolated preview, source import/export and offline self-contained HTML. [Source contract](docs/code-templates.md).
+- Runtime-validated human/agent commands, atomic batches, attributed undo/redo, CLI and **Mod+Alt+Enter** with preview before applying. Agents can rename the project with `document.update`.
 - Shared scroll shadows, keyboard hints, Motion transitions and light/dark/system appearance settings.
-- A macOS-inspired control system: coherent light/dark materials, centered document title, segmented controls, native numeric editing with themed steppers and restrained menus.
+- A macOS-inspired control system: coherent light/dark materials, centered document title, segmented controls, label/input/unit fields with scrubbing and snapping, live layer/outline reordering and restrained menus. Successful saving stays silent; errors offer shared details and copy controls.
 - JSON backups, real HTML export and browser printing for canvas documents; source documents export HTML for printing from the standalone file.
 
 Shortcuts: ⌘/Ctrl Z / Shift Z / Ctrl Y, ⌘/Ctrl G / Shift G to group/ungroup, ⌘/Ctrl D to duplicate, arrows to nudge (Shift = 10px), V / T for tools. Double-click or Enter edits text in place; ⌘/Ctrl Enter, Escape or blur commits. Space + drag or the middle mouse button pans; ⌘/Ctrl + wheel zooms around the pointer.
@@ -100,7 +102,7 @@ Example `patch.json`:
 
 CLI document responses are JSON stdout; errors are JSON stderr, with exit codes 2 arguments, 3 validation, 4 file I/O. Help is plain text. Without `--out`, apply/create emit a document without overwriting input. Section/block IDs come from `inspect`; commands never execute arbitrary code or unchecked HTML.
 
-External agents cannot access private browser IndexedDB. Export JSON, let a CLI-capable agent inspect/edit/render it, then import the result as a new project. Alternatively open the project name menu, choose **Import commands**, paste the batch, preview and apply. [Command and transport boundaries](docs/engine.md).
+External agents cannot access private browser IndexedDB. Export JSON, let a CLI-capable agent inspect/edit/render it, then import the result as a new project. Alternatively press **Mod+Alt+Enter**, paste the batch, preview and apply. [Command and transport boundaries](docs/engine.md).
 
 ## Local storage and privacy
 

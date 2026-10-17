@@ -4,30 +4,26 @@ Synthetic resumes only. The original Vue checkout stayed read-only: its pre-exis
 
 ## Current combined gate
 
-[`bun run check`](../artifacts/check.log) completed with exit 0 after the Apple-inspired landing/library and professional TSX template revision (task 17).
+[`bun run check`](../artifacts/check.log) completed with exit 0 after the editor interaction refinement (task 18).
 
 | Gate                                        | Actual outcome                                                                     |
 | ------------------------------------------- | ---------------------------------------------------------------------------------- |
 | Strict TypeScript / Hooks and Compiler lint | Pass                                                                               |
 | Source policy                               | Every handwritten source is below 600 physical lines                               |
-| Unit suite                                  | 96 tests pass                                                                      |
-| Engine coverage                             | 66 tests; 99.64% lines / 99.47% functions; 85% minimum enforced                    |
+| Unit suite                                  | 102 tests pass                                                                     |
+| Engine coverage                             | 68 tests; 99.65% lines / 99.47% functions; 85% minimum enforced                    |
 | Cold development                            | First SSR request and five browser journeys pass with an isolated fresh Vite cache |
 | Production build                            | Client assets and Cloudflare SSR Worker build successfully                         |
-| Production browser suite                    | 32 Chromium journeys pass                                                          |
-| Literal `bun run visual:check`              | Three journeys pass; [log](../artifacts/visual-check.log)                          |
+| Production browser suite                    | 49 Chromium journeys pass                                                          |
+| Literal `bun run visual:check`              | Four journeys pass; [log](../artifacts/visual-check.log)                           |
 
 Cold-development logs contain no invalid-hook, `useMemoCache` or missing PostCSS `from` regression. Bun reports line/function coverage, not branch coverage. GitHub Actions repeats the combined gate; its actual remote status is recorded on [PR #1](https://github.com/ExtraBinoss/ResumI/pull/1).
-
-The final one-line source zoom-floor correction follows this local combined run. The expanded [source preview check](../artifacts/source-fit-check.log) verifies that zooming out below 25% still reduces the real iframe; current types/lint/source policy also pass. GitHub Actions repeats the entire gate on that final commit before delivery.
-
-The earlier radius follow-up passed a fresh production build and six relevant browser journeys ([log](../artifacts/polish-check.log)). The combined gate above was repeated after task 17 redesigned the public product, library and actual CV layouts, including its final server-HTML correction.
 
 ## Behaviors exercised
 
 - Real public SSR, nested recovery, desktop/mobile direct opening and reload: one viewport-height editor, no remaining loading heading, no hydration errors.
 - Creation on actual intent/click, no project created by prefetch alone, and one record per click. IndexedDB migration, CRUD/import/export, offline editing, denied storage and stale-tab protection remain covered.
-- Persistent Dashboard/Templates navigation on desktop/mobile: the navigation DOM survives sibling-route changes, sorting text is centered, Settings is a compact accessible icon, and no horizontal overflow appears.
+- Persistent Dashboard/Templates navigation on desktop/mobile: the navigation DOM survives sibling-route changes, sorting text is centered, desktop Settings fills its sidebar row while mobile/editor keep a 32px icon, and no horizontal overflow appears.
 - Centered CV thumbnails, larger eye preview, Escape dismissal, search/sorting/list view, project rename/duplicate/delete, and agent-driven project-title persistence.
 - Selectable landing variants, functional Visual/Text demonstration and clean reduced-motion hydration. Four distinct complete A4 layouts load their fonts/images and fit 794×1123px without overflow. Profile preserves its photo/icons through saved TSX, reload and a portable export opened with all network requests blocked.
 - Source preview fitting accounts for both viewport dimensions and its zoom toolbar. The actual transformed iframe stays inside desktop/mobile bounds; 100% restores the full-size page and Fit page returns to the fitted size.
@@ -36,7 +32,7 @@ The earlier radius follow-up passed a fresh production build and six relevant br
 - Permanent composition/properties, native styled canvas editing, eight resize handles, grouping/order/lock/visibility, image crop/border/shadow, gradient/effects and faithful portable HTML.
 - Capitalized blend options preview on hover and restore on Escape. Undo then returns to the last committed blend: hovering creates no history entry.
 - Ctrl-wheel reaches its animated target while preserving the point beneath the pointer and browser zoom; Space dragging moves the canvas accurately at desktop/mobile sizes.
-- The font-size stepper changes the actual canvas typography through the engine, and Undo restores the previous value. Native number editing and arrow keys remain available.
+- Numeric label scrubbing previews geometry/type changes and commits one undo step; rotation snaps near quarter turns. Native number editing and arrow keys remain available.
 - Light/dark persistence and actual loaded Source Sans 3 / Space Grotesk FontFaces. Text and inspector editing follow the UI theme without changing the CV's colors.
 - Imported WOFF2 actually loads on the canvas, persists after reload and is embedded byte-for-byte in standalone HTML.
 - Reviewed human/agent commands share validation/history; an older proposal cannot apply after a human edit. HTML/React source drafts, sandboxing, saved activation, compiler failure recovery and portable offline output remain functional.
@@ -44,11 +40,23 @@ The earlier radius follow-up passed a fresh production build and six relevant br
 
 The stable-selector test still proves that one block edit does not notify unrelated blocks or their section. Save-drain tests exercise serialized writes while more edits arrive. All document edits still pass through the engine.
 
+Task 18 additionally exercises mixed character styling in canvas and Text mode; ending the old editor on selection changes; live layer/outline reorder with insertion indicators, cancellation, no-op drops and one-step undo; Google font search/categories/hover and embedded download/reload; real clipboard copying of source, stale-save and import errors; project rename on Enter/blur with Escape cancellation; primary export, zoom buttons and active-mode toggling. Compound vectors retain original Figma/Microsoft colors, transforms and full credits through reload/JSON/HTML. Individual vector paints are editable and undoable. Active/external SVGs are rejected without execution or network traffic.
+
 ## Visual inspection
 
 The actual Vue components ran in an isolated temporary copy using a synthetic CV. Its [desktop layout](../artifacts/visual/vue-reference-desktop.png) and [properties](../artifacts/visual/vue-reference-properties.png) were opened alongside the React result. No personal V1 documents were opened or saved.
 
-Final screenshots were opened and checked for readable controls, matching theme surfaces, clipping, panel/dock placement, centering and action alignment:
+Task 18 final screenshots were opened and checked against the user’s references in both themes:
+
+- Gradient-free template cards at 1920×959: [light](../artifacts/visual/library-glass-templates-light.png) and [dark](../artifacts/visual/library-glass-templates-dark.png); project cards [light](../artifacts/visual/library-glass-projects-light.png) and [dark](../artifacts/visual/library-glass-projects-dark.png). Captions float 8px inside the card with restrained theme-colored glass, aligned actions and no dark gradient. Desktop Settings fills the navigation width.
+- Mobile library [projects](../artifacts/visual/library-glass-projects-mobile-light.png) and [templates](../artifacts/visual/library-glass-templates-mobile-light.png), with equivalent dark captures retained alongside them.
+- Actual editor controls [light](../artifacts/visual/editor-controls-light.png) and [dark](../artifacts/visual/editor-controls-dark.png); searchable font picker [light](../artifacts/visual/font-picker-light.png) and [dark](../artifacts/visual/font-picker-dark.png).
+- Color picker [light](../artifacts/visual/color-picker-light.png) and [dark](../artifacts/visual/color-picker-dark.png), neutral [weight menu](../artifacts/visual/weight-menu-dark.png) and [layer menu](../artifacts/visual/layer-menu-dark.png) with room for full shortcuts and a red destructive action.
+- [Layer drag](../artifacts/visual/editor-layer-drag-preview.png), [Outline drag](../artifacts/visual/editor-outline-drag-preview.png), [mixed text](../artifacts/visual/editor-mixed-text.png), [brand palette](../artifacts/visual/brand-palette-dark.png) and [recovery page](../artifacts/visual/chrome-404-light.png).
+
+Actual [control DOM/CSS](../artifacts/visual/editor-controls-dom.json) and [follow-up measurements](../artifacts/visual/editor-touchups-dom.json) accompany the screenshots. Inspection caught cramped shortcuts and black brand marks on dark surfaces: the menu is now 244px wide without clipped items, and original-color marks sit on a small white artboard. The final card/Settings changes passed a fresh production build, three focused desktop/mobile appearance journeys ([log](../artifacts/final-polish.log)), refreshed type/lint/source checks, and the literal four-journey visual check.
+
+Earlier inspected milestones remain available below. These images record tasks 14–17; the task 18 library/control images above supersede their card gradients and compact desktop Settings trigger:
 
 - Editor [light](../artifacts/visual/editor-v1-light.png), [dark](../artifacts/visual/editor-v1-dark.png), [mobile light](../artifacts/visual/editor-v1-mobile-light.png) and [mobile dark](../artifacts/visual/editor-v1-mobile-dark.png).
 - Themed Text workspace [desktop](../artifacts/visual/editor-text-dark.png) and [mobile](../artifacts/visual/editor-text-mobile-dark.png).
@@ -71,19 +79,19 @@ The revised profiler uses a trusted Playwright mouse click and one Node monotoni
 
 With the server already warmed and no concurrent browser runners, three fresh contexts produced:
 
-| Runtime                                                                 | Click → fully painted canvas | Samples           | Navigation          |
-| ----------------------------------------------------------------------- | ---------------------------- | ----------------- | ------------------- |
-| [Built Worker](../artifacts/performance/create-ui-production.json)      | 380ms median                 | 339 / 380 / 463ms | Client navigation   |
-| [Vite development](../artifacts/performance/create-ui-development.json) | 702ms median                 | 528 / 702 / 973ms | 2 client / 1 native |
+| Runtime                                                                 | Click → fully painted canvas | Samples           | Navigation        |
+| ----------------------------------------------------------------------- | ---------------------------- | ----------------- | ----------------- |
+| [Built Worker](../artifacts/performance/create-ui-production.json)      | 276ms median                 | 268 / 276 / 285ms | Client navigation |
+| [Vite development](../artifacts/performance/create-ui-development.json) | 470ms median                 | 461 / 470 / 494ms | Client navigation |
 
-These final samples were collected after the final source-fitting follow-up to task 17, with one explicit unmeasured creation warming each server and no concurrent browser runners. Five samples used client navigation; one development sample followed a native navigation after an early click. The profiler keeps the same clock when the old execution context disappears. These are local samples without CPU/network throttling, not field Core Web Vitals or a controlled comparison with earlier runs. The earlier [611ms](../artifacts/performance/create-before.json) / [366ms](../artifacts/performance/create-final.json) results used an in-page click and different endpoint. They remain historical evidence and must not be directly compared with the revised measurement.
+These samples were collected after task 18’s final card/Settings follow-up, with one explicit unmeasured creation warming each server and no concurrent browser runners. All six used client navigation and reported no page errors. The profiler keeps the same clock if the old execution context disappears. These are local samples without CPU/network throttling, not field Core Web Vitals or a controlled comparison with earlier runs. The earlier [611ms](../artifacts/performance/create-before.json) / [366ms](../artifacts/performance/create-final.json) results used an in-page click and different endpoint. They remain historical evidence and must not be directly compared with the revised measurement.
 
-The timing sample precedes the final source zoom-floor correction. That correction changes the source preview's minus-button limit; this profiler exercises visual document creation.
+Creation keeps code prefetch free of storage side effects, canonicalizes the created route without remounting the editor, and defers color-picker editing, command review, source compilation/runtime and large catalogs. The first Vite compilation is distinct from a warmed click-to-canvas measurement. The [production interaction sample](../artifacts/performance/interactions.json) records 453ms project opening and 106ms p95 for ten input round trips, including Playwright transport/assertion overhead; this is not INP.
 
-Creation keeps code prefetch free of storage side effects, canonicalizes the created route without remounting the editor, and defers color-picker editing, command review, source compilation/runtime and large catalogs. The first Vite compilation is distinct from a warmed click-to-canvas measurement. The [production interaction sample](../artifacts/performance/interactions.json) includes Playwright transport/assertion overhead.
+The final [zoom gesture sample](../artifacts/performance/canvas-zoom.json) observed 16 frames, one layout width and one 38px font size, zero reverse movement and less than 0.01px anchor error. Intermediate zoom uses a compositor transform; final committed bounds are asserted separately around the pointer. This bounded synthetic gesture does not establish identical rendering across every browser/GPU.
 
 ## Reproduction and boundaries
 
 Run `bun run check`, then `bun run visual:check`. Use `BASE_URL` to target an existing server. `RESUMI_PROFILE_LABEL=latest bun run profile:create` writes versioned measurement conditions, resources, screenshot and trace; `RESUMI_PROFILE_SERVER_STATE` labels the actual server condition without performing hidden warmup.
 
-Tasks 14–17 supersede the earlier interface/layout organization. The product still uses one freeform page and flat groups. Source and canvas are preserved representations, not arbitrary two-way conversion. Browser coverage here is Chromium on Linux; UI localization, wider browser/device certification, automatic pagination, provider inference, MCP/WebMCP, cloud sync and production deployment remain outside this delivery.
+Tasks 14–18 supersede the earlier interface/layout organization. The product still uses one freeform page and flat groups. Source and canvas are preserved representations, not arbitrary two-way conversion. Browser coverage here is Chromium on Linux; UI localization, wider browser/device certification, automatic pagination, provider inference, MCP/WebMCP, cloud sync and production deployment remain outside this delivery.

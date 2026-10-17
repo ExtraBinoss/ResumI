@@ -10,6 +10,7 @@ export function useCanvasPan() {
     clientX: number;
     clientY: number;
   } | null>(null);
+  const settleZoom = useRef<(() => void) | null>(null);
   const viewport = useRef<HTMLDivElement>(null),
     space = useRef(false),
     pan = useRef<{ x: number; y: number; left: number; top: number } | null>(
@@ -52,70 +53,90 @@ export function useCanvasPan() {
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
     let zoomFrame = 0,
       targetZoom = store.get(zoomAtom),
-      lastZoom = targetZoom,
+      visualZoom = targetZoom,
       previousTime = 0;
     let anchor: typeof zoomAnchor.current = null;
+    let paper: HTMLElement | null = null;
+    function settle() {
+      cancelAnimationFrame(zoomFrame);
+      zoomFrame = 0;
+      if (!paper || !anchor) return;
+      const finalZoom = Math.round(visualZoom * 100) / 100;
+      // Keep the last composited position while React commits the final bounds once.
+      zoomAnchor.current = anchor;
+      paper.style.transform = `scale(${finalZoom / 100})`;
+      paper.style.willChange = "";
+      store.set(zoomAtom, finalZoom);
+      paper = null;
+      anchor = null;
+    }
+    settleZoom.current = settle;
     function stepZoom(now: number) {
-      const current = store.get(zoomAtom);
-      // A numeric zoom edit supersedes an in-flight wheel gesture.
-      if (current !== lastZoom) {
-        zoomFrame = 0;
-        anchor = null;
-        return;
-      }
+      if (!paper || !anchor || !node) return;
       const blend = reducedMotion.matches
         ? 1
-        : 1 - Math.exp(-Math.min(32, now - previousTime) / 55);
+        : 1 - Math.exp(-Math.min(32, Math.max(0, now - previousTime)) / 55);
       previousTime = now;
-      const next =
-        Math.abs(targetZoom - current) < 0.1
+      visualZoom =
+        Math.abs(targetZoom - visualZoom) < 0.05
           ? targetZoom
-          : Math.round((current + (targetZoom - current) * blend) * 100) / 100;
-      zoomAnchor.current = anchor;
-      lastZoom = next;
-      store.set(zoomAtom, next);
-      if (next !== targetZoom) zoomFrame = requestAnimationFrame(stepZoom);
-      else {
-        zoomFrame = 0;
-        anchor = null;
-      }
+          : visualZoom + (targetZoom - visualZoom) * blend;
+      const bounds = paper.parentElement!.getBoundingClientRect(),
+        scale = visualZoom / 100;
+      const x = anchor.clientX - anchor.x * scale - bounds.left,
+        y = anchor.clientY - anchor.y * scale - bounds.top;
+      paper.style.transform = `translate(${x}px, ${y}px) scale(${scale})`;
+      if (visualZoom !== targetZoom)
+        zoomFrame = requestAnimationFrame(stepZoom);
+      else settle();
     }
     function wheel(event: WheelEvent) {
       if (!node || (!event.ctrlKey && !event.metaKey)) return;
       event.preventDefault();
-      const paper = node.querySelector<HTMLElement>(
+      const currentPaper = node.querySelector<HTMLElement>(
         'article[aria-label="Resume canvas"]',
       );
-      if (!paper) return;
-      const rect = paper.getBoundingClientRect(),
-        scale = store.get(zoomAtom) / 100;
+      if (!currentPaper) return;
+      const rect = currentPaper.getBoundingClientRect(),
+        scale = zoomFrame ? visualZoom / 100 : store.get(zoomAtom) / 100;
       const unit =
         event.deltaMode === 1
           ? 16
           : event.deltaMode === 2
             ? node.clientHeight
             : 1;
-      targetZoom = Math.min(
-        250,
-        Math.max(
-          15,
-          (zoomFrame ? targetZoom : scale * 100) *
-            Math.exp(-event.deltaY * unit * 0.002),
-        ),
-      );
-      targetZoom = Math.round(targetZoom * 10) / 10;
+      if (!zoomFrame) {
+        visualZoom = targetZoom = scale * 100;
+        paper = currentPaper;
+      }
+      targetZoom =
+        Math.round(
+          Math.min(
+            250,
+            Math.max(15, targetZoom * Math.exp(-event.deltaY * unit * 0.002)),
+          ) * 10,
+        ) / 10;
       anchor = {
         x: (event.clientX - rect.left) / scale,
         y: (event.clientY - rect.top) / scale,
         clientX: event.clientX,
         clientY: event.clientY,
       };
+      currentPaper.style.willChange = "transform";
       if (!zoomFrame) {
-        lastZoom = store.get(zoomAtom);
         previousTime = performance.now();
         zoomFrame = requestAnimationFrame(stepZoom);
       }
     }
+    const unsubscribeZoom = store.sub(zoomAtom, () => {
+      if (paper) {
+        cancelAnimationFrame(zoomFrame);
+        zoomFrame = 0;
+        paper.style.willChange = "";
+        paper = null;
+        anchor = null;
+      }
+    });
     node?.addEventListener("wheel", wheel, { passive: false });
     if (node) {
       node.scrollLeft = (node.scrollWidth - node.clientWidth) / 2;
@@ -131,6 +152,12 @@ export function useCanvasPan() {
     return () => {
       observer.disconnect();
       cancelAnimationFrame(zoomFrame);
+      settleZoom.current = null;
+      unsubscribeZoom();
+      if (paper) {
+        paper.style.transform = `scale(${store.get(zoomAtom) / 100})`;
+        paper.style.willChange = "";
+      }
       node?.removeEventListener("wheel", wheel);
       window.removeEventListener("keydown", keydown);
       window.removeEventListener("keyup", keyup);
@@ -153,6 +180,7 @@ export function useCanvasPan() {
   return {
     ref: viewport,
     onPointerDownCapture(event: PointerEvent<HTMLDivElement>) {
+      settleZoom.current?.();
       if (
         (event.button !== 1 && !(space.current && event.button === 0)) ||
         !viewport.current

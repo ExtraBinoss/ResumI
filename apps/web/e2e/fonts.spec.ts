@@ -32,7 +32,9 @@ test("imported font actually loads on canvas, remains embedded in HTML and survi
   await expect(
     page.getByRole("article", { name: "Resume canvas" }),
   ).toBeVisible();
-  await page.getByRole("button", { name: "Visual", exact: true }).click();
+  await expect(
+    page.getByRole("button", { name: "Visual", exact: true }),
+  ).toHaveAttribute("aria-pressed", "true");
   const chooser = page.waitForEvent("filechooser");
   await page.getByRole("button", { name: "Import font", exact: true }).click();
   const bytes = await readFile(

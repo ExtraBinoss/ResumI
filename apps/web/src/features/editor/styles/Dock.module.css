@@ -18,8 +18,7 @@
   backdrop-filter: blur(24px) saturate(1.25);
   box-shadow:
     var(--material-highlight),
-    0 4px 12px rgb(0 0 0 / 8%),
-    0 14px 32px rgb(0 0 0 / 8%);
+    0 3px 14px rgb(0 0 0 / 9%);
   white-space: nowrap;
 }
 .dock :global([data-ui="button"]) {
@@ -78,19 +77,38 @@
   font-size: 12px;
 }
 .dock .zoom {
-  width: 64px;
-  flex: 0 0 64px;
-}
-.zoom input {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 54px;
+  flex: 0 0 54px;
   height: 30px;
   border: 1px solid transparent;
-  background: transparent;
+  border-radius: 5px;
   font-size: 12px;
-  padding: 0 5px;
-  text-align: center;
   font-weight: 600;
 }
-.zoom input:hover {
+.zoom input {
+  width: 31px;
+  height: 28px;
+  border: 0;
+  background: transparent;
+  font-size: 12px;
+  padding: 0;
+  text-align: right;
+  font-weight: 600;
+  appearance: textfield;
+  -moz-appearance: textfield;
+  outline: none;
+  box-shadow: none;
+}
+.zoom input::-webkit-inner-spin-button,
+.zoom input::-webkit-outer-spin-button {
+  appearance: none;
+  margin: 0;
+}
+.zoom:focus-within,
+.zoom:hover {
   border-color: var(--line-strong);
   background: var(--surface-raised);
 }

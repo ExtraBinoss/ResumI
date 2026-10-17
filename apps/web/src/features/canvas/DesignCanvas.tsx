@@ -37,6 +37,7 @@ import {
   type Frame,
 } from "../../lib/geometry";
 import { useCanvasPan } from "./useCanvasPan";
+import { SelectionMeasurements } from "./SelectionMeasurements";
 import { CanvasText } from "./CanvasText";
 import styles from "./styles/Canvas.module.css";
 import controls from "./styles/Controls.module.css";
@@ -248,7 +249,7 @@ function DesignLayer({
         }
       }}
     >
-      {editing && layer.type === "text" ? (
+      {editing && active && layer.type === "text" ? (
         <CanvasText block={block} finish={() => setEditing(false)} />
       ) : (
         <div
@@ -287,9 +288,6 @@ function DesignLayer({
               onPointerCancel={(e) => finish(e, true)}
             />
           ))}
-          <span className={controls.size}>
-            {Math.round(layer.width)} × {Math.round(layer.height)}
-          </span>
         </>
       )}
     </div>
@@ -312,8 +310,8 @@ export function DesignCanvas() {
   function point(event: PointerEvent<HTMLElement>) {
     const bounds = event.currentTarget.getBoundingClientRect();
     return {
-      x: (event.clientX - bounds.left) / (zoom / 100),
-      y: (event.clientY - bounds.top) / (zoom / 100),
+      x: (event.clientX - bounds.left) / (store.get(zoomAtom) / 100),
+      y: (event.clientY - bounds.top) / (store.get(zoomAtom) / 100),
     };
   }
   function start(event: PointerEvent<HTMLElement>) {
@@ -398,6 +396,11 @@ export function DesignCanvas() {
         if (e.target === e.currentTarget) select({ ids: [] });
       }}
     >
+      {tool === "text" && (
+        <div className={controls.toolHint} role="status">
+          Click to add text · Drag to draw a text box
+        </div>
+      )}
       <div
         className={styles.stage}
         onPointerDown={(e) => {
@@ -462,6 +465,7 @@ export function DesignCanvas() {
                 </div>
               );
             })}
+            <SelectionMeasurements />
             <div ref={marquee} className={styles.marquee} />
             <div data-guide="x" className={styles.guideX} />
             <div data-guide="y" className={styles.guideY} />

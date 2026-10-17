@@ -1,4 +1,5 @@
-import { useState, type DragEvent } from "react";
+import { useState } from "react";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useAtomValue, useSetAtom, useStore } from "jotai";
 import { ActionIcon, Select, NumberInput, Menu, TextInput } from "../../../ui";
 import { Button } from "../../../components/ui/button";
@@ -42,23 +43,20 @@ import {
 import { blockAtom, selectionAtom } from "../../../state/editor";
 import { Structure } from "./Structure";
 import styles from "../styles/Composition.module.css";
-import { useBlendPreview } from "../../canvas/useBlendPreview";
-function transfer(event: DragEvent): LayerReference | undefined {
-  try {
-    const value = JSON.parse(
-      event.dataTransfer.getData("application/x-resumi-layer"),
-    );
-    if (
-      value &&
-      ["element", "group"].includes(value.kind) &&
-      typeof value.id === "string"
-    )
-      return value;
-  } catch {
-    /* Ignore unrelated external drag data. */
-  }
-}
-function Row({ id, group }: { id: string; group?: LayerGroup }) {
+import { useLayerReorder, type LayerDragBinding } from "./useLayerReorder";
+import {
+  useBlendPreview,
+  useOpacityPreview,
+} from "../../canvas/useBlendPreview";
+function Row({
+  id,
+  group,
+  drag,
+}: {
+  id: string;
+  group?: LayerGroup;
+  drag: LayerDragBinding;
+}) {
   const block = useAtomValue(blockAtom(id)),
     selected = useAtomValue(selectedIdsAtom),
     selection = useAtomValue(selectionAtom),
@@ -76,32 +74,8 @@ function Row({ id, group }: { id: string; group?: LayerGroup }) {
     <div
       className={`${styles.layerRow} ${active ? styles.active : ""} ${group ? styles.member : ""}`}
       data-layer-row={id}
-      draggable
-      onDragStart={(e) => {
-        e.dataTransfer.setData(
-          "application/x-resumi-layer",
-          JSON.stringify(ref),
-        );
-        e.dataTransfer.effectAllowed = "move";
-      }}
-      onDragOver={(e) => e.preventDefault()}
-      onDrop={(e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        const source = transfer(e);
-        if (source)
-          dispatch({
-            type: "layer.relocate",
-            source,
-            target: ref,
-            placement:
-              e.clientY <
-              e.currentTarget.getBoundingClientRect().top +
-                e.currentTarget.offsetHeight / 2
-                ? "above"
-                : "below",
-          });
-      }}
+      {...drag}
+      draggable={!locked && drag.draggable}
     >
       <div
         role="button"
@@ -208,7 +182,7 @@ function Row({ id, group }: { id: string; group?: LayerGroup }) {
             <MoreHorizontal size={12} />
           </ActionIcon>
         </Menu.Target>
-        <Menu.Dropdown>
+        <Menu.Dropdown className={styles.layerMenu}>
           <Menu.Item
             disabled={locked}
             leftSection={<ArrowUpToLine size={13} />}
@@ -279,13 +253,20 @@ function Row({ id, group }: { id: string; group?: LayerGroup }) {
 }
 export function LayerPanel() {
   const [tab, setTab] = useState<"layers" | "outline">("layers"),
-    canvas = useAtomValue(canvasAtom),
+    canonicalCanvas = useAtomValue(canvasAtom),
+    reorder = useLayerReorder(),
+    reducedMotion = useReducedMotion(),
     selection = useAtomValue(selectionAtom),
     selected = useAtomValue(selectedIdsAtom),
     dispatch = useSetAtom(designCommandAtom),
     select = useSetAtom(selectLayersAtom);
+  const canvas = reorder.preview ?? canonicalCanvas;
   const primary = useAtomValue(blockAtom(selected[0] ?? ""))?.design;
   const previewBlend = useBlendPreview({
+    ids: selected,
+    groupId: selection?.groupId,
+  });
+  const previewOpacity = useOpacityPreview({
     ids: selected,
     groupId: selection?.groupId,
   });
@@ -313,7 +294,10 @@ export function LayerPanel() {
         <Button
           variant="ghost"
           aria-pressed={tab === "layers"}
-          onClick={() => setTab("layers")}
+          onClick={() => {
+            reorder.clear();
+            setTab("layers");
+          }}
         >
           <Layers3 size={14} />
           Layers
@@ -321,164 +305,188 @@ export function LayerPanel() {
         <Button
           variant="ghost"
           aria-pressed={tab === "outline"}
-          onClick={() => setTab("outline")}
+          onClick={() => {
+            reorder.clear();
+            setTab("outline");
+          }}
         >
           <ListTree size={14} />
           Outline
         </Button>
       </div>
-      {tab === "outline" ? (
-        <Structure embedded openSettings={() => select({ ids: [] })} />
-      ) : (
-        <>
-          <div className={styles.blendRow}>
-            <Select
-              aria-label="Selection blend mode"
-              size="xs"
-              value={blend}
-              disabled={!selected.length}
-              data={[...blendModes].map((value) => ({
-                value,
-                label:
-                  value.charAt(0).toUpperCase() +
-                  value.slice(1).replaceAll("-", " "),
-              }))}
-              allowDeselect={false}
-              onOptionPreview={previewBlend}
-              onChange={(value) => {
-                if (value)
-                  patch({ blendMode: value as LayerGroup["blendMode"] });
-              }}
-            />
-            <NumberInput
-              aria-label="Selection opacity"
-              size="xs"
-              suffix="%"
-              hideControls
-              min={0}
-              max={100}
-              value={Math.round(opacity * 100)}
-              disabled={!selected.length}
-              onChange={(value) => {
-                if (typeof value === "number" && value >= 0 && value <= 100)
-                  patch({ opacity: value / 100 });
-              }}
-            />
-          </div>
-          <header className={styles.compositionHeader}>
-            <h2>Composition</h2>
-            <span>{canvas.order.length}</span>
-          </header>
-          <ScrollShadow
-            className={styles.layerScroll}
-            contentClassName={styles.layerList}
-            aria-label="Composition layers"
-          >
-            {[...canvas.order].reverse().map((id) => {
-              const group = canvas.groups.find((g) =>
-                g.elementIds.includes(id),
-              );
-              if (!group) return <Row key={id} id={id} />;
-              if (seen.has(group.id)) return null;
-              seen.add(group.id);
-              return (
-                <div key={group.id} data-layer-group={group.id}>
-                  <div
-                    className={`${styles.groupRow} ${selection?.groupId === group.id ? styles.active : ""}`}
-                    draggable
-                    onDragStart={(e) =>
-                      e.dataTransfer.setData(
-                        "application/x-resumi-layer",
-                        JSON.stringify({ kind: "group", id: group.id }),
-                      )
-                    }
-                    onDragOver={(e) => e.preventDefault()}
-                    onDrop={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      const source = transfer(e);
-                      if (source)
-                        dispatch({
-                          type: "layer.relocate",
-                          source,
-                          target: { kind: "group", id: group.id },
-                          placement:
-                            source.kind === "element" ? "inside" : "above",
-                        });
-                    }}
-                  >
-                    <ActionIcon
-                      aria-label={`${group.collapsed ? "Expand" : "Collapse"} group ${group.name}`}
-                      size="xs"
-                      color="gray"
-                      variant="subtle"
-                      onClick={() =>
-                        dispatch({
-                          type: "group.update",
-                          id: group.id,
-                          patch: { collapsed: !group.collapsed },
-                        })
-                      }
-                    >
-                      {group.collapsed ? (
-                        <ChevronRight size={12} />
-                      ) : (
-                        <ChevronDown size={12} />
-                      )}
-                    </ActionIcon>
-                    <button
-                      className={styles.layerName}
-                      aria-label={`Select group ${group.name}`}
-                      onClick={() =>
-                        select({ ids: group.elementIds, groupId: group.id })
-                      }
-                    >
-                      <Folder size={13} />
-                      <span>{group.name}</span>
-                      <small>{group.elementIds.length}</small>
-                    </button>
-                    <ActionIcon
-                      size="xs"
-                      variant="subtle"
-                      color="gray"
-                      aria-label={`${group.hidden ? "Show" : "Hide"} group ${group.name}`}
-                      onClick={() =>
-                        dispatch({
-                          type: "group.update",
-                          id: group.id,
-                          patch: { hidden: !group.hidden },
-                        })
-                      }
-                    >
-                      {group.hidden ? <EyeOff size={12} /> : <Eye size={12} />}
-                    </ActionIcon>
-                    <ActionIcon
-                      size="xs"
-                      variant="subtle"
-                      color="gray"
-                      aria-label={`${group.locked ? "Unlock" : "Lock"} group ${group.name}`}
-                      onClick={() =>
-                        dispatch({
-                          type: "group.update",
-                          id: group.id,
-                          patch: { locked: !group.locked },
-                        })
-                      }
-                    >
-                      {group.locked ? <Lock size={12} /> : <Unlock size={12} />}
-                    </ActionIcon>
-                  </div>
-                  {!group.collapsed &&
-                    [...canvas.order]
-                      .reverse()
-                      .filter((id) => group.elementIds.includes(id))
-                      .map((id) => <Row key={id} id={id} group={group} />)}
-                </div>
-              );
-            })}
-          </ScrollShadow>
-        </>
-      )}
+      <AnimatePresence initial={false} mode="wait">
+        <motion.div
+          key={tab}
+          className={styles.tabContent}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: reducedMotion ? 0 : 0.14 }}
+        >
+          {tab === "outline" ? (
+            <Structure embedded openSettings={() => select({ ids: [] })} />
+          ) : (
+            <>
+              <div className={styles.blendRow}>
+                <Select
+                  aria-label="Selection blend mode"
+                  size="xs"
+                  value={blend}
+                  disabled={!selected.length}
+                  data={[...blendModes].map((value) => ({
+                    value,
+                    label:
+                      value.charAt(0).toUpperCase() +
+                      value.slice(1).replaceAll("-", " "),
+                  }))}
+                  allowDeselect={false}
+                  onOptionPreview={previewBlend}
+                  onChange={(value) => {
+                    if (value)
+                      patch({ blendMode: value as LayerGroup["blendMode"] });
+                  }}
+                />
+                <NumberInput
+                  aria-label="Selection opacity"
+                  scrubLabel="Opacity"
+                  unit="%"
+                  onPreview={previewOpacity}
+                  size="xs"
+                  hideControls
+                  min={0}
+                  max={100}
+                  value={Math.round(opacity * 100)}
+                  disabled={!selected.length}
+                  onChange={(value) => {
+                    if (typeof value === "number" && value >= 0 && value <= 100)
+                      patch({ opacity: value / 100 });
+                  }}
+                />
+              </div>
+              <header className={styles.compositionHeader}>
+                <h2>Composition</h2>
+                <span>{canvas.order.length}</span>
+              </header>
+              <ScrollShadow
+                className={styles.layerScroll}
+                contentClassName={styles.layerList}
+                aria-label="Composition layers"
+              >
+                {[...canvas.order].reverse().map((id) => {
+                  const group = canvas.groups.find((g) =>
+                    g.elementIds.includes(id),
+                  );
+                  if (!group)
+                    return (
+                      <Row
+                        key={id}
+                        id={id}
+                        drag={reorder.bind({ kind: "element", id })}
+                      />
+                    );
+                  if (seen.has(group.id)) return null;
+                  seen.add(group.id);
+                  return (
+                    <div key={group.id} data-layer-group={group.id}>
+                      <div
+                        className={`${styles.groupRow} ${selection?.groupId === group.id ? styles.active : ""}`}
+                        {...reorder.bind(
+                          { kind: "group", id: group.id },
+                          group.locked,
+                        )}
+                      >
+                        <ActionIcon
+                          aria-label={`${group.collapsed ? "Expand" : "Collapse"} group ${group.name}`}
+                          size="xs"
+                          color="gray"
+                          variant="subtle"
+                          onClick={() =>
+                            dispatch({
+                              type: "group.update",
+                              id: group.id,
+                              patch: { collapsed: !group.collapsed },
+                            })
+                          }
+                        >
+                          {group.collapsed ? (
+                            <ChevronRight size={12} />
+                          ) : (
+                            <ChevronDown size={12} />
+                          )}
+                        </ActionIcon>
+                        <button
+                          className={styles.layerName}
+                          aria-label={`Select group ${group.name}`}
+                          onClick={() =>
+                            select({ ids: group.elementIds, groupId: group.id })
+                          }
+                        >
+                          <Folder size={13} />
+                          <span>{group.name}</span>
+                          <small>{group.elementIds.length}</small>
+                        </button>
+                        <ActionIcon
+                          size="xs"
+                          variant="subtle"
+                          color="gray"
+                          aria-label={`${group.hidden ? "Show" : "Hide"} group ${group.name}`}
+                          onClick={() =>
+                            dispatch({
+                              type: "group.update",
+                              id: group.id,
+                              patch: { hidden: !group.hidden },
+                            })
+                          }
+                        >
+                          {group.hidden ? (
+                            <EyeOff size={12} />
+                          ) : (
+                            <Eye size={12} />
+                          )}
+                        </ActionIcon>
+                        <ActionIcon
+                          size="xs"
+                          variant="subtle"
+                          color="gray"
+                          aria-label={`${group.locked ? "Unlock" : "Lock"} group ${group.name}`}
+                          onClick={() =>
+                            dispatch({
+                              type: "group.update",
+                              id: group.id,
+                              patch: { locked: !group.locked },
+                            })
+                          }
+                        >
+                          {group.locked ? (
+                            <Lock size={12} />
+                          ) : (
+                            <Unlock size={12} />
+                          )}
+                        </ActionIcon>
+                      </div>
+                      {!group.collapsed &&
+                        [...canvas.order]
+                          .reverse()
+                          .filter((id) => group.elementIds.includes(id))
+                          .map((id) => (
+                            <Row
+                              key={id}
+                              id={id}
+                              group={group}
+                              drag={reorder.bind(
+                                { kind: "element", id },
+                                group.locked,
+                              )}
+                            />
+                          ))}
+                    </div>
+                  );
+                })}
+              </ScrollShadow>
+            </>
+          )}
+        </motion.div>
+      </AnimatePresence>
     </aside>
   );
 }

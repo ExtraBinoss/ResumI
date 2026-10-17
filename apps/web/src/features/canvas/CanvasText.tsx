@@ -1,9 +1,16 @@
-import { useEffect, useRef, type CSSProperties } from "react";
-import type { Block } from "@resumi/engine";
-import { useSetAtom } from "jotai";
-import { designCommandAtom } from "../../state/design";
+import { useEffect, useLayoutEffect, useRef, type CSSProperties } from "react";
+import {
+  richTextSegments,
+  textStyleAcrossRange,
+  type Block,
+  type TextMarkStyle,
+} from "@resumi/engine";
+import { useSetAtom, useStore } from "jotai";
+import { designCommandAtom, textRangeAtom } from "../../state/design";
+import { selectionAtom, sessionAtom } from "../../state/editor";
+import { selectionOffsets, restoreSelection } from "../../lib/text-selection";
 
-/** The canvas text itself is the editor; its frame and typography never change. */
+/** The actual text remains editable, including range marks, in its original frame. */
 export function CanvasText({
   block,
   finish,
@@ -12,8 +19,47 @@ export function CanvasText({
   finish: () => void;
 }) {
   const input = useRef<HTMLDivElement>(null),
-    dispatch = useSetAtom(designCommandAtom);
+    pending = useRef<string | null>(null),
+    composing = useRef(false),
+    dispatch = useSetAtom(designCommandAtom),
+    setRange = useSetAtom(textRangeAtom),
+    store = useStore();
   const layer = block.design;
+  useLayoutEffect(() => {
+    const root = input.current;
+    if (!root || composing.current) return;
+    if (pending.current === block.text) {
+      pending.current = null;
+      return;
+    }
+    const range = selectionOffsets(root);
+    const spans = richTextSegments(
+      block.text,
+      layer?.type === "text" ? layer.marks : [],
+    ).map((segment) => {
+      const span = document.createElement("span");
+      span.textContent = segment.text;
+      const style =
+        layer?.type === "text" ? { ...layer, ...segment.style } : segment.style;
+      Object.assign(span.style, {
+        fontFamily: style.fontFamily ?? "inherit",
+        fontSize: style.fontSize ? `${style.fontSize}px` : "inherit",
+        fontWeight: style.fontWeight ? String(style.fontWeight) : "inherit",
+        fontStyle: style.fontStyle ?? "inherit",
+        color: style.color ?? "inherit",
+        textDecoration:
+          style.underline || style.strike
+            ? [style.underline && "underline", style.strike && "line-through"]
+                .filter(Boolean)
+                .join(" ")
+            : "inherit",
+      });
+      if (style.href) span.title = style.href;
+      return span;
+    });
+    root.replaceChildren(...spans);
+    if (range) restoreSelection(root, range);
+  }, [block.text, layer]);
   useEffect(() => {
     const node = input.current;
     if (!node) return;
@@ -23,12 +69,55 @@ export function CanvasText({
     range.selectNodeContents(node);
     selection?.removeAllRanges();
     selection?.addRange(range);
-  }, []);
+    setRange({ id: block.id, start: 0, end: node.textContent?.length ?? 0 });
+  }, [block.id, setRange]);
+  useEffect(
+    () =>
+      store.sub(selectionAtom, () => {
+        const selected = store.get(selectionAtom);
+        if (
+          selected?.blockId !== block.id &&
+          !selected?.blockIds?.includes(block.id)
+        ) {
+          input.current?.blur();
+          finish();
+        }
+      }),
+    [block.id, finish, store],
+  );
   if (layer && layer.type !== "text") return null;
-  function commit(value: string) {
-    if (value !== block.text)
+  function capture() {
+    const range = input.current && selectionOffsets(input.current);
+    if (range) setRange({ id: block.id, ...range });
+  }
+  function sync() {
+    const node = input.current;
+    if (!node || composing.current) return;
+    const value = node.textContent ?? "";
+    if (value.length > 20000) {
+      node.textContent = block.text;
+      return;
+    }
+    if (value !== store.get(sessionAtom)?.document.blocks[block.id]?.text) {
+      pending.current = value;
       dispatch({ type: "block.update", id: block.id, patch: { text: value } });
-    finish();
+    }
+    capture();
+  }
+  function insert(value: string) {
+    const selection = window.getSelection(),
+      node = input.current;
+    if (!node || !selection?.rangeCount) return;
+    const range = selection.getRangeAt(0);
+    if (!node.contains(range.commonAncestorContainer)) return;
+    range.deleteContents();
+    const text = document.createTextNode(value);
+    range.insertNode(text);
+    range.setStartAfter(text);
+    range.collapse(true);
+    selection.removeAllRanges();
+    selection.addRange(range);
+    sync();
   }
   const style: CSSProperties = layer
     ? {
@@ -50,10 +139,7 @@ export function CanvasText({
         textAlign: layer.align,
         color: layer.color,
         textTransform: layer.uppercase ? "uppercase" : undefined,
-        textDecoration:
-          [layer.underline && "underline", layer.strike && "line-through"]
-            .filter(Boolean)
-            .join(" ") || "none",
+        textDecoration: "none",
       }
     : { outline: "none", background: "transparent", cursor: "text" };
   return (
@@ -63,25 +149,79 @@ export function CanvasText({
       className={!layer ? `resume-block resume-${block.kind}` : undefined}
       aria-label="Edit text on canvas"
       aria-multiline="true"
-      contentEditable="plaintext-only"
+      contentEditable
       suppressContentEditableWarning
       spellCheck
       style={style}
-      onPointerDown={(e) => e.stopPropagation()}
-      onBlur={(e) => commit(e.currentTarget.innerText)}
-      onKeyDown={(e) => {
-        e.stopPropagation();
-        if (e.key === "Escape") {
-          e.preventDefault();
-          e.currentTarget.blur();
-        }
-        if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) {
-          e.preventDefault();
-          commit(e.currentTarget.innerText);
+      onPointerDown={(event) => event.stopPropagation()}
+      onPointerUp={capture}
+      onKeyUp={capture}
+      onInput={sync}
+      onCompositionStart={() => {
+        composing.current = true;
+      }}
+      onCompositionEnd={() => {
+        composing.current = false;
+        sync();
+      }}
+      onBlur={() => {
+        sync();
+        finish();
+      }}
+      onKeyDown={(event) => {
+        event.stopPropagation();
+        const key = event.key.toLowerCase();
+        if (
+          (event.ctrlKey || event.metaKey) &&
+          ["b", "i", "u"].includes(key) &&
+          layer
+        ) {
+          event.preventDefault();
+          capture();
+          const range = input.current && selectionOffsets(input.current),
+            selected = range && range.end > range.start;
+          const current = selected
+            ? textStyleAcrossRange(
+                block.text,
+                layer.marks,
+                range.start,
+                range.end,
+                layer,
+              ).style
+            : layer;
+          const patch: TextMarkStyle =
+            key === "b"
+              ? { fontWeight: (current.fontWeight ?? 400) >= 600 ? 400 : 700 }
+              : key === "i"
+                ? {
+                    fontStyle:
+                      current.fontStyle === "italic" ? "normal" : "italic",
+                  }
+                : { underline: !current.underline };
+          if (selected)
+            dispatch({
+              type: "text.range.format",
+              id: block.id,
+              markId: crypto.randomUUID(),
+              ...range,
+              style: patch,
+            });
+          else dispatch({ type: "layer.update", ids: [block.id], patch });
+        } else if (
+          event.key === "Escape" ||
+          (event.key === "Enter" && (event.ctrlKey || event.metaKey))
+        ) {
+          event.preventDefault();
+          event.currentTarget.blur();
+        } else if (event.key === "Enter") {
+          event.preventDefault();
+          insert("\n");
         }
       }}
-    >
-      {block.text}
-    </div>
+      onPaste={(event) => {
+        event.preventDefault();
+        insert(event.clipboardData.getData("text/plain"));
+      }}
+    />
   );
 }

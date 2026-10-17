@@ -1,0 +1,9 @@
+# Font picker sources
+
+The Google catalog snapshot in `google-fonts.generated.json` contains family names and categories from [Google Fonts metadata](https://fonts.google.com/metadata/fonts), retrieved on 2026-10-17 (1,950 families). It is metadata, not font binaries. It includes Sans Serif, Serif, Monospace, Display and Handwriting; the list is searchable and virtualized.
+
+A Google family is downloaded only on hover or selection through the documented [Google Fonts CSS API](https://developers.google.com/fonts/docs/css2). Hover installs a transient browser FontFace and previews the selected layer without an engine command. Selection embeds the returned regular Latin face in the document through `canvas.update`, then applies the font through the existing validated text/layer commands. Imported data is retained in portable HTML and does not require Google at export time. Other writing systems may fall back to a system font; this is a regular Latin-face importer, not a full multi-script/weight font package downloader.
+
+`This computer` starts with detected common installed families. The explicit computer button uses the permission-gated [Local Font Access API](https://developer.chrome.com/docs/capabilities/web-apis/local-fonts) where supported. Choosing one of these discovered families embeds its regular font data so it travels with the document. The file importer remains available for browsers without that API and accepts TTF, OTF, WOFF and WOFF2 under 1 MB. Font embedding follows the engine's twelve-font and shared document-size limits.
+
+System CSS families remain usable without embedding and therefore depend on fonts installed on the reader's computer. No font discovery, network request or private browser API runs during SSR or project opening. Font hover restores the canonical style when the picker closes; scrubbing a numeric label likewise previews transiently and commits one validated command on release.

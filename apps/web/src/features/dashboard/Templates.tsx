@@ -80,7 +80,6 @@ export function Templates({
                 >
                   <div className={styles.details}>
                     <h2>{displayName(template.name)}</h2>
-                    <span>Use template</span>
                     <ArrowRight size={16} aria-hidden />
                   </div>
                 </Link>

@@ -22,7 +22,7 @@ Source of progress truth. Checkmarks describe verified local behavior; remote CI
 - [x] [12 — shadcn with Base UI](12-shadcn-base-ui.md): official CLI, 18 editable components, no Mantine/Radix imports or dependencies.
 - [x] [13 — React/HTML source](13-react-and-html-source.md): React-authored templates, isolated source preview, saved activation, hooks, portable offline exports and shared agent commands.
 
-Tasks 00–13 record earlier verified milestones. Tasks 14–17 supersede their interface and file organization. Current verification is recorded below.
+Tasks 00–13 record earlier verified milestones. Tasks 14–18 supersede their interface and file organization. Current verification is recorded below.
 
 ## Required gates
 
@@ -34,8 +34,8 @@ Tasks 00–13 record earlier verified milestones. Tasks 14–17 supersede their 
 - [x] Actual desktop/mobile screenshot inspection and standalone exports opened offline.
 - [x] Fresh-cache development SSR, direct/reload hydration regression and no hooks/PostCSS warning suppression.
 - [x] Code preview uses opaque iframe/CSP; CLI compiles without executing user components.
-- [x] Current `bun run check`: 96 unit tests, 66 engine tests, five cold-dev and 32 production browser journeys, plus production build.
-- [x] Literal `bun run visual:check`: three journeys pass; final desktop/mobile, light/dark and complete A4 screenshots opened and inspected.
+- [x] Current `bun run check`: 102 unit tests, 68 engine tests, five cold-dev and 49 production browser journeys, plus production build.
+- [x] Literal `bun run visual:check`: four journeys pass; final desktop/mobile, light/dark and complete A4 screenshots opened and inspected.
 - [x] Feature branch and PR established; remote verification is tracked separately on the PR and inspected at delivery.
 
 ## Explicit boundaries
@@ -53,3 +53,5 @@ Local browser storage and session-local undo limitations are described in the RE
 - [x] [15 — Feature organization](15-feature-organization.md): dashboard/editor/canvas ownership, colocated styles and verified imports.
 - [x] [16 — macOS design](16-macos-design.md): shared materials, coherent controls, centered document title and numeric steppers.
 - [x] [17 — Apple product and templates](17-apple-product-and-templates.md): substantial landing/library redesign and distinct professional TSX resumes with offline imagery.
+
+- [x] [18 — Editor interaction refinement](18-editor-interaction-refinement.md): scrub fields, font catalog/previews, mixed text, live ordering, SVG/brand assets, quiet save/errors and coherent controls. Gradient-free cards and full-width Settings verified; final screenshot/DOM and profiling evidence are recorded in the task.

@@ -77,7 +77,7 @@ function DashboardShell() {
         <header className={styles.mobileHeader}>
           <div className={styles.mobileBrand}>
             <Brand />
-            <SettingsMenu trigger="sidebar" />
+            <SettingsMenu />
           </div>
           <DashboardNavigation />
         </header>

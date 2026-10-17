@@ -1,0 +1,142 @@
+.trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%;
+  min-width: 0;
+  height: 34px;
+  padding: 0 9px;
+  border: 1px solid var(--control-border);
+  border-radius: 6px;
+  background: var(--control-bg);
+  color: var(--ink);
+  box-shadow: var(--control-shadow);
+  font-size: 13px;
+}
+.trigger > span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.trigger > svg {
+  flex-shrink: 0;
+  color: var(--muted-foreground);
+}
+.popup {
+  z-index: 150;
+  width: 340px;
+  max-width: calc(100vw - 24px);
+  padding: 0;
+  gap: 0;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--popover) 96%, transparent);
+  backdrop-filter: blur(24px) saturate(1.2);
+  box-shadow: var(--shadow-popover);
+}
+.tools {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 10px 9px 7px;
+}
+.tools > div:first-child {
+  flex: 1;
+}
+.filters {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 10px 9px;
+  border-bottom: 1px solid var(--line);
+}
+.filters > div {
+  width: 185px;
+}
+.filters > span {
+  margin-left: auto;
+  color: var(--muted-foreground);
+  font-size: 12px;
+}
+.list {
+  width: 100%;
+}
+.spacer {
+  position: relative;
+  width: 100%;
+}
+.option {
+  position: absolute;
+  left: 5px;
+  right: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 62px;
+  padding: 8px 10px;
+  border: 0;
+  border-radius: 5px;
+  background: transparent;
+  color: var(--foreground);
+  text-align: left;
+  outline: none;
+  cursor: pointer;
+}
+.option:hover,
+.option:focus-visible {
+  background: var(--accent);
+}
+.option[aria-selected="true"] {
+  background: color-mix(in srgb, var(--accent) 65%, transparent);
+}
+.copy {
+  display: grid;
+  min-width: 0;
+  gap: 4px;
+}
+.name {
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+  font-size: 12px;
+  font-weight: 500;
+}
+.name small {
+  color: var(--muted-foreground);
+  font-size: 10px;
+  font-weight: 400;
+}
+.sample {
+  overflow: hidden;
+  color: var(--muted-foreground);
+  font-size: 17px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.option > svg {
+  margin-left: 10px;
+  flex-shrink: 0;
+}
+.empty {
+  margin: 0;
+  padding: 30px 12px;
+  text-align: center;
+  font-size: 13px;
+  color: var(--muted-foreground);
+}
+.spinner {
+  animation: spin 1s linear infinite;
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .spinner {
+    animation: none;
+  }
+}

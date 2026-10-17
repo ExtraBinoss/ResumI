@@ -6,8 +6,10 @@ import styles from "../styles/Settings.module.css";
 
 export function SettingsMenu({
   trigger = "icon",
+  fullWidth = trigger === "sidebar",
 }: {
   trigger?: "icon" | "sidebar";
+  fullWidth?: boolean;
 }) {
   const [theme, setTheme] = useTheme();
   return (
@@ -16,15 +18,27 @@ export function SettingsMenu({
       width={210}
     >
       <Popover.Target>
-        <ActionIcon
-          variant="subtle"
-          color="gray"
-          aria-label="Settings"
-          title="Settings"
-          className={trigger === "sidebar" ? styles.sidebarTrigger : undefined}
-        >
-          <Settings2 size={17} aria-hidden />
-        </ActionIcon>
+        {fullWidth ? (
+          <Button
+            variant="ghost"
+            aria-label="Settings"
+            className={styles.sidebarTrigger}
+          >
+            <Settings2 size={17} aria-hidden />
+            <span>Settings</span>
+          </Button>
+        ) : (
+          <ActionIcon
+            w={32}
+            h={32}
+            variant="subtle"
+            color="gray"
+            aria-label="Settings"
+            title="Settings"
+          >
+            <Settings2 size={17} aria-hidden />
+          </ActionIcon>
+        )}
       </Popover.Target>
       <Popover.Dropdown className={styles.panel}>
         <h2>Appearance</h2>

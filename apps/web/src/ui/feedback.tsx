@@ -1,4 +1,5 @@
-import type { HTMLAttributes, ReactNode } from "react";
+import { isValidElement, type HTMLAttributes, type ReactNode } from "react";
+import { CopyErrorButton } from "../components/ErrorNotice";
 import { classes, layoutStyle, type LayoutProps, type Size } from "./shared";
 import styles from "./ui.module.css";
 import {
@@ -8,6 +9,15 @@ import {
 } from "../components/ui/alert";
 import { Spinner } from "../components/ui/spinner";
 import { ScrollArea as ShadcnScrollArea } from "../components/ui/scroll-area";
+
+function textDetails(node: ReactNode): string {
+  if (typeof node === "string" || typeof node === "number") return String(node);
+  if (Array.isArray(node))
+    return node.map(textDetails).filter(Boolean).join("\n");
+  if (isValidElement<{ children?: ReactNode }>(node))
+    return textDetails(node.props.children);
+  return "";
+}
 
 export function Alert({
   title,
@@ -26,6 +36,7 @@ export function Alert({
   ...props
 }: Omit<HTMLAttributes<HTMLDivElement>, "title" | "color"> &
   LayoutProps & { title?: ReactNode; color?: string }) {
+  const details = textDetails(children);
   return (
     <ShadcnAlert
       {...props}
@@ -36,6 +47,9 @@ export function Alert({
       {title && <AlertTitle className={styles.alertTitle}>{title}</AlertTitle>}
       <AlertDescription className={styles.alertDescription}>
         {children}
+        {(color === "red" || color === "yellow") && details && (
+          <CopyErrorButton key={details} details={details} />
+        )}
       </AlertDescription>
     </ShadcnAlert>
   );

@@ -51,6 +51,7 @@ export function ImageBorderFields({
         <NumberInput
           aria-label="Border width"
           label="Width"
+          suffix="px"
           size="xs"
           min={0}
           max={100}
@@ -64,7 +65,11 @@ export function ImageBorderFields({
           aria-label="Border style"
           label="Style"
           size="xs"
-          data={["solid", "dashed", "dotted"]}
+          data={[
+            { value: "solid", label: "Solid" },
+            { value: "dashed", label: "Dashed" },
+            { value: "dotted", label: "Dotted" },
+          ]}
           value={border.style}
           onChange={(value) => {
             if (value)
@@ -132,6 +137,7 @@ export function ShadowFields({
                 key={key}
                 aria-label={`Shadow ${key}`}
                 label={label}
+                suffix="px"
                 hideControls
                 size="xs"
                 min={min}
