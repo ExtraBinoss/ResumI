@@ -1,0 +1,261 @@
+{
+  "reports": [
+    {
+      "theme": "light",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "headerTransform": "none",
+      "leaves": [
+        {
+          "text": "ResumI",
+          "willChange": "transform",
+          "transform": "none"
+        },
+        {
+          "text": "Resumes",
+          "willChange": "transform",
+          "transform": "none"
+        },
+        {
+          "text": "Templates",
+          "willChange": "transform",
+          "transform": "none"
+        },
+        {
+          "text": "Recent",
+          "willChange": "transform",
+          "transform": "none"
+        }
+      ],
+      "controls": {
+        "position": "static",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0,
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        },
+        "blur": "none"
+      },
+      "settings": {
+        "position": "fixed",
+        "box": {
+          "x": 1386,
+          "y": 946,
+          "width": 36,
+          "height": 36,
+          "top": 946,
+          "right": 1422,
+          "bottom": 982,
+          "left": 1386
+        }
+      },
+      "documentWidth": 1440,
+      "menuBox": {
+        "x": 984,
+        "y": 71,
+        "width": 320,
+        "height": 82
+      }
+    },
+    {
+      "theme": "dark",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "headerTransform": "none",
+      "leaves": [
+        {
+          "text": "ResumI",
+          "willChange": "transform",
+          "transform": "none"
+        },
+        {
+          "text": "Resumes",
+          "willChange": "transform",
+          "transform": "none"
+        },
+        {
+          "text": "Templates",
+          "willChange": "transform",
+          "transform": "none"
+        },
+        {
+          "text": "Recent",
+          "willChange": "transform",
+          "transform": "none"
+        }
+      ],
+      "controls": {
+        "position": "static",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0,
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        },
+        "blur": "none"
+      },
+      "settings": {
+        "position": "fixed",
+        "box": {
+          "x": 1386,
+          "y": 946,
+          "width": 36,
+          "height": 36,
+          "top": 946,
+          "right": 1422,
+          "bottom": 982,
+          "left": 1386
+        }
+      },
+      "documentWidth": 1440,
+      "menuBox": {
+        "x": 984,
+        "y": 71,
+        "width": 320,
+        "height": 82
+      }
+    },
+    {
+      "theme": "light",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "headerTransform": "none",
+      "leaves": [
+        {
+          "text": "ResumI",
+          "willChange": "transform",
+          "transform": "none"
+        },
+        {
+          "text": "Resumes",
+          "willChange": "transform",
+          "transform": "none"
+        },
+        {
+          "text": "Templates",
+          "willChange": "transform",
+          "transform": "none"
+        },
+        {
+          "text": "Recent",
+          "willChange": "transform",
+          "transform": "none"
+        }
+      ],
+      "controls": {
+        "position": "fixed",
+        "box": {
+          "x": 0,
+          "y": 777,
+          "width": 390,
+          "height": 67,
+          "top": 777,
+          "right": 390,
+          "bottom": 844,
+          "left": 0
+        },
+        "blur": "blur(24px) saturate(1.2)"
+      },
+      "settings": {
+        "position": "static",
+        "box": {
+          "x": 334,
+          "y": 788,
+          "width": 44,
+          "height": 44,
+          "top": 788,
+          "right": 378,
+          "bottom": 832,
+          "left": 334
+        }
+      },
+      "documentWidth": 390,
+      "menuBox": {
+        "x": 8,
+        "y": 699,
+        "width": 320,
+        "height": 82
+      }
+    },
+    {
+      "theme": "dark",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "headerTransform": "none",
+      "leaves": [
+        {
+          "text": "ResumI",
+          "willChange": "transform",
+          "transform": "none"
+        },
+        {
+          "text": "Resumes",
+          "willChange": "transform",
+          "transform": "none"
+        },
+        {
+          "text": "Templates",
+          "willChange": "transform",
+          "transform": "none"
+        },
+        {
+          "text": "Recent",
+          "willChange": "transform",
+          "transform": "none"
+        }
+      ],
+      "controls": {
+        "position": "fixed",
+        "box": {
+          "x": 0,
+          "y": 777,
+          "width": 390,
+          "height": 67,
+          "top": 777,
+          "right": 390,
+          "bottom": 844,
+          "left": 0
+        },
+        "blur": "blur(24px) saturate(1.2)"
+      },
+      "settings": {
+        "position": "static",
+        "box": {
+          "x": 334,
+          "y": 788,
+          "width": 44,
+          "height": 44,
+          "top": 788,
+          "right": 378,
+          "bottom": 832,
+          "left": 334
+        }
+      },
+      "documentWidth": 390,
+      "menuBox": {
+        "x": 8,
+        "y": 699,
+        "width": 320,
+        "height": 82
+      }
+    }
+  ],
+  "errors": []
+}

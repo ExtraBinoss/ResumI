@@ -112,6 +112,9 @@ test("SSR public pages and nested routes return meaningful server HTML; hydratio
 test("human editor → save/reload → agent preview/undo → project lifecycle → JSON import", async ({
   page,
 }) => {
+  // This cumulative cold-dev journey includes several reloads, CRUD and import.
+  // Keep individual assertion deadlines unchanged instead of retrying the flow.
+  test.setTimeout(60000);
   const errors: string[] = [];
   page.on("pageerror", (e) => errors.push(e.message));
   await create(page);

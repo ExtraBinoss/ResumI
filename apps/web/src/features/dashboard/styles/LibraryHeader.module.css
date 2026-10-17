@@ -18,6 +18,13 @@
 .brand {
   justify-self: start;
 }
+/* Keep header text on stable raster surfaces as filtering removes card layers.
+   Scope this to leaves: the header also owns viewport-fixed mobile controls. */
+.brand,
+.label,
+.recentTrigger {
+  will-change: transform;
+}
 .brand > a {
   font-size: 22px;
 }

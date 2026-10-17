@@ -1,12 +1,12 @@
 [
   {
     "mode": "visual",
-    "toolbarFrames": 17,
-    "maximumToolbarAnchorErrorPx": 0.00006151014517439689
+    "toolbarFrames": 13,
+    "maximumToolbarAnchorErrorPx": 0.000035987782028414166
   },
   {
     "mode": "text",
-    "toolbarFrames": 16,
-    "maximumToolbarAnchorErrorPx": 0.0034586589723630823
+    "toolbarFrames": 13,
+    "maximumToolbarAnchorErrorPx": 0.0000694191142001505
   }
 ]

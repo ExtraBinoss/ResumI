@@ -1,17 +1,17 @@
 {
   "environment": "Local Chromium, production Worker preview; Playwright round trips included",
-  "projectOpenMs": 659,
+  "projectOpenMs": 771,
   "inputRoundTripMs": [
-    88,
-    96,
+    66,
     46,
-    46,
-    42,
-    48,
-    58,
-    60,
-    43,
-    54
+    47,
+    41,
+    52,
+    49,
+    70,
+    120,
+    47,
+    40
   ],
-  "inputP95Ms": 96
+  "inputP95Ms": 120
 }
