@@ -85,6 +85,16 @@ h1 {
 h1 > span {
   color: #2563eb;
 }
+.website {
+  position: absolute;
+  left: 69px;
+  bottom: 23px;
+  color: #475569;
+  font-size: 23px;
+  line-height: 1;
+  letter-spacing: -0.3px;
+  text-decoration: none;
+}
 .agents {
   position: absolute;
   left: 69px;
@@ -106,29 +116,28 @@ h1 > span {
 }
 .resume-stack {
   position: absolute;
-  width: 419px;
-  height: 593px;
-  top: 70px;
-  left: 744px;
-  transform: rotate(7deg);
-}
-.back-sheet {
-  position: absolute;
-  inset: 15px 11px -3px -30px;
-  border: 1px solid #b8ccef;
-  border-radius: 5px;
-  background: #d9e6fc;
-  transform: rotate(-11deg);
-  box-shadow: 0 14px 48px #253d6c12;
+  inset: 0 0 0 690px;
 }
 .resume {
-  position: relative;
+  position: absolute;
   display: block;
-  width: 419px;
   height: auto;
   border: 1px solid #d9dfe4;
   border-radius: 5px;
   box-shadow:
     0 28px 65px #344d7627,
     0 3px 12px #2133510c;
+}
+.resume-primary {
+  top: 23px;
+  left: 95px;
+  width: 365px;
+  transform: rotate(7deg);
+}
+.resume-secondary {
+  z-index: 1;
+  top: 347px;
+  left: 28px;
+  width: 420px;
+  transform: rotate(-7deg);
 }

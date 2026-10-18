@@ -2,7 +2,10 @@ import { createHash } from "node:crypto";
 import { mkdir } from "node:fs/promises";
 import { chromium } from "@playwright/test";
 import { resumeCss } from "../packages/cv/src/index";
-import { socialResume } from "../assets/ssr-image/resume";
+import {
+  socialResume,
+  socialSecondaryResume,
+} from "../assets/ssr-image/resume";
 
 // This build reads only the shipped, fictional Alex Morgan template and public
 // brand assets. No workspace resume, browser profile or remote service is used.
@@ -37,6 +40,7 @@ const files = new Map(
     "index.html",
     "styles.css",
     "assets/resume.png",
+    "assets/resume-secondary.png",
     ...Object.keys(sources).map((name) => `assets/${name}`),
   ].map((name) => [`/${name}`, Bun.file(new URL(name, directory))]),
 );
@@ -61,18 +65,23 @@ try {
   const sourceSans = Buffer.from(
     await Bun.file(new URL("source-sans-3.woff2", assets)).arrayBuffer(),
   ).toString("base64");
-  const resume = socialResume(`data:font/woff2;base64,${sourceSans}`);
-  await page.setContent(
-    `<!doctype html><html><head><meta charset="utf-8"><style>${resumeCss}body{margin:0}.resume{margin:0}</style></head><body>${resume}</body></html>`,
-  );
-  await page.evaluate(async () => {
-    await document.fonts.ready;
-    await Promise.all([...document.images].map((image) => image.decode()));
-  });
-  await page.locator(".resume.cv-sheet").screenshot({
-    path: new URL("resume.png", assets).pathname,
-    animations: "disabled",
-  });
+  const font = `data:font/woff2;base64,${sourceSans}`;
+  for (const [name, resume] of [
+    ["resume.png", socialResume(font)],
+    ["resume-secondary.png", socialSecondaryResume(font)],
+  ] as const) {
+    await page.setContent(
+      `<!doctype html><html><head><meta charset="utf-8"><style>${resumeCss}body{margin:0}.resume{margin:0}</style></head><body>${resume}</body></html>`,
+    );
+    await page.evaluate(async () => {
+      await document.fonts.ready;
+      await Promise.all([...document.images].map((image) => image.decode()));
+    });
+    await page.locator(".resume.cv-sheet").screenshot({
+      path: new URL(name, assets).pathname,
+      animations: "disabled",
+    });
+  }
   await page.setViewportSize({ width: 1200, height: 630 });
   await page.goto(server.url.toString());
   await page.evaluate(async () => {

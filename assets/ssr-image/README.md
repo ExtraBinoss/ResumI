@@ -11,10 +11,11 @@ bun scripts/build-og-image.ts
 
 The renderer copies the public ResumI tray icon and existing agent marks,
 loads the same Space Grotesk / Source Sans 3 variable fonts as the site,
-and renders the shipped `react-profile` layout using the fictional Alex Morgan
+and renders the shipped `react-profile` and `react-risograph` layouts using the fictional Alex Morgan
 sample portrait. `resume.ts` contains the original, synthetic engineering career
 and blue styling used only for this preview. Tool marks come from the public
-template assets; the catalog templates remain unchanged.
+template assets; the catalog templates remain unchanged. The two resumes are
+stacked vertically, beside the headline and `resumi.plinka.eu` address.
 It reads no personal document, browser profile or private resume.
 
 The output is `apps/web/public/og-image.png` at exactly 1200 × 630 pixels.

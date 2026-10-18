@@ -3,8 +3,20 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { createResume } from "../../packages/cv/src/index";
 import { resumeData } from "../../packages/cv/src/source/starter";
 import Resume from "../../packages/cv/src/templates/CodeResume";
+import CreativeResume from "../../packages/cv/src/templates/CreativeResume";
 import assets from "../../packages/cv/src/templates/assets.generated.json";
 import type { ResumeData } from "../../packages/cv/src/templates/types";
+
+export function socialSecondaryResume(font: string): string {
+  const sample = resumeData(
+    createResume("social-preview-secondary", "react-risograph"),
+  );
+  return renderToStaticMarkup(
+    createElement<{ data?: ResumeData }>(CreativeResume, {
+      data: { ...sample, font },
+    }),
+  );
+}
 
 /** Public sample portrait and template; every career detail below is fictional. */
 export function socialResume(font: string): string {
