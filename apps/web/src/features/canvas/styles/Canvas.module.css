@@ -90,8 +90,23 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 76px 32px;
+  padding-block: calc(76px + var(--pan-extra-y, 0px));
+  padding-inline: calc(
+    max(
+        32px,
+        calc(var(--layers-width, 0px) + 24px),
+        calc(var(--properties-width, 0px) + 24px)
+      ) +
+      var(--pan-extra-x, 0px)
+  );
   isolation: isolate;
+  /* Reduced-motion defaults must not animate the scroll geometry. */
+  transition-property: none;
+}
+@media (max-width: 700px) {
+  .stage {
+    padding-inline: calc(32px + var(--pan-extra-x, 0px));
+  }
 }
 .guideX,
 .guideY {

@@ -1,3 +1,5 @@
+import { CONTRAST_HELP } from "./contrast-help";
+
 export const HELP = `ResumI — portable resume tools for humans and agents
 Usage: bun run resumi <command> [arguments]
 
@@ -5,13 +7,14 @@ Usage: bun run resumi <command> [arguments]
   output PROJECT [--format json|html|tsx|react|source|pdf] [--pages SELECTOR]
     [--out FILE | --out-dir DIR]
   pages PROJECT                    List editable page numbers, IDs, names and sizes
+  contrast PROJECT [--level AA|AAA] [--pages SELECTOR] [--locale CODE|all] [--out FILE]
   screenshot PROJECT --out FILE.png [--page SELECTOR] [--width PX] [--height PX]
   templates [list|inspect ID]       Discover real React and canvas starters
   assets list [--kind shapes|icons|brands] [--search TEXT] [--limit N]
   assets show ID [--format json|svg] [--out FILE]
   commands                         List every validated engine operation
   capabilities                     Machine-readable features and boundaries
-  help [agent|design|source|assets|commands|screenshot|pdf|pages|exports|all]
+  help [agent|design|source|assets|commands|screenshot|pdf|pages|exports|contrast|all]
   docs [TOPIC] [--source local|github]   Shipped offline help; explicit remote guide
 
 Document commands (existing automation remains compatible):
@@ -24,6 +27,7 @@ Document commands (existing automation remains compatible):
     --out FILE (combined) or --out-dir DIR (separate pages)
   document output PROJECT ...        Same options as output
   document pages PROJECT             Same page listing as pages
+  document contrast PROJECT ...      Global element audit and verified text fixes
   document screenshot PROJECT --out FILE.png [--page SELECTOR] [--width PX] [--height PX]
   document schema                   Complete versioned command JSON Schema
 
@@ -31,7 +35,7 @@ PROJECT is a JSON path or filename without .json, relative to the working
 directory. Browser projects must be exported first; no private browser access.
 Use: templates → new → inspect → apply/source → output → screenshot → import.
 PDF: output PROJECT --format pdf --out Resume.pdf renders and checks its text.
-Use docs agent to start, docs pages for CV + cover-letter projects, or docs all
+Use docs agent to start, docs contrast to improve readability, or docs all
 for every shipped topic. The default docs/help commands never access the network.
 Help and raw output are text; other responses are JSON stdout. Errors are JSON
 stderr. Exit codes: 0 success; 2 arguments; 3 invalid document/render; 4 file I/O.
@@ -180,10 +184,12 @@ Browser projects are private local IndexedDB: export JSON before using the CLI.
    output application --format pdf --pages 1,2 --out Application.pdf.
    output application --format tsx --pages 2 --out CoverLetter.tsx.
    screenshot application --page 2 --out CoverLetter.png.
-6. Validate and inspect output; PDF reports actual selectable text per page.
+6. Run contrast application --locale all and read docs contrast. Review failing
+   ranges and unknown backgrounds; apply chosen verified patches and audit again.
+7. Validate and inspect output; PDF reports actual selectable text per page.
 
 Use docs pages/exports for selection and split exports; docs source for HTML/TSX;
-docs assets for graphics; docs commands for mutations; docs pdf for text checks.
+docs assets for graphics; docs contrast for readability; docs pdf for text checks.
 All help is shipped offline: docs all. No auth, network or production access.
 Optional: docs agent --source github fetches only the public repository guide
 with a 10-second timeout and no credentials. HTTP errors suggest offline help.
@@ -254,6 +260,7 @@ const topics: Record<string, string> = {
   commands: COMMANDS,
   pages: PAGES,
   exports: EXPORTS,
+  contrast: CONTRAST_HELP,
 };
 export function help(topic?: string) {
   return topic === "all"

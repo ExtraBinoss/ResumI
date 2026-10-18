@@ -49,6 +49,7 @@ import { useCanvasPan } from "./useCanvasPan";
 import { SelectionMeasurements } from "./SelectionMeasurements";
 import { CanvasText } from "./CanvasText";
 import { HoverOutline } from "./HoverOutline";
+import { LayerListHover } from "./LayerListHover";
 import styles from "./styles/Canvas.module.css";
 import controls from "./styles/Controls.module.css";
 import viewportStyles from "./styles/Viewport.module.css";
@@ -525,6 +526,7 @@ export function DesignCanvas() {
               );
             })}
             <div className={styles.interactionPlane} ref={setOverlay} />
+            {overlay && <LayerListHover overlay={overlay} />}
             <SelectionMeasurements />
             <div ref={marquee} className={styles.marquee} />
             <div data-guide="x" className={styles.guideX} />

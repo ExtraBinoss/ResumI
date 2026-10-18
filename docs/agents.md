@@ -15,7 +15,7 @@ bun run resumi templates inspect react-classic
 bun run resumi new --template react-classic --out output/application.json
 ```
 
-`docs TOPIC` and `help TOPIC` provide offline guidance: `agent`, `design`, `source`, `assets`, `commands`, `pages`, `exports`, `screenshot` and `pdf`. `capabilities` describes supported features and limits; `commands` lists engine operations; `document schema` gives their exact fields. Use these contracts rather than guessing commands or IDs.
+`docs TOPIC` and `help TOPIC` provide offline guidance: `agent`, `design`, `source`, `assets`, `commands`, `pages`, `exports`, `screenshot`, `contrast` and `pdf`. `capabilities` describes supported features and limits; `commands` lists engine operations; `document schema` gives their exact fields. Use these contracts rather than guessing commands or IDs.
 
 ## Edit source or canvas
 
@@ -26,6 +26,7 @@ bun run resumi output output/application --format source --out output/Resume.tsx
 # Edit output/Resume.tsx, then attach it:
 bun run resumi document source output/application --file output/Resume.tsx --out output/application.json
 bun run resumi document validate output/application
+bun run resumi contrast output/application --locale all --out output/contrast-report.json
 ```
 
 Use `--file output/Resume.html` for HTML. TSX exports a default React component; only React imports are available. Embed styles, images, fonts and SVGs for offline rendering. The CLI compiles source without running it in its own process; rendering uses an isolated browser with network requests blocked. `assets list` and `assets show` provide shared shapes, icons and brand artwork with credits.
@@ -84,6 +85,8 @@ bun run resumi screenshot output/application --out output/application.png
 ```
 
 Read the PDF command's JSON report and inspect the screenshot for clipping, spacing and readable type. The report checks actual extracted text, links, reading order and spacing against the rendered page. A mismatch exits with code 3 and retains the PDF for correction; it is not certification for every ATS.
+
+Use `docs contrast` before evaluating readability. The global contrast report inventories every element/page/group and checks every native text range against the actual solid background, alpha and group opacity. Read `textPassed`, failing ranges and manual-review reasons; a successful CLI invocation alone is not a passing grade. Each verified recommendation contains a v1 engine patch for its specific language/range. Inspect and apply one chosen patch with `document apply`, then audit again. Color/opacity fixes preserve other rich-text styles and restore locks; group opacity changes affect all members. Review images, gradients, meaningful icons and active HTML/TSX visually rather than assuming a numeric pass. Keep private reports under `output/`.
 
 Choose one page, several pages in order, or all pages:
 

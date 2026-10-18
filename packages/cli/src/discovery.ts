@@ -39,6 +39,7 @@ export function capabilities() {
       "flat groups",
       "z-order",
       "mixed text styling",
+      "global contrast inventory, per-range AA/AAA text audits and verified recommendation batches",
       "links",
       "16 blend modes",
       "gradients",
@@ -57,6 +58,7 @@ export function capabilities() {
       "document schema",
       "pages PROJECT",
       "docs all",
+      "docs contrast",
     ],
     feedback: [
       "output PROJECT --format json",
@@ -68,6 +70,7 @@ export function capabilities() {
       "output PROJECT --format html --pages 2 --out Letter.html",
       "output PROJECT --format tsx --out-dir react-pages",
       "screenshot PROJECT --page 2 --out Letter.png",
+      "contrast PROJECT --locale all --level AA",
     ],
     exports: {
       formats: ["json", "html", "pdf", "tsx", "react", "source"],
@@ -89,6 +92,8 @@ export function capabilities() {
       layout:
         "Up to 20 visual pages (100–5000 CSS pixels per dimension), flat groups limited to one page; no automatic pagination or nested groups. Page commands require an enabled canvas with source explicitly deactivated.",
       pdf: "Local PDF rendering uses the app renderer; PDF.js checks extracted text, spacing and reading order. A failed check retains the PDF and exits 3; it does not certify universal ATS acceptance.",
+      contrast:
+        "Read-only native-text audit plus all-element inventory. Images, gradients, blends, filters, source and meaningful graphics require explicit visual review; textPassed is not WCAG certification. Verified text-range patches are suggestions only. See docs contrast.",
     },
   };
 }

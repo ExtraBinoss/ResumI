@@ -5,6 +5,7 @@ const options: Record<string, string[]> = {
   create: ["--out", "--template", "--name", "--blank"],
   inspect: [],
   pages: [],
+  contrast: ["--level", "--pages", "--locale", "--out"],
   validate: [],
   apply: ["--out"],
   schema: [],

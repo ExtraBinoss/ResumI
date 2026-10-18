@@ -305,3 +305,76 @@ test("visual hover chrome stays independent of selection and a grouped photo dri
     animations: "disabled",
   });
 });
+
+test("visual: hovering Layers identifies the exact child or group on canvas without changing selection", async ({
+  page,
+}) => {
+  const { alpha, beta } = await openSelectionFixture(page, true);
+  await beta.getByRole("button").click();
+  const photo = page.locator('[data-layer-name="Synthetic portrait"]'),
+    photoId = (await photo.getAttribute("data-layer-id"))!,
+    alphaId = (await alpha.getAttribute("data-layer-id"))!,
+    frame = page.locator('[data-hover-source="layers"]'),
+    photoRow = page.locator(`[data-layer-row="${photoId}"]`),
+    groupRow = page.getByRole("button", {
+      name: "Select group Portrait identity",
+      exact: true,
+    });
+  const groupId = (await page
+    .locator("[data-layer-group]")
+    .filter({ has: groupRow })
+    .getAttribute("data-layer-group"))!;
+  await photoRow.hover();
+  await expect(frame).toHaveCount(1);
+  await expect(frame).toHaveAttribute("data-hover-frame", photoId);
+  await expect(frame).toContainText("Synthetic portrait");
+  const photoBox = (await photo.boundingBox())!,
+    frameBox = (await frame.boundingBox())!;
+  expect(Math.abs(frameBox.x - photoBox.x)).toBeLessThan(1);
+  expect(Math.abs(frameBox.y - photoBox.y)).toBeLessThan(1);
+  expect(Math.abs(frameBox.width - photoBox.width)).toBeLessThan(1);
+  expect(Math.abs(frameBox.height - photoBox.height)).toBeLessThan(1);
+  await expect(beta.getByRole("button")).toHaveAttribute(
+    "aria-pressed",
+    "true",
+  );
+  await expect(photo.getByRole("button")).toHaveAttribute(
+    "aria-pressed",
+    "false",
+  );
+  await expect(frame.locator("[data-handle]")).toHaveCount(0);
+  await expect(
+    page.getByRole("button", { name: "Undo", exact: true }),
+  ).toBeDisabled();
+  await page.screenshot({
+    path: "artifacts/visual/layers-photo-hover.png",
+    animations: "disabled",
+  });
+
+  await groupRow.hover();
+  await expect(frame).toHaveAttribute("data-hover-frame", groupId);
+  await expect(frame).toContainText("Portrait identity");
+  await expect(frame).toHaveCSS("left", "100px");
+  await expect(frame).toHaveCSS("top", "100px");
+  await expect(frame).toHaveCSS("width", "120px");
+  await expect(frame).toHaveCSS("height", "210px");
+  await page.locator(`[data-layer-row="${alphaId}"]`).hover();
+  await expect(frame).toHaveCount(1);
+  await expect(frame).toHaveAttribute("data-hover-frame", alphaId);
+  await expect(frame).toContainText("Alpha");
+  await expect(alpha.getByRole("button")).toHaveAttribute(
+    "aria-pressed",
+    "false",
+  );
+
+  await page.getByRole("heading", { name: "Layers", exact: true }).hover();
+  await expect(frame).toHaveCount(0);
+  await photoRow
+    .getByRole("button", { name: "Hide layer Synthetic portrait", exact: true })
+    .click();
+  await photoRow.hover();
+  await expect(frame).toHaveCount(0);
+  await groupRow.hover();
+  await expect(frame).toHaveAttribute("data-hover-frame", groupId);
+  await expect(frame).toHaveCSS("height", "60px");
+});

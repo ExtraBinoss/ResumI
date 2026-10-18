@@ -7,15 +7,18 @@ export function HoverOutline({
   id,
   layer,
   overlay,
+  source = "canvas",
 }: {
   id: string;
-  layer: Layer;
+  layer: Pick<Layer, "x" | "y" | "width" | "height" | "rotation" | "name">;
   overlay: HTMLDivElement;
+  source?: "canvas" | "layers";
 }) {
   return createPortal(
     <div
       aria-hidden="true"
       data-hover-frame={id}
+      data-hover-source={source}
       className={styles.frame}
       style={{
         left: layer.x,

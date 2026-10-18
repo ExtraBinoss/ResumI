@@ -8,6 +8,7 @@ import {
   measureZoomScrollbars,
   projectZoomPosition,
   readZoomLayout,
+  syncZoomPanPadding,
   type ZoomLayout,
 } from "./zoom-layout";
 
@@ -38,6 +39,7 @@ export function useCanvasPan({
     pan = useRef<{ x: number; y: number; left: number; top: number } | null>(
       null,
     );
+  const scrollbars = useRef<ZoomLayout["scrollbar"] | null>(null);
   const fitId = initialFit?.id,
     fitWidth = initialFit?.width,
     fitHeight = initialFit?.height;
@@ -67,6 +69,13 @@ export function useCanvasPan({
         32,
     });
   }, [fitId, fitWidth, fitHeight, store]);
+  useLayoutEffect(() => {
+    const node = viewport.current,
+      paper = node?.querySelector<HTMLElement>(surfaceSelector);
+    if (!node || !paper || store.get(zoomAtom) !== zoom) return;
+    scrollbars.current ??= measureZoomScrollbars(node);
+    syncZoomPanPadding(node, paper, zoom / 100, scrollbars.current);
+  }, [pageId, store, zoom]);
   useLayoutEffect(() => {
     const node = viewport.current;
     // Fitting can change the store in the preceding layout effect. Wait for
@@ -130,9 +139,9 @@ export function useCanvasPan({
     syncViewportSize.current = () => {
       previous = { width: node?.clientWidth ?? 0, height: usableHeight() };
     };
-    const scrollbar = node
-      ? measureZoomScrollbars(node)
-      : { width: 0, height: 0 };
+    const scrollbar =
+      scrollbars.current ??
+      (node ? measureZoomScrollbars(node) : { width: 0, height: 0 });
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
     let zoomFrame = 0,
       targetZoom = store.get(zoomAtom),
@@ -283,6 +292,9 @@ export function useCanvasPan({
     node?.addEventListener("wheel", wheel, { passive: false });
     const observer = new ResizeObserver(() => {
       if (!node) return;
+      const surface = node.querySelector<HTMLElement>(surfaceSelector);
+      if (surface)
+        syncZoomPanPadding(node, surface, store.get(zoomAtom) / 100, scrollbar);
       if (paper) layout = readZoomLayout(node, paper, scrollbar);
       node.scrollLeft += (previous.width - node.clientWidth) / 2;
       node.scrollTop += (previous.height - usableHeight()) / 2;

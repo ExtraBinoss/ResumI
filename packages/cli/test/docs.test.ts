@@ -25,6 +25,7 @@ test("docs/help topics cover pages, exports and the agent workflow entirely offl
     "assets",
     "commands",
     "screenshot",
+    "contrast",
     "all",
   ]) {
     const docs = await runCli(["docs", topic], io),

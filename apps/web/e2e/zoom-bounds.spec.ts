@@ -219,3 +219,50 @@ test("a fitted native page on mobile stays in the canvas above the open panels",
   expect(geometry.bottom).toBeLessThanOrEqual(geometry.viewportBottom);
   expect(geometry.bottom).toBeLessThan(panel.y);
 });
+
+for (const mode of ["visual", "text"] as const) {
+  for (const width of [390, 1440]) {
+    test(`${mode} scrollbars let every highly zoomed page edge reach the workspace center at ${width}px`, async ({
+      page,
+    }) => {
+      await page.setViewportSize({ width, height: 1000 });
+      await page.goto("/editor");
+      if (mode === "text")
+        await page.getByRole("button", { name: "Text", exact: true }).click();
+      const surface = page.locator("[data-zoom-surface]");
+      await expect(surface).toBeVisible();
+      await page
+        .getByRole("spinbutton", { name: "Canvas zoom", exact: true })
+        .fill("250");
+      await settled(page, surface);
+      const bounds = await surface.evaluate((node) => {
+        const viewport = node.parentElement!.parentElement!.parentElement!,
+          viewportRect = viewport.getBoundingClientRect();
+        viewport.scrollLeft = 0;
+        viewport.scrollTop = 0;
+        const start = node.getBoundingClientRect();
+        viewport.scrollLeft = viewport.scrollWidth;
+        viewport.scrollTop = viewport.scrollHeight;
+        const end = node.getBoundingClientRect();
+        return {
+          startX: start.left,
+          startY: start.top,
+          endX: end.right,
+          endY: end.bottom,
+          centerX: viewportRect.left + viewport.clientWidth / 2,
+          centerY: viewportRect.top + viewport.clientHeight / 2,
+          rangeX: viewport.scrollWidth - viewport.clientWidth,
+          rangeY: viewport.scrollHeight - viewport.clientHeight,
+          pageWidth: start.width,
+          pageHeight: start.height,
+        };
+      });
+      expect(Math.abs(bounds.startX - bounds.centerX)).toBeLessThan(12);
+      expect(Math.abs(bounds.startY - bounds.centerY)).toBeLessThan(12);
+      expect(Math.abs(bounds.endX - bounds.centerX)).toBeLessThan(12);
+      expect(Math.abs(bounds.endY - bounds.centerY)).toBeLessThan(12);
+      expect(bounds.rangeX).toBeGreaterThanOrEqual(bounds.pageWidth - 1);
+      expect(bounds.rangeY).toBeGreaterThanOrEqual(bounds.pageHeight - 1);
+    });
+  }
+}

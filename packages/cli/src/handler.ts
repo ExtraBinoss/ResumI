@@ -154,6 +154,10 @@ export async function runCli(
         const { listPages } = await import("./pages");
         result = listPages(document);
       }
+      if (command === "contrast") {
+        const { contrast } = await import("./contrast");
+        result = await contrast(document, flags, io, positional[0]);
+      }
       if (command === "output") {
         const { output } = await import("./output");
         result = await output(document, flags, io, positional[0]);

@@ -225,6 +225,33 @@ const unsupported: [string, Layer][] = [
   ["Blended background", rectangle({ blendMode: "multiply" })],
   ["Overlapping text", text()],
 ];
+test("rounded solid backings include flat strips but never claim a curved corner or stroke is uniform fill", () => {
+  const backing = rectangle({ borderRadius: 20, fill: "#eeeeee" });
+  const doc = scene([
+    ["background", backing],
+    ["text", text({ x: 50, y: 2, width: 120, height: 10 })],
+  ]);
+  expect(auditTextContrast(doc, "text")).toMatchObject({
+    reliable: true,
+    background: "#eeeeee",
+  });
+  expect(
+    auditTextContrast(
+      patch(doc, "text", { x: 2, y: 2, width: 10, height: 10 }),
+      "text",
+    ).reason,
+  ).toBe("Variable background");
+  const stroked = applyCommand(doc, {
+    type: "layer.update",
+    ids: ["background"],
+    patch: { strokeWidth: 10, stroke: "#000000" },
+  });
+  expect(auditTextContrast(stroked, "text").reason).toBe("Variable background");
+  expect(
+    auditTextContrast(patch(stroked, "text", { x: 40, y: 40 }), "text")
+      .reliable,
+  ).toBe(true);
+});
 for (const [reason, layer] of unsupported)
   test(`complex backgrounds return Unknown: ${reason} / ${layer.type}`, () => {
     expect(

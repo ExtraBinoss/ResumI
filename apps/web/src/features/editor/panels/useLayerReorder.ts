@@ -17,6 +17,7 @@ import {
   type LayerReference,
 } from "@resumi/engine";
 import { sessionAtom } from "../../../state/editor";
+import { layerHoverAtom } from "../../../state/layer-hover";
 import {
   activePageIdAtom,
   designCommandAtom,
@@ -243,6 +244,7 @@ export function useLayerReorder() {
           return;
         performance.clearMeasures("resumi:layer-preview");
         current.active = true;
+        store.set(layerHoverAtom, null);
         const row = treeRef.current?.querySelector<HTMLElement>(
           `[data-layer-reorder-id="${CSS.escape(current.source.id)}"]`,
         );

@@ -18,6 +18,7 @@ import {
 } from "../../../components/ui/accordion";
 import { ActionIcon } from "../../../ui";
 import { designCommandAtom, selectLayersAtom } from "../../../state/design";
+import { layerHoverAtom } from "../../../state/layer-hover";
 import { LayerRow } from "./LayerRow";
 import type { LayerReorder } from "./useLayerReorder";
 import styles from "../styles/Composition.module.css";
@@ -36,7 +37,8 @@ export function LayerGroup({
   const { t } = useTranslation(),
     reduced = useReducedMotion();
   const dispatch = useSetAtom(designCommandAtom),
-    select = useSetAtom(selectLayersAtom);
+    select = useSetAtom(selectLayersAtom),
+    hover = useSetAtom(layerHoverAtom);
   return (
     <AccordionItem
       render={
@@ -57,6 +59,11 @@ export function LayerGroup({
       <div
         className={`${styles.groupRow} ${active ? styles.active : ""}`}
         {...bind({ kind: "group", id: group.id }, group.locked)}
+        onPointerEnter={(event) => {
+          if (event.pointerType !== "touch" && event.buttons === 0)
+            hover({ kind: "group", id: group.id });
+        }}
+        onPointerLeave={() => hover(null)}
       >
         <AccordionTrigger
           className={styles.groupToggle}

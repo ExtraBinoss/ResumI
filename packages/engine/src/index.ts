@@ -16,6 +16,8 @@ export * from "./canvas/shapes";
 export * from "./source/schema";
 
 export * from "./canvas/contrast";
+export * from "./canvas/contrast-document";
+export * from "./canvas/contrast-recommendations";
 
 export * from "./localization/schema";
 export {

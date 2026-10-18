@@ -44,6 +44,39 @@ function contains(first: Frame, second: Frame) {
     first.y + first.height >= second.y + second.height
   );
 }
+function containsRoundedFill(
+  layer: Extract<Layer, { type: "shape" }>,
+  target: Frame,
+) {
+  const stroke = layer.strokeWidth && layer.stroke !== "transparent";
+  const insetX = stroke ? (layer.strokeWidth * layer.width) / 200 : 0,
+    insetY = stroke ? (layer.strokeWidth * layer.height) / 200 : 0;
+  const inner = {
+    x: layer.x + insetX,
+    y: layer.y + insetY,
+    width: layer.width - 2 * insetX,
+    height: layer.height - 2 * insetY,
+  };
+  if (!contains(inner, target)) return false;
+  const rx = Math.max(
+      0,
+      Math.min(layer.borderRadius, layer.width / 2) - insetX,
+    ),
+    ry = Math.max(0, Math.min(layer.borderRadius, layer.height / 2) - insetY);
+  if (!rx || !ry) return true;
+  // A rounded rectangle is convex: checking every frame corner proves the
+  // entire text frame is over fill, without excluding its flat top/side strips.
+  return [target.x, target.x + target.width].every((x) =>
+    [target.y, target.y + target.height].every((y) => {
+      const cx = Math.max(
+          inner.x + rx,
+          Math.min(inner.x + inner.width - rx, x),
+        ),
+        cy = Math.max(inner.y + ry, Math.min(inner.y + inner.height - ry, y));
+      return ((x - cx) / rx) ** 2 + ((y - cy) / ry) ** 2 <= 1;
+    }),
+  );
+}
 function extent(layer: Layer): Frame {
   const frame = rotatedFrame(layer);
   if (layer.type === "text") return frame;
@@ -99,27 +132,7 @@ function uniformFill(layer: Layer, target: Frame): Rgba | string {
     return transparentPixel;
   if (layer.rotation || layer.shape !== "rectangle" || layer.vector)
     return "Variable background";
-  const stroke = layer.strokeWidth && layer.stroke !== "transparent";
-  const insetX = Math.max(
-    layer.borderRadius,
-    stroke ? (layer.strokeWidth * layer.width) / 200 : 0,
-  );
-  const insetY = Math.max(
-    layer.borderRadius,
-    stroke ? (layer.strokeWidth * layer.height) / 200 : 0,
-  );
-  if (
-    !contains(
-      {
-        x: layer.x + insetX,
-        y: layer.y + insetY,
-        width: layer.width - 2 * insetX,
-        height: layer.height - 2 * insetY,
-      },
-      target,
-    )
-  )
-    return "Variable background";
+  if (!containsRoundedFill(layer, target)) return "Variable background";
   return pixelOpacity(colorPixel(layer.fill)!, layer.opacity);
 }
 /** Resolve a uniform color under the selected text frame, never estimate image/gradient pixels. */

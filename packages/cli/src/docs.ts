@@ -13,6 +13,7 @@ export const docTopics = [
   "pdf",
   "pages",
   "exports",
+  "contrast",
 ] as const;
 
 /** Offline by default. Remote access is an explicit request to one fixed public guide. */

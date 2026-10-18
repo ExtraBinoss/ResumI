@@ -31,6 +31,7 @@ import {
   deleteSelectionAtom,
 } from "../../../state/design";
 import { blockAtom, selectionAtom } from "../../../state/editor";
+import { layerHoverAtom } from "../../../state/layer-hover";
 import type { LayerDragBinding } from "./useLayerReorder";
 import styles from "../styles/Composition.module.css";
 export function LayerRow({
@@ -51,6 +52,7 @@ export function LayerRow({
     dispatch = useSetAtom(designCommandAtom),
     select = useSetAtom(selectLayersAtom),
     selectLayer = useSetAtom(selectLayerAtom),
+    hover = useSetAtom(layerHoverAtom),
     store = useStore();
   const [renaming, setRenaming] = useState(false),
     [draftName, setDraftName] = useState("");
@@ -71,6 +73,10 @@ export function LayerRow({
       className={`${styles.layerRow} ${active ? styles.active : ""} ${group ? styles.member : ""}`}
       data-layer-row={id}
       {...dragBinding}
+      onPointerEnter={(event) => {
+        if (event.pointerType !== "touch" && event.buttons === 0) hover(ref);
+      }}
+      onPointerLeave={() => hover(null)}
       onDragStartCapture={onDragStart}
       onPointerDown={locked ? undefined : dragBinding.onPointerDown}
       data-layer-reorder-locked={String(!!locked)}

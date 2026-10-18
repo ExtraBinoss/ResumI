@@ -2,6 +2,7 @@ import { expect, test } from "bun:test";
 import {
   projectZoomLayout,
   projectZoomPosition,
+  zoomPanPadding,
   type ZoomLayout,
 } from "../../src/features/canvas/zoom-layout";
 
@@ -96,4 +97,25 @@ test("future scrollbar coupling is included before the layout commits", () => {
     maxScrollLeft: 0,
     maxScrollTop: 431,
   });
+});
+
+test("pan gutters grow only with overflow and let highly zoomed page edges reach the workspace center", () => {
+  const pannable = { ...layout, panGutter: true };
+  expect(zoomPanPadding(pannable, 0.5)).toEqual(layout.padding);
+  expect(zoomPanPadding(pannable, 2.5)).toEqual({
+    left: 500,
+    right: 500,
+    top: 378,
+    bottom: 422,
+  });
+  const start = projectZoomPosition(pannable, 2.5, {
+    x: 0,
+    y: 0,
+    viewportX: 500,
+    viewportY: 400,
+  });
+  expect(start.left).toBe(500);
+  expect(start.top).toBe(378);
+  expect(start.scrollLeft).toBe(0);
+  expect(start.scrollTop).toBe(0);
 });

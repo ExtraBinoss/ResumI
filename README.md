@@ -41,7 +41,8 @@ If I provide a CV, recreate it faithfully in portable HTML/TSX when appropriate.
 Keep my content, assets and exports in the ignored output/ directory or outside
 this repository. Discover real templates or start with new --blank, and use
 validated CLI commands.
-Create/edit the project, validate it, render a PDF, read its text/ATS report,
+Create/edit the project, validate it, use docs contrast and contrast PROJECT
+to fix contrast issues and review graphics, render a PDF, read its text/ATS report,
 and inspect screenshots. Fix issues before handing over the JSON backup and
 requested PDF/HTML/TSX files. For several creations, use separate project pages
 and offer combined or separate exports. Install local Playwright Chromium if

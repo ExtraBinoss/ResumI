@@ -5,14 +5,43 @@ export type ZoomLayout = {
   paperHeight: number;
   padding: { left: number; right: number; top: number; bottom: number };
   scrollbar: { width: number; height: number };
+  panGutter?: boolean;
 };
 
-/** The stage contains only the scaled paper plus padding, centered when it fits. */
+/** Overflowing pages gain room to bring an edge into the usable workspace. */
+export function zoomPanPadding(layout: ZoomLayout, scale: number) {
+  if (!layout.panGutter) return layout.padding;
+  const availableX = Math.max(
+      0,
+      layout.width - layout.padding.left - layout.padding.right,
+    ),
+    availableY = Math.max(
+      0,
+      layout.height - layout.padding.top - layout.padding.bottom,
+    ),
+    extraX = Math.min(
+      availableX / 2,
+      Math.max(0, (layout.paperWidth * scale - availableX) / 2),
+    ),
+    extraY = Math.min(
+      availableY / 2,
+      Math.max(0, (layout.paperHeight * scale - availableY) / 2),
+    );
+  return {
+    left: layout.padding.left + extraX,
+    right: layout.padding.right + extraX,
+    top: layout.padding.top + extraY,
+    bottom: layout.padding.bottom + extraY,
+  };
+}
+
+/** Fit stays compact; preview and committed scroll bounds use the same padding. */
 export function projectZoomLayout(layout: ZoomLayout, scale: number) {
   const paperWidth = layout.paperWidth * scale,
     paperHeight = layout.paperHeight * scale,
-    contentWidth = paperWidth + layout.padding.left + layout.padding.right,
-    contentHeight = paperHeight + layout.padding.top + layout.padding.bottom;
+    padding = zoomPanPadding(layout, scale),
+    contentWidth = paperWidth + padding.left + padding.right,
+    contentHeight = paperHeight + padding.top + padding.bottom;
   let horizontal = false,
     vertical = false;
   // One scrollbar can make the other necessary. Starting without either gives
@@ -29,8 +58,8 @@ export function projectZoomLayout(layout: ZoomLayout, scale: number) {
     stageWidth = Math.max(width, contentWidth),
     stageHeight = Math.max(height, contentHeight);
   return {
-    left: layout.padding.left + (stageWidth - contentWidth) / 2,
-    top: layout.padding.top + (stageHeight - contentHeight) / 2,
+    left: padding.left + (stageWidth - contentWidth) / 2,
+    top: padding.top + (stageHeight - contentHeight) / 2,
     maxScrollLeft: stageWidth - width,
     maxScrollTop: stageHeight - height,
   };
@@ -108,6 +137,8 @@ export function readZoomLayout(
     viewportStyle = getComputedStyle(node),
     stableGutter = viewportStyle.scrollbarGutter.includes("stable");
   const number = (value: string) => Number.parseFloat(value) || 0;
+  const extraX = number(style.getPropertyValue("--pan-extra-x")),
+    extraY = number(style.getPropertyValue("--pan-extra-y"));
   return {
     width:
       node.clientWidth +
@@ -120,14 +151,35 @@ export function readZoomLayout(
     paperWidth: paper.offsetWidth,
     paperHeight: paper.offsetHeight,
     padding: {
-      left: number(style.paddingLeft),
-      right: number(style.paddingRight),
-      top: number(style.paddingTop),
-      bottom: number(style.paddingBottom),
+      left: number(style.paddingLeft) - extraX,
+      right: number(style.paddingRight) - extraX,
+      top: number(style.paddingTop) - extraY,
+      bottom: number(style.paddingBottom) - extraY,
     },
     scrollbar: {
       width: stableGutter ? 0 : scrollbar.width,
       height: scrollbar.height,
     },
+    panGutter: true,
   };
+}
+
+/** Only zoom/viewport changes write layout; wheel/drag frames remain transforms. */
+export function syncZoomPanPadding(
+  node: HTMLElement,
+  paper: HTMLElement,
+  scale: number,
+  scrollbar: ZoomLayout["scrollbar"],
+) {
+  const layout = readZoomLayout(node, paper, scrollbar),
+    padding = zoomPanPadding(layout, scale),
+    stage = paper.parentElement!.parentElement!;
+  stage.style.setProperty(
+    "--pan-extra-x",
+    `${padding.left - layout.padding.left}px`,
+  );
+  stage.style.setProperty(
+    "--pan-extra-y",
+    `${padding.top - layout.padding.top}px`,
+  );
 }
