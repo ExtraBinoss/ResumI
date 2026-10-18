@@ -42,3 +42,5 @@ Music is omitted for the first visual cut. The user subsequently approved the
 preview and explicitly requested rendering, compression and publication on
 plinka.eu. Publish the compressed versions on that site and integrate the WebM
 into its existing ResumI project preview; retain the local master.
+The user subsequently requested a smaller WebM at 30 fps, encoded directly
+with FFmpeg. Keep the master and standalone MP4 at their original 60 fps.

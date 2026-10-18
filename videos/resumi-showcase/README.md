@@ -33,7 +33,17 @@ Asset provenance remains in the main repository: `packages/cv/assets/photos.json
 The first cut has no audio.
 
 The rendered master is 15 seconds at 1920×1080, 60 fps. The web MP4 keeps this
-format; the hover preview uses a 1280×720, 60 fps VP9 WebM. They are published at
+format; the hover preview uses a 1280×720, 30 fps VP9 WebM. They are published at
 `https://plinka.eu/videos/resumi.mp4` and `https://plinka.eu/videos/resumi.webm`.
+Encode the hover preview directly from the master with FFmpeg:
+
+```sh
+ffmpeg -i renders/resumi-showcase-master.mp4 -an \
+  -vf 'fps=30,scale=1280:720:flags=lanczos' \
+  -c:v libvpx-vp9 -crf 35 -b:v 0 -row-mt 1 -cpu-used 3 \
+  -threads 4 -tile-columns 2 -deadline good -map_metadata -1 \
+  renders/resumi-showcase.webm
+```
+
 Rendering needs FFmpeg with `libx264`; on codec-limited systems, point
 `HYPERFRAMES_FFMPEG_PATH` and `HYPERFRAMES_FFPROBE_PATH` to full local binaries.
