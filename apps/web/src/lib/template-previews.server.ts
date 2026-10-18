@@ -1,4 +1,5 @@
-import { createResume, resumeCss, templates } from "@resumi/cv";
+import { createResume, resumeCss } from "@resumi/cv";
+import { templates } from "@resumi/cv/catalog";
 import { renderTemplateResume } from "@resumi/cv/templates";
 import assets from "../../../../packages/cv/src/templates/assets.generated.json" with { type: "json" };
 import { previewPortraitToken } from "./template-preview-assets";
@@ -24,46 +25,15 @@ function previewMarkup(html: string) {
   return { html: markup, css: css.join("\n"), licenses };
 }
 
-/** Only repository-authored synthetic documents enter this immutable catalog. */
-const catalog = templates
-  .filter((template) => !template.legacy)
-  .map((template) => {
-    const document = createResume(`preview-${template.id}`, template.id);
-    return {
-      ...template,
-      // Portable exports retain their embedded assets. Browser cards share the
-      // same immutable files, rather than decoding a font for every preview.
-      ...previewMarkup(renderTemplateResume(document)),
-      writing: {
-        name:
-          Object.values(document.blocks).find(
-            (block) => block.kind === "heading",
-          )?.text ?? "Alex Morgan",
-        role:
-          Object.values(document.blocks).find(
-            (block) => block.kind === "subtitle",
-          )?.text ?? "Product Designer",
-        sections: document.sectionIds
-          .map((id) => document.sections[id])
-          .filter((section) => section.title)
-          .slice(0, 2)
-          .map((section) => ({
-            title: section.title,
-            text: section.blockIds
-              .map((id) => document.blocks[id].text)
-              .filter(Boolean)
-              .slice(0, 3),
-          })),
-      },
-    };
-  });
-
-/** One shared CV stylesheet, independent of UI locale and private project data. */
-export const templatePreviewCss = [
-  resumeCss,
-  ...new Set(catalog.flatMap((template) => template.licenses)),
-  ...new Set(catalog.map((template) => template.css)),
-].join("\n");
-export const templatePreviews = catalog.map(
-  ({ css: _css, licenses: _licenses, ...template }) => template,
-);
+/** Validate before rendering: this endpoint never accepts private documents or source. */
+export function templatePreview(id: string) {
+  const template = templates.find((entry) => entry.id === id && !entry.legacy);
+  if (!template) return null;
+  const document = createResume(`preview-${template.id}`, template.id);
+  const { html, css, licenses } = previewMarkup(renderTemplateResume(document));
+  return {
+    id: template.id,
+    html,
+    css: [resumeCss, ...new Set(licenses), css].join("\n"),
+  };
+}

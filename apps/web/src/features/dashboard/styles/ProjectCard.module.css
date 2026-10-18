@@ -2,23 +2,24 @@
   position: relative;
   min-width: 0;
   overflow: hidden;
-  border: 1px solid color-mix(in srgb, var(--foreground) 10%, transparent);
+  border: 0;
   border-radius: 8px;
-  background: var(--background);
-  box-shadow: 0 1px 3px rgb(0 0 0 / 3%);
-  transition:
-    box-shadow 220ms,
-    border-color 220ms;
+  background: transparent;
+  box-shadow:
+    0 1px 2px rgb(0 0 0 / 6%),
+    0 3px 8px rgb(0 0 0 / 5%);
+  transition: box-shadow 220ms;
 }
 .project:hover,
 .project:focus-within {
-  border-color: color-mix(in srgb, var(--foreground) 20%, transparent);
-  box-shadow: 0 2px 5px rgb(0 0 0 / 4%);
+  box-shadow:
+    0 2px 4px rgb(0 0 0 / 8%),
+    0 5px 12px rgb(0 0 0 / 7%);
 }
 .projectLink {
   position: relative;
   display: block;
-  height: 366px;
+  height: 368px;
   overflow: hidden;
 }
 .projectLink:focus-visible {
@@ -29,35 +30,40 @@
   position: absolute;
   inset: 0;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
-  padding: 22px;
-  background: var(--muted);
+  padding: 0;
+  background: #fff;
 }
 .miniPaper {
-  width: min(100%, 228px);
+  width: min(100%, 260px);
   aspect-ratio: 794 / 1123;
   max-width: 100%;
   flex-shrink: 0;
   pointer-events: none;
   background: #fff;
-  box-shadow: 0 1px 4px rgb(0 0 0 / 5%);
+  box-shadow: none;
 }
 .projectInfo {
   position: absolute;
   z-index: 1;
-  inset: auto 8px 8px;
+  inset: auto 0 0;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  height: 56px;
-  padding: 8px 10px;
-  border: 1px solid var(--line);
-  border-radius: 6px;
-  background: color-mix(in srgb, var(--card) 90%, transparent);
-  color: var(--foreground);
-  box-shadow: 0 1px 3px rgb(0 0 0 / 4%);
-  backdrop-filter: blur(12px) saturate(1.1);
+  height: 78px;
+  padding: 24px 14px 10px;
+  border: 0;
+  border-radius: 0;
+  background: linear-gradient(
+    to top,
+    rgb(10 10 12 / 74%),
+    rgb(10 10 12 / 58%) 60%,
+    rgb(10 10 12 / 20%) 84%,
+    transparent
+  );
+  color: #fff;
+  text-shadow: 0 1px 3px rgb(0 0 0 / 18%);
 }
 .projectInfo h3 {
   overflow: hidden;
@@ -71,7 +77,7 @@
 }
 .projectInfo p {
   margin: 0;
-  color: var(--muted-foreground);
+  color: rgb(255 255 255 / 78%);
   font-size: 11px;
   line-height: 16px;
 }
@@ -79,9 +85,9 @@
 .menu {
   position: absolute;
   z-index: 2;
-  bottom: 30px;
+  bottom: 26px;
 }
-.project .previewButton,
+.project .previewButton[data-ui="button"],
 .project .menu button {
   width: 28px;
   height: 28px;
@@ -90,22 +96,25 @@
   border: 1px solid transparent;
   border-radius: 6px;
   background: transparent;
-  color: var(--muted-foreground);
+  color: #fff;
 }
 .project .previewButton {
-  right: 50px;
+  right: 44px;
 }
 .menu {
-  right: 16px;
+  display: flex;
+  right: 12px;
 }
-.project .previewButton:hover,
-.project .menu button:hover {
-  border-color: var(--line);
-  background: var(--accent);
-  color: var(--foreground);
+.project .previewButton[data-ui="button"]:hover,
+.project .menu button:hover,
+.project .menu button[aria-expanded="true"] {
+  border-color: rgb(255 255 255 / 20%);
+  background: rgb(255 255 255 / 16%);
+  color: #fff;
 }
 .compact {
-  border-color: var(--line);
+  border: 1px solid var(--line);
+  background: var(--card);
   box-shadow: 0 1px 2px rgb(0 0 0 / 2%);
 }
 .compact .projectLink {
@@ -116,6 +125,7 @@
   width: 94px;
   padding: 10px;
   border-right: 1px solid var(--line);
+  background: var(--muted);
 }
 .compact .projectInfo {
   inset: 0 94px 0 114px;
@@ -129,11 +139,12 @@
   color: var(--foreground);
   background: none;
   box-shadow: none;
-  backdrop-filter: none;
+  text-shadow: none;
 }
 .compact .miniPaper {
   width: auto;
   height: 100%;
+  box-shadow: 0 1px 2px rgb(0 0 0 / 5%);
 }
 .compact .projectInfo h3 {
   margin-right: 0;
@@ -147,19 +158,20 @@
 .compact .menu {
   right: 12px;
 }
-.compact .previewButton,
+.compact .previewButton[data-ui="button"],
 .compact .menu {
   top: 34px;
   bottom: auto;
 }
-.compact .previewButton,
+.compact .previewButton[data-ui="button"],
 .compact .menu button {
   border-color: var(--line);
   background: var(--background);
   color: var(--muted-foreground);
 }
-.compact .previewButton:hover,
-.compact .menu button:hover {
+.compact .previewButton[data-ui="button"]:hover,
+.compact .menu button:hover,
+.compact .menu button[aria-expanded="true"] {
   background: var(--accent);
   color: var(--foreground);
 }

@@ -3,25 +3,21 @@ import {
   localizedSectionTitle,
   type Document,
 } from "@resumi/engine";
-import type { ResumeData, ResumeLayout } from "../templates/types";
+import {
+  isCreativeLayout,
+  isDigitalLayout,
+  type ResumeData,
+  type ResumeLayout,
+} from "../templates/types";
+import { templates } from "../templates/catalog";
+import creativeTemplates from "./creative-template.generated.json" with { type: "json" };
 import assets from "../templates/assets.generated.json" with { type: "json" };
 import template from "./template.generated.json" with { type: "json" };
 export type ReactTemplateOptions = {
   layout?: ResumeLayout;
   portrait?: boolean | string;
 };
-const layouts: ResumeLayout[] = [
-  "studio",
-  "editorial",
-  "classic",
-  "profile",
-  "harvard",
-  "cobalt",
-  "atelier",
-  "timeline",
-  "consultant",
-  "mosaic",
-];
+const layouts: ResumeLayout[] = templates.map((template) => template.layout);
 function storedData(
   document: Document,
   kind: "data" | "assets",
@@ -55,7 +51,11 @@ export function makeReactSource(
 ): string {
   const data = resumeData(document, options);
   const { font, portrait, license, brands, ...content } = data;
-  return template
+  const layout = data.layout ?? "studio";
+  const source = isCreativeLayout(layout)
+    ? creativeTemplates[isDigitalLayout(layout) ? "digital" : "expressive"]
+    : template;
+  return source
     .replace(
       /\/\* resumi-template:[a-z]+ \*\//,
       `/* resumi-template:${data.layout} */`,

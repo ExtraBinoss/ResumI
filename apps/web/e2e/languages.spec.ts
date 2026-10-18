@@ -1,15 +1,20 @@
 import type { Document } from "@resumi/engine";
 import { expect, test } from "@playwright/test";
-import { mkdir, readFile } from "node:fs/promises";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
 
 test("visual multilingual CV editing preserves the original, mixed ranges, fallback, reload and exports", async ({
   page,
+  context,
 }) => {
+  test.setTimeout(60000);
+  await context.addInitScript(() => {
+    window.print = () => {};
+  });
   await page.goto("/editor");
   await expect(
     page.getByRole("article", { name: "Resume canvas" }),
   ).toBeVisible();
-  await page.getByRole("button", { name: "Text", exact: true }).click();
+  await page.getByRole("button", { name: /^Project:/ }).click();
   await page
     .getByRole("button", { name: "Manage languages", exact: true })
     .click();
@@ -22,6 +27,7 @@ test("visual multilingual CV editing preserves the original, mixed ranges, fallb
     .getByRole("textbox", { name: "Language name", exact: true })
     .fill("Français");
   await manager.getByRole("button", { name: "Add", exact: true }).click();
+  await page.getByRole("button", { name: "Text", exact: true }).click();
   const workspace = page.getByRole("article", { name: "Text workspace" });
   await expect(workspace).toHaveAttribute("lang", "fr");
   const centered = (await workspace.boundingBox())!;
@@ -89,13 +95,51 @@ test("visual multilingual CV editing preserves the original, mixed ranges, fallb
   expect(translated.text).toBe("Alex Morgan");
   expect(translated.translations!.fr.text).toBe("Camille Martin");
   expect(translated.translations!.fr.marks[0].fontStyle).toBe("italic");
+  await page.getByRole("button", { name: "Export", exact: true }).click();
+  const htmlDownload = page.waitForEvent("download");
+  await page
+    .getByRole("menuitem", { name: "Portable HTML", exact: true })
+    .click();
+  const html = await readFile((await (await htmlDownload).path())!, "utf8");
+  const exported = await page.evaluate((source) => {
+    const parsed = new DOMParser().parseFromString(source, "text/html");
+    return {
+      lang: parsed.documentElement.lang,
+      heading: parsed.querySelector("h1")?.textContent,
+      italic: parsed.querySelector('h1 span[style*="font-style:italic"]')
+        ?.textContent,
+    };
+  }, html);
+  expect(exported).toEqual({
+    lang: "fr",
+    heading: "Camille Martin",
+    italic: "Camille",
+  });
+  await writeFile("artifacts/rendered/cv-active-language-fr.html", html);
+  const pendingPdf = page.waitForEvent("popup");
+  await page.getByRole("button", { name: "Export PDF", exact: true }).click();
+  const printPage = await pendingPdf;
+  await expect(printPage.locator("html")).toHaveAttribute(
+    "data-pdf-ready",
+    "true",
+  );
+  await expect(printPage.locator("html")).toHaveAttribute("lang", "fr");
+  await expect(
+    printPage.getByRole("heading", { name: "Camille Martin", exact: true }),
+  ).toBeVisible();
+  await printPage.close();
   await page.getByRole("button", { name: "Text", exact: true }).click();
-  await workspace
+  const languageTools = page.getByRole("toolbar", {
+    name: "Text editing tools",
+    exact: true,
+  });
+  await expect(languageTools).toBeVisible();
+  await languageTools
     .getByRole("combobox", { name: "CV language", exact: true })
     .click();
   await page.getByRole("option", { name: "English", exact: true }).click();
   await expect(text).toHaveText("Alex Morgan");
-  await workspace
+  await languageTools
     .getByRole("combobox", { name: "CV language", exact: true })
     .click();
   await page.getByRole("option", { name: "Français", exact: true }).click();
@@ -103,7 +147,7 @@ test("visual multilingual CV editing preserves the original, mixed ranges, fallb
     .getByRole("button", { name: "Use original text: Name", exact: true })
     .click();
   await expect(text).toHaveText("Alex Morgan");
-  await page
+  await languageTools
     .getByRole("button", { name: "Manage languages", exact: true })
     .click();
   await manager
@@ -143,12 +187,73 @@ test("interface language is independent from CV language and hydrates from its c
   ).toBeVisible();
   await page.keyboard.press("Escape");
   await page.goto("/editor");
+  const paper = page.getByRole("article", {
+    name: "Canevas du CV",
+    exact: true,
+  });
+  await expect(paper).toHaveAttribute("lang", "en");
   await expect(
-    page.getByRole("article", { name: "Resume canvas" }),
-  ).toHaveAttribute("lang", "en");
-  await page.getByRole("button", { name: "Texte", exact: true }).click();
+    paper.getByRole("heading", { name: "Alex Morgan", exact: true }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("complementary", {
+      name: "Panneau des calques",
+      exact: true,
+    }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("complementary", {
+      name: "Inspecteur des propriétés",
+      exact: true,
+    }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("radio", { name: /^(Structure|Outline)$/ }),
+  ).toHaveCount(0);
+  await page
+    .locator("[data-layer-row]")
+    .first()
+    .getByRole("button", { name: /^Sélectionner le calque/ })
+    .click();
+  await expect(
+    page.getByRole("heading", { name: "Typographie", exact: true }),
+  ).toBeVisible();
+  await page.getByRole("button", { name: /^Projet :/ }).click();
   await expect(
     page.getByRole("combobox", { name: "Langue du CV", exact: true }),
   ).toContainText("English");
+  await expect(
+    page.getByRole("textbox", { name: "Nom du projet", exact: true }),
+  ).toBeVisible();
+  await expect(
+    page.locator('[data-slot="popover-content"]').filter({
+      has: page.getByRole("textbox", { name: "Nom du projet", exact: true }),
+    }),
+  ).toHaveCSS("opacity", "1");
+  await page.screenshot({
+    path: "artifacts/visual/editor-interface-fr-project-language.png",
+  });
+  await page.keyboard.press("Escape");
+  await page.getByRole("button", { name: "Réglages", exact: true }).click();
+  await expect(
+    page.getByRole("combobox", { name: "Langue de l’interface", exact: true }),
+  ).toContainText("Français");
+  await expect(
+    page.getByRole("combobox", { name: "Langue du CV", exact: true }),
+  ).toHaveCount(0);
+  await page.keyboard.press("Escape");
+  await page.goto("/fr");
+  await expect(
+    page.getByRole("heading", {
+      name: /Votre CV.*coéquipier/,
+    }),
+  ).toBeVisible();
+  await page.reload();
+  await expect(
+    page.getByRole("navigation", {
+      name: "Navigation principale",
+      exact: true,
+    }),
+  ).toBeVisible();
   expect(errors).toEqual([]);
 });

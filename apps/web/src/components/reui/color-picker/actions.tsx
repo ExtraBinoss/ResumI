@@ -41,19 +41,21 @@ export function ColorPickerEyeDropper({
       disabled={!context.editable}
       aria-label={context.i18n.labels.eyeDropper}
       data-slot="color-picker-eye-dropper"
-      onClick={async (event) => {
+      onClick={(event) => {
         onClick?.(event);
         const EyeDropper = getEyeDropper();
         if (event.defaultPrevented || !EyeDropper) return;
-        try {
-          const { sRGBHex } = await new EyeDropper().open();
-          const picked = parseColor(sRGBHex);
-          if (picked) {
-            context.change({ ...picked, alpha: context.getColor().alpha });
+        void (async () => {
+          try {
+            const { sRGBHex } = await new EyeDropper().open();
+            const picked = parseColor(sRGBHex);
+            if (picked) {
+              context.change({ ...picked, alpha: context.getColor().alpha });
+            }
+          } catch {
+            /* Escape cancels the sampler with an AbortError. */
           }
-        } catch {
-          /* Escape cancels the sampler with an AbortError. */
-        }
+        })();
       }}
       {...props}
     >

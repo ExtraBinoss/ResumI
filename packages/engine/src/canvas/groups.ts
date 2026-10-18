@@ -72,7 +72,13 @@ export function relocateLayer(
       "Only a layer can be moved inside a flat group.",
     );
   const targetIds = target ? referenceIds(doc, target) : [];
-  if (targetIds.some((id) => moving.includes(id))) return doc;
+  const leavingOwnGroup =
+    source.kind === "element" &&
+    target?.kind === "group" &&
+    targetIds.includes(source.id) &&
+    (placement === "above" || placement === "below");
+  if (targetIds.some((id) => moving.includes(id)) && !leavingOwnGroup)
+    return doc;
   if (
     source.kind === "group" &&
     target?.kind === "element" &&
@@ -114,10 +120,11 @@ export function relocateLayer(
     const positions = remaining
       .map((id, i) => (targetIds.includes(id) ? i : -1))
       .filter((i) => i >= 0);
-    index =
-      placement === "above"
+    index = positions.length
+      ? placement === "above"
         ? Math.max(...positions) + 1
-        : Math.min(...positions);
+        : Math.min(...positions)
+      : canvas.order.indexOf(moving[0]!);
   } else if (placement === "inside")
     index =
       Math.max(...remaining.map((id, i) => (targetIds.includes(id) ? i : -1))) +

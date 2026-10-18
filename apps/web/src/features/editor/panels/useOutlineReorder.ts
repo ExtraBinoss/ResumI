@@ -1,4 +1,10 @@
-import { useEffect, useRef, useState, type DragEvent } from "react";
+import {
+  useEffect,
+  useEffectEvent,
+  useRef,
+  useState,
+  type DragEvent,
+} from "react";
 import { useSetAtom, useStore } from "jotai";
 import { applyCommand, type Command } from "@resumi/engine";
 import { sessionAtom } from "../../../state/editor";
@@ -37,18 +43,19 @@ export function useOutlineReorder() {
     setPreview(null);
     setTarget(null);
   }
+  const clearFromExternalEvent = useEffectEvent(clear);
   useEffect(() => {
     const escape = (event: KeyboardEvent) => {
-      if (event.key === "Escape") clear();
+      if (event.key === "Escape") clearFromExternalEvent();
     };
-    document.addEventListener("dragend", clear);
+    document.addEventListener("dragend", clearFromExternalEvent);
     document.addEventListener("keydown", escape);
-    window.addEventListener("blur", clear);
+    window.addEventListener("blur", clearFromExternalEvent);
     return () => {
       restoreScrollAnchor();
-      document.removeEventListener("dragend", clear);
+      document.removeEventListener("dragend", clearFromExternalEvent);
       document.removeEventListener("keydown", escape);
-      window.removeEventListener("blur", clear);
+      window.removeEventListener("blur", clearFromExternalEvent);
     };
   }, []);
   function bind(item: Item) {
@@ -137,7 +144,9 @@ export function useOutlineReorder() {
             overflowAnchor: viewport.style.overflowAnchor,
             slots: [...rows].map((row) => {
               const header =
-                row.querySelector<HTMLElement>(":scope > button") ?? row;
+                row.querySelector<HTMLElement>(
+                  ":scope > [data-outline-header], :scope > button",
+                ) ?? row;
               const rect = header.getBoundingClientRect();
               return {
                 id: row.getAttribute(

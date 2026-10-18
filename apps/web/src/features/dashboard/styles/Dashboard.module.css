@@ -79,12 +79,20 @@
   max-width: 100%;
 }
 .listTools {
+  position: relative;
+  width: 186px;
+  height: 32px;
+  flex: 0 0 auto;
+}
+.listToolsContent {
   display: flex;
   align-items: center;
   gap: 12px;
+  width: 100%;
 }
-.listTools:empty {
-  display: none;
+.listTools[data-empty="true"] {
+  height: 0;
+  pointer-events: none;
 }
 .listTools .sort {
   width: 104px;
@@ -95,9 +103,14 @@
   font-size: 13px;
 }
 .search :global([data-ui="input"]) {
-  background: color-mix(in srgb, var(--muted) 60%, var(--background));
-  box-shadow: none;
-  border-color: transparent;
+  background: var(--card);
+  box-shadow: 0 1px 2px rgb(0 0 0 / 4%);
+  border-color: var(--line-strong);
+  opacity: 1;
+}
+.search :global([data-ui="input"])::placeholder {
+  color: var(--muted-foreground);
+  opacity: 1;
 }
 .search :global([data-ui="input"]):focus-visible {
   border-color: var(--primary);
@@ -240,18 +253,6 @@
   .actions {
     gap: 6px;
   }
-  .importButton {
-    width: 32px;
-    padding: 0;
-    gap: 0;
-  }
-  .importButton > span:last-child {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    overflow: hidden;
-    clip-path: inset(50%);
-  }
   .listHeader {
     flex-wrap: wrap;
     align-items: flex-start;
@@ -263,8 +264,10 @@
     width: 100%;
   }
   .listTools {
-    justify-content: space-between;
     width: 100%;
+  }
+  .listToolsContent {
+    justify-content: space-between;
   }
   .collection {
     padding: 28px 20px 84px;
@@ -279,8 +282,7 @@
   }
 }
 
-/* Opacity-only navigation keeps text on its final pixel grid throughout. */
+/* Only results move; collection chrome and search retain their DOM identity. */
 .routeContent {
   min-width: 0;
-  min-height: 100%;
 }

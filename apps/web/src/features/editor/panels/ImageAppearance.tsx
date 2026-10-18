@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { useSetAtom } from "jotai";
 import { Plus, X } from "lucide-react";
 import { type Layer, type LayerPatch } from "@resumi/engine";
@@ -13,6 +14,7 @@ export function ImageBorderFields({
   id: string;
   layer: Extract<Layer, { type: "image" }>;
 }) {
+  const { t } = useTranslation();
   const dispatch = useSetAtom(designCommandAtom);
   const preview = useColorPreview(id);
   const border = layer.border ?? {
@@ -26,9 +28,13 @@ export function ImageBorderFields({
   return (
     <section>
       <div className={styles.sectionHead}>
-        <h3>Border</h3>
+        <h3>{t("properties.border")}</h3>
         <ActionIcon
-          aria-label={border.width ? "Remove image border" : "Add image border"}
+          aria-label={
+            border.width
+              ? t("properties.removeImageBorder")
+              : t("properties.addImageBorder")
+          }
           variant="subtle"
           color="gray"
           size="xs"
@@ -39,21 +45,20 @@ export function ImageBorderFields({
           {border.width ? <X size={14} /> : <Plus size={14} />}
         </ActionIcon>
       </div>
-      <div className={styles.fieldRow}>
-        <label>Color</label>
-        <ColorInput
-          aria-label="Border color"
-          value={border.color}
-          onPreview={(color) => preview({ kind: "border", id, layer }, color)}
-          onChangeEnd={(color) =>
-            patch({ border: { ...border, color, width: border.width || 1 } })
-          }
-        />
-      </div>
+      <ColorInput
+        className={styles.fieldRow}
+        label={t("properties.color")}
+        aria-label={t("properties.borderColor")}
+        value={border.color}
+        onPreview={(color) => preview({ kind: "border", id, layer }, color)}
+        onChangeEnd={(color) =>
+          patch({ border: { ...border, color, width: border.width || 1 } })
+        }
+      />
       <div className={styles.doubleGrid}>
         <NumberInput
-          aria-label="Border width"
-          label="Width"
+          aria-label={t("properties.borderWidth")}
+          label={t("properties.width")}
           suffix="px"
           size="xs"
           min={0}
@@ -65,13 +70,13 @@ export function ImageBorderFields({
           }}
         />
         <Select
-          aria-label="Border style"
-          label="Style"
+          aria-label={t("properties.borderStyle")}
+          label={t("properties.style")}
           size="xs"
           data={[
-            { value: "solid", label: "Solid" },
-            { value: "dashed", label: "Dashed" },
-            { value: "dotted", label: "Dotted" },
+            { value: "solid", label: t("properties.solid") },
+            { value: "dashed", label: t("properties.dashed") },
+            { value: "dotted", label: t("properties.dotted") },
           ]}
           value={border.style}
           onChange={(value) => {
@@ -92,6 +97,7 @@ export function ShadowFields({
   id: string;
   layer: Extract<Layer, { type: "shape" | "image" }>;
 }) {
+  const { t } = useTranslation();
   const dispatch = useSetAtom(designCommandAtom);
   const preview = useColorPreview(id);
   const shadow = layer.shadow;
@@ -101,9 +107,11 @@ export function ShadowFields({
   return (
     <section>
       <div className={styles.sectionHead}>
-        <h3>Shadow</h3>
+        <h3>{t("properties.shadow")}</h3>
         <ActionIcon
-          aria-label={shadow ? "Remove shadow" : "Add shadow"}
+          aria-label={
+            shadow ? t("properties.removeShadow") : t("properties.addShadow")
+          }
           variant="subtle"
           color="gray"
           size="xs"
@@ -120,29 +128,39 @@ export function ShadowFields({
       </div>
       {shadow && (
         <>
-          <div className={styles.fieldRow}>
-            <label>Color</label>
-            <ColorInput
-              aria-label="Shadow color"
-              value={shadow.color}
-              onPreview={(color) =>
-                preview({ kind: "shadow", id, layer }, color)
-              }
-              onChangeEnd={(color) => patch({ shadow: { ...shadow, color } })}
-            />
-          </div>
+          <ColorInput
+            className={styles.fieldRow}
+            label={t("properties.color")}
+            aria-label={t("properties.shadowColor")}
+            value={shadow.color}
+            onPreview={(color) => preview({ kind: "shadow", id, layer }, color)}
+            onChangeEnd={(color) => patch({ shadow: { ...shadow, color } })}
+          />
           <div className={styles.doubleGrid}>
             {(
               [
                 { key: "x", label: "X", min: -500, max: 500 },
                 { key: "y", label: "Y", min: -500, max: 500 },
-                { key: "blur", label: "Blur", min: 0, max: 200 },
-                { key: "spread", label: "Spread", min: -200, max: 200 },
+                { key: "blur", label: t("properties.blur"), min: 0, max: 200 },
+                {
+                  key: "spread",
+                  label: t("properties.spread"),
+                  min: -200,
+                  max: 200,
+                },
               ] as const
             ).map(({ key, label, min, max }) => (
               <NumberInput
                 key={key}
-                aria-label={`Shadow ${key}`}
+                aria-label={
+                  key === "blur"
+                    ? t("properties.shadowBlur")
+                    : key === "spread"
+                      ? t("properties.shadowSpread")
+                      : t("properties.shadowAxis", {
+                          axis: key.toUpperCase(),
+                        })
+                }
                 label={label}
                 suffix="px"
                 hideControls

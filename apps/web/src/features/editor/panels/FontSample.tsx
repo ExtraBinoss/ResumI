@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { useEffect, useRef } from "react";
 import { createPreviewQueue } from "../../../lib/preview-queue";
 import { googleFontBlob, type FontOption } from "./font-catalog";
@@ -6,6 +7,7 @@ import styles from "../styles/FontPicker.module.css";
 const previews = createPreviewQueue(googleFontBlob);
 /** Only intersecting rows subscribe; leaving/unmounting cancels queued work. */
 export function FontSample({ option }: { option: FontOption }) {
+  const { t } = useTranslation();
   const sample = useRef<HTMLSpanElement>(null);
   useEffect(() => {
     const element = sample.current;
@@ -37,7 +39,7 @@ export function FontSample({ option }: { option: FontOption }) {
       style={{ fontFamily: option.value }}
       data-font-ready={option.source === "google" ? undefined : "true"}
     >
-      <span>Aa · The quick brown fox</span>
+      <span>{t("properties.fontSample")}</span>
     </span>
   );
 }

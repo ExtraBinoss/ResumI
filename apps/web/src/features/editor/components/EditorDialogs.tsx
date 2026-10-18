@@ -1,4 +1,5 @@
 import { lazy, Suspense } from "react";
+import { useTranslation } from "react-i18next";
 import {
   Dialog,
   DialogContent,
@@ -6,18 +7,14 @@ import {
   DialogTitle,
 } from "../../../components/ui/dialog";
 import { SharedLoading } from "../../../components/SharedLoading";
+import { DocumentSettings } from "../panels/DocumentSettings";
 import styles from "../styles/Editor.module.css";
-const CodeEditor = lazy(() =>
-  import("../source/CodeEditor").then((module) => ({
-    default: module.CodeEditor,
-  })),
-);
 const AgentPanel = lazy(() =>
   import("../agent/AgentPanel").then((module) => ({
     default: module.AgentPanel,
   })),
 );
-export type EditorDialog = "source" | "proposal" | null;
+export type EditorDialog = "proposal" | "document" | null;
 export function EditorDialogs({
   dialog,
   close,
@@ -25,6 +22,7 @@ export function EditorDialogs({
   dialog: EditorDialog;
   close: () => void;
 }) {
+  const { t } = useTranslation();
   return (
     <Dialog
       open={dialog !== null}
@@ -33,21 +31,17 @@ export function EditorDialogs({
       }}
     >
       <DialogContent
-        className={`${styles.projectDialog} ${dialog === "proposal" ? styles.proposalDialog : ""}`}
+        className={`${styles.projectDialog} ${dialog === "document" ? styles.documentDialog : dialog === "proposal" ? styles.proposalDialog : ""}`}
       >
         <DialogHeader>
           <DialogTitle>
-            {dialog === "proposal" ? "Import commands" : "Source"}
+            {dialog === "document"
+              ? t("pages.settings")
+              : t("workspace.dialogs.importCommands")}
           </DialogTitle>
         </DialogHeader>
-        {dialog === "source" ? (
-          <Suspense
-            fallback={
-              <SharedLoading messageKey="loading.source" variant="working" />
-            }
-          >
-            <CodeEditor />
-          </Suspense>
+        {dialog === "document" ? (
+          <DocumentSettings close={close} />
         ) : dialog === "proposal" ? (
           <Suspense
             fallback={

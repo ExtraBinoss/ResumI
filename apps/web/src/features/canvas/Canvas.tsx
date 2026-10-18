@@ -1,6 +1,7 @@
+import { useTranslation } from "react-i18next";
 import { useState } from "react";
 import { useAtomValue, useSetAtom } from "jotai";
-import { renderBlock, resumeCss, resumeStyle } from "@resumi/cv";
+import { renderBlock, resumeCss, resumeStyle } from "@resumi/cv/renderer";
 import {
   blockAtom,
   sectionAtom,
@@ -15,6 +16,7 @@ import { ZoomViewport } from "./ZoomViewport";
 import { CanvasText } from "./CanvasText";
 
 function CanvasBlock({ id, sectionId }: { id: string; sectionId: string }) {
+  const { t } = useTranslation();
   const block = useAtomValue(blockAtom(id)),
     select = useSetAtom(selectionAtom);
   const [editing, setEditing] = useState(false);
@@ -27,16 +29,21 @@ function CanvasBlock({ id, sectionId }: { id: string; sectionId: string }) {
         <div
           tabIndex={0}
           role="button"
-          aria-label={`Edit ${block.kind}: ${block.text.slice(0, 45)}`}
+          aria-label={t("properties.editText", {
+            kind: t(`properties.kind.${block.kind}`),
+            text: block.text.slice(0, 45),
+          })}
           onClick={(e) => {
             e.stopPropagation();
             select({ sectionId, blockId: id });
           }}
           onDoubleClick={() => setEditing(true)}
           onKeyDown={(e) => {
-            if (e.key === "Enter") {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              e.stopPropagation();
               select({ sectionId, blockId: id });
-              setEditing(true);
+              if (e.key === "Enter") setEditing(true);
             }
           }}
           dangerouslySetInnerHTML={{ __html: renderBlock(block) }}
@@ -46,6 +53,7 @@ function CanvasBlock({ id, sectionId }: { id: string; sectionId: string }) {
   );
 }
 function CanvasSection({ id }: { id: string }) {
+  const { t } = useTranslation();
   const section = useAtomValue(sectionAtom(id)),
     selected = useAtomValue(selectionAtom),
     select = useSetAtom(selectionAtom);
@@ -54,9 +62,30 @@ function CanvasSection({ id }: { id: string }) {
     <section
       className={`resume-section ${styles.canvasSection} ${selected?.sectionId === id ? styles.selected : ""}`}
       data-section-id={id}
-      onClick={() => select({ sectionId: id })}
+      role="group"
+      aria-label={section.title || t("properties.section")}
     >
-      {section.title && <h2 className="resume-title">{section.title}</h2>}
+      {section.title ? (
+        <h2 className="resume-title">
+          <button
+            type="button"
+            className={styles.sectionHeading}
+            aria-pressed={selected?.sectionId === id}
+            onClick={() => select({ sectionId: id })}
+          >
+            {section.title}
+          </button>
+        </h2>
+      ) : (
+        <button
+          type="button"
+          className="srOnly"
+          aria-pressed={selected?.sectionId === id}
+          onClick={() => select({ sectionId: id })}
+        >
+          {t("properties.section")}
+        </button>
+      )}
       {section.blockIds.map((blockId) => (
         <CanvasBlock key={blockId} id={blockId} sectionId={id} />
       ))}
@@ -64,6 +93,7 @@ function CanvasSection({ id }: { id: string }) {
   );
 }
 export function Canvas() {
+  const { t } = useTranslation();
   const ids = useAtomValue(sectionIdsAtom),
     style = useAtomValue(styleAtom),
     locale = useAtomValue(localeAtom),
@@ -72,7 +102,7 @@ export function Canvas() {
     <ZoomViewport height={1123} onBlankClick={() => select(null)}>
       <style>{resumeCss}</style>
       <article
-        aria-label="Resume canvas"
+        aria-label={t("properties.canvas")}
         lang={locale}
         className={`resume ${styles.canvasPaper}`}
         style={resumeStyle({ style } as Document)}
@@ -80,7 +110,7 @@ export function Canvas() {
         {ids.length ? (
           ids.map((id) => <CanvasSection key={id} id={id} />)
         ) : (
-          <p className={styles.emptyCanvas}>Add a section.</p>
+          <p className={styles.emptyCanvas}>{t("properties.emptyCanvas")}</p>
         )}
       </article>
     </ZoomViewport>

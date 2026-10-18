@@ -1,6 +1,7 @@
 import { defineConfig } from "@playwright/test";
 export default defineConfig({
   testDir: "./apps/web/e2e",
+  globalSetup: "./scripts/e2e-setup.ts",
   fullyParallel: false,
   workers: 1,
   timeout: 40000,
@@ -9,7 +10,13 @@ export default defineConfig({
   use: {
     baseURL: process.env.BASE_URL ?? "http://127.0.0.1:4187",
     viewport: { width: 1440, height: 1000 },
-    trace: "retain-on-failure",
+    // Screencast capture distorts RAF measurements; retain DOM traces and failure PNGs.
+    trace: {
+      mode: "retain-on-failure",
+      screenshots: false,
+      snapshots: true,
+      sources: true,
+    },
     screenshot: "only-on-failure",
   },
   webServer: process.env.BASE_URL

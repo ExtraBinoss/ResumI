@@ -1,5 +1,6 @@
 import { expect, test, type Page } from "@playwright/test";
 import { readFile } from "node:fs/promises";
+import { openDocumentSettings, closeDialog } from "./helpers/editor";
 
 async function loadedInterfaceFont(page: Page) {
   return page.evaluate(async () => {
@@ -25,16 +26,30 @@ async function loadedInterfaceFont(page: Page) {
 test("imported font actually loads on canvas, remains embedded in HTML and survives reload", async ({
   page,
 }) => {
-  await page.goto("/");
-  await page
-    .getByRole("link", { name: "Create a resume", exact: true })
-    .click();
+  await page.goto("/projects");
+  await page.getByRole("button", { name: "New resume", exact: true }).click();
   await expect(
     page.getByRole("article", { name: "Resume canvas" }),
   ).toBeVisible();
   await expect(
     page.getByRole("button", { name: "Visual", exact: true }),
   ).toHaveAttribute("aria-pressed", "true");
+  const settings = await openDocumentSettings(page);
+  await expect(
+    settings.getByRole("button", { name: "Import font", exact: true }),
+  ).toHaveCount(0);
+  await expect(
+    settings.getByRole("combobox", { name: "Typography", exact: true }),
+  ).toHaveCount(0);
+  await closeDialog(page, "Document settings");
+  await page
+    .getByRole("button", { name: "Select layer Name", exact: true })
+    .click();
+  const family = page.getByRole("combobox", {
+    name: "Font family",
+    exact: true,
+  });
+  await family.click();
   const chooser = page.waitForEvent("filechooser");
   await page.getByRole("button", { name: "Import font", exact: true }).click();
   const bytes = await readFile(
@@ -47,17 +62,8 @@ test("imported font actually loads on canvas, remains embedded in HTML and survi
     mimeType: "font/woff2",
     buffer: bytes,
   });
-  await expect(
-    page
-      .getByRole("complementary", { name: "Properties inspector" })
-      .getByText("Interface", { exact: true }),
-  ).toBeVisible();
-  await page
-    .getByRole("button", { name: "Select layer Name", exact: true })
-    .click();
-  await page
-    .getByRole("combobox", { name: "Font family", exact: true })
-    .click();
+  await expect(family).toContainText("Interface");
+  await family.click();
   await page.getByRole("option", { name: "Interface", exact: true }).click();
   await expect
     .poll(async () => (await loadedInterfaceFont(page)).loaded)

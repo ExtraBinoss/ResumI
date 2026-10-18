@@ -1,37 +1,25 @@
+import { useId } from "react";
+import { useTranslation } from "react-i18next";
 import { useAtomValue, useSetAtom } from "jotai";
-import { Select, Slider, ColorInput } from "../../../ui";
+import { Slider, ColorInput } from "../../../ui";
 import { styleAtom, commandAtom } from "../../../state/editor";
 import styles from "../styles/LegacyPanels.module.css";
 import { useColorPreview } from "./useColorPreview";
 export function DocumentStyleFields() {
+  const { t } = useTranslation();
+  const sizeLabel = useId(),
+    spacingLabel = useId();
   const style = useAtomValue(styleAtom),
     dispatch = useSetAtom(commandAtom);
   const preview = useColorPreview("document-style");
   if (!style) return null;
   return (
     <div className={styles.fieldGroup}>
-      <h3>Document</h3>
-      <Select
-        label="Typography"
-        size="xs"
-        value={style.font}
-        data={[
-          { value: "sans", label: "Modern sans serif" },
-          { value: "serif", label: "Classic serif" },
-        ]}
-        allowDeselect={false}
-        onChange={(font) => {
-          if (font)
-            dispatch({
-              type: "style.update",
-              patch: { font: font as "sans" | "serif" },
-            });
-        }}
-      />
+      <h3>{t("properties.document")}</h3>
       <ColorInput
-        label="Accent color"
+        label={t("properties.accentColor")}
         eyeDropperButtonProps={{
-          "aria-label": "Pick accent color from screen",
+          "aria-label": t("properties.pickAccent"),
         }}
         size="xs"
         mt="lg"
@@ -44,11 +32,13 @@ export function DocumentStyleFields() {
             dispatch({ type: "style.update", patch: { accent } });
         }}
       />
-      <label className={styles.sliderLabel}>
-        Text size <span>{style.fontSize} px</span>
-      </label>
+      <div className={styles.sliderLabel}>
+        <span id={sizeLabel}>{t("properties.textSize")}</span>
+        <span>{style.fontSize} px</span>
+      </div>
       <Slider
-        aria-label="Text size"
+        aria-label={t("properties.textSize")}
+        aria-labelledby={sizeLabel}
         min={10}
         max={16}
         step={0.5}
@@ -58,11 +48,13 @@ export function DocumentStyleFields() {
         }
         size="xs"
       />
-      <label className={styles.sliderLabel}>
-        Section spacing <span>{style.spacing} px</span>
-      </label>
+      <div className={styles.sliderLabel}>
+        <span id={spacingLabel}>{t("properties.sectionSpacing")}</span>
+        <span>{style.spacing} px</span>
+      </div>
       <Slider
-        aria-label="Section spacing"
+        aria-label={t("properties.sectionSpacing")}
+        aria-labelledby={spacingLabel}
         min={12}
         max={40}
         value={style.spacing}

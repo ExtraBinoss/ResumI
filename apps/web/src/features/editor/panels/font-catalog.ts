@@ -125,6 +125,13 @@ export function detectedFonts(): FontOption[] {
 }
 
 const googleRequests = new Map<string, Promise<Blob>>();
+export type GoogleFontErrorCode = "load" | "no-downloadable-font" | "download";
+export class GoogleFontError extends Error {
+  constructor(readonly code: GoogleFontErrorCode) {
+    super(code);
+    this.name = "GoogleFontError";
+  }
+}
 /** Visible font-picker samples, hover and selection share one request/cache per family. */
 export function googleFontBlob(family: string) {
   const existing = googleRequests.get(family);
@@ -133,16 +140,16 @@ export function googleFontBlob(family: string) {
     const response = await fetch(
       `https://fonts.googleapis.com/css2?family=${encodeURIComponent(family)}&display=swap`,
     );
-    if (!response.ok) throw new Error("This Google font could not be loaded.");
+    if (!response.ok) throw new GoogleFontError("load");
     const css = await response.text();
     // The CSS API orders latin last. Its regular face supports the editor's Latin CV text.
     const urls = [
       ...css.matchAll(/src:\s*url\((https:\/\/fonts\.gstatic\.com\/[^)]+)\)/g),
     ];
     const url = urls.at(-1)?.[1];
-    if (!url) throw new Error("No downloadable font was returned.");
+    if (!url) throw new GoogleFontError("no-downloadable-font");
     const font = await fetch(url);
-    if (!font.ok) throw new Error("The font download failed.");
+    if (!font.ok) throw new GoogleFontError("download");
     const blob = await font.blob();
     const face = await new FontFace(family, await blob.arrayBuffer()).load();
     document.fonts.add(face);

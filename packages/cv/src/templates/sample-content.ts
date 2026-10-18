@@ -1,5 +1,7 @@
 import type { Block } from "@resumi/engine";
 import type { ResumeLayout } from "./types";
+import { digitalSampleSections } from "./digital-samples";
+import { expressiveSampleSections } from "./expressive-samples";
 import { extendedSampleSections } from "./extended-samples";
 export type SampleSection = {
   id: string;
@@ -12,7 +14,10 @@ export function reactSampleSections(
   sections: SampleSection[],
   layout: ResumeLayout,
 ): SampleSection[] {
-  const extended = extendedSampleSections(layout);
+  const extended =
+    digitalSampleSections(layout) ??
+    expressiveSampleSections(layout) ??
+    extendedSampleSections(layout);
   if (extended) return extended;
   const result: SampleSection[] = sections.map((section): SampleSection => ({
     ...section,

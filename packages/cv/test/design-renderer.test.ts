@@ -16,6 +16,28 @@ import {
   groupStyle,
 } from "../src";
 
+test("embedded font families preserve apostrophes in their CSS string identity", () => {
+  const css = canvasFontCss({
+    canvas: {
+      width: 794,
+      height: 1123,
+      background: "#ffffff",
+      order: [],
+      groups: [],
+      fonts: [
+        {
+          id: "font-oneil",
+          name: "O'Neil",
+          dataUrl: "data:font/woff2;base64,AAAA",
+          format: "woff2",
+        },
+      ],
+    },
+  });
+  expect(css).toContain("font-family:'O\\'Neil';");
+  expect(css).not.toContain("font-family:'ONeil'");
+});
+
 function designDocument(): Document {
   return applyCommands(createDocument("visual-document", "Synthetic resume"), {
     version: 1,
@@ -235,7 +257,7 @@ test("raster images retain crop, effects and escaped alt text; fonts are offline
   );
   expect(html).toContain("border-radius:24px;filter:url(#folio-fx-image)");
   expect(html).toContain(
-    "font-family:'Synthetic Font';src:url('data:font/woff2;base64,AAAA') format('woff2')",
+    "font-family:'Synthetic \\'Font\\'';src:url('data:font/woff2;base64,AAAA') format('woff2')",
   );
   expect(canvasFontCss(doc)).not.toContain("https:");
   expect(canvasFontCss({ ...doc, canvas: undefined })).toBe("");

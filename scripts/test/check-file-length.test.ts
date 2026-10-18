@@ -24,7 +24,9 @@ test("generic recursive scanner includes future packages, custom extensions, exc
     await writeFile(join(root, "generated/ignore.ts"), "x\n".repeat(700));
     await writeFile(join(root, "worker.d.ts"), "x\n".repeat(700));
     await writeFile(join(root, "extra.custom"), "x\n".repeat(601));
-    const result = await scanFiles(root, { exclude: ["generated", "worker.d.ts"] });
+    const result = await scanFiles(root, {
+      exclude: ["generated", "worker.d.ts"],
+    });
     expect(
       result.filter((r) => r.status === "fail").map((r) => r.path),
     ).toEqual(["future/fail.css"]);

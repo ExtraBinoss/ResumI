@@ -1,3 +1,4 @@
+import { applyPage } from "./apply-pages";
 import { localizedBlock, writeLocalizedText } from "../localization/document";
 import type { Document } from "../document/schema";
 import { EngineError } from "../validation";
@@ -34,6 +35,11 @@ export function applyCanvas(doc: Document, command: CanvasCommand): Document {
   if (!canvas)
     throw new EngineError("CONFLICT", "Enable the visual canvas first.");
   switch (command.type) {
+    case "page.create":
+    case "page.update":
+    case "page.delete":
+    case "layer.moveToPage":
+      return applyPage(doc, command);
     case "canvas.update":
       return { ...doc, canvas: { ...canvas, ...command.patch } };
     case "layer.update": {
@@ -93,6 +99,7 @@ export function applyCanvas(doc: Document, command: CanvasCommand): Document {
           ...doc.sectionIds,
           ...Object.keys(doc.blocks),
           ...canvas.groups.map((g) => g.id),
+          ...(canvas.pages ?? []).map((page) => page.id),
         ].includes(command.id)
       )
         throw new EngineError("CONFLICT", "ID already exists.");
@@ -175,6 +182,7 @@ export function applyCanvas(doc: Document, command: CanvasCommand): Document {
             ...doc.sectionIds,
             ...Object.keys(blocks),
             ...canvas.groups.map((g) => g.id),
+            ...(canvas.pages ?? []).map((page) => page.id),
           ].includes(newId)
         )
           throw new EngineError("CONFLICT", "ID already exists.");

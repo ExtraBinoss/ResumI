@@ -1,3 +1,25 @@
+export const digitalLayoutNames = [
+  "terminal",
+  "mainframe",
+  "arcade",
+  "blueprint",
+  "orbit",
+] as const;
+export const expressiveLayoutNames = [
+  "risograph",
+  "swiss",
+  "botanica",
+  "cassette",
+  "signal",
+] as const;
+export const creativeLayoutNames = [
+  ...digitalLayoutNames,
+  ...expressiveLayoutNames,
+] as const;
+export type CreativeResumeLayout = (typeof creativeLayoutNames)[number];
+export function isDigitalLayout(layout: ResumeLayout): boolean {
+  return (digitalLayoutNames as readonly string[]).includes(layout);
+}
 export type ResumeLayout =
   | "studio"
   | "editorial"
@@ -8,7 +30,14 @@ export type ResumeLayout =
   | "atelier"
   | "timeline"
   | "consultant"
-  | "mosaic";
+  | "mosaic"
+  | CreativeResumeLayout;
+
+export function isCreativeLayout(
+  layout: ResumeLayout,
+): layout is CreativeResumeLayout {
+  return (creativeLayoutNames as readonly string[]).includes(layout);
+}
 export type ResumeSection = {
   id?: string;
   title: string;

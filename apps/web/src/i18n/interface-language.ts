@@ -29,8 +29,12 @@ export function replaceInterfaceResources(
   }
 }
 
+export function rememberInterfaceLanguage(locale: string): void {
+  document.cookie = `resumi-ui-language=${interfaceLocale(locale)}; Path=/; Max-Age=31536000; SameSite=Lax`;
+}
+
 export function setInterfaceLanguage(instance: i18n, locale: string): void {
   const next = interfaceLocale(locale);
-  document.cookie = `resumi-ui-language=${next}; Path=/; Max-Age=31536000; SameSite=Lax`;
+  rememberInterfaceLanguage(next);
   void instance.changeLanguage(next);
 }

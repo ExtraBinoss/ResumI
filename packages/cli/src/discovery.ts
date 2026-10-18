@@ -32,6 +32,7 @@ export function capabilities() {
     ],
     features: [
       "freeform geometry",
+      "multiple visual pages with per-page size and background",
       "flat groups",
       "z-order",
       "mixed text styling",
@@ -57,6 +58,7 @@ export function capabilities() {
       "output PROJECT --format html",
       "output PROJECT --format source",
       "screenshot PROJECT --out preview.png",
+      "output PROJECT --format pdf --out Resume.pdf",
     ],
     boundaries: {
       projects:
@@ -66,8 +68,8 @@ export function capabilities() {
       assets:
         "Embedded assets only; screenshot network is blocked. Brand collection licenses do not grant trademark rights.",
       layout:
-        "One freeform page, flat groups; no automatic pagination or nested groups.",
-      pdf: "Browser print/Save as PDF from portable HTML; no dedicated CLI PDF command.",
+        "Up to 20 visual pages (100–5000 CSS pixels per dimension), flat groups limited to one page; no automatic pagination or nested groups. Page commands require an enabled canvas with source explicitly deactivated.",
+      pdf: "Local PDF rendering uses the app renderer; PDF.js checks extracted text, spacing and reading order. A failed check retains the PDF and exits 3; it does not certify universal ATS acceptance.",
     },
   };
 }

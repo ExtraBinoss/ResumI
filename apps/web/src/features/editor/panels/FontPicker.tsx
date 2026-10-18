@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next";
-import { useMemo, useRef, useState } from "react";
+import { useId, useMemo, useRef, useState } from "react";
 import { useSetAtom } from "jotai";
 import { Check, ChevronDown, Laptop } from "lucide-react";
 import { Button } from "../../../components/ui/button";
@@ -21,6 +21,7 @@ import {
   fontStack,
   googleCatalog,
   googleFontBlob,
+  GoogleFontError,
   fontCategory,
   type FontOption,
   type LocalFont,
@@ -51,6 +52,7 @@ export function FontPicker({
   onPreview: (value: string | null) => void;
 }) {
   const { t } = useTranslation();
+  const popupId = useId();
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState("all");
@@ -174,11 +176,21 @@ export function FontPicker({
       onChange(option.value);
       setOpen(false);
     } catch (error) {
-      setError(
-        error instanceof Error
-          ? error.message
-          : "This font could not be loaded.",
-      );
+      if (error instanceof GoogleFontError) {
+        const message =
+          error.code === "no-downloadable-font"
+            ? t("properties.googleFontUnavailable")
+            : error.code === "download"
+              ? t("properties.googleFontDownloadFailed")
+              : t("properties.googleFontLoadFailed");
+        setError(message);
+      } else {
+        setError(
+          error instanceof Error
+            ? error.message
+            : t("properties.fontLoadFailed"),
+        );
+      }
     } finally {
       setBusy("");
     }
@@ -188,9 +200,7 @@ export function FontPicker({
       window as Window & { queryLocalFonts?: () => Promise<LocalFont[]> }
     ).queryLocalFonts;
     if (!queryFonts) {
-      setError(
-        "This browser cannot list local fonts. Use Import font to choose a font file.",
-      );
+      setError(t("properties.localFontsUnavailable"));
       return;
     }
     setBusy("computer");
@@ -217,9 +227,7 @@ export function FontPicker({
       setCategory("all");
       resetScroll();
     } catch {
-      setError(
-        "Local font access was declined. You can import a font file instead.",
-      );
+      setError(t("properties.localFontsDeclined"));
     } finally {
       setBusy("");
     }
@@ -242,6 +250,8 @@ export function FontPicker({
           <Button
             variant="outline"
             role="combobox"
+            aria-expanded={open}
+            aria-controls={popupId}
             aria-label={t("fonts.family")}
             className={styles.trigger}
             data-ui="input"
@@ -249,11 +259,12 @@ export function FontPicker({
         }
       >
         <span style={{ fontFamily: mixed ? undefined : value }}>
-          {mixed ? "Mixed fonts" : fontName(value)}
+          {mixed ? t("properties.mixedFonts") : fontName(value)}
         </span>
         <ChevronDown size={14} aria-hidden />
       </PopoverTrigger>
       <PopoverContent
+        id={popupId}
         className={styles.popup}
         align="end"
         sideOffset={6}
@@ -353,7 +364,7 @@ export function FontPicker({
         >
           <div
             role="listbox"
-            aria-label="Font families"
+            aria-label={t("properties.fontFamilies")}
             className={styles.spacer}
             style={{ height: filtered.length * ROW }}
             onPointerLeave={leave}
@@ -407,7 +418,14 @@ export function FontPicker({
                     >
                       <span>{option.label}</span>
                     </span>
-                    <small>{option.category}</small>
+                    <small>
+                      {t(
+                        "fonts." +
+                          (option.category === "Installed"
+                            ? "computer"
+                            : categoryKeys[option.category]),
+                      )}
+                    </small>
                   </span>
                   <FontSample option={option} />
                 </span>
@@ -417,7 +435,9 @@ export function FontPicker({
                 )}
               </button>
             ))}
-            {!filtered.length && <p className={styles.empty}>No fonts found</p>}
+            {!filtered.length && (
+              <p className={styles.empty}>{t("properties.noFonts")}</p>
+            )}
           </div>
         </ScrollShadow>
       </PopoverContent>

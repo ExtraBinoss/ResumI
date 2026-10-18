@@ -98,7 +98,9 @@ test("storage denial yields actionable error without creating a project", async 
   await expect(
     page.getByText("Could not access local storage.", { exact: false }),
   ).toBeVisible();
-  await page.getByRole("button", { name: "New resume", exact: true }).click();
+  await expect(
+    page.getByRole("button", { name: "New resume", exact: true }),
+  ).toBeDisabled();
   await expect(
     page.getByText("Could not access local storage.", { exact: false }),
   ).toBeVisible();
@@ -110,11 +112,9 @@ test("measured editor opening and text-input latency on a synthetic document", a
 }) => {
   const errors: string[] = [];
   page.on("pageerror", (e) => errors.push(e.message));
-  await page.goto("/");
+  await page.goto("/projects");
   const opened = performance.now();
-  await page
-    .getByRole("link", { name: "Create a resume", exact: true })
-    .click();
+  await page.getByRole("button", { name: "New resume", exact: true }).click();
   await expect(
     page.locator('.resume[aria-label="Resume canvas"]'),
   ).toBeVisible();
@@ -166,20 +166,45 @@ test("mobile editor keeps the canvas and both composition and properties availab
   await expect(
     page.getByRole("button", { name: /^Toggle (outline|properties)$/ }),
   ).toHaveCount(0);
-  await page.getByRole("radio", { name: "Structure", exact: true }).click();
   await expect(
-    page.getByRole("complementary", { name: "Document structure" }),
-  ).toBeVisible();
-  await page.getByRole("button", { name: "Profile 2", exact: true }).click();
+    page.getByRole("radio", { name: "Structure", exact: true }),
+  ).toHaveCount(0);
+  await page
+    .locator("[data-layer-row]")
+    .first()
+    .getByRole("button", { name: /^Select layer/ })
+    .click();
   await expect(
-    page.getByRole("complementary", { name: "Document structure" }),
+    page.getByRole("complementary", { name: "Layers panel", exact: true }),
   ).toBeVisible();
   await expect(
-    page.getByRole("textbox", { name: "Section title" }),
+    page.getByRole("complementary", {
+      name: "Properties inspector",
+      exact: true,
+    }),
   ).toBeVisible();
-  await expect(
-    page.getByRole("complementary", { name: "Properties inspector" }),
-  ).toBeVisible();
+  for (const axis of ["x", "y", "width", "height"]) {
+    const field = page.getByRole("spinbutton", {
+      name: `Layer ${axis}`,
+      exact: true,
+    });
+    const fit = await field.evaluate((node: HTMLInputElement) => {
+      const style = getComputedStyle(node);
+      const context = document.createElement("canvas").getContext("2d")!;
+      context.font = `${style.fontWeight} ${style.fontSize} ${style.fontFamily}`;
+      return {
+        available:
+          node.getBoundingClientRect().width -
+          parseFloat(style.paddingLeft) -
+          parseFloat(style.paddingRight),
+        text: context.measureText(node.value).width,
+      };
+    });
+    expect(
+      fit.available,
+      `The full ${axis} value must remain readable`,
+    ).toBeGreaterThanOrEqual(fit.text);
+  }
   await page.screenshot({
     path: "artifacts/visual/editor-mobile.png",
     fullPage: true,
@@ -314,7 +339,8 @@ test("editor intent preloads code without creating a resume; one click creates e
 }) => {
   await page.goto("/");
   await page
-    .getByRole("link", { name: "Create a resume", exact: true })
+    .getByRole("main")
+    .getByRole("link", { name: "Create Resume", exact: true })
     .hover();
   await page.waitForTimeout(300);
   const before = await page.evaluate(async () => {
@@ -323,10 +349,15 @@ test("editor intent preloads code without creating a resume; one click creates e
   });
   expect(before).toBe(false);
   await page
-    .getByRole("link", { name: "Create a resume", exact: true })
+    .getByRole("main")
+    .getByRole("link", { name: "Create Resume", exact: true })
+    .click();
+  await expect(page).toHaveURL(/\/templates$/);
+  await page
+    .getByRole("link", { name: "Use React Studio", exact: true })
     .click();
   await expect(
-    page.getByRole("article", { name: "Resume canvas" }),
+    page.getByRole("article", { name: "Resume canvas", exact: true }),
   ).toBeVisible();
   await expect(page).toHaveURL(/\/editor\/[^/?]+$/);
   expect(

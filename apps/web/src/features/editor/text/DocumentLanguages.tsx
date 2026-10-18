@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useAtomValue, useSetAtom } from "jotai";
+import { useAtomValue, useSetAtom, useStore } from "jotai";
 import { Languages, Plus, Trash2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { localeCodeSchema } from "@resumi/engine";
@@ -30,8 +30,22 @@ function LocaleRow({
 }) {
   const { t } = useTranslation();
   const dispatch = useSetAtom(designCommandAtom);
-  const [nextCode, setCode] = useState(code),
-    [nextName, setName] = useState(name);
+  const store = useStore();
+  const [draft, setDraft] = useState<{
+    baseCode: string;
+    baseName: string;
+    code: string;
+    name: string;
+  } | null>(null);
+  const current =
+    draft?.baseCode === code && draft.baseName === name
+      ? draft
+      : { code, name };
+  const nextCode = current.code,
+    nextName = current.name;
+  function edit(patch: { code?: string; name?: string }) {
+    setDraft({ baseCode: code, baseName: name, ...current, ...patch });
+  }
   const valid =
     localeCodeSchema.safeParse(nextCode).success && !!nextName.trim();
   return (
@@ -40,21 +54,23 @@ function LocaleRow({
         aria-label={`${t("languages.code")}: ${name}`}
         value={nextCode}
         maxLength={35}
-        onChange={(event) => setCode(event.currentTarget.value)}
+        onChange={(event) => edit({ code: event.currentTarget.value })}
       />
       <TextInput
         aria-label={`${t("languages.name")}: ${name}`}
         value={nextName}
         maxLength={60}
-        onChange={(event) => setName(event.currentTarget.value)}
+        onChange={(event) => edit({ name: event.currentTarget.value })}
       />
       <Button
         size="xs"
         variant="subtle"
         disabled={!valid || (code === nextCode && name === nextName)}
-        onClick={() =>
-          dispatch({ type: "locale.update", code, nextCode, name: nextName })
-        }
+        onClick={() => {
+          const before = store.get(documentLanguagesAtom);
+          dispatch({ type: "locale.update", code, nextCode, name: nextName });
+          if (store.get(documentLanguagesAtom) !== before) setDraft(null);
+        }}
       >
         {t("common.save")}
       </Button>
@@ -81,7 +97,7 @@ function LanguageManager({ close }: { close: () => void }) {
     dispatch = useSetAtom(designCommandAtom);
   const setRange = useSetAtom(textRangeAtom);
   const [code, setCode] = useState("fr"),
-    [name, setName] = useState(t("languages.fr")),
+    [name, setName] = useState(() => t("languages.fr")),
     [error, setError] = useState("");
   function add() {
     if (!localeCodeSchema.safeParse(code).success) {

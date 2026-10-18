@@ -1,5 +1,20 @@
+import { seoEn, seoFr } from "./seo";
+import { faqEn, faqFr } from "./faq";
+import { siteEn, siteFr } from "./site";
+import { workspaceEn, workspaceFr } from "./workspace";
+import { propertiesEn, propertiesFr } from "./properties";
+import { layersEn, layersFr } from "./layers";
+import { pagesEn, pagesFr } from "./pages";
+
 /** Add matching keys here for another interface language; CV languages live in the document. */
 export const en = {
+  seo: seoEn,
+  faq: faqEn,
+  pages: pagesEn,
+  site: siteEn,
+  workspace: workspaceEn,
+  properties: propertiesEn,
+  layers: layersEn,
   common: {
     settings: "Settings",
     cancel: "Cancel",
@@ -39,7 +54,6 @@ export const en = {
     text: "Text",
     visual: "Visual",
     layers: "Layers",
-    outline: "Structure",
     export: "Export",
     exportPdf: "Export PDF",
     exportFormats: "Export formats",
@@ -101,6 +115,7 @@ export const en = {
     navigation: "Workspace navigation",
     libraryContent: "Library content",
     import: "Import",
+    openFile: "Open a resume JSON file",
     sort: "Sort resumes",
     sortName: "Name A–Z",
     view: "Resume view",
@@ -130,6 +145,8 @@ export const en = {
     noTemplates: "No templates found",
     useTemplate: "Use {{name}}",
     templatePreview: "Template preview",
+    previewFailed: "Could not load this preview",
+    retryPreview: "Retry preview",
     library: "Library",
     create: "Create a resume",
     searchResumes: "Search resumes",
@@ -160,10 +177,18 @@ export const en = {
     search: "Search",
   },
 };
-type Translation = {
-  [K in keyof typeof en]: { [P in keyof (typeof en)[K]]: string };
+type TranslationTree<T> = {
+  [K in keyof T]: T[K] extends string ? string : TranslationTree<T[K]>;
 };
+type Translation = TranslationTree<typeof en>;
 export const fr: Translation = {
+  seo: seoFr,
+  faq: faqFr,
+  pages: pagesFr,
+  site: siteFr,
+  workspace: workspaceFr,
+  properties: propertiesFr,
+  layers: layersFr,
   common: {
     settings: "Réglages",
     cancel: "Annuler",
@@ -203,7 +228,6 @@ export const fr: Translation = {
     text: "Texte",
     visual: "Visuel",
     layers: "Calques",
-    outline: "Structure",
     export: "Exporter",
     exportPdf: "Exporter en PDF",
     exportFormats: "Formats d’export",
@@ -265,6 +289,7 @@ export const fr: Translation = {
     navigation: "Navigation de l’espace de travail",
     libraryContent: "Contenu de la bibliothèque",
     import: "Importer",
+    openFile: "Ouvrir un fichier CV JSON",
     sort: "Trier les CV",
     sortName: "Nom A–Z",
     view: "Affichage des CV",
@@ -294,6 +319,8 @@ export const fr: Translation = {
     noTemplates: "Aucun modèle trouvé",
     useTemplate: "Utiliser {{name}}",
     templatePreview: "Aperçu du modèle",
+    previewFailed: "Impossible de charger cet aperçu",
+    retryPreview: "Réessayer l’aperçu",
     library: "Bibliothèque",
     create: "Créer un CV",
     searchResumes: "Rechercher un CV",
@@ -329,6 +356,10 @@ export const uiLanguages = [
   { code: "fr", name: "Français" },
 ];
 export const resources = { en: { translation: en }, fr: { translation: fr } };
-export function interfaceLocale(value: string | null | undefined): string {
-  return uiLanguages.some((locale) => locale.code === value) ? value! : "en";
+export function interfaceLocale(
+  value: string | null | undefined,
+): keyof typeof resources {
+  return uiLanguages.some((locale) => locale.code === value)
+    ? (value as keyof typeof resources)
+    : "en";
 }

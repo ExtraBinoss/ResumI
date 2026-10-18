@@ -1,15 +1,19 @@
-import { useLoaderData } from "react-router";
-import { templatePreviews } from "../../src/lib/template-previews.server";
+import { useLoaderData, type MetaFunction } from "react-router";
+import { templates } from "@resumi/cv/catalog";
 import { Templates } from "../../src/features/dashboard/Templates";
-export const meta = () => [
-  { title: "Templates — ResumI" },
-  { name: "description", content: "Choose a resume template." },
-];
+import { interfaceLocale } from "../../src/i18n/resources";
+import { publicMetadata } from "../../src/lib/seo";
+export const meta: MetaFunction = ({ matches }) => {
+  const rootData = matches.find((match) => match.id === "root")?.loaderData as
+    | { uiLocale?: string }
+    | undefined;
+  return publicMetadata("templates", interfaceLocale(rootData?.uiLocale));
+};
 export function loader() {
   return {
-    templates: templatePreviews.map(
-      ({ writing: _writing, ...template }) => template,
-    ),
+    templates: templates
+      .filter((template) => !template.legacy)
+      .map(({ id, name, format }) => ({ id, name, format })),
   };
 }
 export default function TemplatesRoute() {

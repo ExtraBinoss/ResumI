@@ -1,12 +1,16 @@
 import { useLoaderData } from "react-router";
+import { templates } from "@resumi/cv/catalog";
 import { DashboardLayout } from "../../src/features/dashboard/components/Dashboard";
-import { templatePreviewCss } from "../../src/lib/template-previews.server";
 
 export function loader() {
-  return { previewCss: templatePreviewCss };
+  return {
+    templateNames: templates
+      .filter((template) => !template.legacy)
+      .map((template) => template.name),
+  };
 }
 
-// Trusted build-time templates do not change during a library browsing session.
+// Trusted build-time template names do not change during a library session.
 export function shouldRevalidate() {
   return false;
 }

@@ -175,14 +175,27 @@ for (const viewport of [
     expect(await page.evaluate(() => window.visualViewport!.scale)).toBe(
       browserScale,
     );
+    // Panning needs actual overflow. A fitted page has no horizontal scroll
+    // range now that the stage follows the paper instead of a 2400px plane.
+    await page
+      .getByRole("spinbutton", { name: "Canvas zoom", exact: true })
+      .fill("220");
+    await expect
+      .poll(() => paper.evaluate((node) => node.style.transform))
+      .toBe("scale(2.2)");
+    const panBefore = (await paper.boundingBox())!;
+    await page
+      .getByRole("spinbutton", { name: "Canvas zoom", exact: true })
+      .blur();
+    await page.mouse.move(cursor.x, cursor.y);
     await page.keyboard.down("Space");
     await page.mouse.down();
     await page.mouse.move(cursor.x + 60, cursor.y + 30, { steps: 8 });
     await page.mouse.up();
     await page.keyboard.up("Space");
     const panned = (await paper.boundingBox())!;
-    expect(Math.abs(panned.x - after.x - 60)).toBeLessThan(2);
-    expect(Math.abs(panned.y - after.y - 30)).toBeLessThan(2);
+    expect(Math.abs(panned.x - panBefore.x - 60)).toBeLessThan(2);
+    expect(Math.abs(panned.y - panBefore.y - 30)).toBeLessThan(2);
     for (const name of ["Layers panel", "Properties inspector"]) {
       const panel = page.getByRole("complementary", { name });
       await expect(panel).toBeVisible();

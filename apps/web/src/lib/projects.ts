@@ -5,7 +5,6 @@ import {
   validateDocument,
   type Document,
 } from "@resumi/engine";
-import { createResume, enableVisual } from "@resumi/cv";
 
 export interface Project {
   id: string;
@@ -14,16 +13,38 @@ export interface Project {
   updatedAt: string;
   revision: number;
 }
+export type StorageErrorCode = "conflict" | "full" | "unavailable";
+export const storageErrorKeys = {
+  conflict: "site.errors.storageConflict",
+  full: "site.errors.storageFull",
+  unavailable: "site.errors.storageUnavailable",
+} as const satisfies Record<StorageErrorCode, string>;
 interface ProjectDB extends DBSchema {
   projects: { key: string; value: Project; indexes: { "by-updated": string } };
 }
 export class StorageConflict extends Error {}
+export function storageErrorCode(error: unknown): StorageErrorCode {
+  if (error instanceof StorageConflict) return "conflict";
+  if (
+    typeof DOMException !== "undefined" &&
+    error instanceof DOMException &&
+    error.name === "QuotaExceededError"
+  )
+    return "full";
+  return "unavailable";
+}
+export function storageErrorKey(code: StorageErrorCode) {
+  return storageErrorKeys[code];
+}
 export function storageMessage(error: unknown): string {
-  if (error instanceof StorageConflict)
-    return "This resume changed in another tab. Export your changes, then reload to open the latest version.";
-  if (error instanceof DOMException && error.name === "QuotaExceededError")
-    return "Device storage is full. Export your resume as JSON, then free some space.";
-  return "Could not access local storage. Keep this tab open and export a JSON backup. You can retry saving.";
+  switch (storageErrorCode(error)) {
+    case "conflict":
+      return "This resume changed in another tab. Export your changes, then reload to open the latest version.";
+    case "full":
+      return "Device storage is full. Export your resume as JSON, then free some space.";
+    case "unavailable":
+      return "Could not access local storage. Keep this tab open and export a JSON backup. You can retry saving.";
+  }
 }
 export class ProjectRepository {
   private database?: Promise<IDBPDatabase<ProjectDB>>;
@@ -66,8 +87,11 @@ export class ProjectRepository {
       : undefined;
   }
   async create(template = "studio"): Promise<Project> {
+    const { createResume } = await import("@resumi/cv/sample");
     const document = createResume(crypto.randomUUID(), template);
-    return this.import(document.source ? document : enableVisual(document));
+    if (document.source) return this.import(document);
+    const { enableVisual } = await import("@resumi/cv/design");
+    return this.import(enableVisual(document));
   }
   async import(document: Document): Promise<Project> {
     const copy = duplicateDocument(
@@ -90,24 +114,50 @@ export class ProjectRepository {
     await (await this.db()).add("projects", project);
     return project;
   }
-  async save(document: Document, expectedRevision: number): Promise<Project> {
+  async save(
+    document: Document,
+    expectedRevision: number,
+    signal?: AbortSignal,
+  ): Promise<Project> {
+    signal?.throwIfAborted();
     const valid = validateDocument(document);
-    const tx = (await this.db()).transaction("projects", "readwrite");
-    const existing = await tx.store.get(valid.id);
-    if (!existing || existing.revision !== expectedRevision) {
-      tx.abort();
-      await tx.done.catch(() => undefined);
-      throw new StorageConflict("Stale or missing project.");
+    const db = await this.db();
+    signal?.throwIfAborted();
+    const tx = db.transaction("projects", "readwrite");
+    function abort() {
+      try {
+        tx.abort();
+      } catch (error) {
+        if (
+          !(error instanceof DOMException && error.name === "InvalidStateError")
+        )
+          throw error;
+      }
     }
-    const project = {
-      ...existing,
-      document: valid,
-      updatedAt: new Date().toISOString(),
-      revision: expectedRevision + 1,
-    };
-    await tx.store.put(project);
-    await tx.done;
-    return project;
+    signal?.addEventListener("abort", abort, { once: true });
+    try {
+      signal?.throwIfAborted();
+      const existing = await tx.store.get(valid.id);
+      signal?.throwIfAborted();
+      if (!existing || existing.revision !== expectedRevision)
+        throw new StorageConflict("Stale or missing project.");
+      const project = {
+        ...existing,
+        document: valid,
+        updatedAt: new Date().toISOString(),
+        revision: expectedRevision + 1,
+      };
+      await tx.store.put(project);
+      signal?.throwIfAborted();
+      await tx.done;
+      return project;
+    } catch (error) {
+      abort();
+      await tx.done.catch(() => undefined);
+      throw signal?.aborted ? signal.reason : error;
+    } finally {
+      signal?.removeEventListener("abort", abort);
+    }
   }
   async rename(id: string, name: string): Promise<Project> {
     const project = await this.get(id);

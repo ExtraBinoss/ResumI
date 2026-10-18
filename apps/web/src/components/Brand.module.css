@@ -1,5 +1,6 @@
 .brand {
   display: inline-flex;
+  flex: none;
   align-items: center;
   gap: 8px;
   color: var(--foreground);
@@ -7,6 +8,7 @@
   font-weight: 650;
   letter-spacing: -1px;
   white-space: nowrap;
+  border-radius: 5px;
 }
 .mark {
   display: block;
@@ -14,7 +16,23 @@
   object-fit: contain;
 }
 .wordmark {
+  display: inline-flex;
+  white-space: pre;
+}
+.letter {
+  position: relative;
   display: inline-block;
+  transform-origin: center 65%;
+}
+.glyph {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+}
+.letter:has(.glyph:not(:empty)) .measure {
+  visibility: hidden;
 }
 .brandI {
   color: var(--primary);

@@ -2,8 +2,9 @@
   "include": ["**/*.ts", "**/*.tsx", "apps/web/.react-router/types/**/*"],
   "exclude": ["node_modules", "**/build", "artifacts"],
   "compilerOptions": {
-    "baseUrl": ".",
-    "paths": { "@/*": ["apps/web/src/*"] },
+    "paths": {
+      "@/*": ["./apps/web/src/*"]
+    },
     "target": "ES2022",
     "lib": ["DOM", "DOM.Iterable", "ES2022"],
     "module": "ESNext",

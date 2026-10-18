@@ -26,13 +26,21 @@ const stdout = new Response(server.stdout).text(),
   stderr = new Response(server.stderr).text();
 let exit = 1;
 try {
-  const deadline = Date.now() + 60000;
+  const started = performance.now();
+  // A fresh optimizer builds both SSR and browser graphs. Give that initial
+  // compilation its own budget; browser hydration/editing keep their deadlines.
+  const deadline = Date.now() + 120000;
   while (true) {
+    const remaining = deadline - Date.now();
+    if (remaining <= 0)
+      throw new Error("Development server startup timed out.");
     if (server.exitCode !== null)
       throw new Error("Development server exited before first SSR request.");
     let response: Response;
     try {
-      response = await fetch(url, { signal: AbortSignal.timeout(30000) });
+      response = await fetch(url, {
+        signal: AbortSignal.timeout(Math.min(90000, remaining)),
+      });
     } catch {
       if (Date.now() > deadline)
         throw new Error("Development server startup timed out.");
@@ -46,6 +54,9 @@ try {
       );
     break;
   }
+  console.log(
+    `Cold-cache first SSR: ${Math.round(performance.now() - started)} ms.`,
+  );
   const tests = Bun.spawn(
     [
       join(root, "node_modules/.bin/playwright"),

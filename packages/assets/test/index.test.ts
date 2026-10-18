@@ -22,4 +22,14 @@ test("all shared catalog vectors satisfy engine schema; original brand credits a
   expect(svg).toContain("CC0 1.0");
   expect(svg).toContain(microsoft.source!);
   expect(svg.match(/<path /g)).toHaveLength(4);
+  const linkedin = (await loadAssets("brands")).find(
+    (entry) => entry.id === "brand-linkedin",
+  )!;
+  expect(linkedin.parts?.map((part) => part.fill)).toEqual([
+    "#0076b2",
+    "#ffffff",
+  ]);
+  expect(linkedin.license).toBe("MIT");
+  expect(linkedin.source).toContain("devicon.json");
+  expect(assetSvg(linkedin)).toContain(linkedin.source!);
 });

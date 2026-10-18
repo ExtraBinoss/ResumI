@@ -23,6 +23,16 @@
   cursor: pointer;
   border-radius: 2px;
 }
+.sectionHeading {
+  width: 100%;
+  padding: 0;
+  border: 0;
+  color: inherit;
+  background: transparent;
+  font: inherit;
+  letter-spacing: inherit;
+  text-align: inherit;
+}
 .canvasSection::after {
   content: "";
   position: absolute;

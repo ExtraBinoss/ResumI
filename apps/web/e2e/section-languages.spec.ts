@@ -1,33 +1,15 @@
 import { expect, test } from "@playwright/test";
 import type { Document } from "@resumi/engine";
 import { mkdir, readFile } from "node:fs/promises";
-import type { Page } from "@playwright/test";
 
-async function centeredTextPaper(page: Page) {
-  const viewport = page.viewportSize()!;
-  await expect
-    .poll(async () => {
-      // Modal focus trapping intentionally hides the background from the accessibility tree.
-      const paper = await page
-        .locator('article[aria-label="Text workspace"]')
-        .boundingBox();
-      return paper
-        ? Math.abs(paper.x - (viewport.width - paper.width) / 2) +
-            Math.abs(paper.y - (viewport.height - paper.height) / 2)
-        : Infinity;
-    })
-    .toBeLessThan(0.1);
-}
-
-test("visual semantic section translations are editable, preserved in JSON and visible in reading order", async ({
+test("CV language management in the project menu edits section translations and preserves them in JSON", async ({
   page,
 }) => {
   await page.goto("/editor");
   await expect(
     page.getByRole("article", { name: "Resume canvas" }),
   ).toBeVisible();
-  await page.getByRole("button", { name: "Text", exact: true }).click();
-  await centeredTextPaper(page);
+  await page.getByRole("button", { name: /^Project:/ }).click();
   await page
     .getByRole("button", { name: "Manage languages", exact: true })
     .click();
@@ -40,7 +22,6 @@ test("visual semantic section translations are editable, preserved in JSON and v
     .fill("Français");
   await manager.getByRole("button", { name: "Add", exact: true }).click();
   await expect(page.locator('[data-slot="dialog-content"]')).toBeHidden();
-  await centeredTextPaper(page);
   await page
     .getByRole("button", { name: "Manage languages", exact: true })
     .click();
@@ -50,7 +31,6 @@ test("visual semantic section translations are editable, preserved in JSON and v
   });
   await title.fill("Expériences");
   await expect(title).toHaveValue("Expériences");
-  await centeredTextPaper(page);
   await expect(manager).toHaveCSS("opacity", "1");
   await mkdir("artifacts/visual", { recursive: true });
   await page.screenshot({ path: "artifacts/visual/cv-section-languages.png" });
@@ -59,11 +39,6 @@ test("visual semantic section translations are editable, preserved in JSON and v
   await expect(
     page.getByRole("button", { name: "Manage languages", exact: true }),
   ).toBeFocused();
-  await centeredTextPaper(page);
-  await page.getByRole("radio", { name: "Structure", exact: true }).click();
-  await expect(
-    page.locator("[data-outline-section]").filter({ hasText: "Expériences" }),
-  ).toHaveCount(1);
   await page.getByRole("button", { name: "Export", exact: true }).click();
   const pending = page.waitForEvent("download");
   await page
@@ -78,6 +53,7 @@ test("visual semantic section translations are editable, preserved in JSON and v
   )!;
   expect(section.titleTranslations?.fr).toBe("Expériences");
   expect(doc.localization?.activeLocale).toBe("fr");
+  await page.getByRole("button", { name: /^Project:/ }).click();
   await page
     .getByRole("button", { name: "Manage languages", exact: true })
     .click();

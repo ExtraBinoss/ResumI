@@ -1,6 +1,5 @@
-import { useRef } from "react";
+import { useLayoutEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
-import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { Button } from "../../../components/ui/button";
 import { Input } from "../../../components/ui/input";
 import { Shortcut } from "../../../components/Shortcut";
@@ -19,42 +18,57 @@ import { zoomControlAtom } from "../../../state/canvas-view";
 import {
   modeAtom,
   toolAtom,
-  enableVisualAtom,
   addLayerAtom,
   designErrorAtom,
-  sourceAtom,
 } from "../../../state/design";
 import { ShapePicker } from "../../canvas/ShapePicker";
 import styles from "../styles/Dock.module.css";
 export function EditorDock() {
   const { t } = useTranslation();
-  const source = useAtomValue(sourceAtom),
-    reduced = useReducedMotion();
   const mode = useAtomValue(modeAtom),
     setMode = useSetAtom(modeAtom),
     tool = useAtomValue(toolAtom),
     setTool = useSetAtom(toolAtom),
     zoom = useAtomValue(zoomControlAtom),
     setZoom = useSetAtom(zoomControlAtom),
-    enable = useSetAtom(enableVisualAtom),
     add = useSetAtom(addLayerAtom),
     setError = useSetAtom(designErrorAtom),
     input = useRef<HTMLInputElement>(null);
-  const sourceActive = !!source && source.enabled !== false;
-  const visual = sourceActive || mode !== "text";
-  const editableVisual = visual && !sourceActive;
+  const visual = mode !== "text";
+  const reveal = useRef<HTMLDivElement>(null);
+  const tools = useRef<HTMLDivElement>(null);
+  useLayoutEffect(() => {
+    const surface = reveal.current;
+    const content = tools.current;
+    if (!surface || !content) return;
+    const desktop = window.matchMedia("(min-width: 851px)");
+    function measure() {
+      const bounds = content!.getBoundingClientRect();
+      surface!.style.setProperty("--tools-width", `${bounds.width}px`);
+      surface!.style.setProperty("--tools-height", `${bounds.height}px`);
+    }
+    // An intrinsic fallback keeps first paint visible. Observe natural content,
+    // not the shrinking track, so interrupted transitions cannot feed back.
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(content);
+    desktop.addEventListener("change", measure);
+    return () => {
+      observer.disconnect();
+      desktop.removeEventListener("change", measure);
+    };
+  }, []);
   function chooseMode(next: "visual" | "text") {
     const active = visual ? "visual" : "text";
     const target =
       active === next ? (next === "visual" ? "text" : "visual") : next;
-    enable();
     setMode(target);
     setTool("select");
   }
   async function image(file: File | undefined) {
     if (!file) return;
     if (file.size > 1_000_000) {
-      setError("Choose a PNG, JPEG or WebP image under 1 MB.");
+      setError(t("workspace.dock.imageTooLarge"));
       return;
     }
     try {
@@ -68,51 +82,45 @@ export function EditorDock() {
       const width = Math.min(300, bitmap.width),
         height = (width * bitmap.height) / bitmap.width;
       bitmap.close();
-      enable();
       add({
         type: "image",
-        patch: { src, alt: file.name, name: "Image", width, height },
+        patch: {
+          src,
+          alt: file.name,
+          name: t("workspace.dock.imageName"),
+          width,
+          height,
+        },
       });
     } catch {
-      setError("This image could not be opened. Choose a PNG, JPEG or WebP.");
+      setError(t("workspace.dock.imageFailed"));
     }
   }
   return (
     <div className={styles.position}>
-      <motion.nav
-        layout
-        initial={false}
-        transition={{
-          layout: reduced
-            ? { duration: 0 }
-            : { type: "spring", stiffness: 440, damping: 36 },
-        }}
-        className={styles.dock}
-        aria-label="Editor tools"
-      >
-        <AnimatePresence initial={false}>
-          {editableVisual && (
-            <motion.div
-              key="tools"
-              className={styles.dockSection}
-              initial={{ width: 0, opacity: 0 }}
-              animate={{ width: "auto", opacity: 1 }}
-              exit={{ width: 0, opacity: 0 }}
-              transition={{
-                duration: reduced ? 0 : 0.2,
-                ease: [0.2, 0.8, 0.2, 1],
-              }}
+      <nav className={styles.dock} aria-label={t("workspace.dock.tools")}>
+        <div
+          ref={reveal}
+          className={styles.toolsReveal}
+          data-open={visual}
+          aria-hidden={!visual}
+          inert={!visual}
+        >
+          <div className={styles.toolsClip}>
+            <div
+              ref={tools}
+              className={`${styles.dockSection} ${styles.toolsContent}`}
             >
               <div className={styles.toolGroup}>
                 <Tooltip
                   label={
                     <span className={styles.shortcutLabel}>
-                      Select <Shortcut keys={["V"]} />
+                      {t("workspace.dock.select")} <Shortcut keys={["V"]} />
                     </span>
                   }
                 >
                   <ActionIcon
-                    aria-label="Select tool"
+                    aria-label={t("workspace.dock.select")}
                     aria-pressed={tool === "select"}
                     variant={tool === "select" ? "light" : "subtle"}
                     onClick={() => setTool("select")}
@@ -123,26 +131,25 @@ export function EditorDock() {
                 <Tooltip
                   label={
                     <span className={styles.shortcutLabel}>
-                      Text · Click or drag a text box <Shortcut keys={["T"]} />
+                      {t("workspace.dock.textHint")} <Shortcut keys={["T"]} />
                     </span>
                   }
                 >
                   <ActionIcon
-                    aria-label="Text tool"
+                    aria-label={t("workspace.dock.textTool")}
                     aria-pressed={tool === "text"}
                     color="gray"
                     variant={tool === "text" ? "light" : "subtle"}
                     onClick={() => {
-                      enable();
                       setTool("text");
                     }}
                   >
                     <Type size={18} aria-hidden />
                   </ActionIcon>
                 </Tooltip>
-                <Tooltip label="Add image">
+                <Tooltip label={t("workspace.dock.addImage")}>
                   <ActionIcon
-                    aria-label="Add image"
+                    aria-label={t("workspace.dock.addImage")}
                     variant="subtle"
                     color="gray"
                     onClick={() => input.current?.click()}
@@ -157,7 +164,7 @@ export function EditorDock() {
                   hidden
                   type="file"
                   accept="image/png,image/jpeg,image/webp"
-                  aria-label="Upload image"
+                  aria-label={t("workspace.dock.uploadImage")}
                   onChange={(e) => {
                     void image(e.currentTarget.files?.[0]);
                     e.currentTarget.value = "";
@@ -165,31 +172,21 @@ export function EditorDock() {
                 />
               </div>
               <span className={styles.rule} />
-            </motion.div>
-          )}
-        </AnimatePresence>
-        <motion.div
-          layout="position"
+            </div>
+          </div>
+        </div>
+        <div
           className={styles.modeSwitch}
+          data-mode={visual ? "visual" : "text"}
           role="group"
-          aria-label="Editing mode"
+          aria-label={t("workspace.dock.mode")}
         >
+          <span className={styles.modeHighlight} aria-hidden />
           <Button
             variant="ghost"
             aria-pressed={visual}
             onClick={() => chooseMode("visual")}
           >
-            {visual && (
-              <motion.span
-                layoutId="editor-mode"
-                className={styles.modeHighlight}
-                transition={
-                  reduced
-                    ? { duration: 0 }
-                    : { type: "spring", stiffness: 500, damping: 38 }
-                }
-              />
-            )}
             <LayoutTemplate size={14} aria-hidden />
             {t("editor.visual")}
           </Button>
@@ -198,26 +195,15 @@ export function EditorDock() {
             aria-pressed={!visual}
             onClick={() => chooseMode("text")}
           >
-            {!visual && (
-              <motion.span
-                layoutId="editor-mode"
-                className={styles.modeHighlight}
-                transition={
-                  reduced
-                    ? { duration: 0 }
-                    : { type: "spring", stiffness: 500, damping: 38 }
-                }
-              />
-            )}
             <FilePenLine size={14} aria-hidden />
             {t("editor.text")}
           </Button>
-        </motion.div>
-        <motion.div layout="position" className={styles.dockSection}>
+        </div>
+        <div className={styles.dockSection}>
           <span className={styles.rule} />
-          <Tooltip label="Zoom out">
+          <Tooltip label={t("workspace.dock.zoomOut")}>
             <ActionIcon
-              aria-label="Zoom out"
+              aria-label={t("workspace.dock.zoomOut")}
               variant="subtle"
               color="gray"
               disabled={zoom <= 15}
@@ -228,7 +214,7 @@ export function EditorDock() {
           </Tooltip>
           <div className={styles.zoom}>
             <Input
-              aria-label="Canvas zoom"
+              aria-label={t("workspace.dock.canvasZoom")}
               type="number"
               value={zoom}
               style={{ width: `${String(zoom).length}ch` }}
@@ -243,9 +229,9 @@ export function EditorDock() {
             />
             <span aria-hidden>%</span>
           </div>
-          <Tooltip label="Zoom in">
+          <Tooltip label={t("workspace.dock.zoomIn")}>
             <ActionIcon
-              aria-label="Zoom in"
+              aria-label={t("workspace.dock.zoomIn")}
               variant="subtle"
               color="gray"
               disabled={zoom >= 250}
@@ -254,8 +240,8 @@ export function EditorDock() {
               <Plus size={16} aria-hidden />
             </ActionIcon>
           </Tooltip>
-        </motion.div>
-      </motion.nav>
+        </div>
+      </nav>
     </div>
   );
 }

@@ -1,27 +1,25 @@
+import { useTranslation } from "react-i18next";
 import { useRef } from "react";
 import { useAtomValue, useSetAtom, useStore } from "jotai";
-import { Upload, X } from "lucide-react";
+import { Upload } from "lucide-react";
 import { ActionIcon, Tooltip } from "../../../ui";
 import {
   canvasAtom,
   designCommandAtom,
   designErrorAtom,
 } from "../../../state/design";
-import styles from "../styles/Inspector.module.css";
 
 export function useFontImport() {
+  const { t } = useTranslation();
   const store = useStore();
   const dispatch = useSetAtom(designCommandAtom);
   const setError = useSetAtom(designErrorAtom);
   async function importBlob(name: string, blob: Blob, extension = "ttf") {
-    if (blob.size > 1_000_000) throw new Error("Choose a font under 1 MB.");
+    if (blob.size > 1_000_000) throw new Error(t("properties.fontTooLarge"));
     const current = store.get(canvasAtom);
-    if (!current) throw new Error("Open a visual document to import a font.");
+    if (!current) throw new Error(t("properties.visualDocumentRequired"));
     if (current.fonts.some((font) => font.name === name)) return name;
-    if (current.fonts.length >= 12)
-      throw new Error(
-        "This document already has 12 fonts. Remove one before importing.",
-      );
+    if (current.fonts.length >= 12) throw new Error(t("properties.maxFonts"));
     const dataUrl = await new Promise<string>((resolve, reject) => {
       const reader = new FileReader();
       reader.onload = () =>
@@ -31,8 +29,7 @@ export function useFontImport() {
             `data:font/${extension};`,
           ),
         );
-      reader.onerror = () =>
-        reject(new Error("This font could not be opened."));
+      reader.onerror = () => reject(new Error(t("properties.fontOpenFailed")));
       reader.readAsDataURL(blob);
     });
     const latest = store.get(canvasAtom)!;
@@ -58,14 +55,14 @@ export function useFontImport() {
       },
     });
     if (!store.get(canvasAtom)?.fonts.some((font) => font.name === name))
-      throw new Error("This font could not be added to the document.");
+      throw new Error(t("properties.fontAddFailed"));
     return name;
   }
   async function upload(file: File | undefined) {
     if (!file) return;
     try {
       if (!/\.(ttf|otf|woff|woff2)$/i.test(file.name))
-        throw new Error("Choose a TTF, OTF, WOFF or WOFF2 font.");
+        throw new Error(t("properties.fontFileTypes"));
       const name =
         file.name
           .replace(/\.[^.]+$/, "")
@@ -78,9 +75,7 @@ export function useFontImport() {
       );
     } catch (error) {
       setError(
-        error instanceof Error
-          ? error.message
-          : "This font could not be opened.",
+        error instanceof Error ? error.message : t("properties.fontOpenFailed"),
       );
       return undefined;
     }
@@ -93,9 +88,11 @@ export function FontImportButton({
 }: {
   onImported?: (name: string) => void;
 }) {
+  const { t } = useTranslation();
   const input = useRef<HTMLInputElement>(null);
   const canvas = useAtomValue(canvasAtom);
   const { upload } = useFontImport();
+  const setError = useSetAtom(designErrorAtom);
   return (
     <>
       <input
@@ -103,17 +100,25 @@ export function FontImportButton({
         hidden
         type="file"
         accept=".ttf,.otf,.woff,.woff2"
-        aria-label="Upload font"
+        aria-label={t("properties.uploadFont")}
         onChange={(event) => {
-          void upload(event.currentTarget.files?.[0]).then((name) => {
-            if (name) onImported?.(name);
-          });
+          void upload(event.currentTarget.files?.[0])
+            .then((name) => {
+              if (name) onImported?.(name);
+            })
+            .catch((error: unknown) => {
+              setError(
+                error instanceof Error
+                  ? error.message
+                  : t("properties.fontOpenFailed"),
+              );
+            });
           event.currentTarget.value = "";
         }}
       />
-      <Tooltip label="Import font file">
+      <Tooltip label={t("properties.importFontFile")}>
         <ActionIcon
-          aria-label="Import font"
+          aria-label={t("properties.importFont")}
           size="sm"
           variant="subtle"
           color="gray"
@@ -124,41 +129,5 @@ export function FontImportButton({
         </ActionIcon>
       </Tooltip>
     </>
-  );
-}
-export function FontAssets() {
-  const canvas = useAtomValue(canvasAtom);
-  const dispatch = useSetAtom(designCommandAtom);
-  if (!canvas) return null;
-  return (
-    <section>
-      <div className={styles.sectionHead}>
-        <h3>Fonts</h3>
-        <FontImportButton />
-      </div>
-      {canvas.fonts.map((font) => (
-        <div className={styles.fontRow} key={font.id}>
-          <span>{font.name}</span>
-          <ActionIcon
-            aria-label={`Remove font ${font.name}`}
-            size="xs"
-            variant="subtle"
-            color="gray"
-            onClick={() =>
-              dispatch({
-                type: "canvas.update",
-                patch: {
-                  fonts: canvas.fonts.filter(
-                    (candidate) => candidate.id !== font.id,
-                  ),
-                },
-              })
-            }
-          >
-            <X size={13} />
-          </ActionIcon>
-        </div>
-      ))}
-    </section>
   );
 }

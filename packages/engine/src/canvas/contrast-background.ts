@@ -1,3 +1,4 @@
+import { canvasForPage, pageForLayer } from "./pages";
 import type { Document } from "../document/schema";
 import type { Layer } from "./schema";
 import {
@@ -123,8 +124,11 @@ function uniformFill(layer: Layer, target: Frame): Rgba | string {
 }
 /** Resolve a uniform color under the selected text frame, never estimate image/gradient pixels. */
 export function contrastBackground(document: Document, id: string): Resolution {
-  const canvas = document.canvas;
   const layer = document.blocks[id]?.design;
+  const canvas =
+    document.canvas && layer
+      ? canvasForPage(document, pageForLayer(document, id))
+      : document.canvas;
   let background = colorPixel(canvas?.background ?? "transparent")!;
   function unknown(reason: string): Resolution {
     return { reliable: false, background, reason };

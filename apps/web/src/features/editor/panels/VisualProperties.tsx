@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import {
   ActionIcon,
   ColorInput,
@@ -30,6 +31,7 @@ export function EffectsFields({
   id: string;
   layer: Extract<Layer, { type: "shape" | "image" }>;
 }) {
+  const { t } = useTranslation();
   const dispatch = useSetAtom(designCommandAtom);
   function patch(key: keyof VisualEffects, value: number) {
     dispatch({
@@ -49,7 +51,7 @@ export function EffectsFields({
   }[] = [
     {
       key: "blur",
-      label: "Blur",
+      label: t("properties.effectBlur"),
       min: 0,
       max: 64,
       step: 0.25,
@@ -58,7 +60,7 @@ export function EffectsFields({
     },
     {
       key: "grain",
-      label: "Grain",
+      label: t("properties.grain"),
       min: 0,
       max: 100,
       step: 1,
@@ -67,7 +69,7 @@ export function EffectsFields({
     },
     {
       key: "grainSize",
-      label: "Grain size",
+      label: t("properties.grainSize"),
       min: 0.5,
       max: 12,
       step: 0.1,
@@ -76,7 +78,7 @@ export function EffectsFields({
     },
     {
       key: "dither",
-      label: "Dither",
+      label: t("properties.dither"),
       min: 0,
       max: 100,
       step: 1,
@@ -85,7 +87,7 @@ export function EffectsFields({
     },
     {
       key: "brightness",
-      label: "Brightness",
+      label: t("properties.brightness"),
       min: 0,
       max: 300,
       step: 1,
@@ -94,7 +96,7 @@ export function EffectsFields({
     },
     {
       key: "contrast",
-      label: "Contrast",
+      label: t("properties.contrastEffect"),
       min: 0,
       max: 300,
       step: 1,
@@ -103,7 +105,7 @@ export function EffectsFields({
     },
     {
       key: "saturation",
-      label: "Saturation",
+      label: t("properties.saturation"),
       min: 0,
       max: 300,
       step: 1,
@@ -114,9 +116,9 @@ export function EffectsFields({
   return (
     <section className={styles.effects}>
       <div className={styles.sectionHead}>
-        <h3>Effects</h3>
+        <h3>{t("properties.effects")}</h3>
         <ActionIcon
-          aria-label="Reset effects"
+          aria-label={t("properties.resetEffects")}
           size="xs"
           variant="subtle"
           color="gray"
@@ -159,7 +161,7 @@ export function EffectsFields({
           </div>
           <Slider
             key={layer.effects[control.key]}
-            aria-label={`${control.label} adjustment`}
+            aria-label={t("properties.adjustment", { label: control.label })}
             size="xs"
             min={control.min}
             max={control.max}
@@ -179,6 +181,7 @@ export function ShapeFields({
   id: string;
   layer: Extract<Layer, { type: "shape" }>;
 }) {
+  const { t } = useTranslation();
   const dispatch = useSetAtom(designCommandAtom);
   const preview = useColorPreview(id);
   function patch(patch: LayerPatch) {
@@ -190,9 +193,9 @@ export function ShapeFields({
   if (layer.vector?.parts) return <VectorAppearance id={id} layer={layer} />;
   return (
     <section>
-      <h3>Appearance</h3>
+      <h3>{t("properties.appearance")}</h3>
       <Select
-        label="Shape"
+        label={t("properties.shape")}
         size="xs"
         value={layer.shape}
         data={[
@@ -201,7 +204,7 @@ export function ShapeFields({
             label: shape.name,
           })),
           ...(layer.vector
-            ? [{ value: "custom-icon", label: "Custom vector" }]
+            ? [{ value: "custom-icon", label: t("properties.customVector") }]
             : []),
         ]}
         allowDeselect={false}
@@ -210,7 +213,7 @@ export function ShapeFields({
         }}
       />
       <ColorInput
-        label="Fill"
+        label={t("properties.fill")}
         size="xs"
         mt="sm"
         withEyeDropper={false}
@@ -223,7 +226,7 @@ export function ShapeFields({
       />
       <div className={styles.doubleGrid}>
         <ColorInput
-          label="Stroke"
+          label={t("properties.stroke")}
           size="xs"
           withEyeDropper={false}
           format="hex"
@@ -237,8 +240,8 @@ export function ShapeFields({
           }}
         />
         <NumberInput
-          label="Width"
-          aria-label="Stroke width"
+          label={t("properties.width")}
+          aria-label={t("properties.strokeWidth")}
           suffix="px"
           size="xs"
           min={0}
@@ -251,8 +254,8 @@ export function ShapeFields({
         />
       </div>
       <NumberInput
-        label="Radius"
-        aria-label="Corner radius"
+        label={t("properties.radius")}
+        aria-label={t("properties.cornerRadius")}
         suffix="px"
         size="xs"
         mt="sm"
@@ -265,7 +268,7 @@ export function ShapeFields({
         }}
       />
       <div className={styles.sectionHead}>
-        <h4>Linear gradient</h4>
+        <h4>{t("properties.linearGradient")}</h4>
         <Button
           size="compact-xs"
           variant="subtle"
@@ -289,14 +292,14 @@ export function ShapeFields({
             })
           }
         >
-          {gradient ? "Remove" : "Add"}
+          {gradient ? t("properties.remove") : t("properties.add")}
         </Button>
       </div>
       {gradient && (
         <>
           <NumberInput
-            label="Angle"
-            aria-label="Gradient angle"
+            label={t("properties.angle")}
+            aria-label={t("properties.gradientAngle")}
             snapPoints={[
               -360, -270, -180, -90, 0, 45, 90, 135, 180, 225, 270, 315, 360,
             ]}
@@ -313,7 +316,9 @@ export function ShapeFields({
           {gradient.stops.map((stop, index) => (
             <div key={stop.id} className={styles.gradientStop}>
               <ColorInput
-                aria-label={`Gradient stop ${index + 1} color`}
+                aria-label={t("properties.gradientStopColor", {
+                  number: index + 1,
+                })}
                 withEyeDropper={false}
                 size="xs"
                 format="hex"
@@ -334,8 +339,10 @@ export function ShapeFields({
                 }}
               />
               <NumberInput
-                scrubLabel="Stop"
-                aria-label={`Gradient stop ${index + 1} position`}
+                scrubLabel={t("properties.stop")}
+                aria-label={t("properties.gradientStopPosition", {
+                  number: index + 1,
+                })}
                 size="xs"
                 hideControls
                 min={0}
@@ -355,7 +362,9 @@ export function ShapeFields({
                 }}
               />
               <ActionIcon
-                aria-label={`Remove gradient stop ${index + 1}`}
+                aria-label={t("properties.removeGradientStop", {
+                  number: index + 1,
+                })}
                 size="xs"
                 color="gray"
                 variant="subtle"
@@ -390,7 +399,7 @@ export function ShapeFields({
               })
             }
           >
-            Add gradient stop
+            {t("properties.addGradientStop")}
           </Button>
         </>
       )}
@@ -404,13 +413,15 @@ export function ImageFields({
   id: string;
   layer: Extract<Layer, { type: "image" }>;
 }) {
+  const { t } = useTranslation();
   const dispatch = useSetAtom(designCommandAtom);
   function patch(patch: LayerPatch) {
     dispatch({ type: "layer.update", ids: [id], patch });
   }
   const controls = [
     {
-      label: "Image zoom",
+      label: t("properties.imageZoom"),
+      shortLabel: t("properties.zoom"),
       value: layer.imageScale * 100,
       min: 100,
       max: 500,
@@ -418,7 +429,12 @@ export function ImageFields({
       patch: (value: number) => patch({ imageScale: value / 100 }),
     },
     ...(["x", "y"] as const).map((axis) => ({
-      label: axis === "x" ? "Horizontal crop" : "Vertical crop",
+      label:
+        axis === "x"
+          ? t("properties.horizontalCrop")
+          : t("properties.verticalCrop"),
+      shortLabel:
+        axis === "x" ? t("properties.horizontal") : t("properties.vertical"),
       value: layer.objectPosition[axis],
       min: 0,
       max: 100,
@@ -430,25 +446,27 @@ export function ImageFields({
   return (
     <>
       <section>
-        <h3>Crop</h3>
-        <div className={styles.fieldRow}>
-          <label>Fit</label>
-          <Select
-            aria-label="Image fit"
-            size="xs"
-            value={layer.objectFit}
-            allowDeselect={false}
-            data={["cover", "contain"]}
-            onChange={(value) => {
-              if (value) patch({ objectFit: value as "cover" | "contain" });
-            }}
-          />
-        </div>
+        <h3>{t("properties.crop")}</h3>
+        <Select
+          className={styles.fieldRow}
+          label={t("properties.fit")}
+          aria-label={t("properties.imageFit")}
+          size="xs"
+          value={layer.objectFit}
+          allowDeselect={false}
+          data={[
+            { value: "cover", label: t("properties.cover") },
+            { value: "contain", label: t("properties.contain") },
+          ]}
+          onChange={(value) => {
+            if (value) patch({ objectFit: value as "cover" | "contain" });
+          }}
+        />
         {controls.map((control) => (
           <div className={styles.effectControl} key={control.label}>
             <div>
               <NumberInput
-                label={control.label.replace("Image ", "").replace(" crop", "")}
+                label={control.shortLabel}
                 aria-label={control.label}
                 size="xs"
                 hideControls
@@ -468,7 +486,7 @@ export function ImageFields({
             </div>
             <Slider
               key={control.value}
-              aria-label={`${control.label} adjustment`}
+              aria-label={t("properties.adjustment", { label: control.label })}
               min={control.min}
               max={control.max}
               step={control.step}
@@ -479,9 +497,9 @@ export function ImageFields({
         ))}
         <div className={styles.numberRow}>
           <NumberInput
-            label="Radius"
+            label={t("properties.radius")}
             suffix="px"
-            aria-label="Radius"
+            aria-label={t("properties.radius")}
             size="xs"
             min={0}
             max={2500}
@@ -492,15 +510,14 @@ export function ImageFields({
             }}
           />
         </div>
-        <div className={styles.fieldRow}>
-          <label>Alt text</label>
-          <TextInput
-            aria-label="Alternative text"
-            size="xs"
-            value={layer.alt}
-            onChange={(event) => patch({ alt: event.currentTarget.value })}
-          />
-        </div>
+        <TextInput
+          className={styles.fieldRow}
+          label={t("properties.altText")}
+          aria-label={t("properties.alternativeText")}
+          size="xs"
+          value={layer.alt}
+          onChange={(event) => patch({ alt: event.currentTarget.value })}
+        />
       </section>
       <ImageBorderFields id={id} layer={layer} />
     </>

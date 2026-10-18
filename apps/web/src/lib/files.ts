@@ -1,5 +1,12 @@
 import { deserializeDocument, MAX_DOCUMENT_FILE_BYTES } from "@resumi/engine";
 
+export class DocumentFileTooLargeError extends Error {
+  constructor() {
+    super("This file is larger than 16 MB.");
+    this.name = "DocumentFileTooLargeError";
+  }
+}
+
 export function downloadFile(
   name: string,
   content: string,
@@ -17,6 +24,6 @@ export function fileName(name: string, extension: string) {
 }
 export async function readDocumentFile(file: File) {
   if (file.size > MAX_DOCUMENT_FILE_BYTES)
-    throw new Error("This file is larger than 16 MB.");
+    throw new DocumentFileTooLargeError();
   return deserializeDocument(await file.text());
 }

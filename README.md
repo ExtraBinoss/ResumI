@@ -1,164 +1,52 @@
 # ResumI
 
-ResumI is a resume editor with a shared TypeScript command engine. Edit on the canvas or apply reviewed agent commands. Documents are stored locally and export as JSON, standalone HTML or PDF through the browser print dialog.
+Your resume just got a new teammate.
 
-## What works today
+[![ResumI presentation: a resume with coding agent tools](apps/web/public/og-image.png)](assets/ssr-image/index.html)
 
-- Editorial SSR landing, real interactive CV showcase and a shared document/template library.
-- Ten professional TSX templates, including Harvard, Cobalt, Atelier, Timeline, Consultant and Mosaic, with portraits, original-color brands, shapes and embedded offline assets. Legacy visual starters remain compatible.
-- A centered library with Resumes/Templates tabs, recent documents, aligned search and translated EN/FR controls. Mobile combines navigation, recents and Settings in one frosted bottom bar. Browsing includes previews, sorting, grid/list, rename, duplication, deletion and JSON import/export.
-- Permanent composition and properties panels, a compact project menu and a bottom dock with selection, text, image, shapes/icons, Visual / Text and zoom.
-- Freeform A4 layers: drag, resize, snapping guides, Space to pan, Ctrl/Cmd/Shift multiselection, flat groups, z-order, visibility, locks, opacity and blend modes. Groups move against shared guides with one Undo.
-- Detailed typography and inline ranges/links; live color previews with cancellation and one Undo; embedded fonts; shape gradients and strokes; image cropping and borders; image/shape shadows, blur, grain, dither, brightness, contrast and saturation. Selected text also has a conservative AA/AAA contrast inspection.
-- Searchable Google/local font picker with categories and hover previews; selected regular Latin Google faces embed for offline export. [Font details](apps/web/src/features/editor/panels/fonts.md).
-- Fifty original-color brand marks and safe basic SVG import, with editable vector colors and retained [sources/licenses](packages/assets/data/brands.sources.md). The editor and CLI share one pure vector bank.
-- A synchronized Text workspace for the same canonical layer text. Structured resumes saved by the first version still open and remain editable.
-- HTML / React authoring through **Mod+Shift+E**, with isolated preview, source import/export and offline self-contained HTML. Active source belongs to Visual and uses the common bottom zoom controls. [Source contract](docs/code-templates.md).
-- Runtime-validated human/agent commands, atomic batches, attributed undo/redo, CLI and **Mod+Alt+Enter** with preview before applying. Agents can rename the project with `document.update`.
-- Discoverable CLI help, template/vector catalogs, HTML/CSS/TSX authoring, JSON/HTML/source output and real isolated-browser screenshots. [CLI guide](docs/cli.md).
-- Shared scroll shadows, keyboard hints, Motion transitions and light/dark/system appearance settings.
-- A macOS-inspired control system: coherent light/dark materials, centered document title, segmented controls, label/input/unit fields with scrubbing and snapping, live layer/outline reordering and restrained menus. Successful saving stays silent; errors offer shared details and copy controls.
-- JSON backups, portable HTML and primary PDF preparation for both visual and HTML/React documents.
-- Shared, locally copied Thinking Orbs with shimmer labels and static reduced-motion output; supplied favicon/brand artwork and a Plinka-linked landing footer.
+A local-first resume editor with 20 templates, Visual/Text workspaces, rich text, images, shapes, groups and pages. Imported HTML and React/TSX become editable canvas layers; their original source is preserved inactive. Export the current resume as JSON, HTML, React/TSX or PDF.
 
-Shortcuts: ⌘/Ctrl Z / Shift Z / Ctrl Y, ⌘/Ctrl G / Shift G to group/ungroup, ⌘/Ctrl D to duplicate, arrows to nudge (Shift = 10px), V / T for tools. Double-click or Enter edits text in place; ⌘/Ctrl Enter, Escape or blur commits. Space + drag or the middle mouse button pans; ⌘/Ctrl + wheel zooms around the pointer.
+The image above is generated from the [HTML presentation](assets/ssr-image/index.html) using public, synthetic demo assets.
 
-## Run locally
+## Install
 
-Requires Bun 1.4.2+ and Node 22+ for the officially supported Vite/Wrangler tooling. Bun manages dependencies, scripts, CLI and tests; production uses the Cloudflare Workers runtime.
+Use Bun 1.4.2 and Node 24, matching CI.
 
-```bash
+```sh
 bun install
-bun run dev                 # Vite prints the available localhost port
-bun run build               # real client + SSR Worker build
-bun run preview             # production Worker preview: http://127.0.0.1:4187
-bun run templates:assets    # regenerate template source, portrait/font assets and licenses
+bun run dev
 ```
 
-No credentials or environment file is required. `/` and `/templates` are public SSR routes; `/projects` loads IndexedDB after hydration; `/editor` creates a project; `/editor/:documentId` opens it or offers recovery actions. Public loaders serve the immutable trusted catalog; real WebP captures keep gallery cards light, while dialogs retain HTML previews. Production hosting/domain configuration remains outside this milestone; `cv.plinka.eu` is not hardcoded or deployed.
+Open the URL printed by Vite. Projects are saved in this browser; export JSON for backups and use **Ctrl/⌘+O** in the library to reopen one. There is no automatic cloud sync. Interface language and CV language are independent.
 
-## Architecture
+**Installing with a coding agent?** Give it the [local setup prompt and workflow guide](docs/agents/README.md).
 
-Stack: strict TypeScript, **React 19**, Bun workspaces, **Vite + React Router framework SSR**, Cloudflare Vite plugin, **shadcn/ui with Base UI**, **Jotai**, **Lucide**, **Motion** and React Compiler. The UI uses the Base UI Luma preset with neutral surfaces, Blue-600 `#2563EB`, 6–8px UI radii, Source Sans 3 and Space Grotesk. Generated components use Tailwind v4; application layouts use CSS Modules and shared tokens. CV typography remains document data, independent of UI fonts.
+## CLI
 
-```text
-apps/web/
-  app/                     SSR routes, root, client hydration
-  workers/                 Workers request handler
-  src/features/
-    dashboard/             Shared layout, project list, templates, styles/
-    editor/                Workspace composition and styles/
-      components/          Topbar, dock, project menu and dialogs
-      panels/              Composition, properties and text controls
-      agent/               Command review and rendered diff
-      source/              HTML/React source dialog and source preview
-      text/                Text workspace
-    canvas/                Rendering, gestures, palettes and styles/
-  src/components/          Shared previews, settings, ScrollShadow, Shortcut
-    ui/                    Editable shadcn/Base UI primitives
-    reui/                  CLI-imported Base UI color picker
-  src/ui/                  Small adapters over generated UI components
-  src/state/               Canonical session, selectors, interaction state/theme
-  src/i18n/                Synchronous isolated interface dictionaries/provider
-  src/lib/                 IndexedDB repository, files and shared utilities
-  src/styles/              Global tokens and public-page CSS Modules
-  test/                    Mirrored browser-adapter unit tests
-  e2e/                     Production-runtime Playwright workflows
-packages/
-  engine/src/              Generic schemas, commands, history, serialization
-  cv/src/                  React templates, source compiler and portable renderer
-  assets/src/, data/       Shared shapes, icons, brands and provenance
-  adapters/src/            Transport-free command preview and JSON Schema
-  cli/src/                 Argument/file adapter around the same engine
-  */test/                  Tests mirror the source hierarchy
-scripts/                   Generic line scanner and enforced engine coverage
-artifacts/                 Synthetic screenshots, rendered HTML/CSS, timings
-tasks/                     Numbered execution plan and master checklist
-docs/                      Architecture, command contract, ADRs, verification
-```
-
-The engine owns normalized document rules; the CV package owns resume defaults and portable rendering. The editor composes panels and canvas, the canvas owns gestures, and the dashboard owns project browsing. Feature CSS lives beside its feature. A per-editor Jotai store holds one canonical session; persistence remains an adapter. [Architecture and ownership](docs/architecture.md) · [Engine/CLI contract](docs/engine.md).
-
-## CLI and agent handoff
-
-```bash
+```sh
 bun run resumi --help
 bun run resumi help design
-bun run resumi templates list
-bun run resumi assets list --kind brands
-bun run resumi document create --template studio --out cv.json
-bun run resumi document inspect cv.json
-bun run resumi document validate cv.json
-bun run resumi document schema
-bun run resumi document apply cv.json patch.json --out edited.json
-bun run resumi document render edited.json --format html --out preview.html
-bun run resumi output edited --format json
-bun run resumi screenshot edited --out preview.png
+bun run resumi help pdf
+bunx playwright install chromium
+bun run resumi new --template react-classic --out resume.json
+bun run resumi output resume --format pdf --out resume.pdf
 ```
 
-Example `patch.json`:
+The app uses the browser print dialog; the CLI generates PDFs directly with local Chromium and checks their actual text with PDF.js. See the [agent guide](docs/agents/README.md) for HTML/TSX editing, validated JSON commands, assets and visual verification.
 
-```json
-{
-  "version": 1,
-  "actor": { "kind": "agent", "name": "Codex" },
-  "commands": [
-    { "type": "document.update", "name": "Design application" },
-    { "type": "style.update", "patch": { "accent": "#334e68" } }
-  ]
-}
-```
+## Development
 
-CLI document responses are JSON stdout; raw output and help are plain text. Errors are JSON stderr, with exit codes 2 arguments, 3 validation/rendering, 4 file I/O. Without `--out`, apply/create emit a document without overwriting input. Section/block IDs come from `inspect`. The CLI compiles source without executing it in its own process; screenshot renders portable output in an opaque browser frame. Install its browser once with `bunx playwright install chromium`. [Complete commands and authoring loop](docs/cli.md).
-
-External agents cannot access private browser IndexedDB. Export JSON, let a CLI-capable agent inspect/edit/render it, then import the result as a new project. Alternatively press **Mod+Alt+Enter**, paste the batch, preview and apply. [Command and transport boundaries](docs/engine.md).
-
-## Local storage and privacy
-
-Projects live in IndexedDB in **this browser, on this device and origin**. There is no account or cloud sync. The typed repository upgrades v1 → v2, sorts by recency, and uses transactional revision checks to prevent stale-tab overwrites. Copies/imports allocate independent document, section and block IDs. Autosave coalesces frequent writes and stays quiet on success; failures show copyable details. JSON export remains available. Deletion requires confirmation. Undo restores section/block edits during a session.
-
-Browser storage can be cleared, evicted, denied in private mode or exhausted. Export backups. Already-open editing and saving work offline; full offline navigation/reload is not guaranteed because no service worker is installed. Closing the process before a pending save completes can lose recent changes. Undo history resets on reload. Failed/stale saves keep in-memory content and offer retry/export; a conflicting tab should export, then reload to reconcile.
-
-## Quality gates and evidence
-
-```bash
-bunx playwright install chromium         # CI uses --with-deps
-bun run typecheck
-bun run lint
-bun run check:files
-bun run test
-bun run test:engine                      # enforces >=85% engine lines/functions
-bun run test:dev                         # cold Vite cache, SSR/hydration + editing
+```sh
+bun run check          # types, lint, format, tests, cold dev, build and E2E
+bun run visual:check   # visual journeys and screenshots
+bun run format
 bun run build
-bun run test:ssr
-bun run test:e2e                         # production Worker runtime, critical flows
-bun run visual:check                     # desktop/mobile screenshots + DOM/CSS
-bun run check                           # all required gates, including cold dev, build and E2E
+bun run preview        # http://127.0.0.1:4187
+bun run brand:og       # regenerate the presentation PNG
 ```
 
-The coverage runner imports every engine source before measuring so untested modules cannot disappear. Bun currently reports lines/functions, not branch coverage. The generic recursive source scanner includes future workspaces, `.ts/.tsx/.js/.jsx/.css/.mjs`, warns at 500 lines and **fails at 600**. Only generated Worker declarations are explicitly excluded in [source-policy.json](source-policy.json); dependencies/build output/artifacts are excluded by the scanner. Exclusion and 599/600 boundary tests are included. Handwritten declaration files are included unless explicitly excluded.
+Built with strict TypeScript, React 19, Jotai, Motion and shadcn/ui with Base UI. The framework-free engine in `packages/engine` validates document changes; `apps/web` owns the interface, and `packages/cli`, `packages/cv` and `packages/assets` provide file workflows, rendering and shared artwork.
 
-Playwright starts the built Worker preview automatically; rebuild after application changes. Visual checks write [screenshots](artifacts/visual/), rendered DOM and [computed canvas properties](artifacts/rendered/canvas-computed.json). Standalone [HTML](artifacts/rendered/resume.html) and the [command schema](artifacts/rendered/commands.schema.json) are separate portable artifacts. Inspect screenshots alongside DOM/CSS rather than relying on file existence.
+## License
 
-[Interaction timings](artifacts/performance/interactions.json) include Playwright overhead. Earlier creation-path profiles are retained as [before](artifacts/performance/create-before.json) and [after](artifacts/performance/create-final.json) evidence; they are not a fresh benchmark of every UI revision.
-
-See [verification results](docs/verification.md), [task index](tasks/README.md) and the [master completion checklist](tasks/check-list.md). [AGENTS.md](AGENTS.md) enforces engine ownership, React performance rules, genuine external-system effects, stable atoms and visual review. GitHub Actions runs `bun run check` and retains evidence; remote CI results must be read from the PR separately.
-
-Search shares one indexed implementation across projects, templates, fonts and icons, with virtual catalogs and guarded type-anywhere focus. Run `bun run benchmark:search` for reproducible CPU timings; [method and measured results](docs/search.md).
-
-Text mode manages independent CV language variants through validated human/agent commands, while Settings controls the EN/FR interface separately. [Language editing and extension](docs/localization.md). The primary toolbar PDF action uses the browser’s Save as PDF dialog and optimizes a print copy of raster images. [Export behavior](docs/pdf-export.md).
-
-## Current boundaries
-
-- Freeform layout uses one explicitly sized page (A4 by default) and flat groups. Automatic multipage pagination and nested groups are not implemented. Structured documents can grow vertically; freeform elements retain explicitly editable frames.
-- PDF uses an isolated prepared print page and the browser’s native Save as PDF dialog. A background PDF-download service and preview sharing are outside this delivery.
-- Browser local storage only; no cross-device sync, auth, live CLI bridge, model inference, remote MCP or WebMCP.
-- EN/FR resources cover the main interface controls; detailed inspector labels remain English. CV language variants are independently editable by humans and agents.
-- Browser E2E is Chromium on the available Linux environment; Firefox/WebKit, real-device/mobile editing and broader assistive-technology review remain release follow-ups.
-- Production deployment, credentials, DNS and provider connections were deliberately not configured.
-
-HTML/React source and canvas are preserved representations; arbitrary source is not reverse-engineered into editable layers. React source supports a single file with React imports, rather than arbitrary npm dependencies. See [code templates](docs/code-templates.md) for authoring and rendering details.
-
-Development startup is tested with a fresh isolated Vite cache. The Compiler runtime and lazy UI dependencies are pre-bundled in both client/SSR graphs to avoid first-request React/runtime mismatches. `RESUMI_DEV_CHECK_PORT` can override the smoke-test port (5189). See [ADR 002](docs/decisions/002-cold-development.md).
-
-Production route-module splitting is disabled to keep the initial client fallback consistent with SSR. Direct/reload tests require one viewport-height editor and zero hydration errors; see [ADR 004](docs/decisions/004-document-hydration.md).
+[MIT](LICENSE). Bundled fonts and artwork retain their own [license and provenance notices](assets/ssr-image/README.md).

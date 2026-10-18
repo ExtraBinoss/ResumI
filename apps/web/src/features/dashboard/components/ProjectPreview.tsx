@@ -1,7 +1,7 @@
 import { Link } from "react-router";
 import { useTranslation } from "react-i18next";
 import { ArrowUpRight } from "lucide-react";
-import { renderResume, resumeCss } from "@resumi/cv";
+import { renderResume, resumeCss } from "@resumi/cv/renderer";
 import type { Project } from "../../../lib/projects";
 import { Button, Modal } from "../../../ui";
 import { ResumePreview } from "../../../components/ResumePreview";

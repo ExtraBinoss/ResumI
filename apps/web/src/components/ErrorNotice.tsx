@@ -1,6 +1,7 @@
 import { useState, type ReactNode } from "react";
 import { Check, Copy, TriangleAlert, X } from "lucide-react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import { useTranslation } from "react-i18next";
 import { Button } from "./ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import styles from "./ErrorNotice.module.css";
@@ -19,20 +20,23 @@ export function errorDetails(error: unknown): string {
 export function CopyErrorButton({ details }: { details: string }) {
   const [copied, setCopied] = useState(false);
   const [failed, setFailed] = useState(false);
+  const { t } = useTranslation();
   return (
     <span className={styles.copyAction}>
       <Button
         variant="ghost"
         size="xs"
-        aria-label={copied ? "Error details copied" : "Copy error details"}
-        onClick={async () => {
-          try {
-            await navigator.clipboard.writeText(details);
-            setCopied(true);
-            setFailed(false);
-          } catch {
-            setFailed(true);
-          }
+        aria-label={t(copied ? "site.errors.copied" : "site.errors.copy")}
+        onClick={() => {
+          void (async () => {
+            try {
+              await navigator.clipboard.writeText(details);
+              setCopied(true);
+              setFailed(false);
+            } catch {
+              setFailed(true);
+            }
+          })();
         }}
       >
         {copied ? (
@@ -40,29 +44,30 @@ export function CopyErrorButton({ details }: { details: string }) {
         ) : (
           <Copy size={16} aria-hidden />
         )}
-        {copied ? "Copied" : "Copy details"}
+        {copied ? t("site.errors.copiedShort") : t("site.errors.copyShort")}
       </Button>
-      {failed && <span role="status">Select and copy the details below.</span>}
+      {failed && <span role="status">{t("site.errors.copyManually")}</span>}
     </span>
   );
 }
 
 export function ErrorMessage({
   error,
-  label = "Something went wrong",
+  label,
   children,
 }: {
   error: unknown;
   label?: string;
   children?: ReactNode;
 }) {
+  const { t } = useTranslation();
   const details = errorDetails(error);
   if (!details) return null;
   return (
     <div role="alert" className={styles.message}>
       <div className={styles.messageHeading}>
         <TriangleAlert size={17} aria-hidden />
-        <strong>{label}</strong>
+        <strong>{label ?? t("site.errors.default")}</strong>
         <CopyErrorButton key={details} details={details} />
       </div>
       <pre tabIndex={0}>{details}</pre>
@@ -74,7 +79,7 @@ export function ErrorMessage({
 /** Quiet when healthy; the same details/copy affordance works in alerts and popovers. */
 export function ErrorNotice({
   error,
-  label = "Something went wrong",
+  label,
   compact = false,
   children,
 }: {
@@ -83,11 +88,13 @@ export function ErrorNotice({
   compact?: boolean;
   children?: ReactNode;
 }) {
+  const { t } = useTranslation();
+  const errorLabel = label ?? t("site.errors.default");
   const details = errorDetails(error);
   if (!details) return null;
   if (!compact)
     return (
-      <ErrorMessage error={error} label={label}>
+      <ErrorMessage error={error} label={errorLabel}>
         {children}
       </ErrorMessage>
     );
@@ -102,7 +109,7 @@ export function ErrorNotice({
             variant="ghost"
             size="icon-xs"
             className={styles.indicator}
-            aria-label={label}
+            aria-label={errorLabel}
           >
             <TriangleAlert size={17} aria-hidden />
           </Button>
@@ -114,7 +121,7 @@ export function ErrorNotice({
         align="end"
         sideOffset={8}
       >
-        <ErrorMessage error={error} label={label}>
+        <ErrorMessage error={error} label={errorLabel}>
           {children}
         </ErrorMessage>
       </PopoverContent>
@@ -132,6 +139,7 @@ export function ErrorToast({
   onDismiss: () => void;
 }) {
   const reduced = useReducedMotion();
+  const { t } = useTranslation();
   const details = errorDetails(error);
   return (
     <AnimatePresence>
@@ -149,7 +157,7 @@ export function ErrorToast({
           <Button
             variant="ghost"
             size="icon-xs"
-            aria-label="Dismiss error"
+            aria-label={t("site.errors.dismiss")}
             onClick={onDismiss}
           >
             <X size={16} aria-hidden />

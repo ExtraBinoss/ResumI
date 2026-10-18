@@ -1,11 +1,11 @@
-import { layerStyle } from "@resumi/cv";
+import { layerStyle } from "@resumi/cv/design-renderer";
 import type { Layer } from "@resumi/engine";
 
 export type ColorPreviewTarget =
   | { kind: "page" | "accent" }
   | { kind: "fill" | "stroke"; id: string; strokeOnly: boolean }
   | { kind: "gradient"; id: string; index: number }
-  | { kind: "vector"; id: string; color: string }
+  | { kind: "vector"; id: string; color: string; monochrome?: boolean }
   | { kind: "border"; id: string; layer: Extract<Layer, { type: "image" }> }
   | {
       kind: "shadow";
@@ -78,9 +78,25 @@ export function createColorPreview(target: ColorPreviewTarget) {
       const stop = root.querySelectorAll("linearGradient > stop")[target.index];
       if (stop) attribute(stop, "stop-color");
     } else if (target.kind === "vector") {
-      for (const path of root.querySelectorAll(".design-content > svg > path"))
-        for (const key of ["fill", "stroke"])
-          if (path.getAttribute(key) === target.color) attribute(path, key);
+      for (const path of root.querySelectorAll(
+        ".design-content > svg > path",
+      )) {
+        for (const key of ["fill", "stroke"]) {
+          const paint = path.getAttribute(key);
+          const white =
+            paint?.toLowerCase() === "#ffffff" ||
+            paint?.toLowerCase() === "#ffffffff";
+          if (
+            (target.monochrome &&
+              paint &&
+              paint !== "none" &&
+              paint !== "transparent" &&
+              !white) ||
+            (!target.monochrome && paint === target.color)
+          )
+            attribute(path, key);
+        }
+      }
     } else if (target.kind === "border") {
       style(root, "border", (color) => {
         root.style.border = String(

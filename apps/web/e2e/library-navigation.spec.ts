@@ -1,6 +1,10 @@
 import { expect, test } from "@playwright/test";
+import { templates } from "@resumi/cv/catalog";
+const publicTemplateCount = templates.filter(
+  (template) => !template.legacy,
+).length;
 
-test("library intent prepares the catalog with shared font assets and one preview stylesheet", async ({
+test("library intent prepares the small catalog and loads shared preview assets on demand", async ({
   page,
   request,
 }) => {
@@ -9,9 +13,6 @@ test("library intent prepares the catalog with shared font assets and one previe
   await page.goto("/projects");
   const header = page.locator("[data-library-header]");
   const originalHeader = await header.elementHandle();
-  const originalStyles = await page
-    .locator("style[data-template-preview-styles]")
-    .elementHandle();
   const templates = header.locator('nav a[href="/templates"]');
   const preparation = page.waitForResponse(
     (response) =>
@@ -24,14 +25,18 @@ test("library intent prepares the catalog with shared font assets and one previe
   const body = await response.text();
   expect(body).not.toContain("data:font/woff2;base64");
   expect(body).not.toContain("data:image/jpeg;base64");
+  expect(body).not.toContain("Alex Morgan");
+  expect(Buffer.byteLength(body)).toBeLessThan(20_000);
   await templates.click();
   await expect(
     page.getByRole("heading", { name: "Templates", exact: true }),
   ).toBeVisible();
   await expect(page.locator("style[data-template-preview-styles]")).toHaveCount(
-    1,
+    0,
   );
-  await expect(page.locator("[data-template-card] img")).toHaveCount(10);
+  await expect(page.locator("[data-template-card] img")).toHaveCount(
+    publicTemplateCount,
+  );
   const imageUrls = await page
     .locator("[data-template-card] img")
     .evaluateAll((images) =>
@@ -56,16 +61,6 @@ test("library intent prepares the catalog with shared font assets and one previe
   expect(await page.locator("main style").allTextContents()).not.toContainEqual(
     expect.stringContaining("@font-face"),
   );
-  const fontFaces = await page
-    .locator("style[data-template-preview-styles]")
-    .textContent();
-  expect(fontFaces?.match(/font-family:ResumeInter;/g)).toHaveLength(1);
-  const fontUrl = fontFaces!.match(
-    /@font-face\{font-family:ResumeInter;src:url\('([^']+)'\)/,
-  )![1];
-  const font = await request.get(fontUrl);
-  expect(font.status()).toBe(200);
-  expect((await font.body()).subarray(0, 4).toString()).toBe("wOF2");
   await page
     .getByRole("button", { name: "Preview Studio", exact: true })
     .click();
@@ -74,6 +69,18 @@ test("library intent prepares the catalog with shared font assets and one previe
       .getByRole("dialog", { name: "Studio", exact: true })
       .locator(".cv-sheet"),
   ).toBeVisible();
+  const fontFaces = await page
+    .getByRole("dialog", { name: "Studio", exact: true })
+    .locator("style")
+    .textContent();
+  expect(fontFaces?.match(/font-family:ResumeInter;/g)).toHaveLength(1);
+  const fontUrl = fontFaces!.match(
+    /@font-face\{font-family:ResumeInter;src:url\('([^']+)'\)/,
+  )![1];
+  const font = await request.get(fontUrl);
+  expect(font.status()).toBe(200);
+  expect((await font.body()).subarray(0, 4).toString()).toBe("wOF2");
+  await page.evaluate(() => document.fonts.load("13px ResumeInter"));
   await page.evaluate(() => document.fonts.ready);
   expect(
     await page.evaluate(() => document.fonts.check("13px ResumeInter")),
@@ -102,11 +109,9 @@ test("library intent prepares the catalog with shared font assets and one previe
     true,
   );
   await expect(page.locator("style[data-template-preview-styles]")).toHaveCount(
-    1,
+    0,
   );
-  expect(await originalStyles?.evaluate((element) => element.isConnected)).toBe(
-    true,
-  );
+  await expect(page.locator("[data-template-preview]")).toHaveCount(0);
   expect(errors).toEqual([]);
 });
 

@@ -169,7 +169,7 @@
   margin: 26px 0 12px;
   color: var(--muted-foreground);
 }
-.sliderLabel span {
+.sliderLabel > span:last-child {
   color: var(--muted-foreground);
   font-size: 9px;
 }
@@ -264,7 +264,10 @@
   border-radius: 0;
 }
 .embedded > .panelHeading {
-  display: none;
+  height: 38px;
+  min-height: 38px;
+  border: 0;
+  padding-inline: 14px;
 }
 
 @media (max-width: 1040px) {
@@ -360,4 +363,54 @@
 .structureRow[data-drop-position="below"]::after,
 .outlineBlock[data-drop-position="below"]::after {
   bottom: -2px;
+}
+
+.outlineTree {
+  gap: 2px;
+  border: 0;
+  background: transparent;
+}
+.outlineTree .structureRow {
+  border: 0;
+  background: transparent;
+}
+.sectionHeader {
+  display: flex;
+  align-items: center;
+}
+.sectionHeader > h3 {
+  margin: 0;
+  flex: 0 0 22px;
+}
+.sectionToggle {
+  display: grid;
+  width: 22px;
+  height: 30px;
+  min-height: 0;
+  place-items: center;
+  padding: 0;
+}
+.sectionToggle > :global([data-slot="accordion-trigger-icon"]) {
+  display: none;
+}
+.sectionToggle > svg:first-child {
+  transition: transform 140ms ease;
+}
+.sectionToggle[aria-expanded="true"] > svg:first-child {
+  transform: rotate(90deg);
+}
+.sectionHeader .sectionButton {
+  padding-left: 2px;
+}
+.outlineContent {
+  padding: 0;
+}
+.outlineContent > div {
+  height: auto;
+  padding: 0;
+}
+@media (prefers-reduced-motion: reduce) {
+  .sectionToggle > svg:first-child {
+    transition: none;
+  }
 }

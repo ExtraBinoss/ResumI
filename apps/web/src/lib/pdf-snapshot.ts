@@ -1,24 +1,4 @@
-import { escapeHtml, sourcePolicy } from "@resumi/cv";
-
-/** Preserve inert body presentation when moving a complete document through a template. */
-export function printBodyAttributes(
-  markup: string,
-  tag: "body" | "html" = "body",
-) {
-  const attributes =
-    new RegExp(`<${tag}\\b([^>]*)>`, "i").exec(markup)?.[1] ?? "";
-  const template = document.createElement("template");
-  template.innerHTML = `<div ${attributes}></div>`;
-  const body = template.content.firstElementChild;
-  return ["style", "class", "dir", "lang"]
-    .flatMap((name) => {
-      const value = body?.getAttribute(name);
-      return value === null || value === undefined
-        ? []
-        : [` ${name}="${escapeHtml(value)}"`];
-    })
-    .join("");
-}
+import { sourcePolicy } from "@resumi/cv/source-policy";
 
 /** Executes source only in an opaque, network-denied frame; the print document is inert. */
 export function printSnapshot(
@@ -95,33 +75,4 @@ export function printSnapshot(
       .replace(/<\/body>/i, bridge + "</body>");
     document.body.appendChild(frame);
   });
-}
-
-/** An opaque source may forge its snapshot: re-sanitize at the trusted boundary. */
-export function inertPrintMarkup(markup: string) {
-  const template = document.createElement("template");
-  template.innerHTML = markup;
-  template.content
-    .querySelectorAll(
-      "script,meta,base,link,iframe,object,embed,form,input,button,audio,video",
-    )
-    .forEach((node) => node.remove());
-  for (const node of template.content.querySelectorAll("*")) {
-    for (const attribute of [...node.attributes]) {
-      const name = attribute.name.toLowerCase();
-      if (
-        name.startsWith("on") ||
-        ["srcdoc", "srcset", "action", "formaction", "autofocus"].includes(name)
-      )
-        node.removeAttribute(attribute.name);
-      else if (
-        ["src", "href", "xlink:href"].includes(name) &&
-        !/^(data:image\/(png|jpe?g|webp|svg\+xml);|#|https?:|mailto:|tel:)/i.test(
-          attribute.value,
-        )
-      )
-        node.removeAttribute(attribute.name);
-    }
-  }
-  return template.innerHTML;
 }

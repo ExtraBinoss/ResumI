@@ -1,22 +1,37 @@
 import { useEffect, useLayoutEffect, useRef, type PointerEvent } from "react";
-import { useAtomValue, useStore } from "jotai";
+import { atom, useAtomValue, useStore } from "jotai";
 import { zoomAtom } from "../../state/editor";
 import { fitViewportAtom, zoomRequestAtom } from "../../state/canvas-view";
+import { activePageIdAtom } from "../../state/design";
+
+import {
+  measureZoomScrollbars,
+  projectZoomPosition,
+  readZoomLayout,
+  type ZoomLayout,
+} from "./zoom-layout";
 
 type Anchor = { x: number; y: number; clientX: number; clientY: number };
 const surfaceSelector = "[data-zoom-surface]";
+const viewportPosesAtom = atom<
+  ReadonlyMap<string, { left: number; top: number; zoom: number }>
+>(new Map());
 
 /** All workspaces share one pointer-anchored, compositor-only zoom gesture. */
 export function useCanvasPan({
-  contained = false,
   initialFit,
 }: {
-  contained?: boolean;
   initialFit?: { id: string; width: number; height: number };
 } = {}) {
   const store = useStore(),
-    zoom = useAtomValue(zoomAtom);
+    zoom = useAtomValue(zoomAtom),
+    pageId = useAtomValue(activePageIdAtom);
+  const initializedPage = useRef<string | null>(null);
   const zoomAnchor = useRef<Anchor | null>(null);
+  const clippedStage = useRef<{ node: HTMLElement; overflow: string } | null>(
+    null,
+  );
+  const syncViewportSize = useRef<(() => void) | null>(null);
   const settleZoom = useRef<(() => void) | null>(null);
   const viewport = useRef<HTMLDivElement>(null),
     space = useRef(false),
@@ -29,14 +44,62 @@ export function useCanvasPan({
   useLayoutEffect(() => {
     const node = viewport.current;
     if (!node || !fitId || !fitWidth || !fitHeight) return;
+    const surface = node.querySelector<HTMLElement>(surfaceSelector);
+    const stage = surface?.parentElement?.parentElement;
+    const stageStyle = stage ? getComputedStyle(stage) : null;
+    const padding = (value: string | undefined) =>
+      Number.parseFloat(value ?? "0") || 0;
     store.set(fitViewportAtom, {
       id: fitId,
       width: fitWidth,
       height: fitHeight,
-      availableWidth: node.clientWidth,
-      availableHeight: node.clientHeight,
+      // fitViewportAtom reserves 32px itself. Fit the actual bounded stage's
+      // padding so a narrow source preview never begins above the viewport.
+      availableWidth:
+        node.clientWidth -
+        padding(stageStyle?.paddingLeft) -
+        padding(stageStyle?.paddingRight) +
+        32,
+      availableHeight:
+        node.clientHeight -
+        padding(stageStyle?.paddingTop) -
+        padding(stageStyle?.paddingBottom) +
+        32,
     });
   }, [fitId, fitWidth, fitHeight, store]);
+  useLayoutEffect(() => {
+    const node = viewport.current;
+    // Fitting can change the store in the preceding layout effect. Wait for
+    // that synchronous render's actual bounds, still before the first paint.
+    if (
+      !node ||
+      initializedPage.current === pageId ||
+      store.get(zoomAtom) !== zoom
+    )
+      return;
+    const pose = store.get(viewportPosesAtom).get(pageId);
+    if (pose?.zoom === zoom) {
+      node.scrollLeft = pose.left;
+      node.scrollTop = pose.top;
+    } else {
+      node.scrollLeft = (node.scrollWidth - node.clientWidth) / 2;
+      node.scrollTop = (node.scrollHeight - node.clientHeight) / 2;
+    }
+    initializedPage.current = pageId;
+  }, [pageId, store, zoom]);
+  useLayoutEffect(() => {
+    const node = viewport.current;
+    return () => {
+      if (!node) return;
+      const poses = new Map(store.get(viewportPosesAtom));
+      poses.set(pageId, {
+        left: node.scrollLeft,
+        top: node.scrollTop,
+        zoom: store.get(zoomAtom),
+      });
+      store.set(viewportPosesAtom, poses);
+    };
+  }, [pageId, store]);
   useEffect(() => {
     function reset() {
       space.current = false;
@@ -62,17 +125,22 @@ export function useCanvasPan({
     window.addEventListener("keyup", keyup);
     window.addEventListener("blur", reset);
     const node = viewport.current;
-    const usableHeight = () =>
-      (node?.clientHeight ?? 0) *
-      (!contained && window.matchMedia("(max-width: 700px)").matches ? 0.6 : 1);
+    const usableHeight = () => node?.clientHeight ?? 0;
     let previous = { width: node?.clientWidth ?? 0, height: usableHeight() };
+    syncViewportSize.current = () => {
+      previous = { width: node?.clientWidth ?? 0, height: usableHeight() };
+    };
+    const scrollbar = node
+      ? measureZoomScrollbars(node)
+      : { width: 0, height: 0 };
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
     let zoomFrame = 0,
       targetZoom = store.get(zoomAtom),
       visualZoom = targetZoom,
       previousTime = 0;
     let anchor: Anchor | null = null,
-      paper: HTMLElement | null = null;
+      paper: HTMLElement | null = null,
+      layout: ZoomLayout | null = null;
     function settle() {
       cancelAnimationFrame(zoomFrame);
       zoomFrame = 0;
@@ -82,6 +150,21 @@ export function useCanvasPan({
       zoomAnchor.current = anchor;
       paper.style.willChange = "";
       const finalZoom = Math.round(visualZoom * 100) / 100;
+      if (finalZoom === store.get(zoomAtom) && node) {
+        paper.style.transform = `scale(${finalZoom / 100})`;
+        if (clippedStage.current) {
+          clippedStage.current.node.style.overflow =
+            clippedStage.current.overflow;
+          clippedStage.current = null;
+        }
+        const rect = paper.getBoundingClientRect();
+        node.scrollLeft +=
+          rect.left + anchor.x * (finalZoom / 100) - anchor.clientX;
+        node.scrollTop +=
+          rect.top + anchor.y * (finalZoom / 100) - anchor.clientY;
+        zoomAnchor.current = null;
+        syncViewportSize.current?.();
+      }
       store.set(zoomAtom, finalZoom);
       store.set(zoomRequestAtom, null);
       paper = null;
@@ -99,9 +182,44 @@ export function useCanvasPan({
           ? targetZoom
           : visualZoom + (targetZoom - visualZoom) * blend;
       const bounds = paper.parentElement!.getBoundingClientRect(),
+        viewportBounds = node.getBoundingClientRect(),
+        stageBounds =
+          paper.parentElement!.parentElement!.getBoundingClientRect(),
         scale = visualZoom / 100;
-      const x = anchor.clientX - anchor.x * scale - bounds.left,
-        y = anchor.clientY - anchor.y * scale - bounds.top;
+      const stageLeft =
+          stageBounds.left -
+          viewportBounds.left -
+          node.clientLeft +
+          node.scrollLeft,
+        stageTop =
+          stageBounds.top -
+          viewportBounds.top -
+          node.clientTop +
+          node.scrollTop;
+      const projected = projectZoomPosition(
+        layout ?? readZoomLayout(node, paper, scrollbar),
+        scale,
+        {
+          x: anchor.x,
+          y: anchor.y,
+          viewportX:
+            anchor.clientX - viewportBounds.left - node.clientLeft - stageLeft,
+          viewportY:
+            anchor.clientY - viewportBounds.top - node.clientTop - stageTop,
+        },
+      );
+      const x =
+          viewportBounds.left +
+          node.clientLeft +
+          stageLeft +
+          projected.left -
+          bounds.left,
+        y =
+          viewportBounds.top +
+          node.clientTop +
+          stageTop +
+          projected.top -
+          bounds.top;
       paper.style.transform = `translate(${x}px, ${y}px) scale(${scale})`;
       if (visualZoom !== targetZoom)
         zoomFrame = requestAnimationFrame(stepZoom);
@@ -120,7 +238,12 @@ export function useCanvasPan({
       if (!paper) {
         visualZoom = scale * 100;
         paper = currentPaper;
+        const stage = currentPaper.parentElement!.parentElement!;
+        clippedStage.current = { node: stage, overflow: stage.style.overflow };
+        // The transformed preview must not create temporary scrollbar ranges.
+        stage.style.overflow = "clip";
       }
+      layout = readZoomLayout(node, currentPaper, scrollbar);
       targetZoom = next.value;
       anchor = {
         x: (clientX - rect.left) / scale,
@@ -158,12 +281,9 @@ export function useCanvasPan({
     }
     const unsubscribeRequest = store.sub(zoomRequestAtom, request);
     node?.addEventListener("wheel", wheel, { passive: false });
-    if (node) {
-      node.scrollLeft = (node.scrollWidth - node.clientWidth) / 2;
-      node.scrollTop = (node.scrollHeight - usableHeight()) / 2;
-    }
     const observer = new ResizeObserver(() => {
       if (!node) return;
+      if (paper) layout = readZoomLayout(node, paper, scrollbar);
       node.scrollLeft += (previous.width - node.clientWidth) / 2;
       node.scrollTop += (previous.height - usableHeight()) / 2;
       previous = { width: node.clientWidth, height: usableHeight() };
@@ -173,6 +293,12 @@ export function useCanvasPan({
       observer.disconnect();
       cancelAnimationFrame(zoomFrame);
       settleZoom.current = null;
+      syncViewportSize.current = null;
+      if (clippedStage.current) {
+        clippedStage.current.node.style.overflow =
+          clippedStage.current.overflow;
+        clippedStage.current = null;
+      }
       unsubscribeRequest();
       if (paper) {
         paper.style.transform = `scale(${store.get(zoomAtom) / 100})`;
@@ -184,7 +310,7 @@ export function useCanvasPan({
       window.removeEventListener("keyup", keyup);
       window.removeEventListener("blur", reset);
     };
-  }, [contained, store]);
+  }, [store]);
   useLayoutEffect(() => {
     const node = viewport.current,
       anchor = zoomAnchor.current;
@@ -192,10 +318,15 @@ export function useCanvasPan({
     const paper = node.querySelector<HTMLElement>(surfaceSelector);
     if (!paper) return;
     paper.style.transform = `scale(${zoom / 100})`;
+    if (clippedStage.current) {
+      clippedStage.current.node.style.overflow = clippedStage.current.overflow;
+      clippedStage.current = null;
+    }
     const rect = paper.getBoundingClientRect();
     node.scrollLeft += rect.left + anchor.x * (zoom / 100) - anchor.clientX;
     node.scrollTop += rect.top + anchor.y * (zoom / 100) - anchor.clientY;
     zoomAnchor.current = null;
+    syncViewportSize.current?.();
   }, [zoom]);
   return {
     ref: viewport,

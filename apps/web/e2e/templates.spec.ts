@@ -1,6 +1,5 @@
 import { test, expect } from "@playwright/test";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
-import { openSource } from "./helpers/editor";
 import { createResume } from "@resumi/cv";
 import { renderSourceHtml } from "../../../packages/cv/src/source/render";
 
@@ -101,12 +100,16 @@ test("visual React collection renders ten distinct professional A4 layouts witho
     "mosaic",
   ]) {
     await page.goto(`/editor?template=react-${layout}`);
+    const sheet = page.getByRole("article", {
+      name: "Resume canvas",
+      exact: true,
+    });
+    await expect(sheet).toBeVisible();
+    const frame = sheet;
+    await expect(sheet.locator("[data-layer-id]")).not.toHaveCount(0);
     await expect(
-      page.getByRole("region", { name: "Source canvas" }),
+      page.getByRole("button", { name: "Select", exact: true }),
     ).toBeVisible();
-    const frame = page.frameLocator('iframe[title="React resume preview"]');
-    const sheet = frame.getByRole("article", { name: "Resume", exact: true });
-    await expect(sheet).toHaveAttribute("data-template-layout", layout);
     await expect(
       frame.getByRole("heading", { name: "Alex Morgan", exact: true }),
     ).toBeVisible();
@@ -173,8 +176,14 @@ test("portrait template preserves its photo and icons in saved editable TSX and 
     )
     .toBe(512);
   await preview.getByRole("link", { name: "Use Profile", exact: true }).click();
-  const region = page.getByRole("region", { name: "Source canvas" });
-  const frame = region.frameLocator('iframe[title="React resume preview"]');
+  const frame = page.getByRole("article", {
+    name: "Resume canvas",
+    exact: true,
+  });
+  await expect(frame).toBeVisible();
+  await expect(
+    page.getByRole("button", { name: "Select", exact: true }),
+  ).toBeVisible();
   const portrait = frame.locator("img");
   await expect(portrait).toHaveAttribute("src", /^data:image\/jpeg;base64,/);
   await expect
@@ -188,16 +197,10 @@ test("portrait template preserves its photo and icons in saved editable TSX and 
   ).toHaveText("Saved");
   await page.reload();
   await expect(portrait).toHaveAttribute("src", /^data:image\/jpeg;base64,/);
-  await openSource(page);
-  const source = page.getByRole("textbox", {
-    name: "React resume source",
-    exact: true,
-  });
-  await expect(source).toHaveValue(/export default function Resume/);
-  await expect(source).toHaveValue(/data:image\/jpeg;base64,/);
   const downloadPromise = page.waitForEvent("download");
+  await page.getByRole("button", { name: "Export", exact: true }).click();
   await page
-    .getByRole("button", { name: "Export portable HTML", exact: true })
+    .getByRole("menuitem", { name: "Portable HTML", exact: true })
     .click();
   const download = await downloadPromise;
   const html = await readFile((await download.path())!, "utf8");

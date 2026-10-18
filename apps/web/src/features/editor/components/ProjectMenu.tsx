@@ -1,14 +1,22 @@
 import { useRef, useState } from "react";
 import { useAtomValue, useSetAtom, useStore } from "jotai";
-import { ArrowUpRight, ChevronDown, FolderOpen } from "lucide-react";
-import { Popover, TextInput, Button } from "../../../ui";
+import { ChevronDown, ChevronRight, SlidersHorizontal } from "lucide-react";
+import { useTranslation } from "react-i18next";
+import { Popover, TextInput } from "../../../ui";
 import { Button as ShadcnButton } from "../../../components/ui/button";
-import { nameAtom, commandAtom } from "../../../state/editor";
+import {
+  nameAtom,
+  commandAtom,
+  documentLanguagesAtom,
+} from "../../../state/editor";
 import { canvasAtom } from "../../../state/design";
+import { DocumentLanguages } from "../text/DocumentLanguages";
 import styles from "../styles/Editor.module.css";
 
-export function ProjectMenu({ back }: { back: () => void }) {
+export function ProjectMenu({ openDocument }: { openDocument: () => void }) {
+  const { t } = useTranslation();
   const canvas = useAtomValue(canvasAtom),
+    localization = useAtomValue(documentLanguagesAtom),
     name = useAtomValue(nameAtom),
     dispatch = useSetAtom(commandAtom),
     store = useStore();
@@ -28,7 +36,7 @@ export function ProjectMenu({ back }: { back: () => void }) {
   return (
     <Popover
       position="bottom"
-      width={280}
+      width={320}
       opened={opened}
       onChange={(next) => {
         if (next) {
@@ -42,13 +50,22 @@ export function ProjectMenu({ back }: { back: () => void }) {
         <ShadcnButton
           variant="ghost"
           className={styles.nameButton}
-          aria-label={`Project: ${name}`}
+          aria-label={t("workspace.toolbar.project", { name })}
         >
           <span>{name}</span>
+          <small className={styles.projectLocale}>
+            {localization.locales.find(
+              ({ code }) => code === localization.activeLocale,
+            )?.name ?? localization.activeLocale}
+          </small>
           <ChevronDown size={13} aria-hidden />
         </ShadcnButton>
       </Popover.Target>
       <Popover.Dropdown className={styles.projectMenu}>
+        <div className={styles.projectLanguage}>
+          <span>{t("workspace.project.language")}</span>
+          <DocumentLanguages />
+        </div>
         <form
           onSubmit={(event) => {
             event.preventDefault();
@@ -57,7 +74,7 @@ export function ProjectMenu({ back }: { back: () => void }) {
           }}
         >
           <TextInput
-            label="Project name"
+            label={t("workspace.project.name")}
             value={draft}
             onChange={(event) => setDraft(event.currentTarget.value)}
             onBlur={saveName}
@@ -72,28 +89,27 @@ export function ProjectMenu({ back }: { back: () => void }) {
             required
           />
         </form>
-        <div className={styles.projectFacts}>
-          <span>Page</span>
-          <span>
-            {!canvas || (canvas.width === 794 && canvas.height === 1123)
-              ? "A4 · Portrait"
-              : `${canvas.width} × ${canvas.height} px`}
-          </span>
-        </div>
-        <Button
-          variant="subtle"
-          size="xs"
-          fullWidth
-          leftSection={<FolderOpen size={16} />}
-          rightSection={<ArrowUpRight size={14} />}
+        <ShadcnButton
+          variant="ghost"
+          className={styles.projectSettings}
+          aria-label={t("pages.settings")}
           onClick={() => {
             saveName();
             setOpened(false);
-            back();
+            openDocument();
           }}
         >
-          All projects
-        </Button>
+          <SlidersHorizontal size={16} aria-hidden />
+          <span>
+            {t("pages.settings")}
+            <small>
+              {!canvas || (canvas.width === 794 && canvas.height === 1123)
+                ? t("workspace.project.a4")
+                : `${canvas.width} × ${canvas.height} px`}
+            </small>
+          </span>
+          <ChevronRight size={14} aria-hidden />
+        </ShadcnButton>
       </Popover.Dropdown>
     </Popover>
   );

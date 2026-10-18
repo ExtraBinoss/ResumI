@@ -5,6 +5,7 @@ import {
   type PointerEvent,
   type ReactNode,
 } from "react";
+import { useTranslation } from "react-i18next";
 import { Input } from "../components/ui/input";
 import { Field, type TextInputProps } from "./input";
 import { classes } from "./shared";
@@ -61,6 +62,7 @@ export function NumberInput({
   style,
   ...props
 }: NumberInputProps) {
+  const { t } = useTranslation();
   const generated = useId(),
     id = givenId ?? generated;
   const input = useRef<HTMLInputElement>(null);
@@ -71,9 +73,10 @@ export function NumberInput({
     moved: boolean;
   } | null>(null);
   const [draft, setDraft] = useState<number | null>(null);
-  const caption = scrubLabel ?? label ?? props["aria-label"] ?? "Value";
+  const fallbackLabel = t("site.ui.value");
+  const caption = scrubLabel ?? label ?? props["aria-label"] ?? fallbackLabel;
   const accessibleLabel =
-    props["aria-label"] ?? (typeof label === "string" ? label : "Value");
+    props["aria-label"] ?? (typeof label === "string" ? label : fallbackLabel);
   const step = props.step === "any" ? 0.1 : Number(props.step ?? 1);
   function bounded(next: number) {
     return Math.min(
@@ -141,8 +144,8 @@ export function NumberInput({
           className={styles.scrub}
           tabIndex={-1}
           disabled={props.disabled || props.readOnly}
-          aria-label={`Adjust ${accessibleLabel}`}
-          title="Drag to adjust · Shift for larger steps"
+          aria-label={t("site.ui.adjustValue", { label: accessibleLabel })}
+          title={t("site.ui.adjustHint")}
           onPointerDown={start}
           onPointerMove={move}
           onPointerUp={finish}

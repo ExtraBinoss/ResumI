@@ -1,7 +1,8 @@
 import { expect, test, type Page, type Locator } from "@playwright/test";
+import { mkdir } from "node:fs/promises";
 import { applyCommands, createDocument, makeLayer } from "@resumi/engine";
 
-async function openSelectionFixture(page: Page) {
+async function openSelectionFixture(page: Page, photo = false) {
   const document = applyCommands(
     createDocument("selection-fixture", "Selection study"),
     {
@@ -26,9 +27,44 @@ async function openSelectionFixture(page: Page) {
                   : "Guide target",
           },
         })),
+        ...(photo
+          ? [
+              {
+                type: "block.create" as const,
+                sectionId: "content",
+                block: {
+                  id: "photo",
+                  kind: "image" as const,
+                  text: "",
+                  design: makeLayer("image", {
+                    name: "Synthetic portrait",
+                    x: 100,
+                    y: 220,
+                    width: 120,
+                    height: 90,
+                    src: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=",
+                    alt: "Synthetic portrait",
+                  }),
+                },
+              },
+            ]
+          : []),
         {
           type: "canvas.enable",
           layers: {
+            ...(photo
+              ? {
+                  photo: makeLayer("image", {
+                    name: "Synthetic portrait",
+                    x: 100,
+                    y: 220,
+                    width: 120,
+                    height: 90,
+                    src: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=",
+                    alt: "Synthetic portrait",
+                  }),
+                }
+              : {}),
             alpha: makeLayer("text", {
               name: "Alpha",
               x: 100,
@@ -52,6 +88,21 @@ async function openSelectionFixture(page: Page) {
             }),
           },
         },
+        ...(photo
+          ? [
+              {
+                type: "group.create" as const,
+                id: "portrait-group",
+                ids: ["alpha", "photo"],
+                name: "Portrait identity",
+              },
+              {
+                type: "group.update" as const,
+                id: "portrait-group",
+                patch: { opacity: 0.6, blendMode: "multiply" as const },
+              },
+            ]
+          : []),
       ],
     },
   ).document;
@@ -168,4 +219,89 @@ test("Ctrl/Cmd layer-list selection matches the canvas and ends an active text e
   await expect.poll(() => position(beta)).toEqual({ x: 260, y: 100 });
   await expect(alpha).toContainText("Alpha");
   await expect(beta).toContainText("Beta");
+});
+
+test("visual hover chrome stays independent of selection and a grouped photo drills down without history", async ({
+  page,
+}) => {
+  const { alpha, beta } = await openSelectionFixture(page, true);
+  const photo = page.locator('[data-layer-name="Synthetic portrait"]');
+  const photoId = (await photo.getAttribute("data-layer-id"))!;
+  const betaId = (await beta.getAttribute("data-layer-id"))!;
+  const frame = page.locator(`[data-hover-frame="${photoId}"]`);
+  const selectedFrame = page.locator(`[data-layer-frame="${betaId}"]`);
+  const undo = page.getByRole("button", { name: "Undo", exact: true });
+  await beta.getByRole("button").click();
+  await photo.hover();
+  await expect(frame).toBeVisible();
+  await expect(frame).toContainText("Synthetic portrait");
+  await expect(frame.locator("button")).toHaveCount(0);
+  await expect(selectedFrame.locator("[data-handle]")).toHaveCount(8);
+  await expect(beta.getByRole("button")).toHaveAttribute(
+    "aria-pressed",
+    "true",
+  );
+  await expect(photo.getByRole("button")).toHaveAttribute(
+    "aria-pressed",
+    "false",
+  );
+  expect(
+    await frame.evaluate((node) => node.closest("[data-group-id]")),
+  ).toBeNull();
+  expect(await frame.evaluate((node) => getComputedStyle(node).zIndex)).toBe(
+    "0",
+  );
+  expect(
+    await selectedFrame.evaluate((node) => getComputedStyle(node).zIndex),
+  ).toBe("1");
+  await alpha.hover();
+  await expect(frame).toHaveCount(0);
+  await expect(page.locator("[data-hover-frame]")).toContainText("Alpha");
+  await expect(undo).toBeDisabled();
+  await mkdir("artifacts/visual", { recursive: true });
+  await page.screenshot({
+    path: "artifacts/visual/hover-alpha-beta-selected.png",
+    animations: "disabled",
+  });
+
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await photo.hover();
+  expect(
+    await frame.evaluate(
+      (node) => getComputedStyle(node, "::after").animationName,
+    ),
+  ).toBe("none");
+  await photo.getByRole("button").click();
+  await expect(
+    page.getByRole("textbox", { name: "Group name", exact: true }),
+  ).toBeVisible();
+  await photo.getByRole("button").dblclick();
+  await expect(photo.getByRole("button")).toHaveAttribute(
+    "aria-pressed",
+    "true",
+  );
+  await expect(alpha.getByRole("button")).toHaveAttribute(
+    "aria-pressed",
+    "false",
+  );
+  await expect(beta.getByRole("button")).toHaveAttribute(
+    "aria-pressed",
+    "false",
+  );
+  await expect(
+    page.getByRole("combobox", { name: "Image fit", exact: true }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("textbox", { name: "Edit text on canvas", exact: true }),
+  ).toHaveCount(0);
+  await expect(
+    page.locator(`[data-layer-frame="${photoId}"] [data-handle]`),
+  ).toHaveCount(8);
+  await expect(page.locator("[data-group-id]")).toHaveCount(1);
+  expect(await position(photo)).toEqual({ x: 100, y: 220 });
+  await expect(undo).toBeDisabled();
+  await page.screenshot({
+    path: "artifacts/visual/grouped-photo-drilldown.png",
+    animations: "disabled",
+  });
 });

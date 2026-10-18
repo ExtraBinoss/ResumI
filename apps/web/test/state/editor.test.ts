@@ -9,6 +9,7 @@ import {
   commandAtom,
   undoAtom,
   redoAtom,
+  historyAtom,
 } from "../../src/state/editor";
 test("one-field commands notify only changed block subscribers, with one canonical session", () => {
   const store = createStore();
@@ -170,4 +171,33 @@ test("localized block atoms preserve unrelated block identity and translate thro
   );
   expect(unrelated).toBe(0);
   subscriptions.forEach((unsubscribe) => unsubscribe());
+});
+
+test("history subscribers retain identity while undo and redo availability are unchanged", () => {
+  const store = createStore();
+  store.set(sessionAtom, createSession(createResume("history-selectors")));
+  let notifications = 0;
+  const unsubscribe = store.sub(historyAtom, () => notifications++);
+  store.set(commandAtom, {
+    type: "block.update",
+    id: "profile-0",
+    patch: { text: "First synthetic edit" },
+  });
+  const available = store.get(historyAtom);
+  expect(available).toEqual({ undo: true, redo: false });
+  expect(notifications).toBe(1);
+  store.set(commandAtom, {
+    type: "block.update",
+    id: "profile-0",
+    patch: { text: "Second synthetic edit" },
+  });
+  expect(store.get(historyAtom)).toBe(available);
+  expect(notifications).toBe(1);
+  store.set(undoAtom);
+  expect(store.get(historyAtom)).toEqual({ undo: true, redo: true });
+  expect(notifications).toBe(2);
+  store.set(redoAtom);
+  expect(store.get(historyAtom)).toEqual({ undo: true, redo: false });
+  expect(notifications).toBe(3);
+  unsubscribe();
 });

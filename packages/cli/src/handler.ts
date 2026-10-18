@@ -60,8 +60,12 @@ async function source(document: Document, flags: Map<string, string>, io: IO) {
 }
 async function output(document: Document, flags: Map<string, string>, io: IO) {
   const format = flags.get("--format") ?? "json";
+  if (format === "pdf") {
+    const { outputPdf } = await import("./pdf-output");
+    return outputPdf(document, flags, io);
+  }
   if (!["json", "html", "source"].includes(format))
-    throw new CliError(2, "output --format must be json, html or source.");
+    throw new CliError(2, "output --format must be json, html, source or pdf.");
   let data: string;
   if (format === "json") data = serializeDocument(document);
   else if (format === "source") {
@@ -202,18 +206,37 @@ export async function runCli(
       if (command === "screenshot")
         result = await screenshot(document, flags, io);
       if (command === "render") {
-        if (flags.get("--format") !== "html" || !flags.has("--out"))
-          throw new CliError(2, "render requires --format html --out FILE.");
+        if (
+          !["html", "pdf"].includes(flags.get("--format") ?? "") ||
+          !flags.has("--out")
+        )
+          throw new CliError(
+            2,
+            "render requires --format html|pdf --out FILE.",
+          );
         result = await output(document, flags, io);
       }
     }
+    const pdfFailed =
+      !!result &&
+      typeof result === "object" &&
+      "ats" in result &&
+      !(result as { ats: { passed: boolean } }).ats.passed;
     return {
-      exit: 0,
+      exit: pdfFailed ? 3 : 0,
       stdout:
         typeof result === "string"
           ? result
           : JSON.stringify(result, null, 2) + "\n",
-      stderr: "",
+      stderr: pdfFailed
+        ? JSON.stringify({
+            error: {
+              code: "PDF_TEXT_MISMATCH",
+              message:
+                "The PDF was rendered, but its extracted text differs from the app rendering. Inspect the ATS report and output PDF.",
+            },
+          }) + "\n"
+        : "",
     };
   } catch (error) {
     const exit = error instanceof CliError ? error.exit : 3;

@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { useEffect, useLayoutEffect, useRef, type CSSProperties } from "react";
 import {
   richTextSegments,
@@ -19,6 +20,7 @@ export function CanvasText({
   block: Block;
   finish: () => void;
 }) {
+  const { t } = useTranslation();
   const input = useRef<HTMLDivElement>(null),
     pending = useRef<string | null>(null),
     composing = useRef(false),
@@ -152,7 +154,7 @@ export function CanvasText({
       ref={input}
       role="textbox"
       className={!layer ? `resume-block resume-${block.kind}` : undefined}
-      aria-label="Edit text on canvas"
+      aria-label={t("properties.editCanvasText")}
       aria-multiline="true"
       contentEditable
       suppressContentEditableWarning
@@ -177,6 +179,7 @@ export function CanvasText({
       }}
       onKeyDown={(event) => {
         event.stopPropagation();
+        if (composing.current || event.nativeEvent.isComposing) return;
         const key = event.key.toLowerCase();
         if (
           (event.ctrlKey || event.metaKey) &&

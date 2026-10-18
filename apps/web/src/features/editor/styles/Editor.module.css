@@ -73,6 +73,12 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+.projectLocale {
+  flex: 0 0 auto;
+  color: var(--muted-foreground);
+  font-size: 10px;
+  font-weight: 500;
+}
 .nameButton svg {
   color: var(--faint);
   flex-shrink: 0;
@@ -86,33 +92,58 @@
 }
 .projectMenu {
   font-family: var(--font-ui);
-  padding: 8px;
+  max-width: calc(100vw - 24px);
+  padding: 12px;
   gap: 0;
+}
+.projectLanguage {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 0 2px 12px;
+  border-bottom: 1px solid var(--line);
+  color: var(--muted-foreground);
+  font-size: 12px;
+  line-height: 1.3;
+}
+.projectLanguage > div {
+  gap: 5px;
+}
+.projectLanguage > div > div {
+  width: 110px;
 }
 .projectMenu form {
   display: grid;
-  padding: 7px 6px 0;
+  padding: 14px 2px;
 }
 .projectMenu form :global([data-ui="input"]) {
   font-size: 14px;
 }
-.projectMenu > button {
+.projectSettings {
+  width: 100%;
+  height: auto;
+  min-height: 50px;
   justify-content: flex-start;
-  height: 36px;
+  gap: 10px;
+  padding: 10px 8px;
+  border-top: 1px solid var(--line);
+  border-radius: 6px;
   font-size: 13px;
 }
-.projectMenu > button > span:last-child {
-  margin-left: auto;
-  color: var(--muted-foreground);
+.projectSettings > span {
+  display: grid;
+  flex: 1;
+  gap: 3px;
+  text-align: left;
 }
-.projectFacts {
-  display: flex;
-  justify-content: space-between;
-  color: var(--faint);
+.projectSettings small {
+  color: var(--muted-foreground);
   font-size: 12px;
-  padding: 12px 7px;
-  margin: 0 0 5px;
-  border-bottom: 1px solid var(--line);
+  font-weight: 400;
+}
+.projectSettings > svg:last-child {
+  color: var(--muted-foreground);
 }
 .workspace {
   flex: 1;
@@ -132,24 +163,6 @@
 .saveAlert p {
   margin: 0;
 }
-.codeLoading {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin: auto;
-  color: var(--faint);
-  font-size: 12px;
-}
-.sourceCanvas {
-  position: absolute;
-  inset: 80px calc(var(--properties-width) + 24px) 78px
-    calc(var(--layers-width) + 24px);
-  overflow: hidden;
-  border-radius: 6px;
-}
-.sourceCanvas > div {
-  height: 100%;
-}
 .projectDialog {
   font-family: var(--font-ui);
   width: min(1180px, calc(100vw - 32px));
@@ -158,13 +171,6 @@
   grid-template-rows: auto minmax(0, 1fr);
   gap: 14px;
   padding: 18px;
-}
-.projectDialog [aria-label="Resume code editor"] {
-  position: relative;
-  inset: auto;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  min-height: 0;
-  gap: 14px;
 }
 .projectDialog [aria-label="Agent command review"] {
   position: relative;
@@ -182,6 +188,13 @@
 }
 .proposalDialog {
   width: min(620px, calc(100vw - 32px));
+}
+.documentDialog {
+  width: min(500px, calc(100vw - 32px));
+  height: auto;
+  max-height: calc(100dvh - 32px);
+  overflow-y: auto;
+  padding: 24px;
 }
 @media (max-width: 1200px) {
   .toolbar {
@@ -228,15 +241,9 @@
     padding-left: 5px;
     gap: 0;
   }
-  .sourceCanvas {
-    inset: 78px 14px calc(40vh + 78px);
-  }
   .projectDialog {
     font-family: var(--font-ui);
     padding: 14px;
-  }
-  .projectDialog [aria-label="Resume code editor"] {
-    grid-template-columns: minmax(0, 1fr);
   }
   .exportButton {
     width: 31px;

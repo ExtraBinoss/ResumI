@@ -1,6 +1,6 @@
 import { expect, test, type Page } from "@playwright/test";
 import { mkdir, writeFile } from "node:fs/promises";
-import { closeDialog, openCommands, openSource } from "./helpers/editor";
+import { closeDialog, openCommands } from "./helpers/editor";
 
 async function preparePdf(page: Page) {
   const pending = page.waitForEvent("popup");
@@ -108,11 +108,14 @@ test("PDF primary export preserves selectable document text and optimizes only t
   await popup.close();
 });
 
-test("React portrait PDF renders source in isolation and prints its inert offline snapshot", async ({
+test("React portrait PDF prints the materialized native canvas and embedded assets", async ({
   page,
 }) => {
   await page.goto("/editor?template=react-profile");
-  const frame = page.frameLocator('iframe[title="React resume preview"]');
+  const frame = page.getByRole("article", {
+    name: "Resume canvas",
+    exact: true,
+  });
   await expect(
     frame.getByRole("heading", { name: "Alex Morgan", exact: true }),
   ).toBeVisible();
@@ -140,25 +143,52 @@ test("HTML PDF strips active source and never lets it access application state",
   await expect(
     page.getByRole("article", { name: "Resume canvas" }),
   ).toBeVisible();
-  await openSource(page);
+  await openCommands(page);
   await page
-    .getByRole("button", { name: "Start with HTML", exact: true })
-    .click();
-  await page
-    .getByRole("textbox", { name: "HTML resume source", exact: true })
+    .getByRole("textbox", { name: "Command proposal", exact: true })
     .fill(
-      '<body style="background:#f8fafc;color:#123456"><h1 onclick="document.body.dataset.executed=1">Safe print</h1><p>Selectable content</p><script>parent.document.body.dataset.pdfEscaped="yes"</script></body>',
+      JSON.stringify({
+        version: 1,
+        actor: { kind: "agent", name: "Synthetic HTML import" },
+        commands: [
+          {
+            type: "source.set",
+            source: {
+              format: "html",
+              enabled: true,
+              code: '<body style="background:#f8fafc;color:#123456"><form action="https://example.com/send" onsubmit="document.body.dataset.executed=1"><h1 onclick="document.body.dataset.executed=1">Safe print</h1><p>Selectable content</p><button type="submit" onclick="document.body.dataset.executed=1">Designer</button></form><script>parent.document.body.dataset.pdfEscaped="yes"</script></body>',
+            },
+          },
+        ],
+      }),
     );
   await page
-    .getByRole("button", { name: "Apply & preview", exact: true })
+    .getByRole("button", { name: "Validate & preview", exact: true })
     .click();
-  await closeDialog(page, "Source");
+  await page
+    .getByRole("button", { name: "Apply changes", exact: true })
+    .click();
+  await expect(
+    page.getByRole("button", { name: "Apply changes", exact: true }),
+  ).toHaveCount(0);
+  await closeDialog(page, "Import commands");
+  await expect(
+    page
+      .getByRole("article", { name: "Resume canvas", exact: true })
+      .getByRole("heading", { name: "Safe print", exact: true }),
+  ).toBeVisible();
   const popup = await preparePdf(page);
   await expect(
     popup.getByRole("heading", { name: "Safe print", exact: true }),
   ).toBeVisible();
-  await expect(popup.locator("body")).toHaveCSS("color", "rgb(18, 52, 86)");
-  await expect(popup.locator("body")).toHaveCSS(
+  await expect(popup.getByText("Designer", { exact: true })).toBeVisible();
+  await expect(
+    popup.locator("form,script,iframe,[onclick],[onsubmit]"),
+  ).toHaveCount(0);
+  await expect(
+    popup.getByRole("heading", { name: "Safe print", exact: true }),
+  ).toHaveCSS("color", "rgb(18, 52, 86)");
+  await expect(popup.locator("article.resume")).toHaveCSS(
     "background-color",
     "rgb(248, 250, 252)",
   );

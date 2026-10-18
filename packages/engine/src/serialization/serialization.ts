@@ -61,6 +61,15 @@ export function duplicateDocument(
     sections[sectionId] = { ...old, id: sectionId, blockIds };
     return sectionId;
   });
+  const pageMapping = new Map(
+    doc.canvas?.pages?.map((page) => [page.id, nextId()]),
+  );
+  for (const block of Object.values(blocks))
+    if (block.design?.pageId && pageMapping.has(block.design.pageId))
+      block.design = {
+        ...block.design,
+        pageId: pageMapping.get(block.design.pageId)!,
+      };
   return validateDocument({
     ...doc,
     id,
@@ -69,6 +78,14 @@ export function duplicateDocument(
       ? {
           canvas: {
             ...doc.canvas,
+            ...(doc.canvas.pages
+              ? {
+                  pages: doc.canvas.pages.map((page) => ({
+                    ...page,
+                    id: pageMapping.get(page.id)!,
+                  })),
+                }
+              : {}),
             order: doc.canvas.order.map((id) => mapping.get(id)!),
             groups: doc.canvas.groups.map((group) => ({
               ...group,

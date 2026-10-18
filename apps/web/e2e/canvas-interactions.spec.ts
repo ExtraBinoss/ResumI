@@ -1,5 +1,6 @@
 import { expect, test, type Locator, type Page } from "@playwright/test";
 import { mkdir, writeFile } from "node:fs/promises";
+import { createResume } from "../../../packages/cv/src/index";
 
 async function open(page: Page) {
   await page.goto("/editor");
@@ -68,11 +69,24 @@ test("layer drag previews the stacking order, cancels cleanly, and drops as one 
   await expect(page.locator("[data-drop-position]")).toHaveCount(0);
 });
 
-test("outline sections and their blocks reorder live and undo independently", async ({
+test("legacy document groups and their text reorder inside Layers and undo independently", async ({
   page,
 }) => {
-  await open(page);
-  await page.getByRole("radio", { name: "Structure", exact: true }).click();
+  await page.goto("/projects");
+  await expect(
+    page.getByRole("button", { name: "New resume", exact: true }),
+  ).toBeVisible();
+  await page.locator("input[type=file]").setInputFiles({
+    name: "legacy-layers.json",
+    mimeType: "application/json",
+    buffer: Buffer.from(JSON.stringify(createResume("legacy-layers"))),
+  });
+  await expect(
+    page.getByRole("complementary", { name: "Layers panel", exact: true }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("radio", { name: "Structure", exact: true }),
+  ).toHaveCount(0);
   const rows = page.locator("[data-outline-section]");
   await expect(rows.first()).toBeVisible();
   expect(
@@ -88,16 +102,16 @@ test("outline sections and their blocks reorder live and undo independently", as
   await expect(undo).toBeDisabled();
   await startDrag(
     page,
-    rows.nth(1).locator("button").first(),
-    rows.nth(1).locator("button").first(),
+    rows.nth(1).locator("[data-outline-header] > button"),
+    rows.nth(1).locator("[data-outline-header] > button"),
   );
   await page.mouse.up();
   await expect(undo).toBeDisabled();
   await expect.poll(() => ids(rows, "data-outline-section")).toEqual(initial);
   await startDrag(
     page,
-    rows.nth(1).locator("button").first(),
-    rows.first().locator("button").first(),
+    rows.nth(1).locator("[data-outline-header] > button"),
+    rows.first().locator("[data-outline-header] > button"),
   );
   await expect(rows.first()).toHaveAttribute(
     "data-outline-section",
@@ -245,7 +259,10 @@ test("wheel zoom animates by transform while the document layout commits once", 
     .toBe("");
   // Include layout commit and several subsequent paints, not just the animation frames.
   await page.evaluate(
-    () => new Promise<void>((resolve) => setTimeout(resolve, 180)),
+    () =>
+      new Promise<void>((resolve) => {
+        setTimeout(resolve, 180);
+      }),
   );
   const samples = await page.evaluate(
     () =>

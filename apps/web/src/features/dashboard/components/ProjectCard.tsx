@@ -10,7 +10,7 @@ import {
   Trash2,
   Eye,
 } from "lucide-react";
-import { renderResume, resumeCss } from "@resumi/cv";
+import { renderResume, resumeCss } from "@resumi/cv/renderer";
 import { serializeDocument } from "@resumi/engine";
 import type { Project } from "../../../lib/projects";
 import { downloadFile, fileName } from "../../../lib/files";

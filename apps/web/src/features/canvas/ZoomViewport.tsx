@@ -24,13 +24,13 @@ export function ZoomViewport({
   contained?: boolean;
 }) {
   const pan = useCanvasPan({
-      contained,
       initialFit: initialFit ? { id: initialFit, width, height } : undefined,
     }),
     zoom = useAtomValue(zoomAtom);
   return (
     <div
       className={`${styles.viewport} ${viewportStyles.scroll} ${className}`}
+      data-contained-viewport={contained || undefined}
       {...pan}
       onClick={(event) => {
         if (event.target === event.currentTarget) onBlankClick?.();

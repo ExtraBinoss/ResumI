@@ -1,7 +1,14 @@
 import type { CSSProperties } from "react";
 
 export type Size =
-  "xs" | "sm" | "md" | "lg" | "xl" | "compact-xs" | "compact-sm" | number;
+  | "xs"
+  | "sm"
+  | "md"
+  | "lg"
+  | "xl"
+  | "compact-xs"
+  | "compact-sm"
+  | number;
 type Space = string | number;
 export type LayoutProps = {
   mt?: Space;

@@ -1,15 +1,16 @@
 import { useEffect, useRef, type ReactNode } from "react";
+import { useTranslation } from "react-i18next";
 import { useReducedMotion } from "motion/react";
 import { Search } from "lucide-react";
 import { TextInput, type TextInputProps } from "../ui/input";
 import styles from "./SearchInput.module.css";
 
-type Hint = { label: string; preview?: ReactNode };
+type Hint = { label: string; preview?: Exclude<ReactNode, Promise<unknown>> };
 /** One timer updates the input attribute; typing never re-renders the catalog.
  * A stable serialized hint list keeps the clock independent from query renders. */
 export function SearchInput({
   hints = [],
-  prefix = "Search",
+  prefix,
   captureTyping = false,
   autoFocus,
   focusKey,
@@ -22,6 +23,8 @@ export function SearchInput({
 }) {
   const input = useRef<HTMLInputElement>(null);
   const previews = useRef<HTMLSpanElement>(null);
+  const { t } = useTranslation();
+  const searchPrefix = prefix ?? t("common.search");
   const reduced = useReducedMotion();
   const labels = JSON.stringify(hints.slice(0, 6).map((hint) => hint.label));
   useEffect(() => {
@@ -50,8 +53,8 @@ export function SearchInput({
         displayed = index;
       }
       element.placeholder = name
-        ? `${prefix} ${name.slice(0, count)}…`
-        : `${prefix}…`;
+        ? `${searchPrefix} ${name.slice(0, count)}…`
+        : `${searchPrefix}…`;
       if (reduced || !names.length) return;
       const finished = count === name.length;
       const delay =
@@ -81,7 +84,7 @@ export function SearchInput({
       clearTimeout(timer);
       document.removeEventListener("visibilitychange", visibility);
     };
-  }, [labels, prefix, reduced]);
+  }, [labels, searchPrefix, reduced]);
   useEffect(() => {
     if (autoFocus) input.current?.focus({ preventScroll: true });
   }, [autoFocus, focusKey]);
@@ -134,7 +137,7 @@ export function SearchInput({
       ref={input}
       type="search"
       autoFocus={autoFocus}
-      placeholder={`${prefix}…`}
+      placeholder={`${searchPrefix}…`}
       leftSection={<Search size={15} aria-hidden />}
       rightSection={
         hints.some((hint) => hint.preview) && !props.value ? (

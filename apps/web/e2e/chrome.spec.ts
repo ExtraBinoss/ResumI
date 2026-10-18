@@ -1,4 +1,6 @@
 import { expect, test } from "@playwright/test";
+import { mkdir } from "node:fs/promises";
+import { closeDialog } from "./helpers/editor";
 
 test("compact editor controls expose primary export, zoom steps and mode toggling", async ({
   page,
@@ -53,7 +55,7 @@ test("compact editor controls expose primary export, zoom steps and mode togglin
     .toBe(300);
 });
 
-test("project names commit on blur or Enter and Escape discards an unfinished name", async ({
+test("visual: project names commit on blur or Enter and Escape discards an unfinished name", async ({
   page,
 }) => {
   await page.goto("/editor");
@@ -112,26 +114,95 @@ test("project names commit on blur or Enter and Escape discards an unfinished na
       exact: true,
     }),
   ).toBeVisible();
+  await mkdir("artifacts/visual", { recursive: true });
+  for (const width of [1440, 390]) {
+    await page.setViewportSize({ width, height: 1000 });
+    await page
+      .getByRole("button", { name: "Project: Final application", exact: true })
+      .click();
+    const popup = page
+      .locator('[data-slot="popover-content"]')
+      .filter({ has: name });
+    const language = popup.getByRole("combobox", {
+      name: "CV language",
+      exact: true,
+    });
+    await expect(language).toContainText("English");
+    await expect(
+      popup.getByRole("button", { name: "All projects", exact: true }),
+    ).toHaveCount(0);
+    const localeBounds = (await language.boundingBox())!;
+    const nameBounds = (await name.boundingBox())!;
+    const popupBounds = (await popup.boundingBox())!;
+    expect(localeBounds.y + localeBounds.height).toBeLessThan(nameBounds.y);
+    expect(localeBounds.x + localeBounds.width).toBeGreaterThan(
+      popupBounds.x + popupBounds.width / 2,
+    );
+    await page.screenshot({
+      path: `artifacts/visual/project-menu-${width}.png`,
+    });
+    await popup
+      .getByRole("button", { name: "Document settings", exact: true })
+      .click();
+    const settings = page.getByRole("dialog", {
+      name: "Document settings",
+      exact: true,
+    });
+    await expect(settings).toBeVisible();
+    await expect(
+      settings.getByRole("button", { name: "Import font", exact: true }),
+    ).toHaveCount(0);
+    await expect(
+      settings.getByRole("combobox", { name: "Typography", exact: true }),
+    ).toHaveCount(0);
+    await closeDialog(page, "Document settings");
+  }
 });
 
 test("unknown routes show a clear themed recovery page with working project navigation", async ({
   page,
+  baseURL,
 }) => {
-  const response = await page.goto("/this-resume-does-not-exist");
-  expect(response?.status()).toBe(404);
-  await expect(
-    page.getByRole("heading", { name: "Page not found", exact: true }),
-  ).toBeVisible();
-  await expect(
-    page.getByText("Check the address, or return to your projects.", {
-      exact: true,
-    }),
-  ).toBeVisible();
-  await page.getByRole("link", { name: "All projects", exact: true }).click();
-  await expect(page).toHaveURL(/\/projects$/);
-  await expect(
-    page.getByRole("heading", { name: "Your resumes", exact: true }),
-  ).toBeVisible();
+  for (const locale of ["en", "fr"]) {
+    await page.context().addCookies([
+      {
+        name: "resumi-ui-language",
+        value: locale,
+        url: baseURL ?? "http://127.0.0.1:4187",
+      },
+    ]);
+    const response = await page.goto("/this-resume-does-not-exist");
+    expect(response?.status()).toBe(404);
+    expect(await response!.text()).toContain(`lang="${locale}"`);
+    await expect(page.locator("html")).toHaveAttribute("lang", locale);
+    await expect(
+      page.getByRole("heading", {
+        name: locale === "fr" ? "Page introuvable" : "Page not found",
+        exact: true,
+      }),
+    ).toBeVisible();
+    await expect(
+      page.getByText(
+        locale === "fr"
+          ? "Vérifiez l’adresse ou retournez à vos projets."
+          : "Check the address, or return to your projects.",
+        { exact: true },
+      ),
+    ).toBeVisible();
+    await page
+      .getByRole("link", {
+        name: locale === "fr" ? "Tous les projets" : "All projects",
+        exact: true,
+      })
+      .click();
+    await expect(page).toHaveURL(/\/projects$/);
+    await expect(
+      page.getByRole("heading", {
+        name: locale === "fr" ? "Vos CV" : "Your resumes",
+        exact: true,
+      }),
+    ).toBeVisible();
+  }
 });
 
 test("missing resumes and denied storage use the same clear recovery with copyable errors", async ({

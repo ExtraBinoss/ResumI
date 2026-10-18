@@ -1,20 +1,89 @@
 import { atom } from "jotai";
+import { selectAtom } from "jotai/utils";
 import {
   makeLayer,
   groupFor,
+  INITIAL_PAGE_ID,
+  documentPages,
+  canvasForPage,
+  type Canvas,
   type Layer,
   type LayerPatch,
   type Command,
   type CommandBatch,
   type Document,
 } from "@resumi/engine";
-import { visualCommands } from "@resumi/cv";
+import { visualCommands } from "@resumi/cv/design";
 import { sessionAtom, selectionAtom, commandAtom } from "./editor";
 export const modeAtom = atom<"visual" | "text">("visual");
 export const toolAtom = atom<"select" | "text" | "shape">("select");
 export const shapeToolAtom = atom<LayerPatch>({ shape: "rectangle" });
-export const designErrorAtom = atom("");
-export const canvasAtom = atom((get) => get(sessionAtom)?.document.canvas);
+export type DesignError = string | { kind: "unableToEditLayer" };
+const unableToEditLayer: DesignError = { kind: "unableToEditLayer" };
+export const designErrorAtom = atom<DesignError>("");
+export const canonicalCanvasAtom = atom(
+  (get) => get(sessionAtom)?.document.canvas,
+);
+export const pagesAtom = selectAtom(
+  sessionAtom,
+  (session) => (session ? documentPages(session.document) : []),
+  (a, b) =>
+    a.length === b.length &&
+    a.every((page, index) => {
+      const other = b[index];
+      return (
+        page.id === other.id &&
+        page.name === other.name &&
+        page.width === other.width &&
+        page.height === other.height &&
+        page.background === other.background
+      );
+    }),
+);
+const requestedPageAtom = atom(INITIAL_PAGE_ID);
+export const activePageIdAtom = atom(
+  (get) => {
+    const requested = get(requestedPageAtom);
+    return get(pagesAtom).some((page) => page.id === requested)
+      ? requested
+      : INITIAL_PAGE_ID;
+  },
+  (get, set, id: string) => {
+    if (!get(pagesAtom).some((page) => page.id === id)) return;
+    set(requestedPageAtom, id);
+    set(selectionAtom, null);
+    set(textRangeAtom, null);
+    set(toolAtom, "select");
+  },
+);
+function sameCanvas(a: Canvas | undefined, b: Canvas | undefined) {
+  return (
+    a === b ||
+    !!(
+      a &&
+      b &&
+      a.width === b.width &&
+      a.height === b.height &&
+      a.background === b.background &&
+      a.fonts === b.fonts &&
+      a.pages === b.pages &&
+      a.order.length === b.order.length &&
+      a.order.every((id, index) => id === b.order[index]) &&
+      a.groups.length === b.groups.length &&
+      a.groups.every((group, index) => group === b.groups[index])
+    )
+  );
+}
+// Page projection has a stable identity while independently editable block text changes.
+const projectedCanvasAtom = atom((get) => {
+  const doc = get(sessionAtom)?.document;
+  return doc?.canvas ? canvasForPage(doc, get(activePageIdAtom)) : undefined;
+});
+export const canvasAtom = selectAtom(
+  projectedCanvasAtom,
+  (canvas) => canvas,
+  sameCanvas,
+);
 export const selectedIdsAtom = atom((get) => {
   const selection = get(selectionAtom);
   return selection?.blockIds ?? (selection?.blockId ? [selection.blockId] : []);
@@ -33,7 +102,7 @@ export const designCommandAtom = atom(
     } catch (error) {
       set(
         designErrorAtom,
-        error instanceof Error ? error.message : "Unable to edit this layer.",
+        error instanceof Error ? error.message : unableToEditLayer,
       );
     }
   },
@@ -146,7 +215,12 @@ export const addLayerAtom = atom(
         id,
         kind: input.type === "text" ? "text" : input.type,
         text: input.text ?? (input.type === "text" ? "Your text" : ""),
-        design: makeLayer(input.type, input.patch),
+        design: makeLayer(input.type, {
+          ...input.patch,
+          ...(get(activePageIdAtom) === INITIAL_PAGE_ID
+            ? {}
+            : { pageId: get(activePageIdAtom) }),
+        }),
       },
     });
     set(designCommandAtom, {
@@ -190,3 +264,20 @@ export const deleteSelectionAtom = atom(null, (get, set) => {
 });
 
 export const sourceAtom = atom((get) => get(sessionAtom)?.document.source);
+
+export const addPageAtom = atom(null, (get, set) => {
+  const canvas = get(canvasAtom);
+  if (!canvas) return;
+  const id = crypto.randomUUID();
+  set(designCommandAtom, {
+    type: "page.create",
+    page: {
+      id,
+      name: `Page ${get(pagesAtom).length + 1}`,
+      width: canvas.width,
+      height: canvas.height,
+      background: canvas.background,
+    },
+  });
+  if (get(pagesAtom).some((page) => page.id === id)) set(activePageIdAtom, id);
+});

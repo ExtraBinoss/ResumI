@@ -1,6 +1,7 @@
+import { useTranslation } from "react-i18next";
 import { useAtomValue, useSetAtom } from "jotai";
 import { TextInput, Textarea, Select, ActionIcon, Button } from "../../../ui";
-import { Plus, Trash2, ChevronUp, ChevronDown } from "lucide-react";
+import { Plus, Trash2 } from "lucide-react";
 import {
   commandAtom,
   selectionAtom,
@@ -9,48 +10,23 @@ import {
 } from "../../../state/editor";
 import type { Block } from "@resumi/engine";
 import styles from "../styles/LegacyPanels.module.css";
-import { DocumentStyleFields } from "./DocumentStyleFields";
 function BlockFields({ id, sectionId }: { id: string; sectionId: string }) {
+  const { t } = useTranslation();
   const block = useAtomValue(blockAtom(id)),
     dispatch = useSetAtom(commandAtom),
     select = useSetAtom(selectionAtom),
     section = useAtomValue(sectionAtom(sectionId));
   if (!block || !section) return null;
-  const index = section.blockIds.indexOf(id);
-  function move(offset: number) {
-    if (!section) return;
-    const ids = [...section.blockIds];
-    [ids[index], ids[index + offset]] = [ids[index + offset], ids[index]];
-    dispatch({ type: "block.reorder", sectionId, ids });
-  }
   return (
     <div className={styles.fieldGroup}>
       <div className={styles.fieldHeading}>
-        <h3>Selected text</h3>
+        <h3>{t("properties.selectedText")}</h3>
         <div className={styles.inlineActions}>
           <ActionIcon
             size="sm"
             variant="subtle"
-            aria-label="Move block up"
-            disabled={index === 0}
-            onClick={() => move(-1)}
-          >
-            <ChevronUp size={14} />
-          </ActionIcon>
-          <ActionIcon
-            size="sm"
-            variant="subtle"
-            aria-label="Move block down"
-            disabled={index === section.blockIds.length - 1}
-            onClick={() => move(1)}
-          >
-            <ChevronDown size={14} />
-          </ActionIcon>
-          <ActionIcon
-            size="sm"
-            variant="subtle"
             color="red"
-            aria-label="Delete block"
+            aria-label={t("properties.deleteBlock")}
             onClick={() => {
               dispatch({ type: "block.delete", id });
               select({ sectionId });
@@ -61,14 +37,14 @@ function BlockFields({ id, sectionId }: { id: string; sectionId: string }) {
         </div>
       </div>
       <Select
-        label="Text style"
+        label={t("properties.textStyle")}
         value={block.kind}
         data={[
-          { value: "heading", label: "Name / heading" },
-          { value: "subtitle", label: "Subtitle" },
-          { value: "text", label: "Paragraph" },
-          { value: "meta", label: "Details" },
-          { value: "bullet", label: "Bullet point" },
+          { value: "heading", label: t("properties.heading") },
+          { value: "subtitle", label: t("properties.subtitle") },
+          { value: "text", label: t("properties.paragraph") },
+          { value: "meta", label: t("properties.details") },
+          { value: "bullet", label: t("properties.bulletPoint") },
         ]}
         allowDeselect={false}
         onChange={(kind) => {
@@ -82,7 +58,7 @@ function BlockFields({ id, sectionId }: { id: string; sectionId: string }) {
         size="xs"
       />
       <Textarea
-        label="Content"
+        label={t("properties.content")}
         value={block.text}
         maxLength={20000}
         autosize
@@ -102,6 +78,7 @@ function BlockFields({ id, sectionId }: { id: string; sectionId: string }) {
   );
 }
 function SectionFields({ id, blockId }: { id: string; blockId?: string }) {
+  const { t } = useTranslation();
   const section = useAtomValue(sectionAtom(id)),
     dispatch = useSetAtom(commandAtom),
     select = useSetAtom(selectionAtom);
@@ -109,12 +86,12 @@ function SectionFields({ id, blockId }: { id: string; blockId?: string }) {
   return (
     <>
       <div className={styles.fieldGroup}>
-        <h3>Section</h3>
+        <h3>{t("properties.section")}</h3>
         <TextInput
-          label="Section title"
+          label={t("properties.sectionTitle")}
           size="xs"
           value={section.title}
-          placeholder="Personal details"
+          placeholder={t("properties.personalDetails")}
           maxLength={200}
           onChange={(e) =>
             dispatch({
@@ -150,7 +127,7 @@ function SectionFields({ id, blockId }: { id: string; blockId?: string }) {
             select({ sectionId: id, blockId });
           }}
         >
-          Add text block
+          {t("properties.addTextBlock")}
         </Button>
       </div>
       {blockId && <BlockFields id={blockId} sectionId={id} />}
@@ -180,32 +157,19 @@ function BlockLink({
     </button>
   );
 }
-export function Inspector({ showDocument }: { showDocument: () => void }) {
-  const selection = useAtomValue(selectionAtom),
-    select = useSetAtom(selectionAtom);
+export function Inspector() {
+  const { t } = useTranslation();
+  const selection = useAtomValue(selectionAtom);
   return (
-    <aside className={styles.inspector} aria-label="Properties inspector">
+    <aside
+      className={styles.inspector}
+      aria-label={t("properties.propertiesInspector")}
+    >
       <div className={styles.panelHeading}>
-        <h2>{selection ? "Properties" : "Document"}</h2>
+        <h2>{t("properties.properties")}</h2>
       </div>
-      {selection ? (
-        <>
-          <SectionFields id={selection.sectionId} blockId={selection.blockId} />
-          <Button
-            variant="subtle"
-            size="xs"
-            fullWidth
-            mt="md"
-            onClick={() => {
-              select(null);
-              showDocument();
-            }}
-          >
-            Document settings
-          </Button>
-        </>
-      ) : (
-        <DocumentStyleFields />
+      {selection && (
+        <SectionFields id={selection.sectionId} blockId={selection.blockId} />
       )}
     </aside>
   );

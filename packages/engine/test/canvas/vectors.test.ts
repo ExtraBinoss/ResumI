@@ -58,6 +58,38 @@ test("compound vectors preserve colors, transforms, attribution and one-step his
   expect(human.document).toEqual(agent);
   expect(deserializeDocument(serializeDocument(agent))).toEqual(agent);
   expect(agent.blocks.logo.design).toMatchObject({ vector });
+  const monochrome = applyCommands(
+    agent,
+    batch([
+      {
+        type: "layer.update",
+        ids: ["logo"],
+        patch: {
+          vector: { ...vector, colorMode: "monochrome" },
+          fill: "#243b70",
+        },
+      },
+    ]),
+  ).document;
+  expect(monochrome.blocks.logo.design).toMatchObject({
+    vector: { ...vector, colorMode: "monochrome" },
+    fill: "#243b70",
+  });
+  const restored = applyCommands(
+    monochrome,
+    batch([
+      {
+        type: "layer.update",
+        ids: ["logo"],
+        patch: { vector: { ...vector, colorMode: "original" } },
+      },
+    ]),
+  ).document;
+  expect(restored.blocks.logo.design).toMatchObject({ vector });
+  expect(restored.blocks.logo.design).toHaveProperty(
+    "vector.colorMode",
+    "original",
+  );
   expect(undo(human).document).toEqual(original);
 });
 

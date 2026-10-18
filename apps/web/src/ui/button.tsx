@@ -19,7 +19,12 @@ export type ButtonProps = Omit<
     target?: string;
     ref?: Ref<HTMLButtonElement>;
     variant?:
-      "filled" | "default" | "outline" | "subtle" | "light" | "transparent";
+      | "filled"
+      | "default"
+      | "outline"
+      | "subtle"
+      | "light"
+      | "transparent";
     color?: string;
     size?: Size;
     radius?: string | number;

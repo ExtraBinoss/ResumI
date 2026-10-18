@@ -1,0 +1,41 @@
+.settings {
+  display: grid;
+  gap: 24px;
+  padding-top: 8px;
+}
+.settings section {
+  border: 0;
+  padding: 0;
+}
+.settings h3 {
+  font-size: 13px;
+  font-weight: 600;
+  margin: 0 0 12px;
+}
+.page {
+  display: grid;
+  gap: 16px;
+}
+.dimensions {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr) auto;
+  gap: 8px;
+  align-items: center;
+}
+.note {
+  margin: 0;
+  font-size: 13px;
+  color: var(--muted-foreground);
+}
+.footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+}
+@media (max-width: 450px) {
+  .dimensions {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+}

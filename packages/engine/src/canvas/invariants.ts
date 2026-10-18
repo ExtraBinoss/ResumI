@@ -1,3 +1,4 @@
+import { documentPages, pageForLayer } from "./pages";
 import type { Document } from "../document/schema";
 import { EngineError } from "../validation";
 import { shapeDefinition } from "./shapes";
@@ -24,7 +25,21 @@ export function assertCanvas(doc: Document) {
     ids.some((id) => !canvas.order.includes(id))
   )
     fail("Canvas order must contain each block exactly once.");
+  const pages = documentPages(doc);
+  const pageIds = new Set(pages.map((page) => page.id));
+  if (pageIds.size !== pages.length) fail("Page IDs must be unique.");
+  for (const page of canvas.pages ?? [])
+    if (
+      [
+        doc.id,
+        ...doc.sectionIds,
+        ...ids,
+        ...canvas.groups.map((group) => group.id),
+      ].includes(page.id)
+    )
+      fail("Page IDs must be unique across the document.");
   for (const id of ids) {
+    if (!pageIds.has(pageForLayer(doc, id))) fail("Layer page does not exist.");
     const block = doc.blocks[id],
       layer = block.design;
     if (
@@ -61,6 +76,14 @@ export function assertCanvas(doc: Document) {
   for (const group of canvas.groups) {
     if (used.has(group.id)) fail("Group IDs must be unique.");
     used.add(group.id);
+    if (
+      new Set(
+        group.elementIds.map((id) =>
+          doc.blocks[id] ? pageForLayer(doc, id) : "missing",
+        ),
+      ).size !== 1
+    )
+      fail("Group members must belong to one page.");
     const positions = group.elementIds
       .map((id) => canvas.order.indexOf(id))
       .sort((a, b) => a - b);

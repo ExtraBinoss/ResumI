@@ -2,6 +2,7 @@ import { designCss, renderVisual, canvasFontCss } from "./design-renderer";
 import { escapeHtml } from "./escape";
 export { escapeHtml } from "./escape";
 import {
+  documentPages,
   localizedBlock,
   localizedSectionTitle,
   documentLocale,
@@ -55,7 +56,22 @@ export function renderResume(doc: Document): string {
   const style = Object.entries(resumeStyle(doc))
     .map(([key, value]) => `${key}:${value}`)
     .join(";");
-  return `<article class="resume${doc.canvas ? " freeform" : ""}" aria-label="Resume" style="${style}${doc.canvas ? `;width:${doc.canvas.width}px;height:${doc.canvas.height}px;background:${doc.canvas.background}` : ""}">${doc.canvas ? `<style>${canvasFontCss(doc)}</style>${renderVisual(doc)}` : doc.sectionIds.map((id) => renderSection(doc, id)).join("")}</article>`;
+  if (doc.canvas) {
+    const pages = documentPages(doc);
+    const pageCss = pages
+      .map(
+        (page, index) =>
+          `@page resumi${index}{size:${page.width * 0.75}pt ${page.height * 0.75}pt;margin:0}`,
+      )
+      .join("");
+    return `<style>${canvasFontCss(doc)}${pageCss}</style>${pages
+      .map(
+        (page, index) =>
+          `<article class="resume freeform" data-page-id="${escapeHtml(page.id)}" aria-label="Resume" style="${style};page:resumi${index};width:${page.width}px;height:${page.height}px;background:${page.background}">${renderVisual(doc, page.id)}</article>`,
+      )
+      .join("")}`;
+  }
+  return `<article class="resume" aria-label="Resume" style="${style}">${doc.sectionIds.map((id) => renderSection(doc, id)).join("")}</article>`;
 }
 export function renderHtml(document: Document): string {
   return `<!doctype html><html lang="${escapeHtml(documentLocale(document))}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${escapeHtml(document.name)}</title><style>${resumeCss}\nbody{margin:0;background:#eceef2}.resume{margin:auto}</style></head><body>${renderResume(document)}</body></html>`;

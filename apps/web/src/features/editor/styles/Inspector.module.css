@@ -319,6 +319,10 @@
   .fieldRow {
     grid-template-columns: minmax(0, 1fr);
   }
+  .quadGrid,
+  .doubleGrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
   .fontBasics {
     grid-template-columns: minmax(0, 1fr);
     gap: 6px;
@@ -358,4 +362,21 @@
 
 .numberRow {
   margin-top: 12px;
+}
+.emptyProperties {
+  display: grid;
+  justify-items: center;
+  gap: 12px;
+  padding: 48px 24px;
+  text-align: center;
+  color: var(--muted-foreground);
+  font-size: 13px;
+  line-height: 1.5;
+}
+.emptyProperties p {
+  margin: 0;
+}
+
+.fieldRow > :global([data-ui="label"]) {
+  margin: 0;
 }

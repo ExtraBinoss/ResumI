@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
-import { useEffect, useState } from "react";
-import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import { useDeferredValue, useEffect, useState } from "react";
+import { motion, useReducedMotion } from "motion/react";
 import { ErrorToast } from "../../components/ErrorNotice";
 import { Provider, useAtomValue, useStore } from "jotai";
 import type { Project } from "../../lib/projects";
@@ -19,7 +19,6 @@ import {
   modeAtom,
   sourceAtom,
   toolAtom,
-  enableVisualAtom,
   selectedIdsAtom,
   selectLayersAtom,
   groupSelectionAtom,
@@ -27,6 +26,7 @@ import {
   deleteSelectionAtom,
   designCommandAtom,
   designErrorAtom,
+  activePageIdAtom,
 } from "../../state/design";
 import { Canvas } from "../canvas/Canvas";
 import { DesignCanvas } from "../canvas/DesignCanvas";
@@ -34,7 +34,7 @@ import { LayerPanel } from "./panels/LayerPanel";
 import { Inspector } from "./panels/Inspector";
 import { DesignInspector } from "./panels/DesignInspector";
 import { TextMode } from "./text/TextMode";
-import { SourceCanvas } from "./source/SourceCanvas";
+import { PageRecovery } from "../../components/PageRecovery";
 import { EditorDialogs, type EditorDialog } from "./components/EditorDialogs";
 import { EditorToolbar } from "./components/EditorToolbar";
 import { EditorDock } from "./components/EditorDock";
@@ -46,20 +46,19 @@ function EditorWorkspace({ controller }: { controller: EditorController }) {
     canvas = useAtomValue(canvasAtom),
     mode = useAtomValue(modeAtom),
     source = useAtomValue(sourceAtom),
+    activePageId = useAtomValue(activePageIdAtom),
     designError = useAtomValue(designErrorAtom),
     store = useStore(),
     reduced = useReducedMotion();
   const sourceActive = !!source && source.enabled !== false;
-  const view = sourceActive ? "source" : canvas ? mode : "structured";
+  // Keep the current surface painted while React prepares the other editor.
+  // Dock feedback stays urgent, so mounting rich fields cannot stall its reveal.
+  const displayedMode = useDeferredValue(mode);
+  const view = canvas ? displayedMode : "structured";
   useEffect(() => {
     function keydown(event: KeyboardEvent) {
       if (event.defaultPrevented) return;
       const modifier = event.ctrlKey || event.metaKey;
-      if (modifier && event.shiftKey && event.key.toLowerCase() === "e") {
-        event.preventDefault();
-        setDialog("source");
-        return;
-      }
       if (modifier && event.altKey && event.key === "Enter") {
         event.preventDefault();
         setDialog("proposal");
@@ -114,7 +113,7 @@ function EditorWorkspace({ controller }: { controller: EditorController }) {
       }
       if (!modifier && key === "v") store.set(toolAtom, "select");
       if (!modifier && key === "t") {
-        store.set(enableVisualAtom);
+        store.set(modeAtom, "visual");
         store.set(toolAtom, "text");
       }
       if (
@@ -141,50 +140,64 @@ function EditorWorkspace({ controller }: { controller: EditorController }) {
       window.removeEventListener("beforeunload", beforeUnload);
     };
   }, [store]);
+  if (sourceActive)
+    return (
+      <PageRecovery
+        notFound={false}
+        title={t("site.recovery.workspaceError")}
+        description={t("site.recovery.errorDescription")}
+        error={t("workspace.errors.sourceNotReady")}
+      />
+    );
   return (
-    <main className={styles.editor}>
-      <EditorToolbar controller={controller} />
+    <motion.main
+      className={styles.editor}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: reduced ? 0 : 0.18 }}
+    >
+      <EditorToolbar
+        controller={controller}
+        openDocument={() => setDialog("document")}
+      />
       <ErrorToast
-        error={designError}
+        error={
+          typeof designError === "string"
+            ? designError
+            : t("workspace.errors.unableToEditLayer")
+        }
         label={t("editor.actionFailed")}
         onDismiss={() => store.set(designErrorAtom, "")}
       />
       <div className={styles.workspace}>
         <LayerPanel />
-        <AnimatePresence initial={false} mode="wait">
-          <motion.div
-            key={view}
-            className={styles.modeSurface}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{
-              duration: reduced ? 0 : 0.14,
-              ease: [0.2, 0.8, 0.2, 1],
-            }}
-          >
-            {sourceActive ? (
-              <SourceCanvas />
-            ) : canvas ? (
-              mode === "text" ? (
-                <TextMode />
-              ) : (
-                <DesignCanvas />
-              )
+        <motion.div
+          key={view}
+          className={styles.modeSurface}
+          aria-busy={displayedMode !== mode}
+          inert={displayedMode !== mode}
+          initial={reduced ? false : { opacity: 0.7 }}
+          animate={{ opacity: 1 }}
+          transition={{
+            duration: reduced ? 0 : 0.12,
+            ease: [0.2, 0.8, 0.2, 1],
+          }}
+        >
+          {canvas ? (
+            displayedMode === "text" ? (
+              <TextMode />
             ) : (
-              <Canvas />
-            )}
-          </motion.div>
-        </AnimatePresence>
-        {!selection || selection.blockIds ? (
-          <DesignInspector />
-        ) : (
-          <Inspector showDocument={() => store.set(selectionAtom, null)} />
-        )}
+              <DesignCanvas key={activePageId} />
+            )
+          ) : (
+            <Canvas />
+          )}
+        </motion.div>
+        {!selection || selection.blockIds ? <DesignInspector /> : <Inspector />}
       </div>
       <EditorDock />
       <EditorDialogs dialog={dialog} close={() => setDialog(null)} />
-    </main>
+    </motion.main>
   );
 }
 export function Editor({ project }: { project: Project }) {

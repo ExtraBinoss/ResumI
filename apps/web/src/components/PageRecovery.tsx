@@ -1,7 +1,9 @@
 import { FileQuestion, FolderOpen, House } from "lucide-react";
 import { Link } from "react-router";
+import { useTranslation } from "react-i18next";
 import { ErrorNotice } from "./ErrorNotice";
-import { Button } from "../ui";
+import { Button } from "../ui/button";
+import { publicPath } from "../i18n/public-locale";
 import styles from "../styles/Recovery.module.css";
 
 export function PageRecovery({
@@ -15,6 +17,7 @@ export function PageRecovery({
   title?: string;
   description?: string;
 }) {
+  const { t, i18n } = useTranslation();
   return (
     <main className={styles.page}>
       <div className={styles.content}>
@@ -23,16 +26,26 @@ export function PageRecovery({
         </div>
         <span className={styles.eyebrow}>{notFound ? "404" : "ResumI"}</span>
         <h1>
-          {title ?? (notFound ? "Page not found" : "Unable to open this page")}
+          {title ??
+            t(
+              notFound
+                ? "site.recovery.notFound"
+                : "site.recovery.unableToOpen",
+            )}
         </h1>
         <p>
           {description ??
-            (notFound
-              ? "Check the address, or return to your projects."
-              : "Try again, or return to your projects.")}
+            t(
+              notFound
+                ? "site.recovery.notFoundDescription"
+                : "site.recovery.errorDescription",
+            )}
         </p>
         {!notFound && (
-          <ErrorNotice error={error || null} label="Error details" />
+          <ErrorNotice
+            error={error || null}
+            label={t("site.recovery.errorDetails")}
+          />
         )}
         <div className={styles.actions}>
           <Button
@@ -40,15 +53,15 @@ export function PageRecovery({
             to="/projects"
             leftSection={<FolderOpen size={16} aria-hidden />}
           >
-            All projects
+            {t("site.recovery.allProjects")}
           </Button>
           <Button
             component={Link}
-            to="/"
+            to={publicPath(i18n.language)}
             variant="subtle"
             leftSection={<House size={16} aria-hidden />}
           >
-            Home
+            {t("site.recovery.home")}
           </Button>
         </div>
       </div>

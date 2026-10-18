@@ -74,3 +74,12 @@ await Bun.write(
   new URL("packages/cv/src/source/template.generated.json", root),
   JSON.stringify(component) + "\n",
 );
+
+const [digital, expressive] = await Promise.all([
+  templateSource(root, "digital"),
+  templateSource(root, "expressive"),
+]);
+await Bun.write(
+  new URL("packages/cv/src/source/creative-template.generated.json", root),
+  JSON.stringify({ digital, expressive }) + "\n",
+);

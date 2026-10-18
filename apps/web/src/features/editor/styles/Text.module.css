@@ -22,21 +22,64 @@
   overflow: hidden;
 }
 .copyToolbar {
-  position: relative;
-  z-index: 1;
+  position: absolute;
+  z-index: 8;
+  top: 76px;
+  left: calc(var(--layers-width) + 24px);
+  right: calc(var(--properties-width) + 24px);
   flex-shrink: 0;
   display: flex;
   align-items: center;
   gap: 2px;
-  min-height: 52px;
+  height: var(--text-toolbar-height);
+  min-height: var(--text-toolbar-height);
   padding: 8px 14px;
-  border-bottom: 1px solid var(--line);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
   background: var(--popover);
+  box-shadow: var(--shadow-panel);
+}
+.textWorkspace {
+  --text-toolbar-height: 56px;
+  position: relative;
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+}
+.toolbarSpace {
+  height: calc(var(--text-toolbar-height) / var(--text-scale));
+  flex: 0 0 auto;
+}
+.copyEditor .copyScroll {
+  overscroll-behavior-y: auto;
 }
 .copyToolbar > span {
   font-size: 12px;
   color: var(--faint);
   margin-left: auto;
+}
+.formatFields {
+  flex: 1 1 auto;
+  min-width: 0;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.formatFields > div {
+  display: flex;
+  align-items: center;
+  margin: 0;
+}
+.formatFields > div > span {
+  flex: 1 1 auto;
+}
+.formatFields button {
+  flex-shrink: 0;
+}
+.formatFields:disabled {
+  opacity: 0.5;
 }
 .copyList {
   overflow: auto;
@@ -139,6 +182,22 @@
     min-height: 0;
   }
 }
+@media (min-width: 701px) and (max-width: 850px) {
+  .copyToolbar {
+    padding-inline: 8px;
+  }
+  .formatFields > div button {
+    width: 22px;
+    min-width: 22px;
+  }
+  .copyToolbar > div {
+    gap: 4px;
+  }
+  .copyToolbar > div > div {
+    width: 80px;
+    min-width: 0;
+  }
+}
 
 .resetTranslation {
   position: absolute;
@@ -149,4 +208,23 @@
 .copyBlock:hover .resetTranslation,
 .copyBlock:focus-within .resetTranslation {
   opacity: 1;
+}
+@media (max-width: 1040px) {
+  .textWorkspace {
+    --text-toolbar-height: 88px;
+  }
+  .copyToolbar {
+    flex-wrap: wrap;
+    align-content: center;
+    row-gap: 6px;
+  }
+  .formatFields {
+    flex-basis: 100%;
+  }
+}
+@media (max-width: 700px) {
+  .copyToolbar {
+    left: 14px;
+    right: 14px;
+  }
 }

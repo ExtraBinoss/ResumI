@@ -79,7 +79,8 @@ function installProbe(binding: string) {
   }
   function send(phase: string, canvas?: Canvas) {
     const navigation = performance.getEntriesByType("navigation")[0] as
-      PerformanceNavigationTiming | undefined;
+      | PerformanceNavigationTiming
+      | undefined;
     const report: Report = {
       documentId,
       url: location.href,
@@ -220,9 +221,9 @@ function installProbe(binding: string) {
 }
 
 async function saveTrace(cdp: CDPSession, path: string) {
-  const complete = new Promise<{ stream?: string }>((resolve) =>
-    cdp.once("Tracing.tracingComplete", resolve),
-  );
+  const complete = new Promise<{ stream?: string }>((resolve) => {
+    cdp.once("Tracing.tracingComplete", resolve);
+  });
   await cdp.send("Tracing.end");
   const { stream } = await complete;
   if (!stream) throw new Error("Chrome did not return a trace stream.");

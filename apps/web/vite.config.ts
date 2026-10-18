@@ -9,6 +9,7 @@ const browserDependencies = [
   "i18next",
   "react-i18next",
   ...[
+    "accordion",
     "button",
     "dialog",
     "input",
@@ -26,6 +27,7 @@ const browserDependencies = [
   "class-variance-authority",
   "cn",
   "jotai",
+  "jotai/utils",
   "lucide-react",
   "idb",
   "zod/mini",

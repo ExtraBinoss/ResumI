@@ -1,4 +1,6 @@
 import {
+  canvasForPage,
+  INITIAL_PAGE_ID,
   richTextSegments,
   localizedBlock,
   safeTextHref,
@@ -21,7 +23,7 @@ export const designCss = `
 .design-content img{display:block;width:100%;height:100%;}
 .design-group{position:absolute;inset:0;pointer-events:none;}
 .design-group>.design-layer{pointer-events:auto;}
-@media print{.resume.freeform{width:210mm!important;height:297mm!important;min-height:0;print-color-adjust:exact;-webkit-print-color-adjust:exact;}}
+@media print{.resume.freeform{min-height:0;break-inside:avoid;break-after:page;margin:0!important;print-color-adjust:exact;-webkit-print-color-adjust:exact;}.resume.freeform:last-of-type{break-after:auto;}}
 `;
 export function layerStyle(layer: Layer): Record<string, string | number> {
   const frame = {
@@ -104,6 +106,16 @@ export function renderLayerContent(block: Block): string {
   if (layer.type === "image")
     return `${effects}<div class="design-content" style="overflow:hidden;border-radius:${layer.borderRadius}px;${filter ? `filter:${filter}` : ""}"><img src="${escape(layer.src)}" alt="${escape(layer.alt)}" draggable="false" style="object-fit:${layer.objectFit};object-position:${layer.objectPosition.x}% ${layer.objectPosition.y}%;transform:scale(${layer.imageScale});transform-origin:${layer.objectPosition.x}% ${layer.objectPosition.y}%"></div>`;
   const shape = layer.vector ?? shapeDefinition(layer.shape)!;
+  const monochrome = layer.vector?.colorMode === "monochrome";
+  const monochromePaint = layer.fill;
+  function paintColor(color: string) {
+    const normalized = color.toLowerCase();
+    return normalized === "transparent" ||
+      normalized === "#ffffff" ||
+      normalized === "#ffffffff"
+      ? color
+      : monochromePaint;
+  }
   const gradient = layer.gradient,
     gradientId = `gradient-${block.id}`,
     vector = gradient ? svgGradientVector(gradient.angle) : undefined;
@@ -114,10 +126,15 @@ export function renderLayerContent(block: Block): string {
   const strokeOnly = "strokeOnly" in shape && shape.strokeOnly;
   const path = layer.vector?.parts
     ? layer.vector.parts
-        .map(
-          (part) =>
-            `<path d="${escape(part.path)}" fill="${escape(part.fill)}"${part.stroke ? ` stroke="${escape(part.stroke)}"` : ' stroke="none"'}${part.strokeWidth !== undefined ? ` stroke-width="${part.strokeWidth}"` : ""}${part.opacity !== undefined ? ` opacity="${part.opacity}"` : ""}${part.fillRule ? ` fill-rule="${part.fillRule}"` : ""}${part.matrix ? ` transform="matrix(${part.matrix.join(" ")})"` : ""}${part.linecap ? ` stroke-linecap="${part.linecap}"` : ""}${part.linejoin ? ` stroke-linejoin="${part.linejoin}"` : ""}/>`,
-        )
+        .map((part) => {
+          const fill = monochrome ? paintColor(part.fill) : part.fill;
+          const stroke = part.stroke
+            ? monochrome
+              ? paintColor(part.stroke)
+              : part.stroke
+            : undefined;
+          return `<path d="${escape(part.path)}" fill="${escape(fill)}"${stroke ? ` stroke="${escape(stroke)}"` : ' stroke="none"'}${part.strokeWidth !== undefined ? ` stroke-width="${part.strokeWidth}"` : ""}${part.opacity !== undefined ? ` opacity="${part.opacity}"` : ""}${part.fillRule ? ` fill-rule="${part.fillRule}"` : ""}${part.matrix ? ` transform="matrix(${part.matrix.join(" ")})"` : ""}${part.linecap ? ` stroke-linecap="${part.linecap}"` : ""}${part.linejoin ? ` stroke-linejoin="${part.linejoin}"` : ""}/>`;
+        })
         .join("")
     : layer.shape === "rectangle" && !layer.vector
       ? `<rect width="100" height="100" rx="${(layer.borderRadius * 100) / layer.width}" ry="${(layer.borderRadius * 100) / layer.height}"/>`
@@ -132,13 +149,13 @@ export function canvasFontCss(doc: Pick<Document, "canvas">) {
     doc.canvas?.fonts
       .map(
         (font) =>
-          `@font-face{font-family:'${font.name.replace(/['"]/g, "")}';src:url('${font.dataUrl}') format('${font.format}');font-weight:100 1000;font-display:swap;}`,
+          `@font-face{font-family:'${font.name.replaceAll("'", "\\'")}';src:url('${font.dataUrl}') format('${font.format}');font-weight:100 1000;font-display:swap;}`,
       )
       .join("") ?? ""
   );
 }
-export function renderVisual(doc: Document): string {
-  const canvas = doc.canvas!,
+export function renderVisual(doc: Document, pageId = INITIAL_PAGE_ID): string {
+  const canvas = canvasForPage(doc, pageId),
     seen = new Set<string>();
   function element(id: string) {
     const block = localizedBlock(doc, id),

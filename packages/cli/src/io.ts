@@ -4,11 +4,26 @@ export interface CaptureResult {
   height: number;
   blockedRequests: string[];
 }
+export interface PdfCaptureResult {
+  bytes: Uint8Array;
+  expectedText: string;
+  expectedPages?: { id: string; text: string }[];
+  adjustedTracking?: number;
+  width: number;
+  height: number;
+  blockedRequests: string[];
+}
 export interface IO {
   read(path: string): Promise<string>;
   write(path: string, data: string): Promise<void>;
   writeBinary?(path: string, data: Uint8Array): Promise<void>;
   capture?(html: string, width: number, height: number): Promise<CaptureResult>;
+  capturePdf?(
+    html: string,
+    width: number,
+    height: number,
+    react?: boolean,
+  ): Promise<PdfCaptureResult>;
   id(): string;
 }
 export class CliError extends Error {

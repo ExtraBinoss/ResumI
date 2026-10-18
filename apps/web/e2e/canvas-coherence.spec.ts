@@ -2,6 +2,18 @@ import { expect, test, type Page } from "@playwright/test";
 import { mkdir, writeFile } from "node:fs/promises";
 
 async function settled(page: Page) {
+  const target = Number(
+    await page
+      .getByRole("spinbutton", { name: "Canvas zoom", exact: true })
+      .inputValue(),
+  );
+  await expect
+    .poll(() =>
+      page
+        .locator("[data-zoom-surface]")
+        .evaluate((node) => (node as HTMLElement).style.transform),
+    )
+    .toBe(`scale(${target / 100})`);
   await expect
     .poll(() =>
       page
@@ -11,9 +23,9 @@ async function settled(page: Page) {
     .toBe("");
   await page.evaluate(
     () =>
-      new Promise<void>((resolve) =>
-        requestAnimationFrame(() => requestAnimationFrame(() => resolve())),
-      ),
+      new Promise<void>((resolve) => {
+        requestAnimationFrame(() => requestAnimationFrame(() => resolve()));
+      }),
   );
 }
 
@@ -145,11 +157,15 @@ test("wheel, toolbar and Text workspace preserve their zoom anchor through the f
       ).toBeVisible();
     await page.evaluate(
       () =>
-        new Promise<void>((resolve) =>
-          requestAnimationFrame(() => requestAnimationFrame(() => resolve())),
-        ),
+        new Promise<void>((resolve) => {
+          requestAnimationFrame(() => requestAnimationFrame(() => resolve()));
+        }),
     );
     const surface = page.locator("[data-zoom-surface]");
+    // This case exercises a reachable anchor. The bounded-stage tests cover fits
+    // where scroll clamping deliberately moves the content away from that point.
+    await zoom.fill("220");
+    await settled(page);
     await expect(surface.locator("../../../..")).toHaveCSS("transform", "none");
     const viewport = surface.locator("../../..");
     // Observe the whole cycle, including the first frame after the single bounds commit.
@@ -189,7 +205,10 @@ test("wheel, toolbar and Text workspace preserve their zoom anchor through the f
     await expect(zoom).toHaveValue(String(previous + 10));
     await settled(page);
     await page.evaluate(
-      () => new Promise((resolve) => setTimeout(resolve, 1100)),
+      () =>
+        new Promise((resolve) => {
+          setTimeout(resolve, 1100);
+        }),
     );
     const samples = await page.evaluate(
       () =>
@@ -229,6 +248,10 @@ test("wheel, toolbar and Text workspace preserve their zoom anchor through the f
       toolbarFrames: samples.length,
       maximumToolbarAnchorErrorPx: error,
     });
+    // Both axes overflow here, so this off-center pointer anchor is reachable.
+    // Small fitted pages are tested separately against their actual scroll bounds.
+    await zoom.fill("220");
+    await settled(page);
     const wheelBefore = (await surface.boundingBox())!;
     const point = {
       x: wheelBefore.x + wheelBefore.width * 0.4,

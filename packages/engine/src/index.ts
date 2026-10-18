@@ -28,3 +28,5 @@ export {
   localizedSection,
   localizedSectionTitle,
 } from "./localization/sections";
+
+export * from "./canvas/pages";

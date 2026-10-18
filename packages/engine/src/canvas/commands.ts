@@ -6,6 +6,7 @@ import {
   layerPatchSchema,
   groupFields,
   markStyleFields,
+  pageSchema,
 } from "./schema";
 const ids = z.array(idSchema).check(z.minLength(1), z.maxLength(500));
 export const referenceSchema = z.strictObject({
@@ -14,12 +15,30 @@ export const referenceSchema = z.strictObject({
 });
 export const canvasCommands = [
   z.strictObject({
+    type: z.literal("page.create"),
+    page: pageSchema,
+    index: z.optional(z.int().check(z.minimum(0))),
+  }),
+  z.strictObject({
+    type: z.literal("page.update"),
+    id: idSchema,
+    patch: z.partial(z.omit(pageSchema, { id: true })),
+  }),
+  z.strictObject({ type: z.literal("page.delete"), id: idSchema }),
+  z.strictObject({
+    type: z.literal("layer.moveToPage"),
+    ids,
+    pageId: idSchema,
+  }),
+  z.strictObject({
     type: z.literal("canvas.enable"),
     layers: z.record(idSchema, layerSchema),
   }),
   z.strictObject({
     type: z.literal("canvas.update"),
-    patch: z.partial(z.omit(canvasSchema, { order: true, groups: true })),
+    patch: z.partial(
+      z.omit(canvasSchema, { order: true, groups: true, pages: true }),
+    ),
   }),
   z.strictObject({
     type: z.literal("layer.update"),

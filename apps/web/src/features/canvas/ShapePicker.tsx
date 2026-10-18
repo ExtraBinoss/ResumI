@@ -104,7 +104,7 @@ export function ShapePicker({ icon = false }: { icon?: boolean }) {
       setError(
         error instanceof Error
           ? error.message
-          : "The icon library could not be opened.",
+          : t("properties.iconLibraryUnavailable"),
       );
     } finally {
       if (request === loadRequest.current) setLoading(false);
@@ -142,7 +142,7 @@ export function ShapePicker({ icon = false }: { icon?: boolean }) {
     if (!file) return;
     setError("");
     try {
-      if (file.size > 256000) throw new Error("Choose an SVG under 256 KB.");
+      if (file.size > 256000) throw new Error(t("properties.svgTooLarge"));
       const item = importSvg(await file.text(), file.name);
       setImported((current) => [
         ...current.filter(
@@ -156,7 +156,7 @@ export function ShapePicker({ icon = false }: { icon?: boolean }) {
       setError(
         error instanceof Error
           ? error.message
-          : "This SVG could not be imported.",
+          : t("properties.svgImportFailed"),
       );
     }
   }
@@ -228,7 +228,7 @@ export function ShapePicker({ icon = false }: { icon?: boolean }) {
         {icon && (
           <AnimatedSegments
             value={category}
-            aria-label="Icon categories"
+            aria-label={t("properties.iconCategories")}
             className={styles.categories}
             items={[
               { value: "icons", label: t("assets.icons") },
@@ -252,7 +252,9 @@ export function ShapePicker({ icon = false }: { icon?: boolean }) {
             autoFocus
             captureTyping={open}
             focusKey={category}
-            aria-label={icon ? "Search icons" : "Search shapes"}
+            aria-label={
+              icon ? t("properties.searchIcons") : t("properties.searchShapes")
+            }
             hints={collection.slice(0, 6).map((item) => ({
               label: item.name,
               preview: <PaletteVector item={item} />,
@@ -275,7 +277,7 @@ export function ShapePicker({ icon = false }: { icon?: boolean }) {
           hidden
           type="file"
           accept="image/svg+xml,.svg"
-          aria-label="Import SVG file"
+          aria-label={t("properties.importSvg")}
           onChange={(event) => {
             void importFile(event.currentTarget.files?.[0]);
             event.currentTarget.value = "";
@@ -283,7 +285,10 @@ export function ShapePicker({ icon = false }: { icon?: boolean }) {
         />
         {error && (
           <div className={styles.error}>
-            <ErrorMessage error={error} label="Could not import icon" />
+            <ErrorMessage
+              error={error}
+              label={t("properties.importIconError")}
+            />
           </div>
         )}
         <AnimatePresence initial={false} mode="wait">
@@ -301,7 +306,11 @@ export function ShapePicker({ icon = false }: { icon?: boolean }) {
                 setScrollTop((event.target as HTMLElement).scrollTop)
               }
               role="region"
-              aria-label={icon ? "Icon library" : "Shape library"}
+              aria-label={
+                icon
+                  ? t("properties.iconLibrary")
+                  : t("properties.shapeLibrary")
+              }
             >
               {loading ? (
                 <div className={styles.empty}>
@@ -321,7 +330,9 @@ export function ShapePicker({ icon = false }: { icon?: boolean }) {
                         <button
                           key={item.id}
                           title={item.name}
-                          aria-label={`Use ${item.name}`}
+                          aria-label={t("properties.useAsset", {
+                            name: item.name,
+                          })}
                           onClick={() => choose(item)}
                         >
                           <PaletteVector item={item} />
@@ -337,13 +348,13 @@ export function ShapePicker({ icon = false }: { icon?: boolean }) {
                           {t("assets.import")}
                         </Button>
                       ) : (
-                        "No matches."
+                        t("properties.noMatches")
                       )}
                     </div>
                   )}
                   {filtered.length > 40 && (
                     <small className={styles.count}>
-                      {filtered.length} results
+                      {t("properties.results", { count: filtered.length })}
                     </small>
                   )}
                 </>
@@ -351,7 +362,7 @@ export function ShapePicker({ icon = false }: { icon?: boolean }) {
             </ScrollShadow>
           </motion.div>
         </AnimatePresence>
-        <p className={styles.hint}>Choose, then click or drag on the canvas.</p>
+        <p className={styles.hint}>{t("properties.chooseCanvasShape")}</p>
       </Popover.Dropdown>
     </Popover>
   );

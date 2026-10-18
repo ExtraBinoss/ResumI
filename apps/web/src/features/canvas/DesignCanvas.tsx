@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { useRef, useState, type CSSProperties, type PointerEvent } from "react";
 import { createPortal } from "react-dom";
 import { useAtomValue, useSetAtom, useStore } from "jotai";
@@ -7,14 +8,13 @@ import {
   boundsForElements,
   type Layer,
 } from "@resumi/engine";
+import { resumeCss, resumeStyle } from "@resumi/cv/renderer";
 import {
-  resumeCss,
-  resumeStyle,
   renderLayerContent,
   layerStyle,
   groupStyle,
   canvasFontCss,
-} from "@resumi/cv";
+} from "@resumi/cv/design-renderer";
 import {
   blockAtom,
   sessionAtom,
@@ -31,7 +31,13 @@ import {
   toolAtom,
   shapeToolAtom,
   addLayerAtom,
+  activePageIdAtom,
+  addPageAtom,
+  pagesAtom,
 } from "../../state/design";
+import { Plus } from "lucide-react";
+import { Button } from "../../components/ui/button";
+import { Tooltip } from "../../ui";
 import {
   snapMovement,
   resizeFrame,
@@ -42,6 +48,7 @@ import {
 import { useCanvasPan } from "./useCanvasPan";
 import { SelectionMeasurements } from "./SelectionMeasurements";
 import { CanvasText } from "./CanvasText";
+import { HoverOutline } from "./HoverOutline";
 import styles from "./styles/Canvas.module.css";
 import controls from "./styles/Controls.module.css";
 import viewportStyles from "./styles/Viewport.module.css";
@@ -54,6 +61,7 @@ function DesignLayer({
   groupLocked?: boolean;
   overlay: HTMLDivElement | null;
 }) {
+  const { t } = useTranslation();
   const block = useAtomValue(blockAtom(id)),
     selected = useAtomValue(selectedIdsAtom),
     zoom = useAtomValue(zoomAtom),
@@ -103,7 +111,7 @@ function DesignLayer({
           `[data-layer-id="${id}"], [data-layer-frame="${id}"]`,
         ) ?? []),
     ]);
-    const canvas = doc.canvas!,
+    const canvas = store.get(canvasAtom)!,
       other = canvas.order
         .filter((id) => !ids.includes(id) && !groupFor(doc, id)?.hidden)
         .map((id) => doc.blocks[id].design!)
@@ -245,11 +253,11 @@ function DesignLayer({
       onPointerUp={finish}
       onPointerCancel={(e) => finish(e, true)}
       onLostPointerCapture={(e) => finish(e, true)}
-      onDoubleClick={() => {
-        if (!editing && !locked && layer.type === "text") {
-          select({ ids: [id] });
-          setEditing(true);
-        }
+      onDoubleClick={(event) => {
+        event.stopPropagation();
+        if (editing || locked || tool !== "select") return;
+        select({ ids: [id] });
+        if (layer.type === "text") setEditing(true);
       }}
     >
       {editing && active && layer.type === "text" ? (
@@ -258,7 +266,10 @@ function DesignLayer({
         <div
           role="button"
           tabIndex={locked ? -1 : 0}
-          aria-label={`Edit ${block.kind}: ${block.text.slice(0, 45) || layer.name}`}
+          aria-label={t("properties.editText", {
+            kind: t(`properties.kind.${block.kind}`),
+            text: block.text.slice(0, 45) || layer.name,
+          })}
           aria-pressed={active}
           onClick={(e) => e.stopPropagation()}
           onKeyDown={(e) => {
@@ -270,13 +281,17 @@ function DesignLayer({
           dangerouslySetInnerHTML={{ __html: renderLayerContent(block) }}
         />
       )}
+      {overlay && hovered && !active && !editing && tool === "select" && (
+        <HoverOutline id={id} layer={layer} overlay={overlay} />
+      )}
       {overlay &&
-        (active || hovered) &&
+        active &&
         createPortal(
           <div
             data-layer-frame={id}
             className={`${styles.interactionFrame} ${active ? styles.selected : ""}`}
             style={{
+              zIndex: 1,
               left: layer.x,
               top: layer.y,
               width: layer.width,
@@ -293,8 +308,8 @@ function DesignLayer({
                     data-handle={handle}
                     aria-label={
                       handle === "se"
-                        ? `Resize ${layer.name}`
-                        : `Resize ${layer.name} ${handle}`
+                        ? t("properties.resizeLayer", { name: layer.name })
+                        : t("properties.resize", { name: layer.name, handle })
                     }
                     onPointerDown={(e) => {
                       e.stopPropagation();
@@ -314,9 +329,13 @@ function DesignLayer({
   );
 }
 export function DesignCanvas() {
+  const { t } = useTranslation();
   const pan = useCanvasPan();
   const [overlay, setOverlay] = useState<HTMLDivElement | null>(null);
   const canvas = useAtomValue(canvasAtom),
+    pageId = useAtomValue(activePageIdAtom),
+    pages = useAtomValue(pagesAtom),
+    addPage = useSetAtom(addPageAtom),
     zoom = useAtomValue(zoomAtom),
     style = useAtomValue(styleAtom),
     locale = useAtomValue(localeAtom),
@@ -388,7 +407,7 @@ export function DesignCanvas() {
         });
       else if (width > 4 && height > 4) {
         const doc = store.get(sessionAtom)!.document,
-          ids = doc.canvas!.order.filter((id) => {
+          ids = store.get(canvasAtom)!.order.filter((id) => {
             const layer = doc.blocks[id].design!,
               group = groupFor(doc, id);
             return (
@@ -427,7 +446,7 @@ export function DesignCanvas() {
     >
       {tool === "text" && (
         <div className={controls.toolHint} role="status">
-          Click to add text · Drag to draw a text box
+          {t("properties.textToolHint")}
         </div>
       )}
       <div
@@ -455,7 +474,8 @@ export function DesignCanvas() {
         >
           <article
             className={`resume freeform ${styles.paper}`}
-            aria-label="Resume canvas"
+            aria-label={t("properties.canvas")}
+            data-active-page={pageId}
             data-zoom-surface
             lang={locale}
             style={{
@@ -510,6 +530,18 @@ export function DesignCanvas() {
             <div data-guide="x" className={styles.guideX} />
             <div data-guide="y" className={styles.guideY} />
           </article>
+          <Tooltip label={t("pages.add")}>
+            <Button
+              className={styles.addPage}
+              aria-label={t("pages.add")}
+              variant="outline"
+              size="icon"
+              disabled={pages.length >= 20}
+              onClick={() => addPage()}
+            >
+              <Plus size={17} aria-hidden />
+            </Button>
+          </Tooltip>
         </div>
       </div>
     </div>

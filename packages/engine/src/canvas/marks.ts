@@ -75,24 +75,17 @@ export function richTextSegments(
     const active = normalized.filter(
       (mark) => mark.start <= start && mark.end >= end,
     );
-    const style = active.reduce<TextMarkStyle>(
-      (merged, mark) => ({
-        ...merged,
-        ...(mark.href !== undefined ? { href: mark.href } : {}),
-        ...(mark.color !== undefined ? { color: mark.color } : {}),
-        ...(mark.fontFamily !== undefined
-          ? { fontFamily: mark.fontFamily }
-          : {}),
-        ...(mark.fontSize !== undefined ? { fontSize: mark.fontSize } : {}),
-        ...(mark.fontWeight !== undefined
-          ? { fontWeight: mark.fontWeight }
-          : {}),
-        ...(mark.fontStyle !== undefined ? { fontStyle: mark.fontStyle } : {}),
-        ...(mark.underline !== undefined ? { underline: mark.underline } : {}),
-        ...(mark.strike !== undefined ? { strike: mark.strike } : {}),
-      }),
-      {},
-    );
+    const style: TextMarkStyle = {};
+    for (const mark of active) {
+      if (mark.href !== undefined) style.href = mark.href;
+      if (mark.color !== undefined) style.color = mark.color;
+      if (mark.fontFamily !== undefined) style.fontFamily = mark.fontFamily;
+      if (mark.fontSize !== undefined) style.fontSize = mark.fontSize;
+      if (mark.fontWeight !== undefined) style.fontWeight = mark.fontWeight;
+      if (mark.fontStyle !== undefined) style.fontStyle = mark.fontStyle;
+      if (mark.underline !== undefined) style.underline = mark.underline;
+      if (mark.strike !== undefined) style.strike = mark.strike;
+    }
     return {
       start,
       end,

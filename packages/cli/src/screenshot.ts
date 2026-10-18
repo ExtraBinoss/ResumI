@@ -73,9 +73,9 @@ export async function captureScreenshot(
           }
         }),
       );
-      await new Promise<void>((resolve) =>
-        requestAnimationFrame(() => requestAnimationFrame(() => resolve())),
-      );
+      await new Promise<void>((resolve) => {
+        requestAnimationFrame(() => requestAnimationFrame(() => resolve()));
+      });
       const alert = document.querySelector('[role="alert"]');
       return {
         width: document.documentElement.scrollWidth,

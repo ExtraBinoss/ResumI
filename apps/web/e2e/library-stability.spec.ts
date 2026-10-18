@@ -205,6 +205,14 @@ test("library search has the same position in both routes and translated sorting
         name: locale === "fr" ? "Trier les CV" : "Sort resumes",
         exact: true,
       });
+      // Collection preferences survive sibling navigation; reset this fixture.
+      await sort.click();
+      await page
+        .getByRole("option", {
+          name: locale === "fr" ? "Modifié" : "Last edited",
+          exact: true,
+        })
+        .click();
       await expect(sort).toContainText(
         locale === "fr" ? "Modifié" : "Last edited",
       );
@@ -255,7 +263,11 @@ test("library search has the same position in both routes and translated sorting
         }),
       ).toBeVisible();
       await search.fill("");
-      await page.locator('nav[aria-label] a[href="/templates"]').click();
+      await page
+        .locator(
+          `nav[aria-label] a[href="${locale === "fr" ? "/fr/templates" : "/templates"}"]`,
+        )
+        .click();
       const templates = page.getByRole("searchbox", {
         name: locale === "fr" ? "Rechercher un modèle" : "Search templates",
         exact: true,
@@ -278,6 +290,7 @@ test("library search has the same position in both routes and translated sorting
       expect(
         await page.evaluate(() => document.documentElement.scrollWidth),
       ).toBe(width);
+      await templates.fill("");
     }
   }
 });

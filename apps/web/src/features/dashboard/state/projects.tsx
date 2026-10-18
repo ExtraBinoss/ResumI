@@ -5,12 +5,23 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import { projects, storageMessage, type Project } from "../../../lib/projects";
+import {
+  projects,
+  storageErrorCode,
+  type Project,
+  type StorageErrorCode,
+} from "../../../lib/projects";
 
+type DashboardError =
+  | { kind: "message"; value: string }
+  | { kind: "storage"; code: StorageErrorCode }
+  | { kind: "translation"; key: "site.errors.fileTooLarge" };
 type DashboardProjects = {
   records: Project[] | null;
-  error: string;
+  error: DashboardError | null;
   setError: (message: string) => void;
+  setStorageError: (code: StorageErrorCode) => void;
+  setFileTooLargeError: () => void;
   refresh: () => Promise<void>;
 };
 const ProjectsContext = createContext<DashboardProjects | null>(null);
@@ -22,7 +33,16 @@ export function DashboardProjectsProvider({
   children: ReactNode;
 }) {
   const [records, setRecords] = useState<Project[] | null>(null);
-  const [error, setError] = useState("");
+  const [error, setErrorState] = useState<DashboardProjects["error"]>(null);
+  function setError(message: string) {
+    setErrorState(message ? { kind: "message", value: message } : null);
+  }
+  function setStorageError(code: StorageErrorCode) {
+    setErrorState({ kind: "storage", code });
+  }
+  function setFileTooLargeError() {
+    setErrorState({ kind: "translation", key: "site.errors.fileTooLarge" });
+  }
   useEffect(() => {
     let active = true;
     const load = () => {
@@ -32,7 +52,11 @@ export function DashboardProjectsProvider({
           if (active) setRecords(data);
         })
         .catch((reason) => {
-          if (active) setError(storageMessage(reason));
+          if (active)
+            setErrorState({
+              kind: "storage",
+              code: storageErrorCode(reason),
+            });
         });
     };
     load();
@@ -46,7 +70,16 @@ export function DashboardProjectsProvider({
     setRecords(await projects.list());
   }
   return (
-    <ProjectsContext value={{ records, error, setError, refresh }}>
+    <ProjectsContext
+      value={{
+        records,
+        error,
+        setError,
+        setStorageError,
+        setFileTooLargeError,
+        refresh,
+      }}
+    >
       {children}
     </ProjectsContext>
   );

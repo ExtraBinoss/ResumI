@@ -71,6 +71,7 @@ const vectorPath = z
 export const vectorSchema = z.strictObject({
   path: vectorPath,
   viewBox: z.string().check(z.regex(/^-?[\d.]+\s+-?[\d.]+\s+[\d.]+\s+[\d.]+$/)),
+  colorMode: z.optional(z.enum(["original", "monochrome"])),
   strokeOnly: z.optional(z.boolean()),
   parts: z.optional(
     z
@@ -119,6 +120,7 @@ export const markSchema = z.strictObject({
   end: z.int().check(z.minimum(1)),
 });
 export const baseFields = {
+  pageId: z.optional(idSchema),
   name: z.string().check(z.maxLength(120)),
   x: number(-5000, 5000),
   y: number(-5000, 5000),
@@ -198,10 +200,22 @@ export const groupSchema = z.strictObject({
   elementIds: z.array(idSchema).check(z.minLength(1), z.maxLength(500)),
   ...groupFields,
 });
-export const canvasSchema = z.strictObject({
+export const pageFields = {
   width: number(100, 5000),
   height: number(100, 5000),
   background: colorSchema,
+};
+export const pageSchema = z.strictObject({
+  id: idSchema,
+  name: z.string().check(z.trim(), z.minLength(1), z.maxLength(120)),
+  ...pageFields,
+});
+export const MAX_DOCUMENT_PAGES = 20;
+export const canvasSchema = z.strictObject({
+  ...pageFields,
+  pages: z.optional(
+    z.array(pageSchema).check(z.maxLength(MAX_DOCUMENT_PAGES - 1)),
+  ),
   order: z.array(idSchema).check(z.maxLength(1000)),
   groups: z.array(groupSchema).check(z.maxLength(100)),
   fonts: z
@@ -226,3 +240,5 @@ export type Layer = z.infer<typeof layerSchema>;
 export type LayerPatch = z.infer<typeof layerPatchSchema>;
 export type LayerGroup = z.infer<typeof groupSchema>;
 export type Canvas = z.infer<typeof canvasSchema>;
+
+export type CanvasPage = z.infer<typeof pageSchema>;

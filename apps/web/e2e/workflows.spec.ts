@@ -1,7 +1,11 @@
 import { test, expect, type Page } from "@playwright/test";
 import { mkdir, writeFile } from "node:fs/promises";
 import { createResume } from "../../../packages/cv/src/index";
-import { closeDialog, openCommands } from "./helpers/editor";
+import {
+  closeDialog,
+  openCommands,
+  openDocumentSettings,
+} from "./helpers/editor";
 const artifacts = "artifacts";
 async function createLegacyFlow(page: Page) {
   await page.goto("/projects");
@@ -19,10 +23,8 @@ async function createLegacyFlow(page: Page) {
 }
 
 async function create(page: Page) {
-  await page.goto("/");
-  await page
-    .getByRole("link", { name: "Create a resume", exact: true })
-    .click();
+  await page.goto("/projects");
+  await page.getByRole("button", { name: "New resume", exact: true }).click();
   await expect(
     page.getByRole("article", { name: "Resume canvas" }),
   ).toBeVisible();
@@ -99,6 +101,11 @@ test("SSR public pages and nested routes return meaningful server HTML; hydratio
     .getByRole("navigation", { name: "Main navigation" })
     .getByRole("link", { name: "Templates", exact: true })
     .click();
+  await expect(page).toHaveURL(/#templates$/);
+  await page
+    .getByRole("main")
+    .getByRole("link", { name: "Browse all templates", exact: true })
+    .click();
   await expect(
     page.getByRole("heading", { name: "Templates", exact: true }),
   ).toBeVisible();
@@ -109,10 +116,10 @@ test("SSR public pages and nested routes return meaningful server HTML; hydratio
   expect(errors).toEqual([]);
 });
 
-test("human editor → save/reload → agent preview/undo → project lifecycle → JSON import", async ({
+test("human editor → save/reload → agent preview/undo → JSON round-trip", async ({
   page,
 }) => {
-  // This cumulative cold-dev journey includes several reloads, CRUD and import.
+  // This cold-dev journey includes several reloads, editing and import.
   // Keep individual assertion deadlines unchanged instead of retrying the flow.
   test.setTimeout(60000);
   const errors: string[] = [];
@@ -156,36 +163,53 @@ test("human editor → save/reload → agent preview/undo → project lifecycle 
   await expect(
     page.getByRole("article", { name: "Resume canvas" }),
   ).toContainText("Product designer focused on accessible software.");
-  await page.getByRole("radio", { name: "Structure", exact: true }).click();
-  await page.getByRole("button", { name: "Add section", exact: true }).click();
-  await page
-    .getByRole("textbox", { name: "Section title", exact: true })
-    .fill("Projects");
-  await page
-    .getByRole("textbox", { name: "Content", exact: true })
-    .fill("Built something meaningful.");
   await expect(
-    page.getByRole("article", { name: "Resume canvas" }),
-  ).toContainText("Built something meaningful.");
+    page.getByRole("radio", { name: "Structure", exact: true }),
+  ).toHaveCount(0);
   await page
-    .getByRole("button", { name: "Move section up", exact: true })
-    .click();
-  await page
-    .getByRole("button", { name: "Delete selected section", exact: true })
-    .click();
+    .getByRole("heading", { name: "Sam Taylor", exact: true })
+    .dblclick();
+  const heading = page.getByRole("textbox", {
+    name: "Edit text on canvas",
+    exact: true,
+  });
+  await heading.fill("Sam Taylor — Design");
+  await heading.press("Control+Enter");
   await expect(
-    page.getByRole("article", { name: "Resume canvas" }),
-  ).not.toContainText("Built something meaningful.");
+    page.getByRole("heading", { name: "Sam Taylor — Design", exact: true }),
+  ).toBeVisible();
   await page.getByRole("button", { name: "Undo", exact: true }).click();
   await expect(
-    page.getByRole("article", { name: "Resume canvas" }),
-  ).toContainText("Built something meaningful.");
+    page.getByRole("heading", { name: "Sam Taylor", exact: true }),
+  ).toBeVisible();
   await page.getByRole("button", { name: "Export", exact: true }).click();
   const downloadPromise = page.waitForEvent("download");
   await page.getByRole("menuitem", { name: "JSON document" }).click();
   const download = await downloadPromise;
   const jsonPath = await download.path();
   expect(jsonPath).toBeTruthy();
+  await saved(page);
+  await page.getByRole("button", { name: "Back to projects" }).click();
+  await expect(
+    page.getByRole("heading", { name: "Your resumes", exact: true }),
+  ).toBeVisible();
+  await page.locator("input[type=file]").setInputFiles(jsonPath!);
+  await expect(
+    page.getByRole("heading", { name: "Sam Taylor", exact: true }),
+  ).toBeVisible();
+  await page.reload();
+  await expect(
+    page.getByRole("heading", { name: "Sam Taylor", exact: true }),
+  ).toBeVisible();
+  expect(errors).toEqual([]);
+});
+
+test("project library renames, duplicates and confirms deletion across reloads", async ({
+  page,
+}) => {
+  const errors: string[] = [];
+  page.on("pageerror", (error) => errors.push(error.message));
+  await create(page);
   await saved(page);
   await page.getByRole("button", { name: "Back to projects" }).click();
   await expect(
@@ -235,14 +259,6 @@ test("human editor → save/reload → agent preview/undo → project lifecycle 
       exact: true,
     }),
   ).toHaveCount(0);
-  await page.locator("input[type=file]").setInputFiles(jsonPath!);
-  await expect(
-    page.getByRole("heading", { name: "Sam Taylor", exact: true }),
-  ).toBeVisible();
-  await page.reload();
-  await expect(
-    page.getByRole("heading", { name: "Sam Taylor", exact: true }),
-  ).toBeVisible();
   expect(errors).toEqual([]);
 });
 
@@ -254,7 +270,11 @@ test("visual desktop/mobile screenshots, rendered DOM/CSS and real canvas", asyn
   const errors: string[] = [];
   page.on("pageerror", (e) => errors.push(e.message));
   await page.goto("/");
-  await page.evaluate(() => document.fonts.ready);
+  await page.evaluate(async () => {
+    await document.fonts.ready;
+    for (const image of document.images) image.loading = "eager";
+    await Promise.all(Array.from(document.images, (image) => image.decode()));
+  });
   await page.screenshot({
     path: `${artifacts}/visual/landing-desktop.png`,
     fullPage: true,
@@ -310,7 +330,11 @@ test("visual desktop/mobile screenshots, rendered DOM/CSS and real canvas", asyn
   });
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/");
-  await page.evaluate(() => document.fonts.ready);
+  await page.evaluate(async () => {
+    await document.fonts.ready;
+    for (const image of document.images) image.loading = "eager";
+    await Promise.all(Array.from(document.images, (image) => image.decode()));
+  });
   await page.screenshot({
     path: `${artifacts}/visual/landing-mobile.png`,
     fullPage: true,
@@ -344,7 +368,10 @@ test("block CRUD, style updates and keyboard history share engine semantics", as
   page,
 }) => {
   await createLegacyFlow(page);
-  await page.getByRole("button", { name: "Profile 1", exact: true }).click();
+  await page
+    .getByRole("complementary", { name: "Layers panel", exact: true })
+    .getByRole("button", { name: "Profile", exact: true })
+    .click();
   await page
     .getByRole("button", { name: "Add text block", exact: true })
     .click();
@@ -354,20 +381,6 @@ test("block CRUD, style updates and keyboard history share engine semantics", as
   await expect(
     page.locator('.resume[aria-label="Resume canvas"]'),
   ).toContainText("A new achievement.");
-  await page
-    .getByRole("button", { name: "Move block up", exact: true })
-    .click();
-  const blocks = page
-    .locator(".resume-section")
-    .filter({
-      has: page.getByRole("heading", { name: "Profile", exact: true }),
-    })
-    .locator("[data-block-id]");
-  await expect(blocks.first()).toHaveText("A new achievement.");
-  await page
-    .getByRole("button", { name: "Move block down", exact: true })
-    .click();
-  await expect(blocks.last()).toHaveText("A new achievement.");
   await page.getByRole("button", { name: "Delete block", exact: true }).click();
   await expect(
     page.locator('.resume[aria-label="Resume canvas"]'),
@@ -376,11 +389,23 @@ test("block CRUD, style updates and keyboard history share engine semantics", as
   await expect(
     page.locator('.resume[aria-label="Resume canvas"]'),
   ).toContainText("A new achievement.");
+  await openCommands(page);
   await page
-    .getByRole("button", { name: "Document settings", exact: true })
+    .getByRole("textbox", { name: "Command proposal", exact: true })
+    .fill(
+      JSON.stringify({
+        version: 1,
+        actor: { kind: "agent", name: "Legacy font QA" },
+        commands: [{ type: "style.update", patch: { font: "serif" } }],
+      }),
+    );
+  await page
+    .getByRole("button", { name: "Validate & preview", exact: true })
     .click();
-  await page.getByRole("combobox", { name: "Typography", exact: true }).click();
-  await page.getByRole("option", { name: "Classic serif" }).click();
+  await page
+    .getByRole("button", { name: "Apply changes", exact: true })
+    .click();
+  await closeDialog(page, "Import commands");
   await expect(page.locator('.resume[aria-label="Resume canvas"]')).toHaveCSS(
     "font-family",
     /Georgia/,
@@ -396,10 +421,12 @@ test("block CRUD, style updates and keyboard history share engine semantics", as
     "font-family",
     /Georgia/,
   );
+  await openDocumentSettings(page);
   await page.getByRole("button", { name: "Accent color", exact: true }).click();
   await page.getByRole("textbox", { name: "Hex", exact: true }).fill("334E68");
   await page.getByRole("textbox", { name: "Hex", exact: true }).press("Enter");
   await page.keyboard.press("Escape");
+  await closeDialog(page, "Document settings");
   await expect(page.locator('.resume[aria-label="Resume canvas"]')).toHaveCSS(
     "--resume-accent",
     "#334e68",

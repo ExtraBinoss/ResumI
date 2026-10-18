@@ -1,4 +1,8 @@
 import { vectorSchema } from "../packages/engine/src/canvas/schema";
+import {
+  agentBrandCatalog,
+  writeAgentBrandAssets,
+} from "./agent-brand-catalog";
 
 const iconifyRevision = "69ca5094ddd4aad6d797e689bb13ee8b692ae232";
 const logosRevision = "4a5b550414be64d5c007574cd395d910d50e8950";
@@ -60,6 +64,7 @@ const choices: [string, string, string][] = [
   ["windows11", "Windows", "Platforms"],
   ["slack", "Slack", "Platforms"],
   ["notion", "Notion", "Platforms"],
+  ["linkedin", "LinkedIn", "Platforms"],
   ["sketch", "Sketch", "Design"],
   ["photoshop", "Adobe Photoshop", "Design"],
   ["illustrator", "Adobe Illustrator", "Design"],
@@ -195,14 +200,19 @@ icons.push({
     parts: microsoftLayers,
   }),
 });
-if (icons.length !== 50)
-  throw new Error(`Expected 50 brands, got ${icons.length}`);
+const agents = await agentBrandCatalog();
+icons.push(...agents.icons);
+const expectedCount = choices.length + 1 + agents.icons.length;
+if (icons.length !== expectedCount)
+  throw new Error(`Expected ${expectedCount} brands, got ${icons.length}`);
 await Bun.write(
   new URL("brands.json", root),
-  JSON.stringify({ credits: { MIT: mit, "CC0-1.0": cc0 }, icons }) + "\n",
+  JSON.stringify({
+    credits: { MIT: mit, "CC0-1.0": cc0, ...agents.credits },
+    icons,
+  }) + "\n",
 );
 await Bun.write(new URL("licenses/devicon-MIT.txt", root), mit);
 await Bun.write(new URL("licenses/svg-logos-CC0.txt", root), cc0);
-console.log(
-  `Wrote ${icons.length} validated original-color brands from pinned sources.`,
-);
+await writeAgentBrandAssets();
+console.log(`Wrote ${icons.length} validated brands from pinned sources.`);

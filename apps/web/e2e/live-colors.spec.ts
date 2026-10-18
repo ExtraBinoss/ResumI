@@ -86,13 +86,11 @@ test("valid HEX typing previews before blur and Escape restores an imported uppe
     ],
   }).document;
   await page.goto("/projects");
-  await page
-    .locator("input[type=file]")
-    .setInputFiles({
-      name: "color-study.json",
-      mimeType: "application/json",
-      buffer: Buffer.from(JSON.stringify(document)),
-    });
+  await page.locator("input[type=file]").setInputFiles({
+    name: "color-study.json",
+    mimeType: "application/json",
+    buffer: Buffer.from(JSON.stringify(document)),
+  });
   await expect(
     page.getByRole("article", { name: "Resume canvas" }),
   ).toBeVisible();

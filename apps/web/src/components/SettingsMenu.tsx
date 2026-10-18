@@ -1,7 +1,7 @@
 import { Settings, Sun, Moon, Monitor, Check } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { uiLanguages } from "../i18n/resources";
-import { setInterfaceLanguage } from "../i18n/interface-language";
+import { useInterfaceLocale } from "../i18n/useInterfaceLocale";
 import { ActionIcon, Popover, Select } from "../ui";
 import { useTheme } from "../state/theme";
 import { Button } from "./ui/button";
@@ -15,6 +15,7 @@ export function SettingsMenu({
   size?: number | string;
 }) {
   const [theme, setTheme] = useTheme();
+  const changeLocale = useInterfaceLocale();
   const { t, i18n } = useTranslation();
   return (
     <Popover position={position} width={210}>
@@ -66,7 +67,7 @@ export function SettingsMenu({
               label: name,
             }))}
             onChange={(locale) => {
-              if (locale) setInterfaceLanguage(i18n, locale);
+              if (locale) changeLocale(locale);
             }}
           />
         </div>

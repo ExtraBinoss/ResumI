@@ -461,3 +461,62 @@ test("invalid references, unsafe patches and illegal nested or locked destinatio
     }),
   ).toThrow("locked");
 });
+
+test("a layer can leave its own group at either boundary without moving the other members", () => {
+  const grouped = applyCommand(visualDocument(), {
+    type: "group.create",
+    id: "identity",
+    ids: ["a", "b"],
+    name: "Identity",
+  });
+  for (const placement of ["above", "below"] as const) {
+    const moved = applyCommand(grouped, {
+      type: "layer.relocate",
+      source: { kind: "element", id: "b" },
+      target: { kind: "group", id: "identity" },
+      placement,
+    });
+    expect(groupFor(moved, "b")).toBeUndefined();
+    expect(groupFor(moved, "a")?.elementIds).toEqual(["a"]);
+    expect(moved.canvas?.order).toEqual(
+      placement === "above" ? ["a", "b", "c", "d"] : ["b", "a", "c", "d"],
+    );
+    expect(moved.blocks).toBe(grouped.blocks);
+  }
+  expect(
+    applyCommand(grouped, {
+      type: "layer.relocate",
+      source: { kind: "element", id: "b" },
+      target: { kind: "group", id: "identity" },
+      placement: "inside",
+    }),
+  ).toEqual(grouped);
+});
+
+test("the final member leaves its group in place without changing the stacking order", () => {
+  const grouped = applyCommand(visualDocument(), {
+    type: "group.create",
+    id: "identity",
+    ids: ["b", "c"],
+    name: "Identity",
+  });
+  const singleton = applyCommand(grouped, {
+    type: "layer.relocate",
+    source: { kind: "element", id: "c" },
+    target: { kind: "group", id: "identity" },
+    placement: "above",
+  });
+  expect(groupFor(singleton, "b")?.elementIds).toEqual(["b"]);
+  for (const placement of ["above", "below"] as const) {
+    const moved = applyCommand(singleton, {
+      type: "layer.relocate",
+      source: { kind: "element", id: "b" },
+      target: { kind: "group", id: "identity" },
+      placement,
+    });
+    expect(groupFor(moved, "b")).toBeUndefined();
+    expect(moved.canvas?.groups).toEqual([]);
+    expect(moved.canvas?.order).toEqual(singleton.canvas?.order);
+    expect(moved.blocks).toBe(singleton.blocks);
+  }
+});

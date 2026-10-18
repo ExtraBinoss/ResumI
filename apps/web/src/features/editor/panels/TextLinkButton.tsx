@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { useState } from "react";
 import { useAtomValue, useSetAtom } from "jotai";
 import { Link2, Trash2 } from "lucide-react";
@@ -22,6 +23,7 @@ export function TextLinkButton({
   id: string;
   layer: Extract<Layer, { type: "text" }>;
 }) {
+  const { t } = useTranslation();
   const block = useAtomValue(blockAtom(id));
   const selection = useAtomValue(textRangeAtom);
   const setSelection = useSetAtom(textRangeAtom);
@@ -78,7 +80,7 @@ export function TextLinkButton({
     <Popover opened={open} onChange={setOpen} width={260} position="bottom-end">
       <Popover.Target>
         <ActionIcon
-          aria-label="Add link to selection"
+          aria-label={t("properties.addLink")}
           size="sm"
           disabled={!block?.text.length}
           aria-pressed={!!current?.style.href}
@@ -93,8 +95,8 @@ export function TextLinkButton({
       <Popover.Dropdown>
         <div className={styles.linkFields}>
           <TextInput
-            label="Text"
-            aria-label="Link text"
+            label={t("properties.textLabel")}
+            aria-label={t("properties.linkText")}
             size="xs"
             value={label}
             onChange={(event) => setLabel(event.currentTarget.value)}
@@ -102,17 +104,17 @@ export function TextLinkButton({
           <TextInput
             label={
               <>
-                Link <Shortcut keys={["Mod", "K"]} />
+                {t("properties.link")} <Shortcut keys={["Mod", "K"]} />
               </>
             }
-            aria-label="Link URL"
+            aria-label={t("properties.linkUrl")}
             size="xs"
             value={href}
             onChange={(event) => setHref(event.currentTarget.value)}
           />
           <ColorInput
-            label="Color"
-            aria-label="Link color"
+            label={t("properties.color")}
+            aria-label={t("properties.linkColor")}
             size="xs"
             value={color}
             onPreview={(value) => preview({ kind: "text", id, range }, value)}
@@ -121,7 +123,7 @@ export function TextLinkButton({
           <div className={styles.linkActions}>
             {linkMarks.length > 0 && (
               <ActionIcon
-                aria-label="Remove link"
+                aria-label={t("properties.removeLink")}
                 size="sm"
                 variant="subtle"
                 color="gray"
@@ -147,7 +149,7 @@ export function TextLinkButton({
               disabled={!label || !/^(https?:|mailto:|tel:)/i.test(href)}
               onClick={apply}
             >
-              Apply
+              {t("properties.apply")}
             </Button>
           </div>
         </div>

@@ -30,7 +30,8 @@ function availableId(doc: Document, id: string) {
     id === doc.id ||
     Object.hasOwn(doc.sections, id) ||
     Object.hasOwn(doc.blocks, id) ||
-    doc.canvas?.groups.some((group) => group.id === id)
+    doc.canvas?.groups.some((group) => group.id === id) ||
+    doc.canvas?.pages?.some((page) => page.id === id)
   )
     throw new EngineError("CONFLICT", `ID already exists: ${id}`);
 }
@@ -53,6 +54,21 @@ function inserted(current: string[], id: string, index = current.length) {
 }
 function apply(doc: Document, command: Command): Document {
   switch (command.type) {
+    case "canvas.materialize": {
+      if (!doc.source || doc.source.enabled === false)
+        throw new EngineError(
+          "CONFLICT",
+          "Materializing a canvas requires active saved source.",
+        );
+      return {
+        ...doc,
+        canvas: command.canvas,
+        sectionIds: command.sectionIds,
+        sections: command.sections,
+        blocks: command.blocks,
+        source: { ...doc.source, enabled: false },
+      };
+    }
     case "section.translation.set":
     case "section.translation.remove":
     case "locale.add":

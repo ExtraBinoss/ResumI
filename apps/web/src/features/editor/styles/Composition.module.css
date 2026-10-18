@@ -27,6 +27,9 @@
   padding: 0 14px;
 }
 .compositionHeader h2 {
+  display: flex;
+  align-items: center;
+  gap: 7px;
   margin: 0;
   color: var(--muted-foreground);
   font-size: 12px;
@@ -233,4 +236,167 @@
 }
 .layerMenu :global([data-slot="dropdown-menu-item"]) {
   white-space: nowrap;
+}
+.layerCounts,
+.layerCounts > span {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--faint);
+  font-size: 11px;
+}
+.layerCounts {
+  gap: 10px;
+}
+.layerTree {
+  overflow: visible;
+  border: 0;
+  border-radius: 0;
+  gap: 2px;
+}
+.groupShell {
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+}
+.groupRow {
+  min-height: 39px;
+  background: color-mix(in srgb, var(--muted) 45%, transparent);
+}
+.groupRow > h3 {
+  flex-shrink: 0;
+  margin: 0;
+}
+.groupToggle {
+  display: grid;
+  width: 22px;
+  height: 30px;
+  min-height: 0;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: 4px;
+  color: var(--muted-foreground);
+}
+.groupToggle:hover {
+  background: var(--muted);
+}
+.groupToggle > :global([data-slot="accordion-trigger-icon"]) {
+  display: none;
+}
+.groupRow > .layerName {
+  font-weight: 600;
+}
+.groupRow > .layerName > small {
+  min-width: 19px;
+  padding: 1px 4px;
+  border-radius: 4px;
+  background: var(--muted);
+  text-align: center;
+}
+.groupContent {
+  height: var(--accordion-panel-height);
+  padding: 0;
+  opacity: 1;
+  animation: none;
+  transition:
+    height 160ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    opacity 120ms ease;
+}
+.groupContent[data-starting-style],
+.groupContent[data-ending-style] {
+  height: 0;
+  opacity: 0;
+}
+.groupContent > div {
+  height: auto;
+  padding: 0;
+}
+.groupChildren {
+  position: relative;
+  min-height: 8px;
+  padding-bottom: 4px;
+}
+.groupChildren::before {
+  position: absolute;
+  top: 3px;
+  bottom: 8px;
+  left: 18px;
+  width: 1px;
+  background: var(--line-strong);
+  content: "";
+  pointer-events: none;
+}
+.groupChildren .member {
+  padding-left: 28px;
+}
+.reorderTree[data-reordering] {
+  cursor: grabbing;
+}
+.reorderTree[data-reordering] .groupContent {
+  transition: none;
+}
+.layerName[data-layer-drag-handle] {
+  cursor: grab;
+}
+.reorderTree[data-reordering] .layerName {
+  cursor: grabbing;
+}
+@media (prefers-reduced-motion: reduce) {
+  .groupContent {
+    transition: none;
+  }
+}
+
+.pageTabs {
+  display: block;
+  flex: 0 0 auto;
+  min-width: 0;
+  border-block: 1px solid var(--line);
+}
+.pageScroll {
+  width: 100%;
+}
+.pageTabList {
+  height: 37px;
+  min-width: 0;
+  flex: 0 0 auto;
+  justify-content: flex-start;
+  gap: 0;
+  padding: 0 6px;
+}
+.pageTabRow {
+  display: flex;
+  align-items: center;
+  min-width: 100%;
+  width: max-content;
+}
+.pageAdd {
+  flex: 0 0 auto;
+  margin-inline: 3px;
+}
+.pageTab {
+  flex: 0 0 auto;
+  height: 36px;
+  padding: 0 12px;
+  border-radius: 0;
+  color: var(--muted-foreground);
+  font-size: 11px;
+}
+.pageTab[data-active] {
+  color: var(--ink);
+  background: var(--muted);
+}
+.pageTab::after {
+  bottom: 0;
+  height: 2px;
+  background: var(--ink);
+}
+.reorderTree {
+  min-height: 100%;
+  overflow-anchor: none;
+}
+.layerRow,
+.groupRow {
+  touch-action: none;
 }

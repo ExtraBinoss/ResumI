@@ -47,7 +47,7 @@ test("template and shared asset discovery returns usable artwork with original b
   const brands = JSON.parse(
     (await runCli(["assets", "list", "--kind", "brands"], io)).stdout,
   );
-  expect(brands.total).toBe(50);
+  expect(brands.total).toBe(57);
   const figma = JSON.parse(
     (
       await runCli(
@@ -58,6 +58,17 @@ test("template and shared asset discovery returns usable artwork with original b
   );
   expect(figma.assets.map((item: { id: string }) => item.id)).toEqual([
     "brand-figma",
+  ]);
+  const linkedin = JSON.parse(
+    (
+      await runCli(
+        ["assets", "list", "--kind", "brands", "--search", "linkedin"],
+        io,
+      )
+    ).stdout,
+  );
+  expect(linkedin.assets.map((item: { id: string }) => item.id)).toEqual([
+    "brand-linkedin",
   ]);
   const svg = await runCli(
     ["assets", "show", "brand-figma", "--format", "svg"],

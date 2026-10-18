@@ -12,6 +12,10 @@ const result = await runCli(Bun.argv.slice(2), {
     const { captureScreenshot } = await import("./screenshot");
     return captureScreenshot(html, width, height);
   },
+  capturePdf: async (html, width, height, react) => {
+    const { renderPdf } = await import("./pdf-capture");
+    return renderPdf(html, width, height, react);
+  },
   id: () => crypto.randomUUID(),
 });
 if (result.stdout) process.stdout.write(result.stdout);

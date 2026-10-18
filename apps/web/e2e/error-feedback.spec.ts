@@ -1,5 +1,5 @@
 import { expect, test, type Page, type BrowserContext } from "@playwright/test";
-import { openSource } from "./helpers/editor";
+import { openCommands, closeDialog } from "./helpers/editor";
 
 async function clipboard(context: BrowserContext, page: Page) {
   await context.grantPermissions(["clipboard-read", "clipboard-write"], {
@@ -24,20 +24,43 @@ test("source compiler errors expose complete copyable details and preserve the s
   context,
 }) => {
   await page.goto("/editor?template=react-classic");
-  await expect(
-    page.getByRole("region", { name: "Source canvas" }),
-  ).toBeVisible();
+  const canvas = page.getByRole("article", {
+    name: "Resume canvas",
+    exact: true,
+  });
+  await expect(canvas).toBeVisible();
   await clipboard(context, page);
-  await openSource(page);
-  const dialog = page.getByRole("dialog", { name: "Source", exact: true });
+  await openCommands(page);
+  const dialog = page.getByRole("dialog", {
+    name: "Import commands",
+    exact: true,
+  });
   await dialog
-    .getByRole("textbox", { name: "React resume source", exact: true })
-    .fill("export default function Resume( { return <p>");
+    .getByRole("textbox", { name: "Command proposal", exact: true })
+    .fill(
+      JSON.stringify({
+        version: 1,
+        actor: { kind: "agent", name: "Invalid synthetic source" },
+        commands: [
+          {
+            type: "source.set",
+            source: {
+              format: "react",
+              code: "export default function Resume( { return <p>",
+              enabled: true,
+            },
+          },
+        ],
+      }),
+    );
   await dialog
-    .getByRole("button", { name: "Apply & preview", exact: true })
+    .getByRole("button", { name: "Validate & preview", exact: true })
     .click();
-  const error = dialog.getByRole("alert");
-  await expect(error).toContainText("Could not apply source");
+  await dialog
+    .getByRole("button", { name: "Apply changes", exact: true })
+    .click();
+  const error = dialog.getByRole("alert").filter({ has: page.locator("pre") });
+  await expect(error).toContainText("Proposal rejected");
   await expect(error).toContainText(/Resume.tsx|Unexpected token|expected/i);
   const details = await error.locator("pre").innerText();
   await error
@@ -49,11 +72,13 @@ test("source compiler errors expose complete copyable details and preserve the s
   await expect
     .poll(() => page.evaluate(() => navigator.clipboard.readText()))
     .toBe(details);
+  await closeDialog(page, "Import commands");
   await expect(
-    dialog
-      .frameLocator('iframe[title="React resume preview"]')
-      .getByRole("heading", { name: "Alex Morgan", exact: true }),
+    canvas.getByRole("heading", { name: "Alex Morgan", exact: true }),
   ).toBeVisible();
+  await expect(
+    page.getByRole("button", { name: "Undo", exact: true }),
+  ).toBeDisabled();
 });
 
 test("saved state stays visually quiet; stale saves reveal warning details on hover and keyboard activation", async ({
@@ -127,6 +152,14 @@ test("font import failures use the same warning and clipboard action in an edito
     page.getByRole("article", { name: "Resume canvas" }),
   ).toBeVisible();
   await clipboard(context, page);
+  await page
+    .getByRole("button", { name: "Select layer Name", exact: true })
+    .click();
+  const family = page.getByRole("combobox", {
+    name: "Font family",
+    exact: true,
+  });
+  await family.click();
   const chooser = page.waitForEvent("filechooser");
   await page.getByRole("button", { name: "Import font", exact: true }).click();
   await (
@@ -136,6 +169,8 @@ test("font import failures use the same warning and clipboard action in an edito
     mimeType: "text/plain",
     buffer: Buffer.from("Synthetic invalid font"),
   });
+  await page.keyboard.press("Escape");
+  await expect(family).toHaveAttribute("aria-expanded", "false");
   const toast = page.getByRole("alert").filter({
     has: page.getByRole("button", { name: "Dismiss error", exact: true }),
   });

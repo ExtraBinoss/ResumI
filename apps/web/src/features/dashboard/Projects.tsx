@@ -1,45 +1,40 @@
 import { useTranslation } from "react-i18next";
+import { publicPath } from "../../i18n/public-locale";
 import { useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { motion } from "motion/react";
-import {
-  Button,
-  TextInput,
-  Modal,
-  FileButton,
-  Alert,
-  Loader,
-  Select,
-  SegmentedControl,
-} from "../../ui";
-import {
-  Plus,
-  Upload,
-  FileText,
-  ArrowUpRight,
-  Grid2X2,
-  Rows3,
-} from "lucide-react";
-import { SearchInput } from "../../components/SearchInput";
+import { Button, TextInput, Modal, Alert, Loader } from "../../ui";
+import { FileText, ArrowUpRight } from "lucide-react";
 import { createSearchIndex } from "../../lib/search-index";
 import { ProjectCard } from "./components/ProjectCard";
-import { LibraryToolbar } from "./components/LibraryToolbar";
+import { ResumeFileInput } from "./components/ResumeFileInput";
+import { useLibraryView } from "./state/library-view";
 import { ProjectPreview } from "./components/ProjectPreview";
 import { useDashboardProjects } from "./state/projects";
-import { projects, storageMessage, type Project } from "../../lib/projects";
-import { readDocumentFile } from "../../lib/files";
-import { preloadEditor } from "../../lib/preload-editor";
+import {
+  projects,
+  storageErrorCode,
+  storageErrorKey,
+  StorageConflict,
+  type Project,
+} from "../../lib/projects";
+import { DocumentFileTooLargeError, readDocumentFile } from "../../lib/files";
 import styles from "./styles/Dashboard.module.css";
 export function Projects() {
-  const { t } = useTranslation();
-  const { records, error, setError, refresh } = useDashboardProjects();
-  const [search, setSearch] = useState(""),
-    [busy, setBusy] = useState(false);
+  const { t, i18n } = useTranslation();
+  const {
+    records,
+    error,
+    setError,
+    setStorageError,
+    setFileTooLargeError,
+    refresh,
+  } = useDashboardProjects();
+  const [busy, setBusy] = useState(false);
   const [renaming, setRenaming] = useState<Project | null>(null),
     [name, setName] = useState(""),
     [deleting, setDeleting] = useState<Project | null>(null);
-  const [sort, setSort] = useState("recent"),
-    [view, setView] = useState("grid");
+  const { search, sort, view } = useLibraryView();
   const [preview, setPreview] = useState<Project | null>(null);
   const navigate = useNavigate();
   async function run(action: () => Promise<void>) {
@@ -49,11 +44,20 @@ export function Projects() {
       await action();
       await refresh();
     } catch (e) {
-      setError(
-        e instanceof Error && !(e instanceof DOMException)
-          ? e.message
-          : storageMessage(e),
-      );
+      if (e instanceof DocumentFileTooLargeError) setFileTooLargeError();
+      else if (
+        e instanceof StorageConflict ||
+        (typeof DOMException !== "undefined" &&
+          e instanceof DOMException &&
+          e.name === "QuotaExceededError")
+      )
+        setStorageError(storageErrorCode(e));
+      else if (
+        e instanceof Error &&
+        !(typeof DOMException !== "undefined" && e instanceof DOMException)
+      )
+        setError(e.message);
+      else setStorageError(storageErrorCode(e));
     } finally {
       setBusy(false);
     }
@@ -77,163 +81,77 @@ export function Projects() {
     : null;
   return (
     <>
-      <main className={styles.main}>
-        <header className={styles.heading}>
-          <div className={styles.collectionTitle}>
-            <h1>{t("dashboard.yourResumes")}</h1>
-            {records && <span className={styles.count}>{records.length}</span>}
+      <ResumeFileInput
+        disabled={busy || records === null}
+        onSelect={(file) =>
+          void run(async () => {
+            const project = await projects.import(await readDocumentFile(file));
+            await navigate(`/editor/${project.id}`);
+          })
+        }
+      />
+      {error && (
+        <Alert color="red" title={t("dashboard.actionFailed")} mb="md">
+          {error.kind === "message"
+            ? error.value
+            : error.kind === "storage"
+              ? t(storageErrorKey(error.code))
+              : t(error.key)}
+        </Alert>
+      )}
+      <section
+        className={styles.collection}
+        aria-label={t("dashboard.library")}
+      >
+        {!records && !error && (
+          <div className={styles.empty}>
+            <Loader size="sm" label={t("loading.projects")} text />
           </div>
-          <div className={styles.actions}>
-            <FileButton
-              accept="application/json,.json"
-              onChange={(file) => {
-                if (file)
-                  void run(async () => {
-                    const project = await projects.import(
-                      await readDocumentFile(file),
-                    );
-                    await navigate(`/editor/${project.id}`);
-                  });
+        )}
+        {filtered?.length === 0 && (
+          <div className={styles.empty}>
+            <span className={styles.emptyPaper}>
+              <FileText size={36} strokeWidth={1.2} aria-hidden />
+            </span>
+            <h2>
+              {search ? t("dashboard.noResults") : t("dashboard.noResumes")}
+            </h2>
+            {!search && (
+              <Button
+                component={Link}
+                to={publicPath(i18n.language, "templates")}
+                variant="light"
+              >
+                {t("dashboard.chooseTemplate")}{" "}
+                <ArrowUpRight size={15} aria-hidden />
+              </Button>
+            )}
+          </div>
+        )}
+        <motion.div
+          className={`${styles.grid} ${view === "list" ? styles.listView : ""}`}
+          transition={{ duration: 0.24, ease: "easeOut" }}
+        >
+          {filtered?.map((project) => (
+            <ProjectCard
+              key={project.id}
+              project={project}
+              compact={view === "list"}
+              onRename={() => {
+                setRenaming(project);
+                setName(project.document.name);
               }}
-            >
-              {(props) => (
-                <Button
-                  {...props}
-                  variant="default"
-                  leftSection={<Upload aria-hidden />}
-                  disabled={busy || records === null}
-                  className={styles.importButton}
-                >
-                  {t("dashboard.import")}
-                </Button>
-              )}
-            </FileButton>
-            <Button
-              leftSection={<Plus aria-hidden />}
-              loading={busy}
-              onPointerEnter={preloadEditor}
-              onFocus={preloadEditor}
-              onClick={() =>
+              onDuplicate={() =>
                 void run(async () => {
-                  const project = await projects.create();
-                  await navigate(`/editor/${project.id}`);
+                  await projects.duplicate(project.id);
                 })
               }
-            >
-              {t("dashboard.newResume")}
-            </Button>
-          </div>
-        </header>
-        {error && (
-          <Alert color="red" title={t("dashboard.actionFailed")} mb="md">
-            {error}
-          </Alert>
-        )}
-        <LibraryToolbar
-          search={
-            <SearchInput
-              aria-label={t("dashboard.searchResumes")}
-              prefix={t("common.search")}
-              captureTyping
-              hints={(records ?? [])
-                .slice(0, 6)
-                .map((project) => ({ label: project.document.name }))}
-              value={search}
-              onChange={(e) => setSearch(e.currentTarget.value)}
-              size="xs"
+              onDelete={() => setDeleting(project)}
+              onPreview={() => setPreview(project)}
             />
-          }
-        >
-          <Select
-            aria-label={t("dashboard.sort")}
-            value={sort}
-            onChange={(value) => {
-              if (value) setSort(value);
-            }}
-            allowDeselect={false}
-            data={[
-              { value: "recent", label: t("dashboard.lastEdited") },
-              { value: "name", label: t("dashboard.sortName") },
-            ]}
-            size="xs"
-            className={styles.sort}
-            contentClassName={styles.sortMenu}
-          />
-          <SegmentedControl
-            aria-label={t("dashboard.view")}
-            size="xs"
-            value={view}
-            onChange={setView}
-            data={[
-              {
-                value: "grid",
-                label: (
-                  <span aria-label={t("dashboard.grid")}>
-                    <Grid2X2 size={16} aria-hidden />
-                  </span>
-                ),
-              },
-              {
-                value: "list",
-                label: (
-                  <span aria-label={t("dashboard.list")}>
-                    <Rows3 size={16} aria-hidden />
-                  </span>
-                ),
-              },
-            ]}
-          />
-        </LibraryToolbar>
-        <section
-          className={styles.collection}
-          aria-label={t("dashboard.library")}
-        >
-          {!records && !error && (
-            <div className={styles.empty}>
-              <Loader size="sm" label={t("loading.projects")} text />
-            </div>
-          )}
-          {filtered?.length === 0 && (
-            <div className={styles.empty}>
-              <span className={styles.emptyPaper}>
-                <FileText size={36} strokeWidth={1.2} aria-hidden />
-              </span>
-              <h2>
-                {search ? t("dashboard.noResults") : t("dashboard.noResumes")}
-              </h2>
-              {!search && (
-                <Button component={Link} to="/templates" variant="light">
-                  {t("dashboard.chooseTemplate")}{" "}
-                  <ArrowUpRight size={15} aria-hidden />
-                </Button>
-              )}
-            </div>
-          )}
-          <motion.div
-            className={`${styles.grid} ${view === "list" ? styles.listView : ""}`}
-            transition={{ duration: 0.24, ease: "easeOut" }}
-          >
-            {filtered?.map((project) => (
-              <ProjectCard
-                key={project.id}
-                project={project}
-                compact={view === "list"}
-                onRename={() => {
-                  setRenaming(project);
-                  setName(project.document.name);
-                }}
-                onDuplicate={() =>
-                  void run(async () => {
-                    await projects.duplicate(project.id);
-                  })
-                }
-                onDelete={() => setDeleting(project)}
-                onPreview={() => setPreview(project)}
-              />
-            ))}
-          </motion.div>
-        </section>
-      </main>
+          ))}
+        </motion.div>
+      </section>
       <ProjectPreview project={preview} onClose={() => setPreview(null)} />
       <Modal
         opened={!!renaming}

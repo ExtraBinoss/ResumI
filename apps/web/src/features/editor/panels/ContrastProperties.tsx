@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { useAtomValue } from "jotai";
 import { ShieldCheck, TriangleAlert, CircleHelp } from "lucide-react";
 import { motion } from "motion/react";
@@ -9,6 +10,7 @@ import { Button } from "../../../components/ui/button";
 import styles from "../styles/Contrast.module.css";
 
 export function ContrastProperties({ id }: { id: string }) {
+  const { t } = useTranslation();
   const document = useAtomValue(sessionAtom)!.document;
   const selection = useAtomValue(textRangeAtom);
   const range =
@@ -22,13 +24,20 @@ export function ContrastProperties({ id }: { id: string }) {
       ? TriangleAlert
       : CircleHelp;
   return (
-    <section aria-label="Text contrast">
+    <section aria-label={t("properties.textContrast")}>
       <div className={styles.head}>
-        <h3>Contrast</h3>
+        <h3>{t("properties.contrast")}</h3>
         <Tooltip
           label={
             audit.reason ??
-            `WCAG ${audit.level} · ${audit.isLargeText ? "large" : "normal"} text`
+            t("properties.wcagTextSize", {
+              level: audit.level,
+              size: t(
+                audit.isLargeText
+                  ? "properties.largeText"
+                  : "properties.normalText",
+              ),
+            })
           }
         >
           <Button
@@ -36,14 +45,14 @@ export function ContrastProperties({ id }: { id: string }) {
             variant="ghost"
             className={styles.grade}
             data-grade={audit.level}
-            aria-label={`Contrast ${audit.level}`}
+            aria-label={t("properties.contrastLevel", { level: audit.level })}
           >
             <Icon size={13} aria-hidden />
             {audit.level}
           </Button>
         </Tooltip>
       </div>
-      <div className={styles.score} aria-label="Contrast ratio">
+      <div className={styles.score} aria-label={t("properties.contrastRatio")}>
         <strong>{audit.ratio === null ? "—" : audit.ratio.toFixed(2)}</strong>
         {audit.ratio !== null && <span>: 1</span>}
       </div>
@@ -59,15 +68,17 @@ export function ContrastProperties({ id }: { id: string }) {
       <div className={styles.swatches}>
         <span
           style={{ background: audit.foreground }}
-          title={`Text ${audit.foreground}`}
+          title={t("properties.textForeground", { color: audit.foreground })}
         />
         <span
           style={{ background: audit.background }}
-          title={`Background ${audit.background}`}
+          title={t("properties.pageBackgroundColor", {
+            color: audit.background,
+          })}
         />
         <small>
-          {audit.isLargeText ? "Large" : "Normal"} · AA{" "}
-          {audit.isLargeText ? "3" : "4.5"}:1
+          {audit.isLargeText ? t("properties.large") : t("properties.normal")} ·
+          AA {audit.isLargeText ? "3" : "4.5"}:1
         </small>
       </div>
     </section>

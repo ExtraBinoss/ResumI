@@ -6,10 +6,12 @@ import {
   ColorPickerFields,
   ColorPickerSwatches,
 } from "../components/reui/color-picker";
+import type { ColorPickerI18nOverrides } from "../components/reui/color-picker";
 export function PickerPanel({
   value,
   alpha,
   label,
+  i18n,
   swatches,
   change,
   commit,
@@ -18,6 +20,7 @@ export function PickerPanel({
   value: string;
   alpha: boolean;
   label: string;
+  i18n: ColorPickerI18nOverrides;
   swatches?: string[];
   change: (color: string) => void;
   commit: (color: string) => void;
@@ -30,6 +33,7 @@ export function PickerPanel({
       format="hex"
       alpha={alpha}
       aria-label={label}
+      i18n={i18n}
       onValueChange={(color) => {
         if (color) change(color);
       }}

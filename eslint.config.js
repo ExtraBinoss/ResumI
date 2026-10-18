@@ -1,8 +1,10 @@
-import js from "@eslint/js";
-import ts from "typescript-eslint";
+import parser from "@typescript-eslint/parser";
 import hooks from "eslint-plugin-react-hooks";
-import globals from "globals";
-export default ts.config(
+
+// Oxlint owns JS/TS correctness, suspicious code, JSX, accessibility and typed
+// promise checks. Keep the official Hooks/Compiler analysis here: Oxlint's native
+// Compiler port remains experimental. Avoid reporting the same rule twice.
+export default [
   {
     ignores: [
       "**/build/**",
@@ -10,28 +12,24 @@ export default ts.config(
       "**/.react-router/**",
       "**/.wrangler/**",
       "**/worker-configuration.d.ts",
+      "**/*.generated.*",
       "artifacts/**",
       "coverage/**",
       "playwright-report/**",
       "test-results/**",
     ],
   },
-  js.configs.recommended,
-  ...ts.configs.recommended,
+  { linterOptions: { reportUnusedDisableDirectives: "error" } },
+  // Parser-level strict mode catches octal syntax too; retain the pre-migration
+  // ESLint rule until Oxlint provides the same named rule.
+  { rules: { "no-octal": "error" } },
   {
-    languageOptions: {
-      globals: { ...globals.browser, ...globals.node, Bun: "readonly" },
-    },
-    rules: {
-      "@typescript-eslint/no-unused-vars": [
-        "error",
-        { argsIgnorePattern: "^_" },
-      ],
-    },
+    files: ["**/*.{ts,tsx}"],
+    languageOptions: { parser },
   },
   {
-    files: ["apps/web/**/*.tsx", "apps/web/src/state/**/*.ts"],
+    files: ["apps/web/**/*.{ts,tsx}", "packages/cv/src/**/*.tsx"],
     plugins: { "react-hooks": hooks },
     rules: hooks.configs["recommended-latest"].rules,
   },
-);
+];

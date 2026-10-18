@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { useRef, useEffect } from "react";
 import { useAtomValue, useSetAtom } from "jotai";
 import { Link2, Unlink } from "lucide-react";
@@ -12,6 +13,7 @@ import { ActionIcon, NumberInput } from "../../../ui";
 import styles from "../styles/Inspector.module.css";
 
 export function FrameProperties({ id }: { id: string }) {
+  const { t } = useTranslation();
   const document = useAtomValue(sessionAtom)!.document;
   const block = useAtomValue(blockAtom(id));
   const ids = useAtomValue(selectedIdsAtom);
@@ -123,7 +125,7 @@ export function FrameProperties({ id }: { id: string }) {
   }
   return (
     <section>
-      <h3>Frame</h3>
+      <h3>{t("properties.frame")}</h3>
       <div className={styles.quadGrid}>
         {(["x", "y", "width", "height"] as const).map((key) => (
           <div key={key}>
@@ -131,7 +133,14 @@ export function FrameProperties({ id }: { id: string }) {
               scrubLabel={{ x: "X", y: "Y", width: "W", height: "H" }[key]}
               suffix="px"
               onPreview={(value) => preview(key, value)}
-              aria-label={`Layer ${key}`}
+              aria-label={
+                {
+                  x: t("properties.layerX"),
+                  y: t("properties.layerY"),
+                  width: t("properties.layerWidth"),
+                  height: t("properties.layerHeight"),
+                }[key]
+              }
               hideControls
               size="xs"
               value={Math.round((multi ? bounds[key] : layer[key]) * 100) / 100}
@@ -145,10 +154,12 @@ export function FrameProperties({ id }: { id: string }) {
       {!multi && (
         <>
           <div className={styles.inlineField}>
-            <span>Proportions</span>
+            <span>{t("properties.proportions")}</span>
             <ActionIcon
               aria-label={
-                layer.aspectLocked ? "Unlock aspect ratio" : "Lock aspect ratio"
+                layer.aspectLocked
+                  ? t("properties.unlockAspect")
+                  : t("properties.lockAspect")
               }
               aria-pressed={layer.aspectLocked}
               size="sm"
@@ -161,13 +172,13 @@ export function FrameProperties({ id }: { id: string }) {
           </div>
           <div className={styles.numberRow}>
             <NumberInput
-              label="Rotation"
+              label={t("properties.rotation")}
               snapPoints={[
                 -360, -315, -270, -225, -180, -135, -90, -45, 0, 45, 90, 135,
                 180, 225, 270, 315, 360,
               ]}
               onPreview={(value) => preview("rotation", value)}
-              aria-label="Rotation"
+              aria-label={t("properties.rotation")}
               size="xs"
               suffix="°"
               min={-360}

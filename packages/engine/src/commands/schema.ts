@@ -9,8 +9,20 @@ import {
 import { localeCommands } from "../localization/schema";
 import { sourceCommands } from "../source/schema";
 import { canvasCommands } from "../canvas/commands";
+import { canvasSchema, layerSchema } from "../canvas/schema";
+
+/** A browser adapter supplies data; the engine never evaluates saved source. */
+export const materializeCommandSchema = z.strictObject({
+  type: z.literal("canvas.materialize"),
+  canvas: canvasSchema,
+  sectionIds: z.array(idSchema).check(z.maxLength(50)),
+  sections: z.record(idSchema, sectionSchema),
+  blocks: z.record(idSchema, z.extend(blockSchema, { design: layerSchema })),
+});
+export type MaterializeCommand = z.infer<typeof materializeCommandSchema>;
 
 export const commandSchema = z.discriminatedUnion("type", [
+  materializeCommandSchema,
   ...canvasCommands,
   ...sourceCommands,
   ...localeCommands,

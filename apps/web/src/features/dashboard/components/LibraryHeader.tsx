@@ -1,6 +1,7 @@
 import { NavLink, useLocation } from "react-router";
 import { motion, useReducedMotion } from "motion/react";
 import { useTranslation } from "react-i18next";
+import { isTemplatesPath, publicPath } from "../../../i18n/public-locale";
 import { Files, LayoutTemplate } from "lucide-react";
 import { Brand } from "../../../components/Brand";
 import { SettingsMenu } from "../../../components/SettingsMenu";
@@ -9,7 +10,7 @@ import styles from "../styles/LibraryHeader.module.css";
 
 /** Persistent navigation: only its background pill moves, never the labels. */
 export function LibraryHeader() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { pathname } = useLocation();
   const reduced = useReducedMotion();
   return (
@@ -27,7 +28,7 @@ export function LibraryHeader() {
               aria-hidden
               className={styles.pill}
               initial={false}
-              animate={{ x: pathname === "/templates" ? "100%" : "0%" }}
+              animate={{ x: isTemplatesPath(pathname) ? "100%" : "0%" }}
               transition={
                 reduced
                   ? { duration: 0 }
@@ -37,7 +38,7 @@ export function LibraryHeader() {
             {[
               { to: "/projects", label: t("dashboard.resumes"), icon: Files },
               {
-                to: "/templates",
+                to: publicPath(i18n.language, "templates"),
                 label: t("dashboard.templates"),
                 icon: LayoutTemplate,
               },

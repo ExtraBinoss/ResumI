@@ -1,6 +1,6 @@
 import { I18nextProvider, useTranslation } from "react-i18next";
 import { useEffect, useState, type ReactNode } from "react";
-import { resources } from "./resources";
+import { interfaceLocale, resources } from "./resources";
 import {
   createInterfaceLanguage,
   replaceInterfaceResources,
@@ -25,11 +25,17 @@ function LanguageDomSync({ dictionaries }: { dictionaries: typeof resources }) {
 export function InterfaceLanguage({
   locale,
   children,
+  publicLocale = null,
 }: {
   locale: string;
+  publicLocale?: string | null;
   children: ReactNode;
 }) {
   const [instance] = useState(() => createInterfaceLanguage(locale));
+  useEffect(() => {
+    const next = interfaceLocale(publicLocale ?? locale);
+    if (instance.language !== next) void instance.changeLanguage(next);
+  }, [instance, locale, publicLocale]);
   return (
     <I18nextProvider i18n={instance}>
       <LanguageDomSync dictionaries={resources} />

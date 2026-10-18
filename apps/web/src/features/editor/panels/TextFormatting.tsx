@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { useState } from "react";
 import { useAtomValue, useSetAtom } from "jotai";
 import {
@@ -82,19 +83,20 @@ function TypeSettings({
   layer: TextLayer;
   patch: (patch: LayerPatch) => void;
 }) {
+  const { t } = useTranslation();
   return (
     <div className={styles.typeSettings}>
       {[
         {
           key: "lineHeight",
-          label: "Line height",
+          label: t("properties.lineHeight"),
           min: 0.7,
           max: 4,
           step: 0.05,
         },
         {
           key: "letterSpacing",
-          label: "Letter spacing",
+          label: t("properties.letterSpacing"),
           min: -10,
           max: 40,
           step: 0.1,
@@ -119,7 +121,7 @@ function TypeSettings({
             />
           </div>
           <Slider
-            aria-label={`${label} adjustment`}
+            aria-label={t("properties.adjustment", { label })}
             key={layer[key as "lineHeight" | "letterSpacing"]}
             defaultValue={layer[key as "lineHeight" | "letterSpacing"]}
             min={min}
@@ -142,7 +144,11 @@ function TypeSettings({
             size="sm"
             color="gray"
             variant={layer.align === value ? "light" : "subtle"}
-            aria-label={`Align ${value}`}
+            aria-label={t("properties.align", {
+              alignment: t(
+                `properties.align${value.charAt(0).toUpperCase()}${value.slice(1)}`,
+              ),
+            })}
             aria-pressed={layer.align === value}
             onClick={() => patch({ align: value })}
           >
@@ -150,7 +156,7 @@ function TypeSettings({
           </ActionIcon>
         ))}
         <ActionIcon
-          aria-label="Uppercase"
+          aria-label={t("properties.uppercase")}
           aria-pressed={layer.uppercase}
           size="sm"
           variant={layer.uppercase ? "light" : "subtle"}
@@ -170,29 +176,30 @@ export function TextFormatting({
   id: string;
   layer: TextLayer;
 }) {
+  const { t } = useTranslation();
   const { style, mixed, format, patch } = useFormatting(id, layer);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const toggles = [
     {
-      label: "Bold",
+      label: t("properties.bold"),
       icon: Bold,
       active: !mixed.includes("fontWeight") && (style.fontWeight ?? 400) >= 600,
       patch: { fontWeight: (style.fontWeight ?? 400) >= 600 ? 400 : 700 },
     },
     {
-      label: "Italic",
+      label: t("properties.italic"),
       icon: Italic,
       active: !mixed.includes("fontStyle") && style.fontStyle === "italic",
       patch: { fontStyle: style.fontStyle === "italic" ? "normal" : "italic" },
     },
     {
-      label: "Underline",
+      label: t("properties.underline"),
       icon: Underline,
       active: !mixed.includes("underline") && !!style.underline,
       patch: { underline: !style.underline },
     },
     {
-      label: "Strikethrough",
+      label: t("properties.strikethrough"),
       icon: Strikethrough,
       active: !mixed.includes("strike") && !!style.strike,
       patch: { strike: !style.strike },
@@ -235,7 +242,7 @@ export function TextFormatting({
       >
         <Popover.Target>
           <ActionIcon
-            aria-label="Typography settings"
+            aria-label={t("properties.typographySettings")}
             aria-pressed={settingsOpen}
             size="sm"
             variant={settingsOpen ? "light" : "subtle"}
@@ -261,6 +268,7 @@ export function TypographyFields({
   layer: TextLayer;
   fonts?: string[];
 }) {
+  const { t } = useTranslation();
   const { style, mixed, format, selected } = useFormatting(id, layer);
   const preview = useTextPreview(id);
   const previewColor = useColorPreview(id);
@@ -275,10 +283,10 @@ export function TypographyFields({
       />
       <div className={styles.fontBasics}>
         <NumberInput
-          label="Size"
+          label={t("properties.size")}
           suffix="px"
           onPreview={(value) => preview("fontSize", value)}
-          aria-label="Font size"
+          aria-label={t("properties.fontSize")}
           size="xs"
           min={4}
           max={240}
@@ -289,15 +297,15 @@ export function TypographyFields({
           }}
         />
         <Select
-          label="Weight"
-          aria-label="Font weight"
+          label={t("properties.weight")}
+          aria-label={t("properties.fontWeight")}
           size="xs"
           value={
             mixed.includes("fontWeight")
               ? null
               : String(style.fontWeight ?? layer.fontWeight)
           }
-          placeholder="Mixed"
+          placeholder={t("properties.mixed")}
           allowDeselect={false}
           data={[
             ...new Set([
@@ -322,21 +330,20 @@ export function TypographyFields({
         />
       </div>
       <TextFormatting id={id} layer={layer} />
-      <div className={styles.fieldRow}>
-        <label>Color</label>
-        <ColorInput
-          aria-label="Text color"
-          size="xs"
-          value={style.color ?? layer.color}
-          onPreview={(color) =>
-            previewColor(
-              { kind: "text", id, range: selected, marks: layer.marks },
-              color,
-            )
-          }
-          onChangeEnd={(color) => format({ color })}
-        />
-      </div>
+      <ColorInput
+        className={styles.fieldRow}
+        label={t("properties.color")}
+        aria-label={t("properties.textColor")}
+        size="xs"
+        value={style.color ?? layer.color}
+        onPreview={(color) =>
+          previewColor(
+            { kind: "text", id, range: selected, marks: layer.marks },
+            color,
+          )
+        }
+        onChangeEnd={(color) => format({ color })}
+      />
     </>
   );
 }

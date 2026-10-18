@@ -1,4 +1,5 @@
 import { atom, createStore } from "jotai";
+import { selectAtom } from "jotai/utils";
 import {
   createSession,
   localizedBlock,
@@ -13,7 +14,12 @@ import {
   type Session,
   type Document,
 } from "@resumi/engine";
-import { projects, storageMessage, type Project } from "../lib/projects";
+import {
+  projects,
+  storageErrorCode,
+  type Project,
+  type StorageErrorCode,
+} from "../lib/projects";
 
 export const sessionAtom = atom<Session | null>(null);
 export const selectionAtom = atom<{
@@ -23,7 +29,7 @@ export const selectionAtom = atom<{
   groupId?: string;
 } | null>(null);
 export const saveStatusAtom = atom<"saved" | "saving" | "error">("saved");
-export const saveErrorAtom = atom("");
+export const saveErrorAtom = atom<StorageErrorCode | "">("");
 export const zoomAtom = atom(75);
 export const documentLanguagesAtom = atom(
   (get) => get(sessionAtom)?.document.localization ?? defaultLocalization,
@@ -39,10 +45,14 @@ export const styleAtom = atom((get) => get(sessionAtom)?.document.style);
 export const nameAtom = atom(
   (get) => get(sessionAtom)?.document.name ?? "Resume",
 );
-export const historyAtom = atom((get) => {
-  const session = get(sessionAtom);
-  return { undo: !!session?.past.length, redo: !!session?.future.length };
-});
+export const historyAtom = selectAtom(
+  sessionAtom,
+  (session) => ({
+    undo: !!session?.past.length,
+    redo: !!session?.future.length,
+  }),
+  (a, b) => a.undo === b.undo && a.redo === b.redo,
+);
 const sections = new Map<string, ReturnType<typeof makeSectionAtom>>();
 const blocks = new Map<string, ReturnType<typeof makeBlockAtom>>();
 function makeSectionAtom(id: string) {
@@ -127,7 +137,7 @@ export function createEditorController(
         saved = document;
       } catch (error) {
         store.set(saveStatusAtom, "error");
-        store.set(saveErrorAtom, storageMessage(error));
+        store.set(saveErrorAtom, storageErrorCode(error));
         return;
       }
     }

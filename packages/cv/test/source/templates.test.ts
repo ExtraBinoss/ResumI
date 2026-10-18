@@ -18,12 +18,12 @@ const layouts = [
   ["react-mosaic", "mosaic"],
 ] as const;
 
-test("the public catalog contains ten distinct TSX layouts while legacy canvas IDs remain compatible", () => {
+test("the public catalog contains twenty distinct TSX layouts while legacy canvas IDs remain compatible", () => {
   expect(
     templates
       .filter((template) => !template.legacy)
       .map((template) => template.format),
-  ).toEqual(Array.from({ length: 10 }, () => "react"));
+  ).toEqual(Array.from({ length: 20 }, () => "react"));
   expect(createResume("canvas-studio", "studio").source).toBeUndefined();
   expect(createResume("canvas-serif", "editorial").style.font).toBe("serif");
   for (const [id, layout] of layouts) {

@@ -1,11 +1,14 @@
+import { useTranslation } from "react-i18next";
 import { useLayoutEffect, useRef } from "react";
-import { useSetAtom } from "jotai";
+import { useSetAtom, useStore } from "jotai";
 import {
   richTextSegments,
+  localizedBlock,
   textStyleAcrossRange,
   type Layer,
   type TextMarkStyle,
 } from "@resumi/engine";
+import { sessionAtom } from "../../../state/editor";
 import { designCommandAtom, textRangeAtom } from "../../../state/design";
 import {
   selectionOffsets,
@@ -19,7 +22,7 @@ export function RichTextField({
   id,
   text,
   layer,
-  ariaLabel = "Content",
+  ariaLabel,
   className,
   showLabel = true,
   readOnly = false,
@@ -34,10 +37,13 @@ export function RichTextField({
   readOnly?: boolean;
   onFocus?: () => void;
 }) {
+  const { t } = useTranslation();
+  const actualAriaLabel = ariaLabel ?? t("properties.content");
   const editor = useRef<HTMLDivElement>(null);
   const pending = useRef<string | null>(null);
   const composing = useRef(false);
   const dispatch = useSetAtom(designCommandAtom);
+  const store = useStore();
   const setRange = useSetAtom(textRangeAtom);
   useLayoutEffect(() => {
     const root = editor.current;
@@ -84,8 +90,11 @@ export function RichTextField({
       root.textContent = text;
       return;
     }
-    pending.current = value;
-    dispatch({ type: "block.update", id, patch: { text: value } });
+    const snapshot = store.get(sessionAtom)?.document;
+    if (snapshot?.blocks[id] && value !== localizedBlock(snapshot, id).text) {
+      pending.current = value;
+      dispatch({ type: "block.update", id, patch: { text: value } });
+    }
     capture();
   }
   function insert(value: string) {
@@ -105,7 +114,7 @@ export function RichTextField({
   }
   return (
     <div className={styles.stackedField}>
-      {showLabel && <span>Text</span>}
+      {showLabel && <span>{t("properties.textLabel")}</span>}
       <div
         ref={editor}
         data-edit-field={id}
@@ -113,7 +122,7 @@ export function RichTextField({
         contentEditable={!readOnly}
         suppressContentEditableWarning
         role="textbox"
-        aria-label={ariaLabel}
+        aria-label={actualAriaLabel}
         aria-readonly={readOnly || undefined}
         aria-multiline
         spellCheck
@@ -138,7 +147,8 @@ export function RichTextField({
         }}
         onKeyDown={(event) => {
           event.stopPropagation();
-          if (readOnly) return;
+          if (readOnly || composing.current || event.nativeEvent.isComposing)
+            return;
           const key = event.key.toLowerCase();
           if (
             (event.ctrlKey || event.metaKey) &&

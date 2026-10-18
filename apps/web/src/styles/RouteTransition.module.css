@@ -2,3 +2,28 @@
   min-height: 100dvh;
   width: 100%;
 }
+.pending {
+  position: fixed;
+  z-index: 9000;
+  right: 20px;
+  bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  max-width: calc(100vw - 40px);
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  color: var(--muted-foreground);
+  background: var(--popover);
+  box-shadow: var(--shadow-sm);
+  font: 500 13px/1.4 var(--font-ui);
+  pointer-events: none;
+}
+.pendingDot {
+  width: 6px;
+  height: 6px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: currentColor;
+}

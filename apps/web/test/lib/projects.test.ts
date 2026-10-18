@@ -1,5 +1,5 @@
 import "fake-indexeddb/auto";
-import { test, expect } from "bun:test";
+import { test, expect, spyOn } from "bun:test";
 import { openDB, deleteDB } from "idb";
 import {
   ProjectRepository,
@@ -76,4 +76,56 @@ test("storage failure feedback distinguishes quota and conflicts", () => {
   ).toContain("full");
   expect(storageMessage(new StorageConflict())).toContain("another tab");
   expect(storageMessage(new Error())).toContain("backup");
+});
+
+test("cancelled saves preserve the exact stored project before and during the IndexedDB transaction", async () => {
+  const name = `cancel-${crypto.randomUUID()}`;
+  const repo = new ProjectRepository(name);
+  const original = await repo.create();
+  const changed = applyCommand(original.document, {
+    type: "document.update",
+    name: "Cancelled edit",
+  });
+  const rawGet = IDBObjectStore.prototype.get;
+  const controller = new AbortController();
+  let interrupted = false;
+  const get = spyOn(IDBObjectStore.prototype, "get").mockImplementation(
+    function (this: IDBObjectStore, key: IDBValidKey | IDBKeyRange) {
+      const request = rawGet.call(this, key);
+      if (
+        this.transaction.db.name === name &&
+        this.transaction.mode === "readwrite"
+      ) {
+        interrupted = true;
+        queueMicrotask(() => controller.abort());
+      }
+      return request;
+    },
+  );
+  try {
+    let failure: unknown;
+    try {
+      await repo.save(changed, original.revision, controller.signal);
+    } catch (error) {
+      failure = error;
+    }
+    expect(interrupted).toBe(true);
+    expect(failure).toBeInstanceOf(DOMException);
+    expect((failure as DOMException).name).toBe("AbortError");
+    get.mockRestore();
+    expect(await repo.get(original.id)).toEqual(original);
+    const alreadyAborted = AbortSignal.abort();
+    failure = undefined;
+    try {
+      await repo.save(changed, original.revision, alreadyAborted);
+    } catch (error) {
+      failure = error;
+    }
+    expect((failure as DOMException).name).toBe("AbortError");
+    expect(await repo.get(original.id)).toEqual(original);
+  } finally {
+    get.mockRestore();
+    await repo.close();
+    await deleteDB(name);
+  }
 });

@@ -1,5 +1,6 @@
 import { Suspense, use, useEffect, useRef, useState } from "react";
-import { renderDocumentHtml } from "@resumi/cv";
+import { useTranslation } from "react-i18next";
+import { renderDocumentHtml } from "@resumi/cv/document-render";
 import type { Document, DocumentSource } from "@resumi/engine";
 import styles from "./Preview.module.css";
 import { SharedLoading } from "./SharedLoading";
@@ -28,10 +29,13 @@ function Frame({
   scale?: number;
   workspace?: boolean;
 }) {
+  const { t } = useTranslation();
   const html = use(previewFor(document));
   return (
     <iframe
-      title={`${document.source?.format === "react" ? "React" : "HTML"} resume preview`}
+      title={t("site.ui.resumePreview", {
+        format: document.source?.format === "react" ? "React" : "HTML",
+      })}
       sandbox="allow-scripts"
       tabIndex={interactive && !workspace ? undefined : -1}
       loading="lazy"

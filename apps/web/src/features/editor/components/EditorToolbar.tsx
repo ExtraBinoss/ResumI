@@ -13,9 +13,11 @@ import {
   FileText,
 } from "lucide-react";
 import { serializeDocument } from "@resumi/engine";
-import { renderDocumentHtml } from "@resumi/cv";
+import { renderDocumentHtml } from "@resumi/cv/document-render";
 import { downloadFile, fileName } from "../../../lib/files";
+import { storageErrorKey } from "../../../lib/projects";
 import { exportPdf } from "../../../lib/pdf-export";
+import { exportReactCanvas } from "../../../lib/react-export";
 import {
   historyAtom,
   saveStatusAtom,
@@ -25,7 +27,7 @@ import {
   sessionAtom,
   type EditorController,
 } from "../../../state/editor";
-import { sourceAtom, designErrorAtom } from "../../../state/design";
+import { designErrorAtom } from "../../../state/design";
 import { SettingsMenu } from "../../../components/SettingsMenu";
 import { Shortcut } from "../../../components/Shortcut";
 import { ErrorNotice } from "../../../components/ErrorNotice";
@@ -34,12 +36,13 @@ import styles from "../styles/Editor.module.css";
 
 export function EditorToolbar({
   controller,
+  openDocument,
 }: {
   controller: EditorController;
+  openDocument: () => void;
 }) {
   const { t } = useTranslation();
-  const source = useAtomValue(sourceAtom),
-    history = useAtomValue(historyAtom),
+  const history = useAtomValue(historyAtom),
     status = useAtomValue(saveStatusAtom),
     error = useAtomValue(saveErrorAtom);
   const undo = useSetAtom(undoAtom),
@@ -47,26 +50,33 @@ export function EditorToolbar({
     setError = useSetAtom(designErrorAtom),
     store = useStore(),
     navigate = useNavigate();
+  const saveError = error ? t(storageErrorKey(error)) : null;
   function back() {
     void controller.flush().then(() => {
       if (store.get(saveStatusAtom) !== "error") void navigate("/projects");
     });
   }
-  async function exportFile(format: "json" | "html") {
+  async function exportFile(format: "json" | "html" | "tsx") {
     try {
       const doc = store.get(sessionAtom)!.document;
       downloadFile(
         fileName(doc.name, format),
         format === "json"
           ? serializeDocument(doc)
-          : await renderDocumentHtml(doc),
-        format === "json" ? "application/json" : "text/html",
+          : format === "tsx"
+            ? exportReactCanvas(doc)
+            : await renderDocumentHtml(doc),
+        format === "json"
+          ? "application/json"
+          : format === "html"
+            ? "text/html"
+            : "text/plain",
       );
     } catch (error) {
       setError(
         error instanceof Error
           ? error.message
-          : "The resume could not be exported.",
+          : t("workspace.toolbar.exportFailed"),
       );
     }
   }
@@ -75,6 +85,10 @@ export function EditorToolbar({
       store.get(sessionAtom)!.document,
       (message) => setError(message),
       t("loading.pdf"),
+      {
+        popupBlocked: t("site.errors.pdfPopupBlocked"),
+        preparationFailed: t("site.errors.pdfPrepareFailed"),
+      },
     );
   }
   return (
@@ -128,21 +142,21 @@ export function EditorToolbar({
         </div>
       </div>
       <div className={styles.projectTitle}>
-        <ProjectMenu back={back} />
+        <ProjectMenu openDocument={openDocument} />
         <span
           className="srOnly"
           role="status"
-          aria-label="Save status"
+          aria-label={t("workspace.toolbar.saveStatus")}
           data-status={status}
         >
           {status === "saved"
-            ? "Saved"
+            ? t("workspace.toolbar.saved")
             : status === "saving"
-              ? "Saving…"
-              : "Not saved"}
+              ? t("workspace.toolbar.saving")
+              : t("workspace.toolbar.notSaved")}
         </span>
         <ErrorNotice
-          error={error || null}
+          error={saveError}
           label={t("editor.changesNotSaved")}
           compact
         >
@@ -200,24 +214,12 @@ export function EditorToolbar({
               >
                 {t("editor.portableHtml")}
               </Menu.Item>
-              {source && (
-                <Menu.Item
-                  leftSection={<FileCode size={14} />}
-                  onClick={() =>
-                    downloadFile(
-                      fileName(
-                        store.get(sessionAtom)!.document.name,
-                        source.format === "react" ? "tsx" : "html",
-                      ),
-                      source.code,
-                      "text/plain",
-                    )
-                  }
-                >
-                  Original {source.format === "react" ? "React / TSX" : "HTML"}{" "}
-                  source
-                </Menu.Item>
-              )}
+              <Menu.Item
+                leftSection={<FileCode size={14} />}
+                onClick={() => void exportFile("tsx")}
+              >
+                {t("workspace.toolbar.canvasTsx")}
+              </Menu.Item>
             </Menu.Dropdown>
           </Menu>
         </div>

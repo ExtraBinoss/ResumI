@@ -37,7 +37,7 @@ export function useColorPreview(scope: string) {
           : target.kind === "gradient"
             ? target.index
             : target.kind === "vector"
-              ? target.color
+              ? { color: target.color, monochrome: target.monochrome ?? false }
               : null,
     });
     if (key !== current.current?.key) {

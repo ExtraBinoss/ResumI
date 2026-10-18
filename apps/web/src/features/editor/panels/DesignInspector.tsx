@@ -1,6 +1,14 @@
+import { useTranslation } from "react-i18next";
 import { useAtomValue, useSetAtom } from "jotai";
 import { motion } from "motion/react";
-import { Eye, EyeOff, Lock, Unlock, Ungroup } from "lucide-react";
+import {
+  Eye,
+  EyeOff,
+  Lock,
+  Unlock,
+  Ungroup,
+  MousePointer2,
+} from "lucide-react";
 import { isLocked } from "@resumi/engine";
 import { sessionAtom, selectionAtom, blockAtom } from "../../../state/editor";
 import {
@@ -18,13 +26,13 @@ import {
   EffectsFields,
   ShadowFields,
 } from "./VisualProperties";
-import { DocumentProperties } from "./DocumentProperties";
 import { FrameProperties } from "./FrameProperties";
 import { RichTextField } from "./RichTextField";
 import { ContrastProperties } from "./ContrastProperties";
 import styles from "../styles/Inspector.module.css";
 
 function SelectedProperties({ id }: { id: string }) {
+  const { t } = useTranslation();
   const document = useAtomValue(sessionAtom)!.document;
   const block = useAtomValue(blockAtom(id));
   const ids = useAtomValue(selectedIdsAtom);
@@ -39,34 +47,29 @@ function SelectedProperties({ id }: { id: string }) {
     return (
       <div className={styles.lockedNotice}>
         <Lock size={18} aria-hidden />
-        <strong>Locked</strong>
+        <strong>{t("properties.locked")}</strong>
       </div>
     );
   if (group)
     return (
       <section>
-        <h3>Group</h3>
-        <div className={styles.fieldRow}>
-          <label>Name</label>
-          <TextInput
-            aria-label="Group name"
-            size="xs"
-            value={group.name}
-            maxLength={120}
-            onChange={(event) => {
-              if (event.currentTarget.value)
-                dispatch({
-                  type: "group.update",
-                  id: group.id,
-                  patch: { name: event.currentTarget.value },
-                });
-            }}
-          />
-        </div>
-        <div className={styles.fieldRow}>
-          <span>Layers</span>
-          <span className={styles.formatStatic}>{group.elementIds.length}</span>
-        </div>
+        <h3>{t("properties.group")}</h3>
+        <TextInput
+          className={styles.fieldRow}
+          label={t("properties.name")}
+          aria-label={t("properties.groupName")}
+          size="xs"
+          value={group.name}
+          maxLength={120}
+          onChange={(event) => {
+            if (event.currentTarget.value)
+              dispatch({
+                type: "group.update",
+                id: group.id,
+                patch: { name: event.currentTarget.value },
+              });
+          }}
+        />
       </section>
     );
   return (
@@ -75,7 +78,7 @@ function SelectedProperties({ id }: { id: string }) {
       {ids.length === 1 && layer.type === "text" && (
         <>
           <section>
-            <h3>Typography</h3>
+            <h3>{t("properties.typography")}</h3>
             <TypographyFields
               id={id}
               layer={layer}
@@ -83,7 +86,7 @@ function SelectedProperties({ id }: { id: string }) {
             />
           </section>
           <section>
-            <h3>Content</h3>
+            <h3>{t("properties.content")}</h3>
             <RichTextField id={id} text={block.text} layer={layer} />
           </section>
           <ContrastProperties id={id} />
@@ -106,6 +109,7 @@ function SelectedProperties({ id }: { id: string }) {
 }
 
 export function DesignInspector() {
+  const { t } = useTranslation();
   const document = useAtomValue(sessionAtom)!.document;
   const selection = useAtomValue(selectionAtom);
   const ids = useAtomValue(selectedIdsAtom);
@@ -137,12 +141,15 @@ export function DesignInspector() {
     else dispatch({ type: "layer.update", ids, patch });
   }
   return (
-    <aside className={styles.inspector} aria-label="Properties inspector">
+    <aside
+      className={styles.inspector}
+      aria-label={t("properties.propertiesInspector")}
+    >
       <header className={styles.header}>
         <div className={styles.heading}>
           {block?.design && !group && ids.length === 1 ? (
             <TextInput
-              aria-label="Layer name"
+              aria-label={t("properties.layerName")}
               size="xs"
               className={styles.headerName}
               maxLength={120}
@@ -158,21 +165,30 @@ export function DesignInspector() {
             />
           ) : (
             <h2>
-              {group?.name ?? (ids.length > 1 ? "Selection" : "Document")}
+              {group?.name ??
+                (ids.length > 1
+                  ? t("properties.selection")
+                  : t("properties.properties"))}
             </h2>
           )}
           <small>
             {group
-              ? "group"
+              ? t("properties.group")
               : ids.length > 1
-                ? `${ids.length} layers`
-                : (block?.design?.type ?? "A4")}
+                ? t("properties.layerCount", { count: ids.length })
+                : block?.design
+                  ? t(`properties.kind.${block.design.type}`)
+                  : ""}
           </small>
         </div>
         {ids.length > 0 && (
           <div className={styles.actions}>
             <ActionIcon
-              aria-label={hidden ? "Show selection" : "Hide selection"}
+              aria-label={
+                hidden
+                  ? t("properties.showSelection")
+                  : t("properties.hideSelection")
+              }
               size="xs"
               variant="subtle"
               color="gray"
@@ -181,7 +197,11 @@ export function DesignInspector() {
               {hidden ? <EyeOff size={14} /> : <Eye size={14} />}
             </ActionIcon>
             <ActionIcon
-              aria-label={locked ? "Unlock selection" : "Lock selection"}
+              aria-label={
+                locked
+                  ? t("properties.unlockSelection")
+                  : t("properties.lockSelection")
+              }
               size="xs"
               variant="subtle"
               color="gray"
@@ -192,7 +212,7 @@ export function DesignInspector() {
             </ActionIcon>
             {group && (
               <ActionIcon
-                aria-label="Ungroup"
+                aria-label={t("properties.ungroup")}
                 size="xs"
                 variant="subtle"
                 color="gray"
@@ -215,7 +235,14 @@ export function DesignInspector() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.16 }}
         >
-          {block ? <SelectedProperties id={ids[0]} /> : <DocumentProperties />}
+          {block ? (
+            <SelectedProperties id={ids[0]} />
+          ) : (
+            <div className={styles.emptyProperties}>
+              <MousePointer2 size={20} aria-hidden />
+              <p>{t("pages.selectLayer")}</p>
+            </div>
+          )}
           {locked && (
             <Button
               className={styles.unlock}
@@ -223,7 +250,7 @@ export function DesignInspector() {
               variant="default"
               onClick={() => state({ locked: false })}
             >
-              Unlock
+              {t("properties.unlock")}
             </Button>
           )}
         </motion.div>

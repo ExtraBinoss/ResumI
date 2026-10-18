@@ -13,10 +13,8 @@ const saved = (page: Page) =>
   ).toHaveText("Saved");
 
 async function createVisual(page: Page) {
-  await page.goto("/");
-  await page
-    .getByRole("link", { name: "Create a resume", exact: true })
-    .click();
+  await page.goto("/projects");
+  await page.getByRole("button", { name: "New resume", exact: true }).click();
   await expect(canvas(page)).toBeVisible();
   await expect(
     page.getByRole("button", { name: "Visual", exact: true }),
@@ -269,7 +267,7 @@ export async function imageCropJourney(page: Page) {
   await selectOption(
     page,
     inspector(page).getByRole("combobox", { name: "Image fit", exact: true }),
-    "contain",
+    "Contain",
   );
   await inspector(page)
     .getByRole("spinbutton", { name: "Image zoom", exact: true })

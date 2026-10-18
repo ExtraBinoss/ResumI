@@ -1,0 +1,32 @@
+.dragGhost {
+  position: fixed;
+  z-index: 1000;
+  margin: 0;
+  pointer-events: none;
+  transform-origin: center;
+  background: var(--surface);
+  border: 1px solid color-mix(in srgb, var(--primary) 55%, var(--line));
+  border-radius: 7px;
+  box-shadow:
+    0 12px 28px #0003,
+    0 3px 8px #0002;
+  will-change: transform;
+  cursor: grabbing;
+}
+:global([data-layer-dragging="true"]),
+:global([data-layer-group]:has(> [data-layer-dragging="true"])) {
+  opacity: 0.25;
+}
+@media (prefers-reduced-motion: reduce) {
+  .dragGhost {
+    box-shadow: 0 3px 8px #0002;
+    will-change: auto;
+  }
+}
+:global([data-layer-drag-handle]) {
+  touch-action: none;
+}
+:global([data-drop-position="above"])::before,
+:global([data-drop-position="below"])::after {
+  box-shadow: 0 0 0 2px var(--surface-solid);
+}

@@ -131,10 +131,14 @@ for (const viewport of [
       /\d{4}-\d{2}-\d{2}T/,
     );
     if (viewport.width <= 760) {
-      const menuBox = (await page
-        .getByRole("menu", { name: "Recent projects", exact: true })
-        .boundingBox())!;
-      expect(menuBox.y + menuBox.height).toBeLessThan(navBox.y);
+      await expect
+        .poll(async () => {
+          const menuBox = (await page
+            .getByRole("menu", { name: "Recent projects", exact: true })
+            .boundingBox())!;
+          return menuBox.y + menuBox.height;
+        })
+        .toBeLessThan(navBox.y);
     }
     await page.keyboard.type("Alex");
     await expect(

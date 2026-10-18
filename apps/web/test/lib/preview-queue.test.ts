@@ -7,7 +7,9 @@ test("visible preview queue skips stale rows, prioritizes new rows and shares ac
   const deferred = new Map<string, (value: string) => void>();
   const queue = createPreviewQueue((key) => {
     started.push(key);
-    return new Promise<string>((resolve) => deferred.set(key, resolve));
+    return new Promise<string>((resolve) => {
+      deferred.set(key, resolve);
+    });
   }, 2);
   const watch = (key: string) =>
     queue.subscribe(key, () => completed.push(key));
@@ -21,14 +23,20 @@ test("visible preview queue skips stale rows, prioritizes new rows and shares ac
   cancelShared();
   expect(started).toEqual(["active-a", "active-b"]);
   deferred.get("active-a")!("a");
-  await new Promise((resolve) => setTimeout(resolve, 0));
+  await new Promise((resolve) => {
+    setTimeout(resolve, 0);
+  });
   expect(started).toEqual(["active-a", "active-b", "visible-e"]);
   deferred.get("active-b")!("b");
-  await new Promise((resolve) => setTimeout(resolve, 0));
+  await new Promise((resolve) => {
+    setTimeout(resolve, 0);
+  });
   expect(started).toEqual(["active-a", "active-b", "visible-e", "visible-d"]);
   deferred.get("visible-e")!("e");
   deferred.get("visible-d")!("d");
-  await new Promise((resolve) => setTimeout(resolve, 0));
+  await new Promise((resolve) => {
+    setTimeout(resolve, 0);
+  });
   expect(completed).toEqual(["active-a", "active-b", "visible-e", "visible-d"]);
   expect(started).not.toContain("stale-c");
 });
@@ -49,6 +57,8 @@ test("failed previews release a slot and canceled in-flight callbacks are never 
   queue.subscribe("visible", (value) => completed.push(value!));
   cancel();
   fail!();
-  await new Promise((resolve) => setTimeout(resolve, 0));
+  await new Promise((resolve) => {
+    setTimeout(resolve, 0);
+  });
   expect(completed).toEqual(["visible"]);
 });
