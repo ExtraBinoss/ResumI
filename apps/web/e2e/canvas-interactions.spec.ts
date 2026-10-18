@@ -19,6 +19,13 @@ async function startDrag(
   target: Locator,
   edge: "top" | "bottom" = "top",
 ) {
+  // Escape restores DOM order before Motion finishes its return. Wait for the
+  // actual press point to settle, rather than pressing stale animated bounds.
+  const press = (await source.boundingBox())!;
+  await source.click({
+    trial: true,
+    position: { x: press.width / 2, y: Math.min(15, press.height / 2) },
+  });
   const from = (await source.boundingBox())!,
     to = (await target.boundingBox())!;
   await page.mouse.move(
