@@ -1,0 +1,11 @@
+{
+  "duration": 15,
+  "maxStaticSec": 2.1,
+  "assertions": [
+    { "kind": "appearsBy", "selector": "#rv-journey-landing", "bySec": 0.2 },
+    { "kind": "before", "a": "#rv-journey-count", "b": "#rv-journey-logo" },
+    { "kind": "staysInFrame", "selector": "#rv-journey-slogan" },
+    { "kind": "staysInFrame", "selector": "#rv-journey-url" },
+    { "kind": "keepsMoving", "withinSelector": "#rv-journey-world" }
+  ]
+}

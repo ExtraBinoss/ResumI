@@ -1,0 +1,10 @@
+/.hyperframes/
+/.thumbnails/
+/.media/
+/capture/
+/capture-direct/
+/capture-site/
+/capture-local/
+/renders/
+/node_modules/
+/assets/

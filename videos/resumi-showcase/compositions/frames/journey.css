@@ -1,0 +1,149 @@
+.rv-journey-ground {
+  position: absolute;
+  inset: 0;
+  background: #fafafa;
+  container-type: size;
+}
+.rv-journey-world {
+  position: absolute;
+  inset: 0;
+  transform-origin: 50% 50%;
+  will-change: transform;
+}
+.rv-journey-screen {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transform-origin: 50% 50%;
+  will-change: transform, opacity;
+}
+.rv-journey-editor {
+  transform-style: preserve-3d;
+}
+.rv-journey-papers {
+  position: absolute;
+  inset: 0;
+}
+.rv-journey-paper {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 6.875cqw;
+  height: 17.286cqh;
+  margin: -8.643cqh 0 0 -3.4375cqw;
+  transform-origin: 50% 50%;
+  will-change: transform, opacity;
+}
+.rv-journey-paper-surface {
+  position: absolute;
+  inset: 0;
+  transform-origin: 50% 50%;
+  overflow: hidden;
+  will-change: transform, opacity;
+}
+.rv-journey-paper img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+  display: block;
+}
+.rv-journey-make {
+  position: absolute;
+  left: 34.38cqw;
+  top: 48.15cqh;
+  margin: 0;
+  font-size: 1.51cqw;
+  font-weight: 600;
+  line-height: 1.08;
+  letter-spacing: -0.04em;
+  white-space: nowrap;
+}
+.rv-journey-count {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 5.55cqh;
+  margin: 0;
+  text-align: center;
+  font-size: 4.2cqw;
+  font-weight: 600;
+  line-height: 1.08;
+  letter-spacing: -0.045em;
+}
+.rv-journey-count span {
+  color: #2563eb;
+}
+.rv-journey-close {
+  position: absolute;
+  inset: 0;
+  text-align: center;
+  pointer-events: none;
+}
+.rv-journey-logo {
+  position: absolute;
+  top: 12.96cqh;
+  left: 45.83cqw;
+  width: 8.34cqw;
+  height: 14.82cqh;
+  object-fit: contain;
+}
+.rv-journey-slogan {
+  position: absolute;
+  left: 20.84cqw;
+  right: 20.84cqw;
+  top: 31.1cqh;
+  margin: 0;
+  font-size: 4.2cqw;
+  font-weight: 600;
+  line-height: 1.12;
+  letter-spacing: -0.047em;
+}
+.rv-journey-line {
+  display: block;
+  white-space: nowrap;
+}
+.rv-journey-agents {
+  position: absolute;
+  left: 50%;
+  top: 56.94cqh;
+  width: 30.2cqw;
+  height: 5.2cqh;
+  margin-left: -15.1cqw;
+}
+.rv-journey-agent {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: 2.5cqw;
+  height: 4.45cqh;
+  margin-left: -1.25cqw;
+  object-fit: contain;
+  transform-origin: 50% 50%;
+}
+.rv-journey-url {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 67.13cqh;
+  margin: 0;
+  font-size: 2cqw;
+  font-weight: 500;
+  line-height: 1.25;
+  letter-spacing: -0.025em;
+  color: #2563eb;
+}
+.rv-journey-credit {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 74.54cqh;
+  margin: 0;
+  font-family: "Source Sans 3";
+  font-size: 1.25cqw;
+  line-height: 1.4;
+  color: #63636d;
+}
