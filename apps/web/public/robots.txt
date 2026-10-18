@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://resumi.plinka.eu/sitemap.xml

@@ -1,0 +1,9 @@
+# Thinking orbs, selected local variants
+
+Adapted from [Jakub Antalik / thinking-orbs](https://github.com/Jakubantalik/thinking-orbs/tree/de85557ca220332586d070d8788c0e1d6e877a0d), pinned commit `de85557ca220332586d070d8788c0e1d6e877a0d` (upstream package 0.3.1). [MIT license](LICENSE), copyright 2026 Jakub Antalik.
+
+Only `working` (`frameOrbits`) and `breathing` (`frameRibbon` with the face-on ring preset) are retained. `core.ts`, `orbits.ts`, `ribbon.ts` and `types.ts` preserve upstream geometry; `presets.ts` contains just the four already-resolved 20/64 pixel presets. The complete license also ships at `/licenses/thinking-orbs-MIT.txt`, and the core retains a legal-notice comment. No package is installed and no other animation states, demo, native port or runtime dependency are included. Golden geometry cases are copied from upstream `spec/orbs-golden.json` for these two variants, both sizes and four timestamps.
+
+`ThinkingOrb` and `mount.ts` are the application adapter: deterministic SSR markup; Motion's reduced-motion subscription; one deterministic static frame for reduced motion; Canvas2D rendering with DPR capped at 2; animation paused offscreen or in hidden tabs; ancestor-only theme observation; cleanup of RAF, media, visibility, resize and intersection observers on unmount. It uses no fonts, filters, WebGL, remote requests or per-frame React/DOM updates. The module follows the app's light/dark substrate and keeps upstream monochrome depth shading.
+
+`SharedLoading` provides a short translated label with a CSS shimmer. Its breathing speed is softened to 0.6× and compact working speed to 0.8×; geometry and tuned density stay unchanged. The label stops shimmering with the orb and becomes ordinary text under reduced motion or forced colors. It is an indeterminate loading indicator, never invented AI progress.

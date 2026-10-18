@@ -1,0 +1,79 @@
+.brands {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 1.4rem 2rem;
+  max-width: 60rem;
+  margin-inline: auto;
+  color: var(--muted-foreground);
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-size: 0.91rem;
+  font-weight: 500;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.mark {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 2.1rem;
+  width: 2.1rem;
+  height: 2.1rem;
+}
+
+.mark img {
+  display: block;
+  width: 1.65rem;
+  height: 1.65rem;
+  object-fit: contain;
+}
+
+.opencode img {
+  width: 1.35rem;
+}
+.claude,
+.grok,
+.cursor,
+.meta {
+  isolation: isolate;
+}
+
+:global(.dark) .openai img {
+  content: url("/brands/agents/openai-dark.svg");
+}
+:global(.dark) .grok img {
+  content: url("/brands/agents/grok-dark.svg");
+}
+:global(.dark) .cursor img {
+  content: url("/brands/agents/cursor-dark.svg");
+}
+:global(.dark) .meta img {
+  content: url("/brands/agents/meta-dark.svg");
+}
+
+:global(.dark) .opencode img {
+  content: url("/brands/agents/opencode-dark.svg");
+}
+
+@media (max-width: 600px) {
+  .brands {
+    gap: 1rem 1.25rem;
+    max-width: 24rem;
+  }
+  .brand {
+    gap: 0.35rem;
+    font-size: 0.82rem;
+  }
+  .mark {
+    flex-basis: 1.8rem;
+    width: 1.8rem;
+    height: 1.8rem;
+  }
+}

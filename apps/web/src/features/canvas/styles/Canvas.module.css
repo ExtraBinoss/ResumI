@@ -1,0 +1,132 @@
+.viewport {
+  flex: 1;
+  overflow: auto;
+  overscroll-behavior: contain;
+  overflow-anchor: none;
+  min-width: 0;
+  background: var(--workspace, #efefec)
+    radial-gradient(var(--canvas-dot, #20201a20) 0.7px, transparent 0.8px) 0
+    0/18px 18px;
+}
+.paperBounds {
+  position: relative;
+  flex-shrink: 0;
+}
+.addPage {
+  position: absolute;
+  top: calc(100% + 16px);
+  left: 50%;
+  transform: translateX(-50%);
+  height: 30px;
+  width: 30px;
+  border-radius: 6px;
+  opacity: 0.7;
+  background: var(--surface-solid);
+}
+.addPage:hover,
+.addPage:focus-visible {
+  opacity: 1;
+}
+.paper {
+  position: relative;
+  transform-origin: top left;
+  box-shadow:
+    0 0 0 1px #14141212,
+    0 3px 7px #14141214,
+    0 30px 60px #1414121f;
+}
+.layer {
+  position: absolute;
+  transform-origin: center;
+  touch-action: none;
+  pointer-events: auto;
+}
+.layer > div[role="button"] {
+  width: 100%;
+  height: 100%;
+  outline: none;
+  cursor: move;
+}
+.interactionFrame::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border: 1px solid color-mix(in srgb, var(--primary) 47%, transparent);
+  pointer-events: none;
+}
+.interactionFrame.selected::after {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 1px #fff6;
+}
+.locked > div[role="button"] {
+  cursor: default;
+}
+.marquee {
+  display: none;
+  position: absolute;
+  z-index: 2000;
+  border: 1px solid var(--primary);
+  background: color-mix(in srgb, var(--primary) 8%, transparent);
+  pointer-events: none;
+}
+@media (max-width: 850px) {
+  .paperBounds {
+    margin: 0 auto;
+  }
+}
+@media (max-width: 700px) {
+  .viewport {
+    height: 60dvh;
+    align-self: flex-start;
+  }
+}
+
+.stage {
+  width: max-content;
+  min-width: 100%;
+  min-height: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 76px 32px;
+  isolation: isolate;
+}
+.guideX,
+.guideY {
+  display: none;
+  position: absolute;
+  z-index: 1999;
+  pointer-events: none;
+  background: #ee4c91;
+}
+.guideX {
+  top: 0;
+  bottom: 0;
+  width: 1px;
+}
+.guideY {
+  left: 0;
+  right: 0;
+  height: 1px;
+}
+
+.zoomSurface {
+  transform-origin: top left;
+}
+
+.interactionPlane {
+  position: absolute;
+  inset: 0;
+  z-index: 4000;
+  pointer-events: none;
+}
+.interactionFrame {
+  position: absolute;
+  transform-origin: center;
+  pointer-events: none;
+}
+.interactionFrame button {
+  pointer-events: auto;
+}

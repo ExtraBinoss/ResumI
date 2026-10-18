@@ -1,0 +1,75 @@
+.viewport {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  position: relative;
+  pointer-events: none;
+  container-type: inline-size;
+}
+.paper {
+  width: 794px;
+  transform-origin: top left;
+  transform: scale(calc(100cqw / 794px));
+}
+.paper :global(.resume) {
+  min-height: 1123px;
+}
+.sourceFrame {
+  width: 794px;
+  height: 1123px;
+  border: 0;
+  transform-origin: top left;
+  transform: scale(calc(100cqw / 794px));
+  background: #fff;
+  pointer-events: none;
+}
+.sourcePlaceholder {
+  width: 100%;
+  min-height: 160px;
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: var(--card);
+  color: var(--foreground);
+  font-size: 14px;
+}
+.sourcePlaceholder span {
+  font-size: 11px;
+  color: var(--muted-foreground);
+}
+.interactiveViewport {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  background: var(--workspace);
+  position: relative;
+  padding-bottom: 18px;
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--foreground) 24%, transparent)
+    transparent;
+}
+.interactiveFrame,
+.workspaceFrame {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 794px;
+  height: 1123px;
+  border: 0;
+  background: white;
+  transform-origin: top left;
+}
+.workspaceFrame {
+  pointer-events: none;
+  box-shadow: var(--shadow-sm);
+}
+.previewPage {
+  position: relative;
+  margin: 16px auto 0;
+  background: white;
+  box-shadow: var(--shadow-sm);
+}

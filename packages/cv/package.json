@@ -1,0 +1,27 @@
+{
+  "name": "@resumi/cv",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./sample": "./src/sample.ts",
+    "./renderer": "./src/renderer.ts",
+    "./design": "./src/design.ts",
+    "./design-renderer": "./src/design-renderer.ts",
+    "./document-render": "./src/document-render.ts",
+    "./source-policy": "./src/source/policy.ts",
+    "./source-starter": "./src/source/starter.ts",
+    "./source-render": "./src/source/render.ts",
+    "./templates": "./src/templates/render.tsx",
+    "./pdf-text": "./src/pdf-text.ts",
+    "./pdf-print": "./src/pdf-print.ts",
+    "./catalog": "./src/templates/catalog.ts"
+  },
+  "dependencies": {
+    "@resumi/engine": "workspace:*",
+    "pdfjs-dist": "^6.4.299",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "sucrase": "3.35.1"
+  }
+}

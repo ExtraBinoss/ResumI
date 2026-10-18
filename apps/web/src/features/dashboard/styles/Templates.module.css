@@ -1,0 +1,153 @@
+.catalog {
+  padding: 32px 36px 84px;
+}
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(218px, 248px));
+  align-items: start;
+  justify-content: center;
+  gap: 26px;
+  max-width: 1240px;
+  margin: 0 auto;
+}
+.template {
+  position: relative;
+  min-width: 0;
+  height: 354px;
+  content-visibility: auto;
+  contain-intrinsic-block-size: auto 354px;
+  overflow: hidden;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  box-shadow:
+    0 1px 2px rgb(0 0 0 / 6%),
+    0 3px 8px rgb(0 0 0 / 5%);
+  transition: box-shadow 220ms;
+}
+.template:hover,
+.template:focus-within {
+  box-shadow:
+    0 2px 4px rgb(0 0 0 / 8%),
+    0 5px 12px rgb(0 0 0 / 7%);
+}
+.templateLink {
+  position: relative;
+  display: block;
+  height: 354px;
+  overflow: hidden;
+}
+.templateLink:focus-visible {
+  border-radius: 8px;
+  outline-offset: -3px;
+}
+.preview {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  background: transparent;
+}
+.paper {
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  flex-shrink: 0;
+  background: #fff;
+  box-shadow: none;
+}
+.thumbnail {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: top center;
+}
+.details {
+  position: absolute;
+  inset: auto 0 0;
+  display: flex;
+  align-items: center;
+  height: 72px;
+  padding: 24px 78px 12px 14px;
+  border: 0;
+  border-radius: 0;
+  background: linear-gradient(
+    to top,
+    rgb(10 10 12 / 74%),
+    rgb(10 10 12 / 58%) 60%,
+    rgb(10 10 12 / 20%) 84%,
+    transparent
+  );
+  color: #fff;
+  text-shadow: 0 1px 3px rgb(0 0 0 / 18%);
+}
+.details h2 {
+  overflow: hidden;
+  margin: 0;
+  font-family: var(--font-ui);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 20px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.details > svg {
+  position: absolute;
+  right: 14px;
+  bottom: 22px;
+  color: #fff;
+}
+.template .previewButton[data-ui="button"] {
+  position: absolute;
+  z-index: 1;
+  right: 42px;
+  bottom: 16px;
+  width: 28px;
+  height: 28px;
+  min-height: 28px;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  color: #fff;
+  background: transparent;
+}
+.template .previewButton[data-ui="button"]:hover {
+  border-color: rgb(255 255 255 / 20%);
+  color: #fff;
+  background: rgb(255 255 255 / 16%);
+}
+.previewLoading {
+  min-height: 320px;
+  justify-content: center;
+}
+@media (max-width: 1100px) {
+  .catalog {
+    padding: 30px 26px 84px;
+  }
+  .grid {
+    gap: 24px;
+  }
+}
+@media (max-width: 520px) {
+  .catalog {
+    padding: 28px 20px 84px;
+  }
+  .grid {
+    grid-template-columns: minmax(0, 276px);
+  }
+  .templateLink {
+    height: 368px;
+  }
+  .template {
+    height: 368px;
+    contain-intrinsic-block-size: auto 368px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .template {
+    transition: none;
+  }
+}

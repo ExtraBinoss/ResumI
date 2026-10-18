@@ -1,0 +1,230 @@
+.textViewport {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  justify-content: center;
+  padding: 94px 280px 86px;
+  background: var(--workspace)
+    radial-gradient(var(--canvas-dot) 0.7px, transparent 0.8px) 0 0/18px 18px;
+}
+.copyEditor {
+  width: 100%;
+  min-width: 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--card);
+  box-shadow:
+    0 3px 8px #1414120c,
+    0 25px 60px #14141215;
+  overflow: hidden;
+}
+.copyToolbar {
+  position: absolute;
+  z-index: 8;
+  top: 76px;
+  left: calc(var(--layers-width) + 24px);
+  right: calc(var(--properties-width) + 24px);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  height: var(--text-toolbar-height);
+  min-height: var(--text-toolbar-height);
+  padding: 8px 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--popover);
+  box-shadow: var(--shadow-panel);
+}
+.textWorkspace {
+  --text-toolbar-height: 56px;
+  position: relative;
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+}
+.toolbarSpace {
+  height: calc(var(--text-toolbar-height) / var(--text-scale));
+  flex: 0 0 auto;
+}
+.copyEditor .copyScroll {
+  overscroll-behavior-y: auto;
+}
+.copyToolbar > span {
+  font-size: 12px;
+  color: var(--faint);
+  margin-left: auto;
+}
+.formatFields {
+  flex: 1 1 auto;
+  min-width: 0;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.formatFields > div {
+  display: flex;
+  align-items: center;
+  margin: 0;
+}
+.formatFields > div > span {
+  flex: 1 1 auto;
+}
+.formatFields button {
+  flex-shrink: 0;
+}
+.formatFields:disabled {
+  opacity: 0.5;
+}
+.copyList {
+  overflow: auto;
+  flex: 1;
+  background: var(--card);
+  color: var(--foreground);
+  padding: 28px 28px 54px;
+  scrollbar-gutter: stable;
+}
+.copyBlock {
+  position: relative;
+  padding: 14px 10px;
+  display: grid;
+  grid-template-columns: 104px minmax(0, 1fr);
+  gap: 18px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+}
+.copyBlock:focus-within {
+  background: var(--muted);
+  border-color: var(--line-strong);
+}
+.copyMeta {
+  padding-top: 6px;
+  color: var(--foreground);
+  font-size: 12px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.copyMeta small {
+  display: block;
+  color: var(--muted-foreground);
+  font-size: 12px;
+  margin-top: 5px;
+}
+.copyInput {
+  width: 100%;
+  resize: vertical;
+  min-height: 34px;
+  padding: 4px 7px 8px;
+  border: 0;
+  border-radius: 6px;
+  outline: 0;
+  background: transparent;
+}
+.copyInput:focus {
+  background: var(--card);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+.copyEditor footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 28px;
+  border-top: 1px solid var(--line);
+  color: var(--faint);
+  font-size: 12px;
+}
+.textEmpty {
+  padding: 50px;
+  text-align: center;
+  color: var(--faint);
+  font-size: 12px;
+}
+@media (max-width: 1100px) {
+  .textViewport {
+    padding-inline: 250px 260px;
+  }
+  .copyEditor {
+    min-width: 0;
+  }
+  .copyList {
+    padding: 16px 12px 40px;
+  }
+  .copyBlock {
+    position: relative;
+    grid-template-columns: 1fr;
+    gap: 5px;
+  }
+}
+@media (max-width: 850px) {
+  .textViewport {
+    padding: 82px 14px 120px;
+  }
+  .copyEditor {
+    width: 100%;
+    min-width: 0;
+  }
+  .copyToolbar > span {
+    display: none;
+  }
+}
+
+@media (max-width: 700px) {
+  .textViewport {
+    position: absolute;
+    inset: 0 0 40vh;
+    padding: 76px 12px 70px;
+    min-height: 0;
+  }
+}
+@media (min-width: 701px) and (max-width: 850px) {
+  .copyToolbar {
+    padding-inline: 8px;
+  }
+  .formatFields > div button {
+    width: 22px;
+    min-width: 22px;
+  }
+  .copyToolbar > div {
+    gap: 4px;
+  }
+  .copyToolbar > div > div {
+    width: 80px;
+    min-width: 0;
+  }
+}
+
+.resetTranslation {
+  position: absolute;
+  right: 0;
+  top: 8px;
+  opacity: 0;
+}
+.copyBlock:hover .resetTranslation,
+.copyBlock:focus-within .resetTranslation {
+  opacity: 1;
+}
+@media (max-width: 1040px) {
+  .textWorkspace {
+    --text-toolbar-height: 88px;
+  }
+  .copyToolbar {
+    flex-wrap: wrap;
+    align-content: center;
+    row-gap: 6px;
+  }
+  .formatFields {
+    flex-basis: 100%;
+  }
+}
+@media (max-width: 700px) {
+  .copyToolbar {
+    left: 14px;
+    right: 14px;
+  }
+}

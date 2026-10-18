@@ -1,0 +1,416 @@
+.structure,
+.inspector {
+  position: absolute;
+  z-index: 7;
+  top: 72px;
+  bottom: 12px;
+  width: 235px;
+  flex-shrink: 0;
+  background: var(--panel);
+  border: 1px solid var(--line-strong);
+  backdrop-filter: blur(20px) saturate(1.2);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  overflow: auto;
+}
+.structure {
+  left: 12px;
+  display: flex;
+  flex-direction: column;
+}
+.inspector {
+  right: 12px;
+  width: 252px;
+}
+.panelHeading {
+  height: 52px;
+  min-height: 52px;
+  padding: 0 17px;
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.panelHeading h2 {
+  font-size: 11px;
+  font-weight: 600;
+  margin: 0;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.outlineLabel {
+  font-size: 10px;
+  letter-spacing: 0.6px;
+  font-weight: 600;
+  color: var(--faint);
+  padding: 16px 14px 8px;
+  display: flex;
+  justify-content: space-between;
+}
+.rows {
+  padding: 0 8px 12px;
+  box-sizing: border-box;
+}
+.structureRow {
+  min-width: 0;
+  border-radius: 6px;
+  margin-bottom: 4px;
+  position: relative;
+}
+.sectionButton {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 11px 10px;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  width: 100%;
+  text-align: left;
+  color: var(--muted-foreground);
+  font-size: 12px;
+  font-weight: 600;
+}
+.sectionButton span {
+  flex: 1;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.sectionButton small {
+  font-size: 8px;
+  color: var(--faint);
+}
+.sectionButton svg {
+  color: var(--faint);
+}
+.sectionButton:hover {
+  background: var(--muted);
+}
+.activeRow {
+  background: var(--accent-soft);
+}
+.activeRow .sectionButton {
+  color: var(--primary);
+}
+.rowTools {
+  display: flex;
+  gap: 4px;
+  justify-content: flex-end;
+  padding: 0 9px 7px;
+}
+.structureBottom {
+  margin-top: auto;
+  padding: 18px 14px;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  border-top: 1px solid var(--line);
+}
+.structureBottom strong {
+  display: block;
+  font-size: 10px;
+  font-weight: 550;
+  margin-bottom: 6px;
+}
+.structureBottom span {
+  font-size: 9px;
+  color: var(--muted-foreground);
+  line-height: 1.6;
+}
+.structureBottom > button {
+  margin-left: auto;
+}
+.templateSwatch {
+  display: block;
+  width: 21px;
+  height: 29px;
+  border: 1px solid var(--line);
+  background: linear-gradient(var(--accent-soft) 20%, var(--card) 20%);
+  flex-shrink: 0;
+}
+.fieldGroup {
+  padding: 21px 18px;
+  border-bottom: 1px solid var(--line);
+}
+.fieldGroup h3 {
+  font-size: 11px;
+  font-weight: 550;
+  margin-bottom: 19px;
+}
+.fieldGroup :global([data-ui="label"]) {
+  font-size: 10px;
+  font-weight: 500;
+  margin-bottom: 7px;
+  color: var(--muted-foreground);
+}
+.fieldGroup :global([data-ui="input"]) {
+  font-size: 11px;
+  border-color: var(--line);
+}
+.help {
+  font-size: 10px;
+  color: var(--faint);
+  line-height: 1.8;
+  margin: 0 0 18px;
+}
+.fieldGroup > .help {
+  margin-top: -5px;
+  margin-bottom: 23px;
+}
+.fieldGroup textarea + .help {
+  margin-top: 12px;
+}
+.sliderLabel {
+  display: flex;
+  justify-content: space-between;
+  font-size: 10px;
+  margin: 26px 0 12px;
+  color: var(--muted-foreground);
+}
+.sliderLabel > span:last-child {
+  color: var(--muted-foreground);
+  font-size: 9px;
+}
+.documentFacts {
+  margin: 32px 0 25px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  border-top: 1px solid var(--line);
+  padding-top: 23px;
+}
+.documentFacts > span {
+  display: flex;
+  justify-content: space-between;
+  font-size: 10px;
+  color: var(--muted-foreground);
+}
+.documentFacts strong {
+  font-weight: 450;
+  color: var(--foreground);
+}
+.blockList {
+  margin: 16px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.blockLink {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  text-align: left;
+  background: none;
+  border: 0;
+  font-size: 10px;
+  color: var(--muted-foreground);
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  padding: 8px 7px;
+  border-radius: 4px;
+  max-width: 100%;
+}
+.blockLink > span {
+  font-size: 8px;
+  color: var(--muted-foreground);
+  flex-shrink: 0;
+}
+.blockLink:hover,
+.activeBlock {
+  background: var(--accent-soft);
+  color: var(--primary);
+}
+.fieldHeading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 18px;
+}
+.fieldHeading h3 {
+  margin: 0;
+}
+.inlineActions {
+  display: flex;
+  gap: 1px;
+}
+@media (max-width: 700px) {
+  .structure {
+    left: 12px;
+    width: 230px;
+  }
+  .inspector {
+    right: 12px;
+    width: 260px;
+  }
+  .structure,
+  .inspector {
+    top: 76px;
+    bottom: 76px;
+    box-shadow: var(--shadow-sm);
+    max-width: calc(100vw - 24px);
+  }
+}
+
+.embedded {
+  position: static;
+  width: 100%;
+  border: 0;
+  box-shadow: none;
+  background: transparent;
+  flex: 1;
+  border-radius: 0;
+}
+.embedded > .panelHeading {
+  height: 38px;
+  min-height: 38px;
+  border: 0;
+  padding-inline: 14px;
+}
+
+@media (max-width: 1040px) {
+  .inspector {
+    width: 222px;
+  }
+}
+@media (max-width: 700px) {
+  .inspector {
+    top: auto;
+    bottom: 12px;
+    right: 12px;
+    left: calc(50% + 6px);
+    width: auto;
+    height: 40vh;
+  }
+  .fieldGroup {
+    padding: 14px 9px;
+  }
+  .fieldGroup h3 {
+    font-size: 10px;
+  }
+  .panelHeading {
+    padding: 0 9px;
+    height: 40px;
+    min-height: 40px;
+  }
+  .fieldGroup :global([data-ui="input"]) {
+    font-size: 9px;
+  }
+}
+
+.outlineScroll {
+  flex: 1;
+  min-height: 0;
+}
+.outlineBlocks {
+  padding: 0 4px 5px 18px;
+}
+.outlineBlock {
+  position: relative;
+}
+.outlineBlock > button {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  padding: 7px 6px;
+  border: 0;
+  border-radius: 5px;
+  background: transparent;
+  color: var(--muted-foreground);
+  font: 12px/1.35 var(--font-ui);
+  text-align: left;
+}
+.outlineBlock > button:hover {
+  background: var(--muted);
+  color: var(--foreground);
+}
+.outlineBlock > button.activeBlock {
+  background: var(--accent-soft);
+  color: var(--foreground);
+}
+.outlineBlock > button svg {
+  flex: 0 0 14px;
+}
+.outlineBlock > button span {
+  min-width: 0;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.structureRow[data-drop-position="above"]::before,
+.outlineBlock[data-drop-position="above"]::before,
+.structureRow[data-drop-position="below"]::after,
+.outlineBlock[data-drop-position="below"]::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  border-radius: 2px;
+  z-index: 2;
+  pointer-events: none;
+  background: var(--primary);
+}
+.structureRow[data-drop-position="above"]::before,
+.outlineBlock[data-drop-position="above"]::before {
+  top: -2px;
+}
+.structureRow[data-drop-position="below"]::after,
+.outlineBlock[data-drop-position="below"]::after {
+  bottom: -2px;
+}
+
+.outlineTree {
+  gap: 2px;
+  border: 0;
+  background: transparent;
+}
+.outlineTree .structureRow {
+  border: 0;
+  background: transparent;
+}
+.sectionHeader {
+  display: flex;
+  align-items: center;
+}
+.sectionHeader > h3 {
+  margin: 0;
+  flex: 0 0 22px;
+}
+.sectionToggle {
+  display: grid;
+  width: 22px;
+  height: 30px;
+  min-height: 0;
+  place-items: center;
+  padding: 0;
+}
+.sectionToggle > :global([data-slot="accordion-trigger-icon"]) {
+  display: none;
+}
+.sectionToggle > svg:first-child {
+  transition: transform 140ms ease;
+}
+.sectionToggle[aria-expanded="true"] > svg:first-child {
+  transform: rotate(90deg);
+}
+.sectionHeader .sectionButton {
+  padding-left: 2px;
+}
+.outlineContent {
+  padding: 0;
+}
+.outlineContent > div {
+  height: auto;
+  padding: 0;
+}
+@media (prefers-reduced-motion: reduce) {
+  .sectionToggle > svg:first-child {
+    transition: none;
+  }
+}

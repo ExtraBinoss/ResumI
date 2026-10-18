@@ -1,0 +1,93 @@
+.handle {
+  position: absolute;
+  width: 7px;
+  height: 7px;
+  border: 1px solid var(--blue, #2958e8);
+  border-radius: 1px;
+  padding: 0;
+  background: white;
+  z-index: 2;
+  touch-action: none;
+}
+.handle[data-handle="nw"] {
+  left: -4px;
+  top: -4px;
+  cursor: nwse-resize;
+}
+.handle[data-handle="n"] {
+  left: calc(50% - 3px);
+  top: -4px;
+  cursor: ns-resize;
+}
+.handle[data-handle="ne"] {
+  right: -4px;
+  top: -4px;
+  cursor: nesw-resize;
+}
+.handle[data-handle="e"] {
+  right: -4px;
+  top: calc(50% - 3px);
+  cursor: ew-resize;
+}
+.handle[data-handle="se"] {
+  right: -4px;
+  bottom: -4px;
+  cursor: nwse-resize;
+}
+.handle[data-handle="s"] {
+  left: calc(50% - 3px);
+  bottom: -4px;
+  cursor: ns-resize;
+}
+.handle[data-handle="sw"] {
+  left: -4px;
+  bottom: -4px;
+  cursor: nesw-resize;
+}
+.handle[data-handle="w"] {
+  left: -4px;
+  top: calc(50% - 3px);
+  cursor: ew-resize;
+}
+.size {
+  position: absolute;
+  pointer-events: none;
+  top: calc(100% + 7px);
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 3px 5px;
+  border-radius: 4px;
+  color: white;
+  background: var(--blue, #2958e8);
+  font: 11px/1.2 var(--font-ui, monospace);
+  white-space: nowrap;
+}
+.measurementPlane {
+  position: absolute;
+  z-index: 5000;
+  pointer-events: none;
+  transform-origin: center;
+}
+.toolHint {
+  position: absolute;
+  z-index: 9;
+  bottom: 92px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 7px 11px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: var(--panel);
+  backdrop-filter: blur(16px);
+  box-shadow: var(--shadow-sm);
+  color: var(--muted-foreground);
+  font: 12px/1.4 var(--font-ui);
+  pointer-events: none;
+  white-space: nowrap;
+}
+@media (max-width: 700px) {
+  .toolHint {
+    bottom: calc(40vh + 84px);
+    font-size: 11px;
+  }
+}

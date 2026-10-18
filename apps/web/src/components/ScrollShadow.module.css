@@ -1,0 +1,108 @@
+.root {
+  --scroll-fade-color: var(--popover, var(--card));
+  position: relative;
+  min-height: 0;
+  min-width: 0;
+  padding: 0;
+  overflow: hidden;
+  isolation: isolate;
+}
+.viewport {
+  height: 100%;
+  width: 100%;
+  padding: 0;
+  overscroll-behavior: contain;
+  outline: none;
+  scrollbar-gutter: auto;
+}
+.content {
+  /* Base UI supplies inline min-width: fit-content; panel text must still wrap/truncate. */
+  min-width: 0 !important;
+  width: 100%;
+  min-height: 100%;
+}
+.viewport:focus-visible {
+  box-shadow: inset 0 0 0 2px var(--ring);
+}
+.root::before,
+.root::after {
+  content: "";
+  position: absolute;
+  z-index: 5;
+  left: 0;
+  right: 0;
+  height: 14px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 160ms ease;
+}
+.root::before {
+  top: 0;
+  background: linear-gradient(to bottom, var(--scroll-fade-color), transparent);
+}
+.root::after {
+  bottom: 0;
+  background: linear-gradient(to top, var(--scroll-fade-color), transparent);
+}
+.root[data-overflow-y-start]::before,
+.root[data-overflow-y-end]::after {
+  opacity: 1;
+}
+.scrollbar {
+  z-index: 6;
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+.scrollbar[data-orientation="vertical"] {
+  top: 0;
+  bottom: 0 !important;
+  inset-inline-end: 0 !important;
+  width: 6px;
+}
+.scrollbar[data-orientation="horizontal"] {
+  bottom: 0;
+  inset-inline-start: 0;
+  inset-inline-end: 0 !important;
+  height: 6px;
+}
+.scrollbar :global([data-slot="scroll-area-thumb"]) {
+  border-radius: 3px;
+  background: color-mix(in srgb, var(--muted-foreground) 38%, transparent);
+}
+.scrollbar:hover :global([data-slot="scroll-area-thumb"]),
+.scrollbar[data-scrolling] :global([data-slot="scroll-area-thumb"]) {
+  background: color-mix(in srgb, var(--muted-foreground) 64%, transparent);
+}
+.corner {
+  background: transparent;
+}
+@media (prefers-reduced-motion: reduce) {
+  .root::before,
+  .root::after {
+    transition: none;
+  }
+}
+
+.root[data-fade-orientation="horizontal"]::before,
+.root[data-fade-orientation="horizontal"]::after {
+  top: 0;
+  bottom: 0;
+  width: 12px;
+  height: auto;
+  opacity: 0;
+}
+.root[data-fade-orientation="horizontal"]::before {
+  left: 0;
+  right: auto;
+  background: linear-gradient(to right, var(--scroll-fade-color), transparent);
+}
+.root[data-fade-orientation="horizontal"]::after {
+  left: auto;
+  right: 0;
+  background: linear-gradient(to left, var(--scroll-fade-color), transparent);
+}
+.root[data-fade-orientation="horizontal"][data-overflow-x-start]::before,
+.root[data-fade-orientation="horizontal"][data-overflow-x-end]::after {
+  opacity: 1;
+}

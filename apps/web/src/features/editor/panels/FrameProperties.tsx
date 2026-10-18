@@ -1,0 +1,197 @@
+import { useTranslation } from "react-i18next";
+import { useRef, useEffect } from "react";
+import { useAtomValue, useSetAtom } from "jotai";
+import { Link2, Unlink } from "lucide-react";
+import {
+  boundsForElements,
+  type Command,
+  type LayerPatch,
+} from "@resumi/engine";
+import { sessionAtom, blockAtom } from "../../../state/editor";
+import { designCommandAtom, selectedIdsAtom } from "../../../state/design";
+import { ActionIcon, NumberInput } from "../../../ui";
+import styles from "../styles/Inspector.module.css";
+
+export function FrameProperties({ id }: { id: string }) {
+  const { t } = useTranslation();
+  const document = useAtomValue(sessionAtom)!.document;
+  const block = useAtomValue(blockAtom(id));
+  const ids = useAtomValue(selectedIdsAtom);
+  const dispatch = useSetAtom(designCommandAtom);
+  const previews = useRef<{ node: HTMLElement; css: string }[]>([]);
+  useEffect(
+    () => () => {
+      for (const { node, css } of previews.current) node.style.cssText = css;
+      previews.current = [];
+    },
+    [id],
+  );
+  function clearPreview() {
+    for (const { node, css } of previews.current) node.style.cssText = css;
+    previews.current = [];
+  }
+  if (!block?.design) return null;
+  const layer = block.design;
+  const multi = ids.length > 1;
+  const bounds = boundsForElements(
+    ids.map((key) => document.blocks[key].design!),
+  );
+  if (!bounds) return null;
+  function patch(patch: LayerPatch) {
+    dispatch({ type: "layer.update", ids, patch });
+  }
+  function geometry(
+    key: "x" | "y" | "width" | "height",
+    value: string | number,
+  ) {
+    if (
+      typeof value !== "number" ||
+      !Number.isFinite(value) ||
+      value > 5000 ||
+      value < (key === "x" || key === "y" ? -5000 : 1)
+    )
+      return;
+    if (!multi) {
+      const other = key === "width" ? "height" : "width";
+      patch({
+        [key]: value,
+        ...((key === "width" || key === "height") && layer.aspectLocked
+          ? { [other]: (layer[other] * value) / layer[key] }
+          : {}),
+      });
+    } else if (key === "x" || key === "y") {
+      dispatch({
+        type: "layer.translate",
+        ids,
+        dx: key === "x" ? value - bounds!.x : 0,
+        dy: key === "y" ? value - bounds!.y : 0,
+      });
+    } else {
+      const scale = value / bounds![key];
+      const commands: Command[] = ids.map((keyId) => {
+        const current = document.blocks[keyId].design!;
+        return {
+          type: "layer.update",
+          ids: [keyId],
+          patch:
+            key === "width"
+              ? {
+                  x: bounds!.x + (current.x - bounds!.x) * scale,
+                  width: current.width * scale,
+                }
+              : {
+                  y: bounds!.y + (current.y - bounds!.y) * scale,
+                  height: current.height * scale,
+                },
+        };
+      });
+      dispatch({
+        version: 1,
+        actor: { kind: "human", name: "Editor" },
+        commands,
+      });
+    }
+  }
+  function preview(
+    key: "x" | "y" | "width" | "height" | "rotation",
+    value: number | null,
+  ) {
+    clearPreview();
+    if (value === null) return;
+    for (const selectedId of ids) {
+      const current = document.blocks[selectedId]?.design;
+      if (!current) continue;
+      const nodes = window.document.querySelectorAll<HTMLElement>(
+        `[data-layer-id="${selectedId}"], [data-layer-frame="${selectedId}"]`,
+      );
+      for (const node of nodes) {
+        previews.current.push({ node, css: node.style.cssText });
+        if (key === "rotation") node.style.transform = `rotate(${value}deg)`;
+        else if (key === "x" || key === "y")
+          node.style[key === "x" ? "left" : "top"] =
+            `${current[key] + value - (multi ? bounds![key] : layer[key])}px`;
+        else {
+          const scale = value / (multi ? bounds![key] : layer[key]);
+          node.style[key] = `${current[key] * scale}px`;
+          if (multi)
+            node.style[key === "width" ? "left" : "top"] =
+              `${key === "width" ? bounds!.x + (current.x - bounds!.x) * scale : bounds!.y + (current.y - bounds!.y) * scale}px`;
+          else if (layer.aspectLocked)
+            node.style[key === "width" ? "height" : "width"] =
+              `${current[key === "width" ? "height" : "width"] * scale}px`;
+        }
+      }
+    }
+  }
+  return (
+    <section>
+      <h3>{t("properties.frame")}</h3>
+      <div className={styles.quadGrid}>
+        {(["x", "y", "width", "height"] as const).map((key) => (
+          <div key={key}>
+            <NumberInput
+              scrubLabel={{ x: "X", y: "Y", width: "W", height: "H" }[key]}
+              suffix="px"
+              onPreview={(value) => preview(key, value)}
+              aria-label={
+                {
+                  x: t("properties.layerX"),
+                  y: t("properties.layerY"),
+                  width: t("properties.layerWidth"),
+                  height: t("properties.layerHeight"),
+                }[key]
+              }
+              hideControls
+              size="xs"
+              value={Math.round((multi ? bounds[key] : layer[key]) * 100) / 100}
+              min={key === "x" || key === "y" ? -5000 : 1}
+              max={5000}
+              onChange={(value) => geometry(key, value)}
+            />
+          </div>
+        ))}
+      </div>
+      {!multi && (
+        <>
+          <div className={styles.inlineField}>
+            <span>{t("properties.proportions")}</span>
+            <ActionIcon
+              aria-label={
+                layer.aspectLocked
+                  ? t("properties.unlockAspect")
+                  : t("properties.lockAspect")
+              }
+              aria-pressed={layer.aspectLocked}
+              size="sm"
+              variant={layer.aspectLocked ? "light" : "subtle"}
+              color="gray"
+              onClick={() => patch({ aspectLocked: !layer.aspectLocked })}
+            >
+              {layer.aspectLocked ? <Link2 size={14} /> : <Unlink size={14} />}
+            </ActionIcon>
+          </div>
+          <div className={styles.numberRow}>
+            <NumberInput
+              label={t("properties.rotation")}
+              snapPoints={[
+                -360, -315, -270, -225, -180, -135, -90, -45, 0, 45, 90, 135,
+                180, 225, 270, 315, 360,
+              ]}
+              onPreview={(value) => preview("rotation", value)}
+              aria-label={t("properties.rotation")}
+              size="xs"
+              suffix="°"
+              min={-360}
+              max={360}
+              value={layer.rotation}
+              onChange={(value) => {
+                if (typeof value === "number" && value >= -360 && value <= 360)
+                  patch({ rotation: value });
+              }}
+            />
+          </div>
+        </>
+      )}
+    </section>
+  );
+}

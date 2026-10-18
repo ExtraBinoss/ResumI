@@ -1,0 +1,18 @@
+import { renderToStaticMarkup } from "react-dom/server";
+import {
+  documentLocale,
+  validateDocument,
+  type Document,
+} from "@resumi/engine";
+import { ResumeTemplate } from "./ResumeTemplate";
+import { resumeCss } from "../renderer";
+import { escapeHtml } from "../escape";
+
+/** SSR-only trusted template renderer, separate from the lightweight canvas renderer. */
+export function renderTemplateResume(document: Document): string {
+  validateDocument(document);
+  return renderToStaticMarkup(<ResumeTemplate document={document} />);
+}
+export function renderTemplateHtml(document: Document): string {
+  return `<!doctype html><html lang="${escapeHtml(documentLocale(document))}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${escapeHtml(document.name)}</title><style>${resumeCss}\nbody{margin:0;background:#eceef2}.resume{margin:auto}</style></head><body>${renderTemplateResume(document)}</body></html>`;
+}

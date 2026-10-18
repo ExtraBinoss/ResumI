@@ -1,0 +1,288 @@
+.dashboard {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  height: 100dvh;
+  background: var(--background);
+}
+.dashboard .dashboardBody {
+  --scroll-fade-color: var(--background);
+  min-width: 0;
+  min-height: 0;
+  background: var(--background);
+}
+.libraryViewport {
+  scrollbar-gutter: stable both-edges;
+  scroll-padding-block-end: 84px;
+}
+.main {
+  width: 100%;
+  max-width: 1240px;
+  min-height: 100%;
+  margin: 0 auto;
+}
+.heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  min-height: 88px;
+  padding: 24px 36px;
+  border-bottom: 0;
+  background: transparent;
+}
+.collectionTitle {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+.heading h1 {
+  margin: 0;
+  font-size: 21px;
+  font-weight: 550;
+  letter-spacing: -0.7px;
+  line-height: 28px;
+  white-space: nowrap;
+}
+.count {
+  min-width: 23px;
+  padding: 1px 7px;
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  color: var(--muted-foreground);
+  font-size: 12px;
+  line-height: 18px;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.actions button,
+.empty a {
+  border-radius: 6px;
+  font-size: 13px;
+}
+.listHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  min-height: 66px;
+  padding: 14px 36px;
+  border-bottom: 1px solid color-mix(in srgb, var(--line) 65%, transparent);
+}
+.search {
+  width: 234px;
+  max-width: 100%;
+}
+.listTools {
+  position: relative;
+  width: 186px;
+  height: 32px;
+  flex: 0 0 auto;
+}
+.listToolsContent {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+}
+.listTools[data-empty="true"] {
+  height: 0;
+  pointer-events: none;
+}
+.listTools .sort {
+  width: 104px;
+  flex: 0 0 auto;
+}
+.listHeader :global([data-ui="input"]) {
+  border-radius: 6px;
+  font-size: 13px;
+}
+.search :global([data-ui="input"]) {
+  background: var(--card);
+  box-shadow: 0 1px 2px rgb(0 0 0 / 4%);
+  border-color: var(--line-strong);
+  opacity: 1;
+}
+.search :global([data-ui="input"])::placeholder {
+  color: var(--muted-foreground);
+  opacity: 1;
+}
+.search :global([data-ui="input"]):focus-visible {
+  border-color: var(--primary);
+}
+.sort :global([data-slot="select-trigger"]) {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 32px;
+  width: 100%;
+  min-width: 0;
+  gap: 8px;
+  padding: 0 10px;
+}
+.sort :global([data-slot="select-value"]) {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  flex: 0 1 auto;
+  line-height: 1;
+  text-align: center;
+}
+.sort :global([data-slot="select-trigger"] > svg) {
+  position: static;
+  flex: 0 0 12px;
+  width: 12px;
+  height: 12px;
+  transform: none;
+}
+.sortMenu:global([data-slot="select-content"]) {
+  width: var(--anchor-width);
+  min-width: var(--anchor-width);
+}
+.sortMenu :global([data-slot="select-item"]) {
+  padding-right: 24px;
+  padding-left: 8px;
+}
+.sortMenu :global([data-slot="select-item"] > span:has(> svg)) {
+  right: 3px;
+  width: 14px;
+  height: 14px;
+}
+.sortMenu :global([data-slot="select-item"] svg) {
+  width: 14px;
+  height: 14px;
+}
+.collection {
+  padding: 32px 36px 84px;
+}
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 276px));
+  align-items: start;
+  justify-content: center;
+  gap: 30px;
+  max-width: 1260px;
+  margin: 0 auto;
+}
+.listView {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 10px;
+  max-width: 940px;
+}
+.empty {
+  min-height: 380px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 18px;
+  padding: 40px 20px;
+  color: var(--muted-foreground);
+}
+.emptyPaper {
+  display: grid;
+  place-items: center;
+  width: 78px;
+  height: 96px;
+  margin-bottom: 6px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--background);
+  box-shadow: 0 2px 5px rgb(0 0 0 / 4%);
+}
+.empty h2 {
+  margin: 0;
+  color: var(--foreground);
+  font-size: 18px;
+  font-weight: 500;
+}
+.previewScroller {
+  max-height: min(72dvh, 1123px);
+  overflow: auto;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+.previewPage {
+  width: 100%;
+  max-width: 794px;
+  aspect-ratio: 794 / 1123;
+  margin: 0 auto;
+  background: #fff;
+}
+.previewFooter {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 16px;
+}
+@media (max-width: 1100px) {
+  .heading,
+  .listHeader {
+    padding-right: 26px;
+    padding-left: 26px;
+  }
+  .collection {
+    padding: 30px 26px 84px;
+  }
+  .grid {
+    gap: 24px;
+  }
+}
+@media (max-width: 520px) {
+  .heading {
+    min-height: 76px;
+    padding: 20px;
+    gap: 12px;
+  }
+  .heading h1 {
+    font-size: 20px;
+  }
+  .collectionTitle {
+    gap: 8px;
+  }
+  .count {
+    display: none;
+  }
+  .actions {
+    gap: 6px;
+  }
+  .listHeader {
+    flex-wrap: wrap;
+    align-items: flex-start;
+    align-content: flex-start;
+    gap: 12px;
+    padding: 12px 20px;
+  }
+  .search {
+    width: 100%;
+  }
+  .listTools {
+    width: 100%;
+  }
+  .listToolsContent {
+    justify-content: space-between;
+  }
+  .collection {
+    padding: 28px 20px 84px;
+  }
+  .grid {
+    grid-template-columns: minmax(0, 276px);
+    gap: 24px;
+  }
+  .listView {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 10px;
+  }
+}
+
+/* Only results move; collection chrome and search retain their DOM identity. */
+.routeContent {
+  min-width: 0;
+}

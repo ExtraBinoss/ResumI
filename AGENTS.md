@@ -1,16 +1,10 @@
-# ResumI development policy
+# ResumI
 
-React renders the application; the framework-free TypeScript engine owns document rules.
-
-- Use Bun, strict TypeScript, React 19, Mantine controls, Jotai, CSS Modules/tokens and named imports from `lucide-react`. Read [architecture](docs/architecture.md), [engine](docs/engine.md), and [task checklist](tasks/check-list.md).
-- Engine code must never import React, Jotai, browser APIs, providers, or runtime-specific code. Every human or agent document mutation goes through runtime-validated engine commands. Do not duplicate rules in UI, CLI or storage.
-- `useEffect` is only for actual external lifecycle synchronization (subscriptions, IndexedDB loading, DOM observers, keyboard listeners), always with cleanup. Do not use effects to derive/filter/sort values, synchronize redundant state, execute user actions, fetch route data, or mirror documents between stores.
-- The Jotai session is canonical in-memory state. Use stable per-section/block atoms and derived atoms, `useAtomValue`/`useSetAtom`, structural sharing and local transient interaction state. Never subscribe the whole canvas to the document. Do not create atoms during render.
-- Keep components pure and cohesive, StrictMode enabled, React Compiler active and Hooks/Compiler lint rules enabled. Avoid reflexive useMemo/useCallback/React.memo; require measured benefit or an identity contract. Never suppress lint to hide an architectural issue.
-- Independently editable blocks render independently. No hidden layout reads or pagination recalculations per keypress. Zoom/drag uses transient transforms; commit meaningful commands. Batch future agent streams. Measure typing/selection/project-opening before optimization.
-- Use framework loaders for server data. No IndexedDB/window access during SSR. Never pretend the server or CLI can read a browser's private database. Hydration must be deterministic. Introduce a query cache only for demonstrated server-state needs.
-- Lucide icons: direct named imports, consistent 16–20px size/stroke, accessible labels on icon-only controls, decorative icons aria-hidden. Brand marks are a vetted documented exception, never invented.
-- Every handwritten source is <600 physical lines. Run `bun run check:files`; split by responsibility. Tests mirror src under test/. Engine coverage must be >=85% lines and functions, including unimported source files.
-- Run `bun run check` before delivery. For visible changes run `bun run visual:check`, open screenshots and inspect DOM/CSS. Use synthetic resumes only. Update numbered tasks with actual evidence, not optimistic checkmarks.
-- Before review: is each effect necessary, is data duplicated, does one edit rerender irrelevant blocks, does any mutation bypass validation, is SSR browser-safe, is the component compiler-compatible, are critical behaviors tested/measured, are icons consistent?
-- Keep the legacy cv-creator repository read-only. Never deploy production, configure credentials, or perform destructive repository operations without explicit user authorization.
+- Use Bun, strict TypeScript, Oxlint/Oxfmt (with official ESLint Hooks/Compiler checks), React 19 with Compiler/StrictMode, Jotai, Motion and shadcn/ui with Base UI. Application styles use CSS Modules/tokens; generated components use Tailwind. Respect reduced motion and accessible controls.
+- Keep UI ownership in `features/dashboard`, `features/editor` and `features/canvas`. Shared primitives belong in `components`/`ui`.
+- The framework-free engine owns document rules. All mutations use runtime-validated commands; never import React, browser APIs or runtime adapters into the engine.
+- Jotai holds the canonical editor session. Use stable block selectors, structural sharing and transient gesture state. Avoid whole-document subscriptions and duplicated state.
+- Effects synchronize external systems only, with cleanup. Keep derived values in render and user actions in handlers. SSR must not access browser storage; hydration must be deterministic.
+- Translate interface copy through `apps/web/src/i18n`; interface language and CV language are independent. Keep document content unchanged unless explicitly edited.
+- Keep handwritten sources below 600 lines. Run `bun run check`; for visible changes also run `bun run visual:check` and inspect screenshots/DOM. Use synthetic CVs.
+- Keep the legacy cv-creator checkout read-only. Do not run GitHub commands, publish or configure production without an explicit request.

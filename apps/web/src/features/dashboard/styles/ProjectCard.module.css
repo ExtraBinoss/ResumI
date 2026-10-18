@@ -1,0 +1,194 @@
+.project {
+  position: relative;
+  min-width: 0;
+  overflow: hidden;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  box-shadow:
+    0 1px 2px rgb(0 0 0 / 6%),
+    0 3px 8px rgb(0 0 0 / 5%);
+  transition: box-shadow 220ms;
+}
+.project:hover,
+.project:focus-within {
+  box-shadow:
+    0 2px 4px rgb(0 0 0 / 8%),
+    0 5px 12px rgb(0 0 0 / 7%);
+}
+.projectLink {
+  position: relative;
+  display: block;
+  height: 368px;
+  overflow: hidden;
+}
+.projectLink:focus-visible {
+  border-radius: 8px;
+  outline-offset: -3px;
+}
+.thumbnail {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 0;
+  background: #fff;
+}
+.miniPaper {
+  width: min(100%, 260px);
+  aspect-ratio: 794 / 1123;
+  max-width: 100%;
+  flex-shrink: 0;
+  pointer-events: none;
+  background: #fff;
+  box-shadow: none;
+}
+.projectInfo {
+  position: absolute;
+  z-index: 1;
+  inset: auto 0 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 78px;
+  padding: 24px 14px 10px;
+  border: 0;
+  border-radius: 0;
+  background: linear-gradient(
+    to top,
+    rgb(10 10 12 / 74%),
+    rgb(10 10 12 / 58%) 60%,
+    rgb(10 10 12 / 20%) 84%,
+    transparent
+  );
+  color: #fff;
+  text-shadow: 0 1px 3px rgb(0 0 0 / 18%);
+}
+.projectInfo h3 {
+  overflow: hidden;
+  margin: 0 68px 2px 0;
+  font-family: var(--font-ui);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 18px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.projectInfo p {
+  margin: 0;
+  color: rgb(255 255 255 / 78%);
+  font-size: 11px;
+  line-height: 16px;
+}
+.previewButton,
+.menu {
+  position: absolute;
+  z-index: 2;
+  bottom: 26px;
+}
+.project .previewButton[data-ui="button"],
+.project .menu button {
+  width: 28px;
+  height: 28px;
+  min-height: 28px;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  background: transparent;
+  color: #fff;
+}
+.project .previewButton {
+  right: 44px;
+}
+.menu {
+  display: flex;
+  right: 12px;
+}
+.project .previewButton[data-ui="button"]:hover,
+.project .menu button:hover,
+.project .menu button[aria-expanded="true"] {
+  border-color: rgb(255 255 255 / 20%);
+  background: rgb(255 255 255 / 16%);
+  color: #fff;
+}
+.compact {
+  border: 1px solid var(--line);
+  background: var(--card);
+  box-shadow: 0 1px 2px rgb(0 0 0 / 2%);
+}
+.compact .projectLink {
+  height: 96px;
+}
+.compact .thumbnail {
+  right: auto;
+  width: 94px;
+  padding: 10px;
+  border-right: 1px solid var(--line);
+  background: var(--muted);
+}
+.compact .projectInfo {
+  inset: 0 94px 0 114px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: auto;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  color: var(--foreground);
+  background: none;
+  box-shadow: none;
+  text-shadow: none;
+}
+.compact .miniPaper {
+  width: auto;
+  height: 100%;
+  box-shadow: 0 1px 2px rgb(0 0 0 / 5%);
+}
+.compact .projectInfo h3 {
+  margin-right: 0;
+}
+.compact .projectInfo p {
+  color: var(--muted-foreground);
+}
+.compact .previewButton {
+  right: 45px;
+}
+.compact .menu {
+  right: 12px;
+}
+.compact .previewButton[data-ui="button"],
+.compact .menu {
+  top: 34px;
+  bottom: auto;
+}
+.compact .previewButton[data-ui="button"],
+.compact .menu button {
+  border-color: var(--line);
+  background: var(--background);
+  color: var(--muted-foreground);
+}
+.compact .previewButton[data-ui="button"]:hover,
+.compact .menu button:hover,
+.compact .menu button[aria-expanded="true"] {
+  background: var(--accent);
+  color: var(--foreground);
+}
+@media (max-width: 520px) {
+  .compact .thumbnail {
+    width: 74px;
+  }
+  .compact .projectInfo {
+    left: 90px;
+    right: 82px;
+  }
+  .compact .projectInfo h3 {
+    font-size: 13px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .project {
+    transition: none;
+  }
+}
