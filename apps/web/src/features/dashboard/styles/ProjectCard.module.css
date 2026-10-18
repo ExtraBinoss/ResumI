@@ -6,15 +6,15 @@
   border-radius: 8px;
   background: transparent;
   box-shadow:
-    0 1px 2px rgb(0 0 0 / 6%),
-    0 3px 8px rgb(0 0 0 / 5%);
+    0 1px 2px rgb(0 0 0 / 5%),
+    0 3px 8px rgb(0 0 0 / 4%);
   transition: box-shadow 220ms;
 }
 .project:hover,
 .project:focus-within {
   box-shadow:
-    0 2px 4px rgb(0 0 0 / 8%),
-    0 5px 12px rgb(0 0 0 / 7%);
+    0 2px 4px rgb(0 0 0 / 6%),
+    0 5px 12px rgb(0 0 0 / 5%);
 }
 .projectLink {
   position: relative;
@@ -55,15 +55,40 @@
   padding: 24px 14px 10px;
   border: 0;
   border-radius: 0;
+  isolation: isolate;
+  background: transparent;
+  color: var(--card-foreground);
+  text-shadow: none;
+}
+.projectInfo::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: -20px 0 0;
+  pointer-events: none;
   background: linear-gradient(
     to top,
-    rgb(10 10 12 / 74%),
-    rgb(10 10 12 / 58%) 60%,
-    rgb(10 10 12 / 20%) 84%,
+    color-mix(in srgb, var(--card) 84%, transparent),
+    color-mix(in srgb, var(--card) 78%, transparent) 26%,
+    color-mix(in srgb, var(--card) 70%, transparent) 52%,
+    color-mix(in srgb, var(--card) 48%, transparent) 68%,
+    color-mix(in srgb, var(--card) 18%, transparent) 84%,
     transparent
   );
-  color: #fff;
-  text-shadow: 0 1px 3px rgb(0 0 0 / 18%);
+  -webkit-backdrop-filter: blur(10px) saturate(1.08);
+  backdrop-filter: blur(10px) saturate(1.08);
+  -webkit-mask-image: linear-gradient(
+    to top,
+    #000 58%,
+    rgb(0 0 0 / 75%) 76%,
+    transparent
+  );
+  mask-image: linear-gradient(
+    to top,
+    #000 58%,
+    rgb(0 0 0 / 75%) 76%,
+    transparent
+  );
 }
 .projectInfo h3 {
   overflow: hidden;
@@ -77,7 +102,11 @@
 }
 .projectInfo p {
   margin: 0;
-  color: rgb(255 255 255 / 78%);
+  color: color-mix(
+    in srgb,
+    var(--card-foreground) 85%,
+    var(--muted-foreground)
+  );
   font-size: 11px;
   line-height: 16px;
 }
@@ -96,7 +125,7 @@
   border: 1px solid transparent;
   border-radius: 6px;
   background: transparent;
-  color: #fff;
+  color: var(--card-foreground);
 }
 .project .previewButton {
   right: 44px;
@@ -108,9 +137,15 @@
 .project .previewButton[data-ui="button"]:hover,
 .project .menu button:hover,
 .project .menu button[aria-expanded="true"] {
-  border-color: rgb(255 255 255 / 20%);
-  background: rgb(255 255 255 / 16%);
-  color: #fff;
+  border-color: var(--line-strong);
+  background: color-mix(in srgb, var(--card-foreground) 8%, var(--card));
+  color: var(--card-foreground);
+}
+.project .previewButton[data-ui="button"]:focus-visible,
+.project .menu button:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+  background: var(--card);
 }
 .compact {
   border: 1px solid var(--line);
@@ -140,6 +175,9 @@
   background: none;
   box-shadow: none;
   text-shadow: none;
+}
+.compact .projectInfo::before {
+  display: none;
 }
 .compact .miniPaper {
   width: auto;

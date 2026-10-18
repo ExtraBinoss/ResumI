@@ -83,7 +83,7 @@ for (const locale of ["en", "fr"] as const) {
           ),
         ).toBe(true);
         if (catalog) {
-          await expect(page.locator("[data-template-card]")).toHaveCount(20);
+          await expect(page.locator("[data-template-card]")).toHaveCount(40);
           await expect(page.getByRole("heading", { level: 1 })).toHaveText(
             locale === "fr" ? "Modèles" : "Templates",
           );

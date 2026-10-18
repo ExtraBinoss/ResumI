@@ -1,7 +1,15 @@
+import type { CreativeFamily } from "../packages/cv/src/templates/types";
+const familyComponents = {
+  digital: "Digital",
+  expressive: "Expressive",
+  curated: "Curated",
+  artful: "Artful",
+  spatial: "Spatial",
+} as const;
 /** Flatten trusted authoring modules into one readable, dependency-free TSX component. */
 export async function templateSource(
   root: URL,
-  family?: "digital" | "expressive",
+  family?: CreativeFamily,
 ): Promise<string> {
   const files = family
     ? [
@@ -10,7 +18,8 @@ export async function templateSource(
         "TemplateContent.tsx",
         "base-css.ts",
         `${family}-css.ts`,
-        `${family === "digital" ? "Digital" : "Expressive"}Layouts.tsx`,
+        ...(family === "artful" ? ["ArtfulArt.tsx"] : []),
+        `${familyComponents[family]}Layouts.tsx`,
         "CreativeResume.tsx",
       ]
     : [
@@ -30,7 +39,7 @@ export async function templateSource(
     sources.splice(
       sources.length - 1,
       0,
-      `const CreativeLayouts = ${family === "digital" ? "Digital" : "Expressive"}Layouts;\nconst creativeCss = ${family}Css;`,
+      `const CreativeLayouts = ${familyComponents[family]}Layouts;\nconst creativeCss = ${family}Css;`,
     );
   }
   return sources

@@ -1,6 +1,7 @@
 import {
   applyCommand,
   INITIAL_PAGE_ID,
+  DEFAULT_VISUAL_EFFECTS,
   makeLayer,
   type Document,
   type MaterializeCommand,
@@ -70,7 +71,7 @@ function capture(
     }
     signal?.addEventListener("abort", abort, { once: true });
     window.addEventListener("message", receive);
-    const bridge = `<script nonce="${nonce}">(async()=>{try{const layout=await (${captureLayout.toString()})((${captureStyles.toString()})());parent.postMessage({request:${JSON.stringify(request)},layout},'*')}catch(error){parent.postMessage({request:${JSON.stringify(request)},error:String(error.message||error)},'*')}})()</script>`;
+    const bridge = `<script nonce="${nonce}">(async()=>{try{const layout=await (${captureLayout.toString()})((${captureStyles.toString()})(${JSON.stringify(DEFAULT_VISUAL_EFFECTS)}));parent.postMessage({request:${JSON.stringify(request)},layout},'*')}catch(error){parent.postMessage({request:${JSON.stringify(request)},error:String(error.message||error)},'*')}})()</script>`;
     const prepared = html.replace(
       /<meta\b[^>]*http-equiv="Content-Security-Policy"[^>]*>/gi,
       "",

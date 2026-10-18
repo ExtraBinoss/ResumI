@@ -5,13 +5,14 @@ import { compileReact, renderSourceHtml } from "../../src/source/render";
 import { renderTemplateResume } from "../../src/templates/render";
 import {
   creativeLayoutNames,
-  isDigitalLayout,
+  creativeFamily,
+  creativeFamilies,
 } from "../../src/templates/types";
 import { resumeData } from "../../src/source/starter";
 import { templateSource } from "../../../../scripts/template-source";
 import generated from "../../src/source/creative-template.generated.json" with { type: "json" };
 
-test("ten additional creative layouts preserve editable content, offline artwork and source budgets", () => {
+test("creative layouts preserve editable content, offline artwork and source budgets", () => {
   for (const layout of creativeLayoutNames) {
     const entry = templates.find(
       (candidate) => candidate.id === `react-${layout}`,
@@ -26,7 +27,7 @@ test("ten additional creative layouts preserve editable content, offline artwork
     expect(resumeData(document).layout).toBe(layout);
     const html = renderTemplateResume(document);
     expect(html).toContain(`data-template-layout="${layout}"`);
-    expect(html).toContain("Alex Morgan");
+    expect(html).toContain(document.blocks["identity-0"].text);
     for (const id of [
       "profile",
       "experience",
@@ -52,18 +53,18 @@ test("ten additional creative layouts preserve editable content, offline artwork
     const portable = renderSourceHtml({ format: "react", code: regenerated });
     expect(portable).toContain("Jordan Avery");
     expect(portable).not.toMatch(/<script[^>]+src=/);
-    expect(code).toContain(
-      isDigitalLayout(layout) ? "DigitalLayouts" : "ExpressiveLayouts",
-    );
-    expect(code).not.toContain(
-      isDigitalLayout(layout) ? "ExpressiveLayouts" : "DigitalLayouts",
-    );
+    const family = creativeFamily(layout);
+    for (const candidate of creativeFamilies) {
+      const component = `${candidate[0].toUpperCase()}${candidate.slice(1)}Layouts`;
+      if (candidate === family) expect(code).toContain(component);
+      else expect(code).not.toContain(component);
+    }
   }
 });
 
 test("portable source families match their trusted authoring modules", async () => {
   const root = new URL("../../../../", import.meta.url);
-  for (const family of ["digital", "expressive"] as const) {
+  for (const family of creativeFamilies) {
     expect(generated[family]).toBe(await templateSource(root, family));
   }
 });

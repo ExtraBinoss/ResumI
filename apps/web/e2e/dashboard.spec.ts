@@ -63,7 +63,9 @@ for (const viewport of [
     await expect(
       navigation.getByRole("link", { name: "Templates", exact: true }),
     ).toHaveAttribute("aria-current", "page");
-    await navigation.getByRole("link", { name: /^Resumes/ }).click();
+    await navigation
+      .getByRole("link", { name: "My Resumes", exact: true })
+      .click();
     await expect(
       page.getByRole("link", {
         name: "Open Alex Morgan — Resume",

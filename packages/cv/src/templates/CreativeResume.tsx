@@ -47,6 +47,14 @@ const resume: ResumeData = /* resume-data:start */ {
 /** Editable offline TSX with deterministic, print-safe vector artwork. */
 export default function Resume({ data = resume }: { data?: ResumeData } = {}) {
   const layout = data.layout ?? "terminal";
+  const content = {
+    ...data,
+    portrait:
+      data.portrait ??
+      (data.portraitAsset ? templateAssets.portrait : undefined),
+    artwork:
+      data.artwork ?? (data.artworkAsset ? templateAssets.artwork : undefined),
+  };
   const font = data.font ?? templateAssets.font;
   const license = data.license ?? templateAssets.license;
   const identity =
@@ -75,11 +83,12 @@ export default function Resume({ data = resume }: { data?: ResumeData } = {}) {
         style={{ "--cv-accent": data.accent } as CSSProperties}
       >
         <CreativeLayouts
-          data={data}
+          data={content}
           name={name}
           role={role}
           contacts={contacts}
           sections={sections}
+          portrait={content.portrait}
         />
       </article>
     </>
@@ -91,4 +100,6 @@ const templateAssets: {
   font?: string;
   license?: string;
   brands?: TemplateBrand[];
+  portrait?: string;
+  artwork?: string;
 } = /* resume-assets:start */ {}; /* resume-assets:end */

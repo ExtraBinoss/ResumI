@@ -162,6 +162,15 @@ for (const width of [1440, 390]) {
           canvas.evaluate((node) => (node as HTMLElement).style.willChange),
         )
         .toBe("");
+      // Reduced-motion preview can clear will-change before React commits its
+      // scroll bounds. Measure the mode transition only after that zoom commits.
+      await expect
+        .poll(() =>
+          canvas.evaluate(
+            (node) => node.parentElement!.getBoundingClientRect().width,
+          ),
+        )
+        .toBe(1191);
       const initial = await canvas.evaluate((surface) => {
         const viewport = surface.parentElement!.parentElement!.parentElement!;
         viewport.scrollLeft = 130;

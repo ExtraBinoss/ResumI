@@ -1,0 +1,22 @@
+[
+  {
+    "file": "architecture.webp",
+    "author": "Todd Trapani",
+    "source": "https://unsplash.com/photos/white-concrete-building-QwAfRdIRm5Y",
+    "original": "https://images.unsplash.com/photo-1556739979-e7fb850cc962",
+    "license": "Unsplash License",
+    "licenseUrl": "https://unsplash.com/license",
+    "usage": "Forma \u2014 architectural portfolio image",
+    "modifications": "Resized to 667 \u00d7 1000, WebP compression; templates crop the image."
+  },
+  {
+    "file": "coast.webp",
+    "author": "Lauren Mancke",
+    "source": "https://unsplash.com/photos/landscape-photography-of-seashore-rocks-Jk9OuFghzG4",
+    "original": "https://images.unsplash.com/photo-1453906763546-601db329b31d",
+    "license": "Unsplash License",
+    "licenseUrl": "https://unsplash.com/license",
+    "usage": "Panorama and Polaroid \u2014 illustrative portfolio image",
+    "modifications": "Resized to 1000 \u00d7 665, WebP compression; templates crop the image."
+  }
+]

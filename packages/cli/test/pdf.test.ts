@@ -31,9 +31,8 @@ function adapter(document = createResume("pdf-cli")) {
 
 for (const template of templates.filter((template) => !template.legacy)) {
   test(`CLI PDF ${template.layout} uses the app renderer and verifies all real PDF text`, async () => {
-    const { io, writes } = adapter(
-      createResume(`pdf-${template.layout}`, template.id),
-    );
+    const document = createResume(`pdf-${template.layout}`, template.id);
+    const { io, writes } = adapter(document);
     const result = await runCli(
       ["output", "resume", "--format", "pdf", "--out", "Resume.pdf"],
       io,
@@ -53,10 +52,14 @@ for (const template of templates.filter((template) => !template.legacy)) {
         replacementCharacters: 0,
       },
     });
-    expect(report.ats.text.replace(/\s+/gu, " ")).toContain("Alex Morgan");
-    expect(report.ats.pages[0].links.join(" ")).toContain(
-      "mailto:alex@example.com",
+    expect(report.ats.text.replace(/\s+/gu, " ").toLowerCase()).toContain(
+      document.blocks["identity-0"].text.toLowerCase(),
     );
+    const email = Object.values(document.blocks)
+      .map((block) => block.text)
+      .join(" ")
+      .match(/[\w.+-]+@[\w.-]+\.[a-z]+/i)![0];
+    expect(report.ats.pages[0].links.join(" ")).toContain(`mailto:${email}`);
     expect(report.adjustedTracking).toBeGreaterThan(0);
     expect(writes.get("Resume.pdf")!.subarray(0, 5)).toEqual(
       new TextEncoder().encode("%PDF-"),

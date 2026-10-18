@@ -43,7 +43,7 @@ test("typing searches the library immediately without stealing shortcuts, IME or
   await page.keyboard.press("Escape");
   await expect(search).toHaveValue("Editorial");
   await page
-    .getByRole("link", { name: /^Resumes/ })
+    .getByRole("link", { name: "My Resumes", exact: true })
     .first()
     .click();
   const resumes = page.getByRole("searchbox", {
@@ -84,7 +84,7 @@ test("typewriter hints respect reduced motion and navigation never scales the te
     requestAnimationFrame(sample);
   });
   await page
-    .getByRole("link", { name: /^Resumes/ })
+    .getByRole("link", { name: "My Resumes", exact: true })
     .first()
     .click();
   await expect(

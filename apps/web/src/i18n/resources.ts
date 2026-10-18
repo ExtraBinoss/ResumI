@@ -105,7 +105,7 @@ export const en = {
   dashboard: {
     yourResumes: "Your resumes",
     newResume: "New resume",
-    resumes: "Resumes",
+    resumes: "My Resumes",
     templates: "Templates",
     recent: "Recent",
     recentProjects: "Recent projects",
@@ -279,7 +279,7 @@ export const fr: Translation = {
   dashboard: {
     yourResumes: "Vos CV",
     newResume: "Nouveau CV",
-    resumes: "CV",
+    resumes: "Mes CV",
     templates: "Modèles",
     recent: "Récents",
     recentProjects: "Projets récents",

@@ -5,7 +5,8 @@ import {
 } from "@resumi/engine";
 import {
   isCreativeLayout,
-  isDigitalLayout,
+  creativeFamily,
+  portraitLayoutNames,
   type ResumeData,
   type ResumeLayout,
 } from "../templates/types";
@@ -50,10 +51,10 @@ export function makeReactSource(
   options: ReactTemplateOptions = {},
 ): string {
   const data = resumeData(document, options);
-  const { font, portrait, license, brands, ...content } = data;
+  const { font, portrait, artwork, license, brands, ...content } = data;
   const layout = data.layout ?? "studio";
   const source = isCreativeLayout(layout)
-    ? creativeTemplates[isDigitalLayout(layout) ? "digital" : "expressive"]
+    ? creativeTemplates[creativeFamily(layout)]
     : template;
   return source
     .replace(
@@ -63,12 +64,12 @@ export function makeReactSource(
     .replace(
       /\/\* resume-data:start \*\/[\s\S]*?\/\* resume-data:end \*\//,
       () =>
-        `/* resumi-data */${JSON.stringify({ ...content, ...(portrait ? { portraitAsset: true } : {}), ...(brands ? { brandAssets: true } : {}) }, null, 2)}/* resumi-data-end */`,
+        `/* resumi-data */${JSON.stringify({ ...content, ...(portrait ? { portraitAsset: true } : {}), ...(artwork ? { artworkAsset: true } : {}), ...(brands ? { brandAssets: true } : {}) }, null, 2)}/* resumi-data-end */`,
     )
     .replace(
       /\/\* resume-assets:start \*\/[\s\S]*?\/\* resume-assets:end \*\//,
       () =>
-        `/* resumi-assets */${JSON.stringify({ font, ...(portrait ? { portrait } : {}), ...(brands ? { brands } : {}), license }, null, 2)}/* resumi-assets-end */`,
+        `/* resumi-assets */${JSON.stringify({ font, ...(portrait ? { portrait } : {}), ...(artwork ? { artwork } : {}), ...(brands ? { brands } : {}), license }, null, 2)}/* resumi-assets-end */`,
     );
 }
 export function resumeData(
@@ -94,7 +95,9 @@ export function resumeData(
   )?.design;
   const portrait =
     options.portrait === true
-      ? assets.portrait
+      ? isCreativeLayout(layout)
+        ? assets.creativePortrait
+        : assets.portrait
       : options.portrait === false
         ? undefined
         : (portraitValue(options.portrait) ??
@@ -114,16 +117,27 @@ export function resumeData(
   const brands = assets.brands.filter((brand) =>
     brandNames.includes(brand.name),
   );
+  const photo =
+    layout === "forma"
+      ? "architecture"
+      : ["panorama", "polaroid"].includes(layout)
+        ? "coast"
+        : undefined;
+  const artwork =
+    portraitValue(stored?.artwork) ??
+    (stored?.artworkAsset
+      ? portraitValue(storedData(document, "assets")?.artwork)
+      : undefined) ??
+    (photo ? assets.artwork[photo] : undefined);
   return {
     name: document.name,
     accent: document.style.accent,
     serif: document.style.font === "serif",
     layout,
     font: assets.font,
-    license: `${assets.license}${brands.length ? `\n\n${assets.brandLicense}` : ""}`,
-    ...(["profile", "atelier"].includes(layout) && portrait
-      ? { portrait }
-      : {}),
+    license: `${assets.license}${brands.length ? `\n\n${assets.brandLicense}` : ""}${artwork ? `\n\nPhoto credits and license:\n${assets.photoLicense}` : ""}`,
+    ...(portraitLayoutNames.includes(layout) && portrait ? { portrait } : {}),
+    ...(artwork ? { artwork } : {}),
     ...(brands.length ? { brands } : {}),
     sections: document.sectionIds.map((id) => ({
       id,

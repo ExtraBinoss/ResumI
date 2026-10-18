@@ -32,7 +32,10 @@ export function capabilities() {
     ],
     features: [
       "freeform geometry",
+      "new --blank creates an empty editable canvas with no saved source",
       "multiple visual pages with per-page size and background",
+      "ordered page selection and separate per-page PDF/HTML/TSX exports",
+      "offline docs/help and optional explicit public GitHub guide fetch",
       "flat groups",
       "z-order",
       "mixed text styling",
@@ -52,6 +55,8 @@ export function capabilities() {
       "assets list",
       "assets show ID",
       "document schema",
+      "pages PROJECT",
+      "docs all",
     ],
     feedback: [
       "output PROJECT --format json",
@@ -59,7 +64,21 @@ export function capabilities() {
       "output PROJECT --format source",
       "screenshot PROJECT --out preview.png",
       "output PROJECT --format pdf --out Resume.pdf",
+      "output PROJECT --format pdf --pages 1,2 --out Application.pdf",
+      "output PROJECT --format html --pages 2 --out Letter.html",
+      "output PROJECT --format tsx --out-dir react-pages",
+      "screenshot PROJECT --page 2 --out Letter.png",
     ],
+    exports: {
+      formats: ["json", "html", "pdf", "tsx", "react", "source"],
+      pages:
+        "--pages all|2|2,1|1-3|id:ID|name:Exact name; caller order retained, unique selections only",
+      destinations:
+        "--out FILE combines; --out-dir DIR writes each selected page separately; mutually exclusive",
+      source:
+        "source is exact saved code; tsx/react snapshots live canvas. Active source supports whole export only.",
+      docs: "docs [topic] is offline; docs agent --source github explicitly fetches the public guide without credentials",
+    },
     boundaries: {
       projects:
         "Explicit filesystem JSON only; browser IndexedDB must be exported first.",

@@ -2,13 +2,20 @@ import { createResume, resumeCss } from "@resumi/cv";
 import { templates } from "@resumi/cv/catalog";
 import { renderTemplateResume } from "@resumi/cv/templates";
 import assets from "../../../../packages/cv/src/templates/assets.generated.json" with { type: "json" };
-import { previewPortraitToken } from "./template-preview-assets";
+import {
+  previewPortraitToken,
+  previewCreativePortraitToken,
+  previewArtworkTokens,
+} from "./template-preview-assets";
 
 function previewMarkup(html: string) {
   const css: string[] = [];
   const licenses: string[] = [];
   const markup = html
     .replaceAll(assets.portrait, previewPortraitToken)
+    .replaceAll(assets.creativePortrait, previewCreativePortraitToken)
+    .replaceAll(assets.artwork.architecture, previewArtworkTokens.architecture)
+    .replaceAll(assets.artwork.coast, previewArtworkTokens.coast)
     .replace(/<style>([\s\S]*?)<\/style>/g, (_, content: string) => {
       // License comments differ for templates with brand marks. Keep each
       // notice while deduplicating their otherwise identical styles/font face.

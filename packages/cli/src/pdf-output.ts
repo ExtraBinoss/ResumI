@@ -1,4 +1,4 @@
-import type { Document } from "@resumi/engine";
+import { documentPages, type Document } from "@resumi/engine";
 import { CliError, type IO } from "./io";
 
 /** Faithful app rendering, followed by independent extraction from the actual PDF bytes. */
@@ -6,6 +6,7 @@ export async function outputPdf(
   document: Document,
   flags: Map<string, string>,
   io: IO,
+  pageIds?: readonly string[],
 ) {
   const out = flags.get("--out");
   if (!out || !/\.pdf$/i.test(out))
@@ -15,20 +16,31 @@ export async function outputPdf(
       3,
       "PDF rendering is unavailable in this adapter. Run the Bun CLI after bunx playwright install chromium.",
     );
-  const { renderDocumentHtml } = await import("@resumi/cv");
+  const { renderDocumentHtml } = await import("@resumi/cv/document-render");
   const { inspectPdfText, comparePdfText } =
     await import("@resumi/cv/pdf-text");
   const sourceActive = !!document.source && document.source.enabled !== false;
-  const width = sourceActive ? 794 : (document.canvas?.width ?? 794);
-  const height = sourceActive ? 1123 : (document.canvas?.height ?? 1123);
+  const firstPage = pageIds
+    ? documentPages(document).find((page) => page.id === pageIds[0])
+    : undefined;
+  const width = sourceActive
+    ? 794
+    : (firstPage?.width ?? document.canvas?.width ?? 794);
+  const height = sourceActive
+    ? 1123
+    : (firstPage?.height ?? document.canvas?.height ?? 1123);
   const capture = await io.capturePdf(
-    await renderDocumentHtml(document),
+    await renderDocumentHtml(document, { pageIds }),
     width,
     height,
     sourceActive && document.source?.format === "react",
   );
   const inspection = await inspectPdfText(capture.bytes);
-  const ats = comparePdfText(capture.expectedText, inspection.text);
+  const comparison = comparePdfText(capture.expectedText, inspection.text);
+  const blank = !capture.expectedText.trim() && !inspection.text.trim();
+  const ats = blank
+    ? { ...comparison, passed: true, coherencePassed: true }
+    : comparison;
   const pageChecks = capture.expectedPages?.map((page, index) => {
     const actual = inspection.pages[index]?.text ?? "";
     const comparison = comparePdfText(page.text, actual);
@@ -52,6 +64,7 @@ export async function outputPdf(
   return {
     format: "pdf" as const,
     out,
+    ...(pageIds ? { pageIds } : {}),
     pageCount: inspection.pageCount,
     width: capture.width,
     height: capture.height,

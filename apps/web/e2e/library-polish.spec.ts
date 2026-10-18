@@ -36,7 +36,7 @@ test("visual library preserves search identity and queries while results move wi
   await expect(page.locator("[data-template-card]")).toHaveCount(1);
   await expect(
     page.getByRole("button", { name: "Preview Studio", exact: true }),
-  ).toHaveCSS("color", "rgb(255, 255, 255)");
+  ).toHaveCSS("color", "rgb(29, 29, 31)");
   await page.locator('nav a[href="/projects"]').click();
   await expect(search).toHaveValue("Alex");
   expect(await original!.evaluate((node) => node.isConnected)).toBe(true);
@@ -133,5 +133,5 @@ test("visual library preserves search identity and queries while results move wi
     .click();
   await expect(
     page.getByRole("button", { name: /^Preview Alex Morgan/ }),
-  ).toHaveCSS("color", "rgb(255, 255, 255)");
+  ).toHaveCSS("color", "rgb(29, 29, 31)");
 });

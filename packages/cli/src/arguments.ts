@@ -1,17 +1,19 @@
 import { CliError } from "./io";
 
 const options: Record<string, string[]> = {
-  create: ["--out", "--template", "--name"],
+  docs: ["--source"],
+  create: ["--out", "--template", "--name", "--blank"],
   inspect: [],
+  pages: [],
   validate: [],
   apply: ["--out"],
   schema: [],
   commands: [],
   capabilities: [],
-  render: ["--format", "--out"],
-  output: ["--format", "--out"],
+  render: ["--format", "--out", "--out-dir", "--pages"],
+  output: ["--format", "--out", "--out-dir", "--pages"],
   source: ["--file", "--format", "--actor", "--out"],
-  screenshot: ["--out", "--width", "--height"],
+  screenshot: ["--out", "--width", "--height", "--page"],
   templates: [],
   assets: ["--kind", "--search", "--limit", "--format", "--out"],
 };
@@ -24,6 +26,12 @@ export function parseArgs(input: string[]) {
   for (let index = 1; index < argv.length; index++) {
     const value = argv[index];
     if (value.startsWith("--")) {
+      if (command === "create" && value === "--blank") {
+        if (flags.has(value))
+          throw new CliError(2, "Duplicate --blank option.");
+        flags.set(value, "true");
+        continue;
+      }
       const next = argv[index + 1];
       if (
         !options[command].includes(value) ||
@@ -46,7 +54,10 @@ export function parseArgs(input: string[]) {
     : command === "apply"
       ? 2
       : 1;
-  if (!["templates", "assets"].includes(command) && args.length !== count)
+  if (
+    !["templates", "assets", "docs"].includes(command) &&
+    args.length !== count
+  )
     throw new CliError(
       2,
       `${command} expects ${count} file argument(s). Use --help.`,

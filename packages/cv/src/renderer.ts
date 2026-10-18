@@ -1,12 +1,12 @@
 import { designCss, renderVisual, canvasFontCss } from "./design-renderer";
 import { escapeHtml } from "./escape";
 export { escapeHtml } from "./escape";
+import { selectedDocumentPages, type PageExportOptions } from "./page-export";
+export type { PageExportOptions } from "./page-export";
 import {
-  documentPages,
   localizedBlock,
   localizedSectionTitle,
   documentLocale,
-  validateDocument,
   type Block,
   type Document,
 } from "@resumi/engine";
@@ -51,13 +51,15 @@ export function renderSection(doc: Document, id: string): string {
     title = localizedSectionTitle(doc, id);
   return `<section class="resume-section" data-section-id="${escapeHtml(id)}">${title ? `<h2 class="resume-title">${escapeHtml(title)}</h2>` : ""}${section.blockIds.map((id) => renderBlock(localizedBlock(doc, id))).join("")}</section>`;
 }
-export function renderResume(doc: Document): string {
-  validateDocument(doc);
+export function renderResume(
+  doc: Document,
+  options: PageExportOptions = {},
+): string {
+  const pages = selectedDocumentPages(doc, options);
   const style = Object.entries(resumeStyle(doc))
     .map(([key, value]) => `${key}:${value}`)
     .join(";");
   if (doc.canvas) {
-    const pages = documentPages(doc);
     const pageCss = pages
       .map(
         (page, index) =>
@@ -73,6 +75,9 @@ export function renderResume(doc: Document): string {
   }
   return `<article class="resume" aria-label="Resume" style="${style}">${doc.sectionIds.map((id) => renderSection(doc, id)).join("")}</article>`;
 }
-export function renderHtml(document: Document): string {
-  return `<!doctype html><html lang="${escapeHtml(documentLocale(document))}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${escapeHtml(document.name)}</title><style>${resumeCss}\nbody{margin:0;background:#eceef2}.resume{margin:auto}</style></head><body>${renderResume(document)}</body></html>`;
+export function renderHtml(
+  document: Document,
+  options: PageExportOptions = {},
+): string {
+  return `<!doctype html><html lang="${escapeHtml(documentLocale(document))}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${escapeHtml(document.name)}</title><style>${resumeCss}\nbody{margin:0;background:#eceef2}.resume{margin:auto}</style></head><body>${renderResume(document, options)}</body></html>`;
 }

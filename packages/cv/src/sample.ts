@@ -11,6 +11,7 @@ import {
 } from "./templates/sample-content";
 
 import { templates } from "./templates/catalog";
+import { portraitLayoutNames } from "./templates/types";
 export { templates } from "./templates/catalog";
 export function createResume(id: string, templateId = "studio"): Document {
   const template = templates.find((t) => t.id === templateId) ?? templates[0];
@@ -109,11 +110,18 @@ export function createResume(id: string, templateId = "studio"): Document {
       }),
     );
   }
-  const document = applyCommands(createDocument(id, "Alex Morgan — Resume"), {
-    version: 1,
-    actor: { kind: "human", name: "Template" },
-    commands,
-  }).document;
+  const identityName =
+    content
+      .find((section) => section.id === "identity")
+      ?.blocks.find(([kind]) => kind === "heading")?.[1] ?? "Alex Morgan";
+  const document = applyCommands(
+    createDocument(id, `${identityName} — Resume`),
+    {
+      version: 1,
+      actor: { kind: "human", name: "Template" },
+      commands,
+    },
+  ).document;
   return template.format === "react"
     ? applyCommands(document, {
         version: 1,
@@ -125,9 +133,7 @@ export function createResume(id: string, templateId = "studio"): Document {
               format: "react",
               code: makeReactSource(document, {
                 layout: template.layout,
-                portrait:
-                  template.layout === "profile" ||
-                  template.layout === "atelier",
+                portrait: portraitLayoutNames.includes(template.layout),
               }),
             },
           },

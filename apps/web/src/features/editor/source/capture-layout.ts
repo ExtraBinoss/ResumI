@@ -16,6 +16,7 @@ export async function captureLayout(
     textStyle,
     gradient,
     shadow,
+    imageEffects,
     pseudoText,
     decoration,
     roundedBorder,
@@ -435,7 +436,8 @@ export async function captureLayout(
       src = bitmap.toDataURL("image/png");
     }
     const css = style(element),
-      position = css.objectPosition.split(" ").map(px);
+      position = css.objectPosition.split(" ").map(px),
+      effects = imageEffects(css.filter);
     push(element, page, {
       kind: "image",
       text: "",
@@ -446,6 +448,7 @@ export async function captureLayout(
         borderRadius: px(css.borderTopLeftRadius),
         shadow: shadow(css.boxShadow),
         objectFit: css.objectFit === "contain" ? "contain" : "cover",
+        ...(effects ? { effects } : {}),
         objectPosition: {
           x: clamp(position[0] ?? 50, 0, 100),
           y: clamp(position[1] ?? 50, 0, 100),

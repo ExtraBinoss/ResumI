@@ -1,7 +1,50 @@
 import { expect, test } from "@playwright/test";
 import { mkdir } from "node:fs/promises";
 
-test("SSR catalogue retains 20 cards without embedding CV markup or global preview CSS", async ({
+test("native browser Find indexes offscreen template names while previews remain lazy", async ({
+  page,
+}) => {
+  const previews: string[] = [];
+  page.on("request", (request) => {
+    if (request.url().includes("/resources/template-preview/"))
+      previews.push(request.url());
+  });
+  await page.goto("/templates");
+  const cards = page.locator("[data-template-card]");
+  await expect(cards).toHaveCount(40);
+  const last = page.locator('[data-template-card="react-polaroid"]');
+  await expect(last).not.toBeInViewport();
+  const images = await cards
+    .locator("img")
+    .evaluateAll(
+      (nodes) =>
+        nodes.filter((node) => (node as HTMLImageElement).naturalWidth > 0)
+          .length,
+    );
+  expect(images).toBeLessThan(40);
+  // Chromium's native Find algorithm must include content skipped by
+  // content-visibility. Removing distant cards from the DOM would break this.
+  expect(
+    await page.evaluate(() => {
+      const browser: Window & { find?: (text: string) => boolean } = window;
+      return browser.find?.("Polaroid") ?? false;
+    }),
+  ).toBe(true);
+  expect(await page.evaluate(() => getSelection()?.toString())).toBe(
+    "Polaroid",
+  );
+  expect(
+    await page.evaluate(() =>
+      getSelection()
+        ?.anchorNode?.parentElement?.closest("[data-template-card]")
+        ?.getAttribute("data-template-card"),
+    ),
+  ).toBe("react-polaroid");
+  await expect(last.locator("h2")).toHaveText("Polaroid");
+  expect(previews).toHaveLength(0);
+});
+
+test("SSR catalogue retains 40 cards without embedding CV markup or global preview CSS", async ({
   request,
 }) => {
   for (const path of ["/templates", "/fr/templates", "/projects"]) {
@@ -16,7 +59,7 @@ test("SSR catalogue retains 20 cards without embedding CV markup or global previ
     expect(html).not.toContain("resumi-preview://portrait");
     expect(html).not.toContain("Alex Morgan");
     if (path.endsWith("templates")) {
-      expect(html.match(/data-template-card=/g)).toHaveLength(20);
+      expect(html.match(/data-template-card=/g)).toHaveLength(40);
       expect(html).toContain('data-template-card="react-botanica"');
     }
   }
@@ -50,7 +93,7 @@ for (const locale of ["en", "fr"] as const) {
         previewRequests.push(request.url());
     });
     await page.goto(locale === "fr" ? "/fr/templates" : "/templates");
-    await expect(page.locator("[data-template-card]")).toHaveCount(20);
+    await expect(page.locator("[data-template-card]")).toHaveCount(40);
     expect(previewRequests).toHaveLength(0);
     expect(
       (await page.locator("style").allTextContents()).join("\n"),
@@ -106,7 +149,7 @@ for (const locale of ["en", "fr"] as const) {
     await page.keyboard.press("Escape");
     await expect(dialog).toBeHidden();
     await search.fill("");
-    await expect(page.locator("[data-template-card]")).toHaveCount(20);
+    await expect(page.locator("[data-template-card]")).toHaveCount(40);
   });
 }
 
@@ -195,7 +238,7 @@ test("preview failure stays local, offers copyable details and retries in French
     "Unknown public template.",
   );
   await expect(dialog.getByRole("button", { name: /Copier/ })).toBeVisible();
-  await expect(page.locator("[data-template-card]")).toHaveCount(20);
+  await expect(page.locator("[data-template-card]")).toHaveCount(40);
   await mkdir("artifacts/visual", { recursive: true });
   await page.screenshot({
     path: "artifacts/visual/template-preview-error-fr.png",
@@ -227,7 +270,7 @@ test("an unavailable preview connection keeps the catalogue open and can retry",
   await expect(
     dialog.getByRole("button", { name: "Copy error details", exact: true }),
   ).toBeVisible();
-  await expect(page.locator("[data-template-card]")).toHaveCount(20);
+  await expect(page.locator("[data-template-card]")).toHaveCount(40);
   await page.unroute("**/resources/template-preview/react-studio*");
   await dialog
     .getByRole("button", { name: "Retry preview", exact: true })

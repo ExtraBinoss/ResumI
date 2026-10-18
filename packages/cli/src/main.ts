@@ -16,6 +16,19 @@ const result = await runCli(Bun.argv.slice(2), {
     const { renderPdf } = await import("./pdf-capture");
     return renderPdf(html, width, height, react);
   },
+  fetchText: async (url) => {
+    const response = await fetch(url, {
+      signal: AbortSignal.timeout(10_000),
+      credentials: "omit",
+      redirect: "error",
+    });
+    if (!response.ok)
+      throw new Error(`HTTP ${response.status} ${response.statusText}`);
+    const text = await response.text();
+    if (text.length > 1_000_000)
+      throw new Error("Documentation exceeds the 1 MB limit");
+    return text;
+  },
   id: () => crypto.randomUUID(),
 });
 if (result.stdout) process.stdout.write(result.stdout);

@@ -75,7 +75,7 @@ export async function expectMaterializedGraphics(
   for (const graphic of graphics) {
     const rendered = canvas
       .locator(`[data-layer-id="${graphic.id}"]`)
-      .locator("svg,img")
+      .locator(graphic.design?.type === "image" ? "img" : "svg")
       .first();
     await expect(rendered).toBeVisible();
     if (graphic.design?.type === "image") {

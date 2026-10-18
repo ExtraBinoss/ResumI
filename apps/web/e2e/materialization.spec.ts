@@ -392,7 +392,12 @@ for (const template of publicTemplates) {
       exact: true,
     });
     await expect(
-      canvas.getByRole("heading", { name: "Alex Morgan", exact: true }),
+      canvas.getByRole("heading", {
+        name: createResume(`identity-${template.id}`, template.id).blocks[
+          "identity-0"
+        ].text,
+        exact: true,
+      }),
     ).toBeVisible();
     await expect(page).toHaveURL(/\/editor\/[^/?#]+$/);
     await nativeTools(page);
@@ -400,6 +405,16 @@ for (const template of publicTemplates) {
     expect(saved.source?.enabled).toBe(false);
     expect(saved.source?.format).toBe("react");
     const blocks = Object.values(saved.blocks);
+    if (["maison", "linen", "polaroid"].includes(template.layout)) {
+      const saturation = template.layout === "polaroid" ? 0.65 : 0;
+      expect(
+        blocks.some(
+          (block) =>
+            block.design?.type === "image" &&
+            block.design.effects?.saturation === saturation,
+        ),
+      ).toBe(true);
+    }
     expect(
       blocks.filter((block) => block.design?.type === "text").length,
     ).toBeGreaterThan(8);

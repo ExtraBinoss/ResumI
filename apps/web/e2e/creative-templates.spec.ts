@@ -103,7 +103,7 @@ test("creative collection shares real previews and opens the chosen template in 
   page,
 }) => {
   await page.goto("/templates");
-  await expect(page.locator("[data-template-card]")).toHaveCount(20);
+  await expect(page.locator("[data-template-card]")).toHaveCount(40);
   for (const layout of creativeLayoutNames) {
     const card = page.locator(`[data-template-card="react-${layout}"]`);
     await card.scrollIntoViewIfNeeded();

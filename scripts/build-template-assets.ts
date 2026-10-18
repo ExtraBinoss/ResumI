@@ -1,4 +1,5 @@
 import { templateSource } from "./template-source";
+import { creativeFamilies } from "../packages/cv/src/templates/types";
 /** Embed licensed assets once for Worker and editable offline TSX rendering. */
 const root = new URL("../", import.meta.url);
 const font = await Bun.file(
@@ -10,6 +11,20 @@ const font = await Bun.file(
 const portrait = await Bun.file(
   new URL("packages/cv/assets/alex-morgan-portrait.jpg", root),
 ).arrayBuffer();
+const creativePortrait = await Bun.file(
+  new URL("packages/cv/assets/creative-portrait.webp", root),
+).arrayBuffer();
+const artwork = Object.fromEntries(
+  await Promise.all(
+    ["architecture", "coast"].map(async (name) => [
+      name,
+      `data:image/webp;base64,${Buffer.from(await Bun.file(new URL(`packages/cv/assets/${name}.webp`, root)).arrayBuffer()).toString("base64")}`,
+    ]),
+  ),
+);
+const photoLicense = await Bun.file(
+  new URL("packages/cv/assets/photos.json", root),
+).text();
 const interLicense = await Bun.file(
   new URL("node_modules/@fontsource-variable/inter/LICENSE", root),
 ).text();
@@ -52,6 +67,9 @@ await Bun.write(
   JSON.stringify({
     font: `data:font/woff2;base64,${Buffer.from(font).toString("base64")}`,
     portrait: `data:image/jpeg;base64,${Buffer.from(portrait).toString("base64")}`,
+    creativePortrait: `data:image/webp;base64,${Buffer.from(creativePortrait).toString("base64")}`,
+    artwork,
+    photoLicense,
     license: `${interLicense.trim()}\n\n${lucideLicense.trim()}`,
     brandLicense: brands.credits.MIT.trim(),
     brands: brands.icons
@@ -75,11 +93,15 @@ await Bun.write(
   JSON.stringify(component) + "\n",
 );
 
-const [digital, expressive] = await Promise.all([
-  templateSource(root, "digital"),
-  templateSource(root, "expressive"),
-]);
+const creative = Object.fromEntries(
+  await Promise.all(
+    creativeFamilies.map(async (family) => [
+      family,
+      await templateSource(root, family),
+    ]),
+  ),
+);
 await Bun.write(
   new URL("packages/cv/src/source/creative-template.generated.json", root),
-  JSON.stringify({ digital, expressive }) + "\n",
+  JSON.stringify(creative) + "\n",
 );

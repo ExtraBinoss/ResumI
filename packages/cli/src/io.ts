@@ -24,6 +24,7 @@ export interface IO {
     height: number,
     react?: boolean,
   ): Promise<PdfCaptureResult>;
+  fetchText?(url: string): Promise<string>;
   id(): string;
 }
 export class CliError extends Error {

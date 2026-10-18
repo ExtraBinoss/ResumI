@@ -1,12 +1,13 @@
 import {
   applyCommands,
+  createDocument,
   deserializeDocument,
   serializeDocument,
   validateDocument,
   EngineError,
   type Document,
 } from "@resumi/engine";
-import { parseArgs, boundedInteger } from "./arguments";
+import { parseArgs } from "./arguments";
 import { HELP, help } from "./help";
 import { CliError, read, readProject, write, type IO } from "./io";
 export { HELP } from "./help";
@@ -58,78 +59,6 @@ async function source(document: Document, flags: Map<string, string>, io: IO) {
     actor: result.batch.actor,
   };
 }
-async function output(document: Document, flags: Map<string, string>, io: IO) {
-  const format = flags.get("--format") ?? "json";
-  if (format === "pdf") {
-    const { outputPdf } = await import("./pdf-output");
-    return outputPdf(document, flags, io);
-  }
-  if (!["json", "html", "source"].includes(format))
-    throw new CliError(2, "output --format must be json, html, source or pdf.");
-  let data: string;
-  if (format === "json") data = serializeDocument(document);
-  else if (format === "source") {
-    if (!document.source)
-      throw new CliError(
-        3,
-        "This project has no saved HTML/React source. Use output --format html for its rendered layout.",
-      );
-    data = document.source.code;
-  } else {
-    const { renderDocumentHtml } = await import("@resumi/cv");
-    data = await renderDocumentHtml(document);
-  }
-  if (!flags.has("--out")) return data.endsWith("\n") ? data : data + "\n";
-  await write(io, flags.get("--out")!, data);
-  return { format, out: flags.get("--out") };
-}
-async function screenshot(
-  document: Document,
-  flags: Map<string, string>,
-  io: IO,
-) {
-  const out = flags.get("--out");
-  if (!out || !/\.png$/i.test(out))
-    throw new CliError(
-      2,
-      "screenshot requires --out FILE.png. See help screenshot.",
-    );
-  const width = boundedInteger(
-    flags.get("--width"),
-    Math.ceil(document.canvas?.width ?? 794),
-    100,
-    5000,
-  );
-  const height = boundedInteger(
-    flags.get("--height"),
-    Math.ceil(document.canvas?.height ?? 1123),
-    100,
-    10000,
-  );
-  if (!io.capture || !io.writeBinary)
-    throw new CliError(
-      3,
-      "Screenshot capture is unavailable in this adapter. Run the Bun CLI after bunx playwright install chromium.",
-    );
-  const { renderDocumentHtml } = await import("@resumi/cv");
-  const capture = await io.capture(
-    await renderDocumentHtml(document),
-    width,
-    height,
-  );
-  try {
-    await io.writeBinary(out, capture.bytes);
-  } catch {
-    throw new CliError(4, `Cannot write screenshot: ${out}`);
-  }
-  return {
-    format: "png",
-    out,
-    width: capture.width,
-    height: capture.height,
-    blockedRequests: capture.blockedRequests,
-  };
-}
 export async function runCli(
   args: string[],
   io: IO,
@@ -148,7 +77,12 @@ export async function runCli(
       };
     const { command, args: positional, flags } = parseArgs(args);
     let result: unknown;
-    if (["commands", "capabilities", "templates", "assets"].includes(command)) {
+    if (command === "docs") {
+      const { docs } = await import("./docs");
+      result = await docs(positional, flags, io);
+    } else if (
+      ["commands", "capabilities", "templates", "assets"].includes(command)
+    ) {
       const discovery = await import("./discovery");
       if (command === "commands") result = { commands: discovery.commands() };
       if (command === "capabilities") result = discovery.capabilities();
@@ -159,14 +93,28 @@ export async function runCli(
     } else if (command === "schema")
       result = (await import("@resumi/adapters/schema")).commandContract;
     else if (command === "create") {
-      const { createResume, templates } = await import("@resumi/cv");
-      const template = flags.get("--template") ?? "studio";
-      if (!templates.some((item) => item.id === template))
+      if (flags.has("--blank") && flags.has("--template"))
         throw new CliError(
           2,
-          `Unknown template: ${template}. Use templates list.`,
+          "--blank and --template are mutually exclusive. Use --blank for an empty editable canvas.",
         );
-      let document = createResume(io.id(), template);
+      let document: Document;
+      if (flags.has("--blank")) {
+        document = applyCommands(createDocument(io.id(), "Untitled project"), {
+          version: 1,
+          actor: { kind: "agent", name: "ResumI CLI" },
+          commands: [{ type: "canvas.enable", layers: {} }],
+        }).document;
+      } else {
+        const { createResume, templates } = await import("@resumi/cv");
+        const template = flags.get("--template") ?? "studio";
+        if (!templates.some((item) => item.id === template))
+          throw new CliError(
+            2,
+            `Unknown template: ${template}. Use templates list.`,
+          );
+        document = createResume(io.id(), template);
+      }
       if (flags.has("--name"))
         document = applyCommands(document, {
           version: 1,
@@ -202,19 +150,31 @@ export async function runCli(
         };
       }
       if (command === "source") result = await source(document, flags, io);
-      if (command === "output") result = await output(document, flags, io);
-      if (command === "screenshot")
-        result = await screenshot(document, flags, io);
+      if (command === "pages") {
+        const { listPages } = await import("./pages");
+        result = listPages(document);
+      }
+      if (command === "output") {
+        const { output } = await import("./output");
+        result = await output(document, flags, io, positional[0]);
+      }
+      if (command === "screenshot") {
+        const { screenshot } = await import("./screenshot-output");
+        result = await screenshot(document, flags, io, positional[0]);
+      }
       if (command === "render") {
         if (
-          !["html", "pdf"].includes(flags.get("--format") ?? "") ||
-          !flags.has("--out")
+          !["html", "pdf", "tsx", "react"].includes(
+            flags.get("--format") ?? "",
+          ) ||
+          (!flags.has("--out") && !flags.has("--out-dir"))
         )
           throw new CliError(
             2,
-            "render requires --format html|pdf --out FILE.",
+            "render requires --format html|pdf|tsx and --out FILE or --out-dir DIR.",
           );
-        result = await output(document, flags, io);
+        const { output } = await import("./output");
+        result = await output(document, flags, io, positional[0]);
       }
     }
     const pdfFailed =

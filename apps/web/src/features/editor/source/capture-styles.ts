@@ -1,7 +1,9 @@
 import type { LayerPatch } from "@resumi/engine";
 
 /** Self-contained computed-paint adapter, serialized with the isolated capture. */
-export function captureStyles() {
+export function captureStyles(
+  defaultEffects: NonNullable<LayerPatch["effects"]>,
+) {
   const styleCache = new WeakMap<Element, CSSStyleDeclaration>();
   function style(element: Element) {
     let value = styleCache.get(element);
@@ -41,6 +43,18 @@ export function captureStyles() {
   const round = (value: number) => Math.round(value * 1000) / 1000;
   const clamp = (value: number, min: number, max: number) =>
     Math.min(max, Math.max(min, value));
+  function imageEffects(filter: string) {
+    // CSS grayscale and saturation map to the engine's editable saturation effect.
+    const pattern = /(grayscale|saturate)\(([\d.]+)(%)?\)/g;
+    const matches = [...filter.matchAll(pattern)];
+    if (!matches.length || filter.replace(pattern, "").trim()) return undefined;
+    let saturation = defaultEffects.saturation;
+    for (const match of matches) {
+      const value = Number(match[2]) / (match[3] ? 100 : 1);
+      saturation *= match[1] === "grayscale" ? 1 - value : value;
+    }
+    return { ...defaultEffects, saturation };
+  }
   const family = (value: string) =>
     value.replace(/[^a-zA-Z0-9 '",._-]/g, "").slice(0, 160) ||
     "Arial, sans-serif";
@@ -278,6 +292,7 @@ export function captureStyles() {
     textStyle,
     gradient,
     shadow,
+    imageEffects,
     pseudoText,
     decoration,
     roundedBorder,

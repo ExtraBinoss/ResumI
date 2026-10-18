@@ -3,6 +3,9 @@ import type { ResumeLayout } from "./types";
 import { digitalSampleSections } from "./digital-samples";
 import { expressiveSampleSections } from "./expressive-samples";
 import { extendedSampleSections } from "./extended-samples";
+import { curatedSampleSections } from "./curated-samples";
+import { artfulSampleSections } from "./artful-samples";
+import { spatialSampleSections } from "./spatial-samples";
 export type SampleSection = {
   id: string;
   title: string;
@@ -17,6 +20,9 @@ export function reactSampleSections(
   const extended =
     digitalSampleSections(layout) ??
     expressiveSampleSections(layout) ??
+    curatedSampleSections(layout) ??
+    artfulSampleSections(layout) ??
+    spatialSampleSections(layout) ??
     extendedSampleSections(layout);
   if (extended) return extended;
   const result: SampleSection[] = sections.map((section): SampleSection => ({

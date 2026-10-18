@@ -15,7 +15,9 @@
     "./templates": "./src/templates/render.tsx",
     "./pdf-text": "./src/pdf-text.ts",
     "./pdf-print": "./src/pdf-print.ts",
-    "./catalog": "./src/templates/catalog.ts"
+    "./catalog": "./src/templates/catalog.ts",
+    "./react-export": "./src/react-export.ts",
+    "./page-export": "./src/page-export.ts"
   },
   "dependencies": {
     "@resumi/engine": "workspace:*",

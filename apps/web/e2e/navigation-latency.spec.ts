@@ -71,7 +71,7 @@ test("public: cold/warm catalogue", async ({ page }, info) => {
         state,
       ),
     );
-    await expect(page.locator("[data-template-card]")).toHaveCount(20);
+    await expect(page.locator("[data-template-card]")).toHaveCount(40);
     await expect(page.locator("[data-route-pending]")).toHaveCount(0);
     await page.getByRole("link", { name: "ResumI home", exact: true }).click();
     await expect(page.getByRole("heading", { level: 1 })).toContainText(
@@ -111,7 +111,7 @@ test("library: cold/warm sibling routes", async ({ page }, info) => {
 
 test("intent: no project created on hover", async ({ page }, info) => {
   await page.goto("/templates");
-  await expect(page.locator("[data-template-card]")).toHaveCount(20);
+  await expect(page.locator("[data-template-card]")).toHaveCount(40);
   await page
     .getByRole("link", { name: "Use React Studio", exact: true })
     .hover();
